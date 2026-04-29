@@ -1,0 +1,320 @@
+=========
+kink\/BIN
+=========
+
+Companion mod for bin vals\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-82b05762775bcc1b8e8b6a637617beaf:
+
+type bin
+========
+
+\`bin\` is a finite length immutable byte array\.
+
+Elements of \`bin\` are int \`num\` vals in the range \[0x00\, 0xff\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :Magic <- BIN.of(0xca 0xfe 0xba 0xbe)
+    :Slice <- Magic.take_front(2)
+    stdout.print_line(Slice.repr) # => (bin 0xca 0xfe)
+
+.. _api-f2b44e4ba16a23807f9dbdfc39a0373f:
+
+Bin\.size
+---------
+
+\`size\` returns a \`num\` of the number of elements of \`Bin\`\.
+
+.. _api-ebed43145e5d610e70c443c5fff6c17f:
+
+Bin\.any\?
+----------
+
+\`any\?\` returns whether the size of \`Bin\` is greater than or equal to 1\.
+
+.. _api-122a097b98c9a8356e280db3d12ce141:
+
+Bin\.get\(Ind\)
+---------------
+
+\`get\` returns the element at the index \`Ind\` in \`Bin\`\.
+
+The result is an int \`num\` in the range \[0\, 0xff\]\.
+
+.. rubric:: Precondition
+
+\`Ind\` must be an int \`num\` in the range \[0\, Bin\.size\)\.
+
+.. _api-3b2e2857cbb8a6c94a1be4155faa93ad:
+
+Bin\.slice\(From To\)
+---------------------
+
+\`slice\` returns a \`bin\` of the slice in the range \[From\, To\)\.
+
+.. rubric:: Preconditions
+
+\`From\` and \`To\` must be integer \`num\` values\.
+
+0 \<\= From \<\= To \<\= Bin\.size
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+        
+    :Magic <- BIN.of(0xca 0xfe 0xba 0xbe)
+    :Slice <- Magic.slice(1 3)
+    stdout.print_line(Slice.repr) # => (bin 0xfe 0xba)
+
+.. _api-d1ac9d599b50ebd0adb923e7be1dbf5b:
+
+Bin\.take\_front\(N\)
+---------------------
+
+\`take\_front\` returns a \`bin\` that is a slice of the first \`N\` elements of \`Bin\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an int \`num\` in the range \[0\, Bin\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :Pdf_signature <- BIN.of(0x25 0x50 0x44 0x46 0x2d)
+    :Slice <- Pdf_signature.take_front(2)
+    stdout.print_line(Slice.repr) # => (bin 0x25 0x50)
+
+.. _api-21ef0dca6a0e1fe2247205a3874e1d3b:
+
+Bin\.take\_back\(N\)
+--------------------
+
+\`take\_back\` returns a \`bin\` that is a slice of the last \`N\` elements of \`Bin\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an int \`num\` in the range \[0\, Bin\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :Pdf_signature <- BIN.of(0x25 0x50 0x44 0x46 0x2d)
+    :Slice <- Pdf_signature.take_back(2)
+    stdout.print_line(Slice.repr) # => (bin 0x46 0x2d)
+
+.. _api-69b2a56f071156aa536f2710828e60e8:
+
+Bin\.drop\_front\(N\)
+---------------------
+
+\`drop\_front\` returns a \`bin\` that is a slice excluding the first \`N\` elements of \`Bin\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an int \`num\` in the range \[0\, Bin\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :Pdf_signature <- BIN.of(0x25 0x50 0x44 0x46 0x2d)
+    :Slice <- Pdf_signature.drop_front(2)
+    stdout.print_line(Slice.repr) # => (bin 0x44 0x46 0x2d)
+
+.. _api-c2d3ae3c1a7a4e8b234e7bb62501736c:
+
+Bin\.drop\_back\(N\)
+--------------------
+
+\`drop\_back\` returns a \`bin\` that is a slice excluding the last \`N\` elements of \`Bin\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an int \`num\` in the range \[0\, Bin\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :Pdf_signature <- BIN.of(0x25 0x50 0x44 0x46 0x2d)
+    :Slice <- Pdf_signature.drop_back(2)
+    stdout.print_line(Slice.repr) # => (bin 0x25 0x50 0x44)
+
+.. _api-3e13c84330f5676c9587947b89bb790b:
+
+Bin1 \+ Bin2
+------------
+
+\`\+\` operator\, or \`op\_add\` method\, returns a \`bin\` containing the elements of \`Bin1\` on the front\, and the elements of \`Bin2\` on the back\.
+
+.. rubric:: Precondition
+
+\`Bin2\` must be a \`bin\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :Cafe <- BIN.of(0xca 0xfe)
+    :Babe <- BIN.of(0xba 0xbe)
+    :Cafe_babe <- Cafe + Babe
+    stdout.print_line(Cafe_babe.repr) # => (bin 0xca 0xfe 0xba 0xbe)
+
+.. _api-0682105fdc1cb4306b262f9c6d11469c:
+
+Bin \* N
+--------
+
+\`\*\` operator\, or \`op\_mul\` method\, returns a \`bin\` repeating the elements of \`Bin\`\, \`N\` times\.
+
+.. rubric:: Precondition
+
+\`N\` must be an int \`num\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :Babe <- BIN.of(0xba 0xbe)
+    :Babe_babe_babe <- Babe * 3
+    stdout.print_line(Babe_babe_babe.repr) # => (bin 0xba 0xbe 0xba 0xbe 0xba 0xbe)
+
+.. _api-878a019e16a5d5ef1afae22edeaa98d7:
+
+Bin1 \=\= Bin2
+--------------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`Bin1\` and \`Bin2\` contain the same sequence of elements\.
+
+.. rubric:: Precondition
+
+\`Bin1\` and \`Bin2\` must be \`bin\` type\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :Bin <- BIN.of(1 2 3)
+        
+    stdout.print_line((Bin == BIN.of(1 2 3)).repr)  # => true
+    stdout.print_line((Bin != BIN.of(1 2 3)).repr)  # => false
+        
+    stdout.print_line((Bin == BIN.of(3 2 1)).repr)  # => false
+    stdout.print_line((Bin != BIN.of(3 2 1)).repr)  # => true
+
+.. _api-558b801a901b8a7134812b839c5296c8:
+
+Bin1 \<\= Bin2
+--------------
+
+\`\<\=\` operator\, or \`op\_le\` method\, returns whether \`Bin1\` is smaller than or equal to \`Bin2\` lexicographically\.
+
+.. rubric:: Precondition
+
+\`Bin1\` and \`Bin2\` must be \`bin\` values\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+        
+    :compare <- {(:Bin :Arg_bin)
+      [:Lt? :Le? :Gt? :Ge?] = [
+        Bin < Arg_bin
+        Bin <= Arg_bin
+        Bin > Arg_bin
+        Bin >= Arg_bin
+      ]
+      stdout.print_line(
+        'Lt?={} Le?={} Gt?={} Ge?={}'.format(Lt?.repr Le?.repr Gt?.repr Ge?.repr))
+    }
+        
+    compare(BIN.of(1 2 3) BIN.of(1 2 3))    # => Lt?=false Le?=true Gt?=false Ge?=true
+    compare(BIN.of(1 2 3) BIN.of(1 2 3 4))  # => Lt?=true Le?=true Gt?=false Ge?=false
+    compare(BIN.of(1 2 3) BIN.of(1 2))      # => Lt?=false Le?=false Gt?=true Ge?=true
+
+.. _api-f6a86b6c41324569f1909a66cd2fdcad:
+
+Bin\.repr
+---------
+
+\`repr\` returns a str like \"\(bin 0xca 0xfe 0xba 0xbe\)\"\, or \"\(bin 0x01 0x02 0x03 \,\,\, size\=999 \,\,\, 0xfd 0xfe 0xff\)\"
+
+.. _api-8e317be47842c41df30f7acc2ece1a61:
+
+BIN\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a \`bin\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :Bin <- BIN.of(1 2 3)
+    stdout.print_line(BIN.is?(Bin).repr) # => true
+    stdout.print_line(BIN.is?(42).repr)  # => false
+
+.. _api-72bef2f9ac0c3f203b50bf21397b173d:
+
+BIN\.of\(\.\.\. Nums\)
+======================
+
+\`of\` returns a \`bin\` containing \`Nums\` as the elements\.
+
+.. rubric:: Precondition
+
+Each element of \`Nums\` must be an int \`num\` in the range \[0\, 0xff\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+        
+    :Bin <- BIN.of(0 1 254 255)
+    stdout.print_line(Bin.repr) # => (bin 0x00 0x01 0xfe 0xff)
+
+.. _api-0587341c37a10bc7dd4025ce72743805:
+
+BIN\.from\_each\(Eacher\)
+=========================
+
+\`from\_each\` returns a \`bin\` containing elements of \`Eacher\`\.
+
+.. rubric:: Preconditions
+
+\`Eacher\` must support \.each\(\$consume\) method like vectors and iters\.
+
+Each element of \`Eacher\` must be an int \`num\` in the range \[0\, 0xff\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+        
+    :Bin <- BIN.from_each([0 1 254 255])
+    stdout.print_line(Bin.repr) # => (bin 0x00 0x01 0xfe 0xff)
+

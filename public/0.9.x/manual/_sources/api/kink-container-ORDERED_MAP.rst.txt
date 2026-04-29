@@ -1,0 +1,163 @@
+=============================
+kink\/container\/ORDERED\_MAP
+=============================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-c739611a6f4828963065637a4ef9f43e:
+
+type ordered\_map
+=================
+
+\`ordered\_map\` is a subtype of \`map\` type which supports total ordering of keys\. Equivalence relation of keys is derived from the toal order\.
+
+.. _api-33c96f85ef8e3c608fccab2e06618c93:
+
+Map\.key\_iter\(\.\.\.\[Min\_key\]\)
+------------------------------------
+
+\`key\_iter\` returns an \`iter\` of keys following the order\. If \`Min\_key\` is passed\, the iter will have the keys which are bigger than or equivalent to \`Min\_key\`\. If \`Min\_key\` is not passed\, the iter will have all the keys of \`Map\`\.
+
+\`key\_iter\` method of \`ordered\_map\` type extends the contract of \`key\_iter\` of \`map\` type\.
+
+.. rubric:: Precondition
+
+\`Min\_key\` must be in the domain of the total order of keys\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_MAP.require_from('kink/container/')
+        
+    :Map <- TREE_MAP.of(
+      'foo' 'FOO'
+      'bar' 'BAR'
+      'baz' 'BAZ'
+      'qux' 'QUX'
+      'grault' 'GRAULT'
+    )
+    Map.key_iter.each{(:K)
+      stdout.print_line(K.repr)
+    }
+    # Output:
+    #   "bar"
+    #   "baz"
+    #   "foo"
+    #   "grault"
+    #   "qux"
+        
+    Map.key_iter('f').each{(:K)
+      stdout.print_line(K.repr)
+    }
+    # Output:
+    #   "foo"
+    #   "grault"
+    #   "qux"
+
+.. _api-59ee186c19f6fad7a99cdecb2d43e526:
+
+Map\.pair\_iter\(\.\.\.\[Min\_key\]\)
+-------------------------------------
+
+\`pair\_iter\` returns an \`iter\` of pairs \[Key Val\] following the order\. If \`Min\_key\` is passed\, the iter will have pairs whose keys are bigger than or equivalent to \`Min\_key\`\. If \`Min\_key\` is not passed\, the iter will have all the key\-value pairs of \`Map\`\.
+
+\`pair\_iter\` method of \`ordered\_map\` type extends the constraints of \`pair\_iter\` of \`map\` type\.
+
+.. rubric:: Precondition
+
+\`Min\_key\` must be in the domain of the total order of keys\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_MAP.require_from('kink/container/')
+        
+    :Map <- TREE_MAP.of(
+      'foo' 'FOO'
+      'bar' 'BAR'
+      'baz' 'BAZ'
+      'qux' 'QUX'
+      'grault' 'GRAULT'
+    )
+        
+    Map.pair_iter.each{(:Pair)
+      stdout.print_line(Pair.repr)
+    }
+    # Output:
+    #   ["bar" "BAR"]
+    #   ["baz" "BAZ"]
+    #   ["foo" "FOO"]
+    #   ["grault" "GRAULT"]
+    #   ["qux" "QUX"]
+        
+    Map.pair_iter('f').each{(:Pair)
+      stdout.print_line(Pair.repr)
+    }
+    # Output:
+    #   ["foo" "FOO"]
+    #   ["grault" "GRAULT"]
+    #   ["qux" "QUX"]
+
+.. _api-15fe37c1c336d43d6c98176fdfe790e4:
+
+Map\.front\_key
+---------------
+
+\`front\_key\` returns the key which comes first in the order\.
+
+.. rubric:: Precondition
+
+\`Map\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_MAP.require_from('kink/container/')
+        
+    :Map <- TREE_MAP.of(
+      'foo' 'FOO'
+      'bar' 'BAR'
+      'baz' 'BAZ'
+      'qux' 'QUX'
+      'grault' 'GRAULT'
+    )
+    stdout.print_line(Map.front_key.repr) # => "bar"
+
+.. _api-02971f1592885599120608f1c07b6b38:
+
+Map\.back\_key
+--------------
+
+\`back\_key\` returns the key which comes last in the order\.
+
+.. rubric:: Precondition
+
+\`Map\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_MAP.require_from('kink/container/')
+        
+    :Map <- TREE_MAP.of(
+      'foo' 'FOO'
+      'bar' 'BAR'
+      'baz' 'BAZ'
+      'qux' 'QUX'
+      'grault' 'GRAULT'
+    )
+    stdout.print_line(Map.back_key.repr) # => "qux"
+
+.. _api-d001b044ab65a09cf27f8d71c776152a:
+
+ORDERED\_MAP\.is\?\(Val\)
+=========================
+
+\`is\?\` returns whether \`Val\` is an \`ordered\_map\`\.
+

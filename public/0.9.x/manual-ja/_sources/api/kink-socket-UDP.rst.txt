@@ -1,0 +1,280 @@
+=================
+kink\/socket\/UDP
+=================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-3501d4b0e4833e42383a6b29803f06d0:
+
+type udp
+========
+
+A \`udp\` is a socket of a message based protocol\.
+
+Currently\, UDP on only IPv4 and IPv6 are supported\. The following features are not supported\:
+
+\• Unix domain datagram socket
+
+\• Multicast
+
+\• IP\_PKTINFO and IPV6\_PKTINFO on Linux\, and corresponding features on other OSes
+
+.. _api-dba8b2575719314eeec743d0c1113bf7:
+
+Udp\.connect\(Remote \.\.\.\[\$config\=\{\}\]\)
+-----------------------------------------------
+
+\`connect\` sets the remote address to the socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the address is successfully set\, \`connect\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`connect\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Remote\` must be a \`socket\_address\`\, whose protocol family is acceptable by the socket\.
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-56d41d9b4be3938a5033bc563110f21f:
+
+Udp\.bind\(Local \.\.\.\[\$config\=\{\}\]\)
+-------------------------------------------
+
+\`bind\` binds a local address to the socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the address is successfully bound\, \`bind\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`bind\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Local\` must be a \`socket\_address\`\, whose protocol family matches one of the socket\.
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`
+
+.. _api-7cabcbc9ed1b734692e7b134341fc675:
+
+Udp\.close\(\.\.\.\[\$config\=\{\}\]\)
+--------------------------------------
+
+\`close\` closes the socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the socket is closed successfully\, \`close\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`close\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`
+
+.. _api-50a0af1d64079105382c1848d803f1a2:
+
+Udp\.receive\(Max\_size \.\.\.\[\$config\=\{\}\]\)
+--------------------------------------------------
+
+\`receive\` method receives a datagram on the socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\`Max\_size\` is the maximum byte count of the datagram to receive\. If the datagram is longer than the specified length\, it is shortened to \`Max\_size\`\.
+
+\`receive\` method waits until a datagram is available\, or an IO error occurs\. If a datagram becomes available\, \`receive\` tail\-calls \$success with a \`datagram\`\. If an IO error occurs\, \`receive\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Max\_size\` must be a non\-negative integer \`num\`\.
+
+\$success must be a function which takes a \`datagram\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-cf0c12803a5620a0a017c75c7cea2f8d:
+
+Udp\.send\(Datagram \.\.\.\[\$config\=\{\}\]\)
+----------------------------------------------
+
+\`send\` sends a datagram to the specified destination\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\`send\` waits until write buffer is available\, or an IO error occurs\.
+
+If the datagram is written to the write buffer\, \`send\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`send\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Datagram\` must be a \`datagram\` value\.
+
+The protocol family of the remote address of \`Datagram\` must be accepted by the socket\.
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-44897ec0e7d5a07a386e776d8e2a68d3:
+
+Udp\.input
+----------
+
+\`input\` method returns an \`input\` of the socket\.
+
+Closing the input will close the socket\.
+
+.. _api-09d7c35241dfa9622336e866e9d6fced:
+
+Udp\.output
+-----------
+
+\`output\` method returns an \`output\` of the socket\.
+
+Closing the output will close the socket\.
+
+.. _api-e95eb581907ecf042b41f66972a497f5:
+
+Udp\.local\_address\(\.\.\.\[\$config\=\{\}\]\)
+-----------------------------------------------
+
+\`local\_address\` retrieves a \`socket\_address\` of the local address of the socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the local address is available\, \`local\_address\` tail\-calls \$success with the \`socket\_address\`\.
+
+If an IO error occurs\, \`local\_address\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a function which takes a \`socket\_address\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-a13a86668409a414e5efbaf5dd398870:
+
+Udp\.remote\_address\(\.\.\.\[\$config\=\{\}\]\)
+------------------------------------------------
+
+\`remote\_address\` retrieves a \`socket\_address\` of the remote address of the socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the remote address is available\, \`remote\_address\` tail\-calls \$success with the \`socket\_address\`\.
+
+If an IO error occurs\, \`remote\_address\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a function which takes a \`socket\_address\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-154bab0d4622c70c18d7311d2ccc4843:
+
+Udp\.so\_sndbuf
+---------------
+
+\`so\_sndbuf\` returns a \`ref\` of a non\-negative integer \`num\` of SO\_SNDBUF option\.
+
+.. _api-ce3852c388ec7e72ab9ea272c4449bdc:
+
+Udp\.so\_rcvbuf
+---------------
+
+\`so\_rcvbuf\` return a \`ref\` of a non\-negative integer \`num\` SO\_RCVBUF option\.
+
+.. _api-f7085358f685bf1ac476933d8ef6a6b6:
+
+Udp\.so\_reuseaddr
+------------------
+
+\`so\_reuseaddr\` returns a \`ref\` of a \`bool\` of SO\_REUSEADDR option\.
+
+.. _api-d1a79de1717a8bbc5013b3cf0e72a6b6:
+
+Udp\.so\_broadcast
+------------------
+
+\`so\_broadcast\` returns a \`ref\` of a \`bool\` of SO\_BROADCAST option\.
+
+.. _api-543d3a46c9dc0acece98f43395502e13:
+
+UDP\.open\(\.\.\.\[Protocol\_family\=PROTOCOL\_FAMILY\.ipv6 \$config\=\{\}\]\)
+==============================================================================
+
+\`open\` makes a new datagram socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\• C\.on\_unsupported\(\$unsupported\)\: default \= a function which tail\-calls \$error
+
+If a socket is created\, \`open\` tail\-calls \$success with the \`udp\` value\.
+
+If an IO error occurs\, \`open\` tail\-calls \$error with an \`exception\`\.
+
+If \`Protocol\_family\` is not supported by the runtime\, \`open\` tail\-calls \$unsupported with no arg\.
+
+.. rubric:: Preconditions
+
+\`Protocol\_family\` must be a \`protocol\_family\` value\.
+
+\$success must be a function which takes a \`udp\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+\$unsupported must be a thunk\.
+
+.. _api-061a5bc8f8ed689f422261045fe07274:
+
+UDP\.is\?\(Val\)
+================
+
+\`is\?\` method returns whether \`Val\` is a \`udp\` value\.
+

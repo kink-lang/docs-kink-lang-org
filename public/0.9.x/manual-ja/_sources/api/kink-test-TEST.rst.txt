@@ -1,0 +1,324 @@
+================
+kink\/test\/TEST
+================
+
+Software testing\.
+
+Example\:
+
+.. code:: kink
+
+    :TEST.require_from('kink/test/')
+    :CONTROL.require_from('kink/')
+        
+    # Test collection
+    :Tests <- TEST.collect_in{
+      TEST.test('10 + 20 == 30'){
+        :Sum = 10 + 20
+        Sum == 30 || raise('got {}'.format(Sum.repr))
+      }
+      TEST.group('Num.op_mul'){
+        TEST.test('10 * 20 == 200'){
+          :Prod = 10 * 20
+          Prod == 200 || raise('got {}'.format(Prod.repr))
+        }
+        TEST.test('20 * 30 == 600'){
+          :Prod = 20 * 30
+          Prod == 600 || raise('got {}'.format(Prod.repr))
+        }
+      }
+    }
+        
+    # Test execution
+    Tests.each{(:T)
+      T.run{(:C)
+        C.on_success{ stdout.print_line('OK! [{}]'.format(T.address)) }
+        C.on_skip{ stdout.print_line('Skipped [{}]'.format(T.address)) }
+        C.on_error{(:Exc)
+          stdout.print_line('Failed: {} [{}]'.format(Exc.message T.address))
+        }
+      }
+    }
+    # Output:
+    #   OK! [10 + 20 == 30]
+    #   OK! [Num.op_mul; 10 * 20 == 200]
+    #   OK! [Num.op_mul; 20 * 30 == 600]
+
+.. rubric:: Test collection
+
+Test is created by TEST\.test\. Tests can be grouped by TEST\.group\, which can be nested\.
+
+\`test\` and \`group\` must be called within an invocation of TEST\.collect\_in\. Created tests are returned from \`collect\_in\` as a vec\.
+
+.. rubric:: Test execution
+
+A test can be executed by Test\.run\. The result of test execution is success\, error\, or skip\.
+
+.. rubric:: Actual usecase
+
+Usually\, tests are implemented in source files named as \*\_test\.kn\, and executed by kink\/test\/TEST\_TOOL module\. See kink\/test\/TEST\_TOOL for details\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-910c66692a00d9859d4831630c07af19:
+
+TEST\.test\(Name \$test\_thunk\)
+================================
+
+\`test\` registers a test to the current collecting session\.
+
+Preconditions\:
+
+\• \`Name\` must be a str\.
+
+\• \$test\_thunk must be a thunk\.
+
+\• \`test\` must be called within invocation of TEST\.collect\_in\.
+
+\`Name\` becomes the last part of \`address\` of the registered test\.
+
+\$test\_thunk is the test thunk\.
+
+\• If \$test\_thunk returns a value\, it is marked as a success\.
+
+\• If \$test\_thunk raises an exception\, it is marked as an error\.
+
+\• If TEST\.skip is called within \$test\_thunk\, it is marked as skip\.
+
+.. _api-b916f99ec03be96eecf1809b6cf59e65:
+
+TEST\.group\(Group\_name \$thunk\)
+==================================
+
+\`group\` makes a group of tests\.
+
+\`group\` calls \$thunk\. Tests registered within the invocation of \$thunk become members of the group\.
+
+Invocation of \`group\` can be nested\. It makes nested groups\.
+
+Preconditions\:
+
+\• \`Group\_name\` must be a str\.
+
+\• \$thunk must be a thunk\.
+
+\• \`group\` must be called within invocation of TEST\.collect\_in\.
+
+\`Group\_name\` becomes a part of \`address\` of member tests\.
+
+Note that there is no data type which represents a group\. Groups are used just to make \`address\` of tests\.
+
+.. _api-c37cd77ce3ac30ea43359cf2ffb5d2d6:
+
+TEST\.have\_label\?\(Label\)
+============================
+
+\`have\_label\?\` returns whether the test label set has the specified label\.
+
+Preconditions\:
+
+\• \`have\_label\?\` must be called within invocation of a test thunk\.
+
+\• \`Label\` must be a str\.
+
+See TEST\.skip for an example\.
+
+.. _api-eae58053833e744e5fd787fa1b8ba747:
+
+TEST\.skip
+==========
+
+\`skip\` marks the current test skipped\, and terminates invocation of the test thunk by returning \(see CONTROL\.with\_return\)\.
+
+Precondition\:
+
+\• \`skip\` must be called within invocation of a test thunk\.
+
+Example\:
+
+.. code:: kink
+
+    # example_test.kn
+        
+    :TEST.require_from('kink/test/')
+    :RUNTIME.require_from('kink/')
+        
+    TEST.test('Windows specific test'){
+      RUNTIME.windows? || TEST.skip
+        
+      :Result = _call_win_api
+      Result == 'ok' || raise('got {}'.format(Result.repr))
+    }
+        
+    :_call_win_api <- { 'ok' }
+        
+    TEST.test('Heavy test'){
+      TEST.have_label?('heavy') || TEST.skip
+        
+      :Result = _do_heavy_calculation
+      Result == 42 || raise('got {}'.format(Result.repr))
+    }
+        
+    :_do_heavy_calculation <- { 42 }
+        
+    # On a unix system:
+        
+    # $ kink mod:kink/test/TEST_TOOL example_test.kn --verbose
+    # example_test.kn; Windows specific test : Skipped
+    # example_test.kn; Heavy test : Skipped
+    #
+    # Success 0 Failure 0 Skipped 2
+        
+    # $ kink mod:kink/test/TEST_TOOL example_test.kn --verbose --label heavy
+    # example_test.kn; Windows specific test : Skipped
+    # example_test.kn; Heavy test : Success
+    #
+    # Success 1 Failure 0 Skipped 1
+
+.. _api-21eea5317816fa601f06ea3bff30f00d:
+
+TEST\.collect\_in\(\$thunk\)
+============================
+
+\`collect\_in\` calls \$thunk\, and returns a vec of tests created during invocation of \$thunk\.
+
+Precondition\:
+
+\• \`collect\_in\` must not be called during invocation of \`collect\_in\`\.
+
+.. _api-4706f15720bb888a4914e1a77ea0ea33:
+
+type test
+=========
+
+A test case\.
+
+.. _api-030b040a293e59b8b9bb3ff245ac3c07:
+
+Test\.run\(\.\.\.\[\$config\_fun\=\{\}\]\)
+------------------------------------------
+
+\`run\` calls the test thunk\.
+
+Precondition\:
+
+\• \$config\_fun must be a fun which takes \`run\_config\`\.
+
+Result\:
+
+\• If the test thunk returns without raising an exception\,  or being skipped by TEST\.skip\,  \`run\` tail\-calls the success cont\.
+
+\• If the test thunk raises an exception\,   \`run\` tail\-calls the error cont with the exception\.
+
+\• If TEST\.skip is called during the invocation of the test thunk\,   \`run\` tail\-calls the skip cont\.
+
+.. _api-7e096744389fc29f47858c702cc9ad39:
+
+Test\.address\_parts
+--------------------
+
+\`address\_parts\` returns a vec of the names of the groups and the test\.
+
+The group names appear from shallower ones to deeper ones\. The test name appears as the last part\.
+
+In the next program\, the test named “returns 42” is in the group “FOO\.bar”\, which is in the super group “mod FOO”\. Therefore\, Test\.address\_parts returns \[\"mod FOO\" \"FOO\.bar\" \"returns 42\"\]\.
+
+.. code:: kink
+
+    :Tests = TEST.collect_in{
+      TEST.group('mod FOO'){
+        TEST.group('FOO.bar'){
+          TEST.test('returns 42'){
+            :Result = FOO.bar
+            Result == 42 || raise('got {}'.format(Result.repr))
+          }
+        }
+      }
+    }
+    :Test = Tests.front
+    stdout.print_line(Test.address_parts.repr) # => ["mod FOO" "FOO.bar" "returns 42"]
+
+.. _api-7a93bf5ed10f48f8accee6a0b472db19:
+
+Test\.address
+-------------
+
+\`address\` returns the address representation of this test\.
+
+It concatenates the groups and the name\, such as \"mod FOO\; FOO\.bar\; returns 42\"\.
+
+.. _api-ad9ba178afd3ec3b8e77f8412de01155:
+
+Test\.repr
+----------
+
+\`repr\` returns the str representation of the test\, such as \"\(test mod FOO\; FOO\.bar\; returns 42\)\"\.
+
+.. _api-7b119c1f55592f38463cdd03ea6ef31e:
+
+TEST\.is\?\(Val\)
+=================
+
+\`is\?\` returns whether \`Val\` is a test\.
+
+.. _api-d3f2d7091cbc34324a2a45924eb496e4:
+
+type run\_config
+================
+
+The config val type of Test\.run\.
+
+.. _api-9be4d821ec5b5d810591334542cd0396:
+
+C\.labels\(Labels\)
+-------------------
+
+\`labels\` sets \`Labels\` as the test label set of the test thunk invocation\.
+
+Precondition\:
+
+\• \`Labels\` must be a set of strs\.
+
+If \`labels\` is not called\, an empty set is used as the test label set\.
+
+.. _api-badea21551180f5b53e38ab0c0230f06:
+
+C\.on\_success\(\$success\_cont\)
+---------------------------------
+
+\`on\_success\` sets \$success\_cont as the success cont\.
+
+Precondition\:
+
+\• \$success\_cont must be a thunk\.
+
+If \`on\_success\` is not called\, a NOP thunk \{\} is used as the success cont\.
+
+.. _api-9247c38fc8da3d167acca88b571f55a9:
+
+C\.on\_error\(\$error\_cont\)
+-----------------------------
+
+\`on\_error\` sets \$error\_cont as the error cont\.
+
+Precondition\:
+
+\• \$error\_cont must be a fun which takes an exception\.
+
+If \`on\_error\` is not called\, a fallback function is used\. The fallback function raises the exception passed as the parameter\.
+
+.. _api-885bf536e3c395bf3fad84ec2a5e5957:
+
+C\.on\_skip\(\$skip\_cont\)
+---------------------------
+
+\`on\_skip\` sets \$skip\_cont as the skip cont\.
+
+Precondition\:
+
+\• \$skip\_cont must be a thunk\.
+
+If \`on\_skip\` is not called\, a NOP thunk \{\} is used as the skip cont\.
+

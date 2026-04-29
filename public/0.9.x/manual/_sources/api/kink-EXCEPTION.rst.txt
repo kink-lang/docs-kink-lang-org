@@ -1,0 +1,124 @@
+===============
+kink\/EXCEPTION
+===============
+
+Mod of exceptions\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-08fee0648a753752ac74e092d8e9cbfd:
+
+type exception
+==============
+
+An exception is a pair of a message str and a vec of traces\.
+
+An exception can also have the \`next\` exception in the chain\. Exception chain is used for “suppressed” exceptions by CONTROL\.with\_finally\. It is not for exception wrapping\.
+
+.. _api-dba93da3df1180b6d7cc7bbc49f3abba:
+
+Exception\.message
+------------------
+
+\`message\` returns the exception message str\.
+
+.. _api-34e11ffce569c0202e4d218d26949c3c:
+
+Exception\.traces
+-----------------
+
+\`traces\` returns a the exception traces\. The result is a vec of traces\, The traces are indexed from the root to the top\.
+
+.. _api-7f00e64e6227198358370c7b0bcce33a:
+
+Exception\.have\_next\?
+-----------------------
+
+\`have\_next\?\` returns whether \`Exception\` has the next exception in the chain\.
+
+.. _api-4e6be031a6eeac356ac71e7044139ab7:
+
+Exception\.next
+---------------
+
+\`next\` returns the next exception in the chain\.
+
+Precondition\:
+
+\• \`Exception\` must have the next exception in the chain\.
+
+.. _api-949358f64b2639e7f0ddc2f95a53aa1b:
+
+Exception\.raise
+----------------
+
+\`raise\` raises an exception\.
+
+At the tail of \`raise\`\, the following sequence of abstract instructions is evaluated\:
+
+.. code:: kink
+
+    (val Exception)
+    (raise)
+
+.. _api-d2d1fd878c0ae35447d9cc1bb82a089b:
+
+Exception\.op\_add\(Tail\)
+--------------------------
+
+\`op\_add\` concatenates the chain of \`Exception\` and the chain of \`Tail\`\, and returns an exception of the new chain\.
+
+Precondition\:
+
+\• \`Tail\` must be an exception\.
+
+Postcondition\:
+
+\• The resutl is an exception\.
+
+.. _api-168d06121a158b398f4e6f7abbf96c6b:
+
+Exception\.desc\_iter
+---------------------
+
+\`desc\_iter\` returns an iter of lines describing the exception\.
+
+Each element of the iter is a str\, which does NOT end with newline\.
+
+.. _api-3829b1b9dfc1cf2ac755316307edf339:
+
+Exception\.op\_eq\(Arg\_exception\)
+-----------------------------------
+
+\`op\_eq\` returns whether the two exceptions are equal\.
+
+They are equal in either of the following conditions\:
+
+\• Both exceptions don\'t have the next exception in the chain\,   the message strs are equal\,   and the vecs of traces are equal\.
+
+\• Both exceptions have the next exception in the chain\,   the next exceptions are equal\,   the message strs are equal\,   and the vecs of traces are equal\.
+
+.. _api-e8325567ca9201ecedd3460476b31fa1:
+
+EXCEPTION\.new\(Message \.\.\.\[Traces\]\)
+==========================================
+
+\`new\` makes an exception val\.
+
+If \`Traces\` is omitted\, the current traces is used\.
+
+Preconditions\:
+
+\• \`Message\` must be a str
+
+\• \`Traces\` must be a vec of traces
+
+.. _api-1b3e885ef622377d1ef6fddb9705bfbe:
+
+EXCEPTION\.is\?\(Val\)
+======================
+
+Whether \`Val\` is an exception\.
+

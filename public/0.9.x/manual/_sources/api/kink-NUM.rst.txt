@@ -1,0 +1,1041 @@
+=========
+kink\/NUM
+=========
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-94ecaace8aa3cab97d09f89a70b9228e:
+
+type num
+========
+
+\`num\` is a floating point decimal number\.
+
+A \`num\` value consists of \(Mantissa\, Scale\)\. The number represented by the \`num\` value is Mantissa \* \(10 \*\* \(\-Scale\)\)\. Here\, \`Mantissa\` and \`Scale\` are signed integer numbers\.
+
+The runtime must at least support the range \[\-\(2\*\*95\)\, \(2\*\*95\) \- 1\] for \`Mantissa\`\, and the range \[\-\(2\*\*7\)\, \(2\*\*7\) \- 1\] for \`Scale\`\. Exceeding these limits may result in overflow or underflow\.
+
+Note\: the Kink runtime on the JVM supports \[\-\(2\*\*2048 \- 1\)\, 2\*\*2048 \- 1\] for \`Mantissa\`\, and \[\-\(2\*\*15\)\, \(2\*\*15\)\-1\] for \`Scale\`\.
+
+Infinity\, NaN\, signed zeros are not supported\.
+
+.. rubric:: Equality
+
+There are multiple representations for one number\. For example\, 420 can be represented as \(Mantissa\=420\, Scale\=0\)\, \(Mantissa\=42000\, Scale\=2\) or \(Mantissa\=42\, Scale\=\-1\) and so on\. They are treated as equal by \=\= \(op\_eq\) operator\:
+
+.. code:: kink
+
+    :NUM.require_from('kink/')
+        
+    stdout.print_line((420 == 420.00).repr) # => true
+    stdout.print_line((420 == NUM.new(42 (-1))).repr) # => true
+
+.. rubric:: Bit operations
+
+Bit operations take only int \`num\` values as operands\. Nonnegative int \`num\` values are treated as if infinite 0 bits precede\. Negative int \`num\` values are treated as two\'s complement with infinite preceding 1 bits\.
+
+.. code:: kink
+
+    stdout.print_line((~ 0b_1010).repr) # => (-11)
+    stdout.print_line('{%b}'.format(~ 0b_1010)) # => -1011
+    stdout.print_line('{%b}'.format(~ 0b_1010 & 0b_1111_1111)) # => 11110101
+
+.. _api-4f2291b6fef27f68bc285a4cdfffd56e:
+
+Num\.mantissa
+-------------
+
+\`mantissa\` returns \`Mantissa\` of \`Num\`\.
+
+The result is an int \`num\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(123.45.mantissa.repr)  # => 12345
+
+.. _api-019c0663170cced591f401cc65bcf76d:
+
+Num\.scale
+----------
+
+\`scale\` returns \`Scale\` of \`Num\`\.
+
+The result is an int \`num\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(123.45.scale.repr)  # => 2
+
+.. _api-1ddd856bddd9dd7f00af7c30f72b73c5:
+
+Num\.int\?
+----------
+
+\`int\?\` returns whether \`Num\` is an integer\.
+
+A \`num\` is an integer when \`Scale\` is zero\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(120.int?.repr)    # => true
+    stdout.print_line(120.0.int?.repr)  # => false
+    stdout.print_line(3.14.int?.repr)   # => false
+
+.. _api-eeaedd434833de15b7c174516cc69425:
+
+X \+ Y
+------
+
+\`\+\` operator\, or \`op\_add\` method\, returns the sum of \`X\` and \`Y\`\.
+
+\`Scale\` of the result will be max\(X\.scale\, Y\.scale\)\.
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`num\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Sum <- 1.234 + 0.12
+    stdout.print_line(Sum.repr)       # => 1.354
+    stdout.print_line(Sum.scale.repr) # => 3
+
+.. _api-f667eb318caba4a5d8a039983c22f0ed:
+
+X \- Y
+------
+
+The binary \`\-\` operator\, or \`op\_sub\` method\, returns the difference of \`X\` and \`Y\`\.
+
+\`Scale\` of the result will be max\(X\.scale\, Y\.scale\)\.
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`num\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Diff <- 1.234 - 0.12
+    stdout.print_line(Diff.repr)        # => 1.114
+    stdout.print_line(Diff.scale.repr)  # => 3
+
+.. _api-bd9d2fee7c2996acc458a8ddd79ccd88:
+
+\- X
+----
+
+The unary \`\-\` operator\, or \`op\_minus\` method\, flips the sign of \`X\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line((-42).repr)     # => (-42)
+    stdout.print_line((-(-42)).repr)  # => 42
+    stdout.print_line((-0).repr)      # => 0
+
+.. _api-30d402ff3f8dab7b42383d10b1eeec6a:
+
+X \* Y
+------
+
+\`\*\` operator\, or \`op\_mul\` method\, returns the production of \`X\` and \`Y\`\.
+
+\`Scale\` of the result will be X\.scale \+ Y\.scale\.
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`num\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Prod <- 1.2 * 3.45
+    stdout.print_line(Prod.repr)        # => 4.140
+    stdout.print_line(Prod.scale.repr)  # => 3
+
+.. _api-c49b38f653c2f557b5467273cdecc802:
+
+X \/ Y
+------
+
+\`\/\` operator\, or \`op\_div\` method\, makes a \`num\_div\` value of \(Dividend\=X\, Divisor\=Y\)\.
+
+See kink\/NUM\_DIV for how to get a number from the \`num\_div\` value\.
+
+.. rubric:: Preconditions
+
+\`Y\` must be a \`num\` value\.
+
+\`Y\` must not be equal to 0\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line((10 / 3).floor(3).repr) # => 3.333
+    stdout.print_line((10 / 3).ceil(3).repr)  # => 3.334
+
+.. _api-780786ae17df2b32e5239328dd963d63:
+
+X \/\/ Y
+--------
+
+\`\/\/\` operator\, or \`op\_intdiv\` method\, performs integral division\, and returns the quotient\.
+
+Q \= X \/\/ Y and R \= X \% Y will suffice the following conditions\.
+
+\• Q \* Y \+ R \= X
+
+\• 0 \<\= R \< Y\.abs
+
+\• Q\.scale \= 0
+
+\• R\.scale \= X\.scale
+
+The rule above is equivalent to DIV and MOD of R6RS Scheme\. See\:
+
+http\:\/\/www\.r6rs\.org\/final\/html\/r6rs\/r6rs\-Z\-H\-14\.html\#node\_sec\_11\.7\.3\.1
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`num\` value\.
+
+\`Y\` must not be equal to 0\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :attempt_intdiv <- {(:X :Y)
+      :Q = X // Y
+      :R = X % Y
+      stdout.print_line('{} // {} = {}, remainder: {}'.format(X.repr Y.repr Q.repr R.repr))
+    }
+        
+    attempt_intdiv(10 3)
+    # => 10 // 3 = 3, remainder: 1
+        
+    attempt_intdiv(10 (-3))
+    # => 10 // (-3) = (-3), remainder: 1
+        
+    attempt_intdiv((-10) 3)
+    # => (-10) // 3 = (-4), remainder: 2
+        
+    attempt_intdiv((-10) (-3))
+    # => (-10) // (-3) = 4, remainder: 2
+        
+    attempt_intdiv(10 1.5)
+    # => 10 // 1.5 = 6, remainder: 1.0
+        
+    attempt_intdiv(5.5 3)
+    # => 5.5 // 3 = 1, remainder: 2.5
+        
+    attempt_intdiv(5.5 1.5)
+    # => 5.5 // 1.5 = 3, remainder: 1.0
+
+.. _api-0131f4bf3e7485b8b28131b0316c2617:
+
+X \% Y
+------
+
+\`\%\` operator\, or \`op\_rem\` method\, performs integral division\, and returns the remainder\.
+
+See X \/\/ Y for details\.
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`num\` value\.
+
+\`Y\` must not be equal to 0\.
+
+.. _api-cac6a7bcc8bdf1592de14001f749d29b:
+
+X \| Y
+------
+
+\`\|\` operator\, or \`op\_or\` method\, performs bit OR operation for \`X\` and \`Y\`\.
+
+The result will be an int \`num\`\.
+
+.. rubric:: Preconditions
+
+\`X\` must be an int \`num\`\.
+
+\`Y\` must be an int \`num\`\.
+
+.. _api-b45386f45e99478863797b5a1d2d1972:
+
+X \^ Y
+------
+
+\`\^\` operator\, or \`op\_xor\` method\, performs bit XOR operation for \`X\` and \`Y\`\.
+
+The result will be an int \`num\`\.
+
+.. rubric:: Preconditions
+
+\`X\` must be an int \`num\`\.
+
+\`Y\` must be an int \`num\`\.
+
+.. _api-3d5d87cea0ec792f10058af8fc814e85:
+
+X \& Y
+------
+
+\`\&\` operator\, or \`op\_and\` method\, performs bit AND operation for \`X\` and \`Y\`\.
+
+The result will be an int \`num\`\.
+
+.. rubric:: Preconditions
+
+\`X\` must be an int \`num\`\.
+
+\`Y\` must be an int \`num\`\.
+
+.. _api-99d6664e9e0978702bf1b8ca418ccdb4:
+
+\~ Num
+------
+
+\`\~\` operator\, or \`op\_not\` method\, performs bit NOT operation \`Num\`\.
+
+.. rubric:: Preconditions
+
+\`Num\` must be an int \`num\`\.
+
+.. _api-c1ec2af0dcccbaba39903d6fddcb91a4:
+
+Num \<\< Bit\_count
+-------------------
+
+\`\<\<\` operator\, or \`op\_shl\` method\, performs bit SHIFT\-LEFT operation for \`Num\`\.
+
+If \`Bit\_count\` is positive\, \`Num\` is shifted \`Bit\_count\` bits toward left\.
+
+If \`Bit\_count\` is negative\, \`Num\` is shifted \(\-Bit\_count\) bits toward right\. The least significant \(\-Bit\_count\) bits are discarded\.
+
+If \`Bit\_count\` is zero\, \`Num\` is returned\.
+
+The result will be an int \`num\`\.
+
+.. rubric:: Preconditions
+
+\`Num\` must be an int \`num\`\.
+
+\`Bit\_count\` must be an int \`num\`\.
+
+.. _api-0cb9f66cdd32cf542f3764d784da24f0:
+
+Num \>\> Bit\_count
+-------------------
+
+\`\>\>\` operator\, or \`op\_shr\` method\, performs bit SHIFT\-RIGHT operation for \`Num\`\.
+
+If \`Bit\_count\` is positive\, \`Num\` is shifted \`Bit\_count\` bits toward right\. The least significant \`Bit\_count\` bits are discarded\.
+
+If \`Bit\_count\` is negative\, \`Num\` is shited \(\-Bit\_count\) bits toward left\.
+
+If \`Bit\_count\` is zero\, \`Num\` is returned\.
+
+The result will be an int \`num\`\.
+
+.. rubric:: Preconditions
+
+\`Num\` must be an int \`num\`\.
+
+\`Bit\_count\` must be an int \`num\`\.
+
+.. _api-39c3e426ef7d48032623045f7e0086ae:
+
+X \=\= Y
+--------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether the numbers are equal\, irrespective of scales of them\.
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`num\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line((42 == 42.000).repr)  # => true
+    stdout.print_line((42 != 42.000).repr)  # => false
+        
+    stdout.print_line((42 == 24).repr)  # => false
+    stdout.print_line((42 != 24).repr)  # => true
+
+.. _api-c63f0bac28dc7889794056e0ed205a33:
+
+X \<\= Y
+--------
+
+\`\<\=\` operator\, or \`op\_le\` method\, returns whether \`X\` is numerically smaller than or equal to \`Y\`\.
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`num\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :compare <- {(:X :Y)
+      stdout.print_line('Lt?={} Le?={} Gt?={} Ge?={}'.format(
+          (X < Y).repr
+          (X <= Y).repr
+          (X > Y).repr
+          (X >= Y).repr))
+    }
+        
+    compare(42 42.000)  # => Lt?=false Le?=true Gt?=false Ge?=true
+    compare(42 84)      # => Lt?=true Le?=true Gt?=false Ge?=false
+    compare(42 21)      # => Lt?=false Le?=false Gt?=true Ge?=true
+
+.. _api-38f57e8b60f5c9ad8c075cfea6170c4a:
+
+Num\.round
+----------
+
+\`round\` returns a \`num\_div\` value of \(Dividend\=Num\, Divisor\=1\)\.
+
+See kink\/NUM\_DIV for how to get a number from the \`num\_div\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(1.2345.round.floor(2).repr) # => 1.23
+
+.. _api-3e1fa3f1554a2bee797b4ac45ac150f6:
+
+Num\.abs
+--------
+
+\`abs\` returns the absolute value of \`Num\`
+
+If \`Num\` is nonnegative\, \`abs\` returns \`Num\`\. If \`Num\` is negative\, \`abs\` returns \(\-Num\)\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(42.abs.repr)    # => 42
+    stdout.print_line((-42).abs.repr) # => 42
+
+.. _api-d987a4afd3b55ecf23fcab0f117756d7:
+
+Num\.times
+----------
+
+\`times\` returns an \`iter\` from 0 \(inclusive\)\, to \`Num\` \(exclusive\)\, incrementing 1 for each element\.
+
+.. rubric:: Preconditions
+
+\`Num\` must be an int \`num\`\.
+
+\`Num\` must be greater than or equal to 0\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    5.times.each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # Output:
+    #   0
+    #   1
+    #   2
+    #   3
+    #   4
+
+.. _api-d02a57ed87d1e967f734982bfc2fd36d:
+
+Num\.up
+-------
+
+\`up\` returns an infinite \`iter\` from \`Num\`\, incrementing 1 for each element\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    0.5.up.take_front(5).each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # Output:
+    #   0.5
+    #   1.5
+    #   2.5
+    #   3.5
+    #   4.5
+
+.. _api-f1ce33216444c929e3f46b7d905c3b2c:
+
+Num\.down
+---------
+
+\`down\` returns an infinite \`iter\` from \`Num\`\, decrementing 1 for each element\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    9.5.down.take_front(5).each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # Output:
+    #   9.5
+    #   8.5
+    #   7.5
+    #   6.5
+    #   5.5
+
+.. _api-74d910bad99c4bb9a039176ac1da3627:
+
+Num\.show\(\.\.\.\[\$show\_config\=\{\}\]\)
+-------------------------------------------
+
+\`show\` returns a \`str\` representation of \`Num\`\, which is intended to be used in UI messages\.
+
+The optional parameter \$show\_config takes a function which takes a \`num\_show\_config\` value as an arg\. \`show\` passes a \`num\_show\_config\` value to \$show\_config to configure the output\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line(32767.show)  # => 32767
+    stdout.print_line(32767.show{(:S) S.spec('x') })    # => 7fff
+    stdout.print_line(32767.show{(:S) S.radix(16) })    # => 7fff
+    stdout.print_line(32767.show{(:S) S.group_sep(3) }) # => 32,767
+
+\`show\` is usually called from Str\.format\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line('{} {%04x}'.format(42 255))
+    # => 42 00ff
+
+For details of the output and the configuration\, see type num\_show\_config\.
+
+.. _api-afe9aba263647d33f4e34b1111148d61:
+
+Num\.repr
+---------
+
+\`repr\` returns a \`str\` such as \"1\.2500\"\, \"\(\-42\)\" or \"\(num mantissa\=1 scale\=\-10\)\"\.
+
+.. _api-1f0e555dd60542529475491a9ff4491c:
+
+NUM\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a \`num\` value\.
+
+.. _api-982aee2d0e02427c1cd4f47fd5b5acc9:
+
+NUM\.new\(Mantissa Scale\)
+==========================
+
+\`new\` makes a \`num\` value with given \`Mantissa\` and \`Scale\`\.
+
+.. rubric:: Preconditions
+
+\`Mantissa\` must be an int \`num\`\.
+
+\`Scale\` must be an int \`num\`\.
+
+\`Mantissa\` and \`Scale\` must not exceed the limits of the runtime\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :NUM.require_from('kink/')
+        
+    stdout.print_line(NUM.new(12345 2).repr)  # => 123.45
+
+.. _api-8cd45d8a05be4d520333c05a5c5ad0df:
+
+NUM\.parse\_int\(Str \.\.\.\[\$config\=\{\}\]\)
+===============================================
+
+\`parse\_int\` parses an int num from \`Str\`\.
+
+Config methods\:
+
+\• C\.radix\(Radix\)\: default \= 10
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If \`Str\` is accepted by the syntax\, \`parse\_int\` tail\-calls \$success with the \`num\` value of the parsed integer\.
+
+If \`Str\` is not accepted by the syntax\, \`parse\_int\` tail\-calls \$error with no arg\.
+
+.. rubric:: Syntax
+
+The string representation is comprised of the two parts\:
+
+\• Sign\: \'\-\'\, \'\+\'\, or empty
+
+\• Digits\: 1 or more digits of the numeral system of \`Radix\`\.
+
+Digits from 0 to 9 are represented by characters \'0\' to \'9\'\.
+
+Digits from 10 to 35 are represented by characters either \'A\' to \'Z\'\, or \'a\' to \'z\'\.
+
+.. rubric:: Preconditions
+
+\`Str\` must be a \`str\` value\.
+
+\`Radix\` must be an int \`num\` within \[2\, 36\]\.
+
+\$success must take an int \`num\`\.
+
+\$error must take no arg\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :NUM.require_from('kink/')
+        
+    stdout.print_line(NUM.parse_int('42').repr)   # => 42
+    stdout.print_line(NUM.parse_int('+42').repr)  # => 42
+    stdout.print_line(NUM.parse_int('-42').repr)  # => (-42)
+    stdout.print_line(NUM.parse_int('ff'){(:C) C.radix(16) }.repr)  # => 255
+    stdout.print_line(NUM.parse_int('fF'){(:C) C.radix(16) }.repr)  # => 255
+    stdout.print_line(NUM.parse_int('-ff'){(:C) C.radix(16) }.repr) # => (-255)
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :NUM.require_from('kink/')
+        
+    NUM.parse_int('42'){(:C)
+      C.on_success{(:N) stdout.print_line(N.repr) }
+      C.on_error{ stdout.print_line('not valid') }
+    }
+    # => 42
+        
+    NUM.parse_int('*invalid*'){(:C)
+      C.on_success{(:N) stdout.print_line(N.repr) }
+      C.on_error{ stdout.print_line('not valid') }
+    }
+    # => not valid
+
+.. _api-5f79a184c60f413c3f03d9064c1a8bbd:
+
+NUM\.parse\_decimal\(Str \.\.\.\[\$config\=\{\}\]\)
+===================================================
+
+\`parse\_decimal\` parses a decimal number from \`Str\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If \`Str\` is accepted by the syntax\, \`parse\_decimal\` tail\-calls \$success with the parsed \`num\` value\. \`Scale\` of the result \`num\` will be the count of digits after \`\.\`\.
+
+If \`Str\` is not accepted by the syntax\, \`parse\_decimal\` tail\-calls \$error with no arg\.
+
+.. rubric:: Syntax
+
+Regex\: \[\+\-\]\?\(\[0\-9\]\+\(\\\.\[0\-9\]\*\)\?\|\\\.\[0\-9\]\+\)
+
+.. rubric:: Preconditions
+
+\`Str\` must be a \`str\` value\.
+
+\$success must take a \`num\` value\.
+
+\$error must take no arg\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :NUM.require_from('kink/')
+        
+    stdout.print_line(NUM.parse_decimal('1.2300').repr) # => 1.2300
+    stdout.print_line(NUM.parse_decimal('.387').repr)   # => 0.387
+    stdout.print_line(NUM.parse_decimal('-42.').repr)   # => (-42)
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :NUM.require_from('kink/')
+        
+    NUM.parse_decimal('3.14'){(:C)
+      C.on_success{(:N) stdout.print_line(N.repr) }
+      C.on_error{ stdout.print_line('not valid') }
+    }
+    # => 3.14
+        
+    NUM.parse_decimal('*invalid*'){(:C)
+      C.on_success{(:N) stdout.print_line(N.repr) }
+      C.on_error{ stdout.print_line('not valid') }
+    }
+    # => not valid
+
+.. _api-ea2ba48d5d3cf06399551e3861d4a445:
+
+type num\_show\_config
+======================
+
+\`num\_show\_config\` is a subtype of \`show\_config\` \(see kink\/STR\)\, which is used to configure the output of Num\.show\.
+
+Results of Num\.show are categorized into two cases\.
+
+1\) When \`Scale\` of the \`num\` is less than or equal to 0
+
+In this case\, the output will be “\{sign\}\{grouped\_padded\_integral\_digits\}”\.
+
+2\) When \`Scale\` of the \`num\` is greater than 0
+
+In this case the radix must be 10\, and the output will be “\{sign\}\{grouped\_padded\_integral\_digits\}\{decimal\_sep\}\{fractional\_digits\}”\.
+
+.. rubric:: Part\: \{sign\}
+
+If the \`num\` is less than 0\, \{sign\} part is the negative sign mark set by \`minus\_sign\` method\.
+
+If the \`num\` is greater than or equal to 0\, \{sign\} part is the non\-negative sign mark set by \`plus\_sign\` method\.
+
+.. rubric:: Part\: \{grouped\_padded\_integral\_digits\}
+
+Firstly\, the integral part of the \`num\` is converted to digits with the radix set by \`radix\` method\. 0\-9 and a\-z characters are used as digits\.
+
+Secondly\, \"0\" is padded to the left of the digits in order that the number of digits in this part is greater than or equal to the minimum number set by \`pad\_zero\` method\.
+
+Finally\, the digits are grouped using the group length set by \`group\_len\`\, and the grouping separator set by \`group\_sep\` method is inserted between groups\.
+
+.. rubric:: Part\: \{decimal\_sep\}
+
+The mark set by \`decimal\_sep\` method\.
+
+.. rubric:: Part\: \{fractional\_digits\}
+
+The decimal digits of the fractional part of the \`num\`\.
+
+The trailing zeros are not omitted\, thus the length of the part is always equal to \`Scale\` of the \`num\`\.
+
+.. _api-b48654ac34c7a1c44b9c57debf51365c:
+
+C\.locale\(Locale\)
+-------------------
+
+\`locale\` imports configuration of the specified locale\.
+
+\`locale\` configures \`decimal\_sep\` and \`group\_sep\`\.
+
+If \`locale\` method is not called\, Num\.show does not use any locale information\. So\, even if you want to use the runtime default locale\, you must call \`locale\` method explicitly\.
+
+.. rubric:: Precondition
+
+\`Locale\` must be a \`locale\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :LOCALE.require_from('kink/')
+        
+    :Shown <- 3776.24.show{(:S)
+      S.locale(LOCALE.default)
+    }
+    stdout.print_line(Shown)
+    # Output varies by the runtime default locale
+
+.. _api-887529ef3342bcecb6214e991126c49b:
+
+C\.spec\(Spec\)
+---------------
+
+\`spec\` configures the output of Num\.show method using \`Spec\` string\.
+
+.. rubric:: Preconditions
+
+\`Spec\` must be a \`str\` value\.
+
+\`Spec\` must be a conjunction of the following fields\.
+
+.. rubric:: Plus sign field\: \"\+\"
+
+Uses \"\+\" as the non\-negative sign\.
+
+.. rubric:: Grouping field\: \"\,\"
+
+Uses 3 as the grouping length\.
+
+.. rubric:: Padding field\: \"0\{Min\_int\_digits\}\"
+
+Uses Min\_int\_digits as the minimum number of digits in the integral part\.
+
+\{Min\_int\_digits\} must be 1 or more decimal digits which represents a positive int \`num\`\.
+
+.. rubric:: Binary field\: \"b\"
+
+Uses 2 as the radix\.
+
+.. rubric:: Octal field\: \"o\"
+
+Uses 8 as the radix\.
+
+.. rubric:: Decimal field\: \"d\"
+
+Uses 10 as the radix\.
+
+.. rubric:: Headecimal field\: \"x\"
+
+Uses 16 as the radix\.
+
+.. rubric:: Examples
+
+.. code:: kink
+
+    stdout.print_line('{%+04f}'.format(255))
+    # => +00ff
+        
+    stdout.print_line('{%,}'.format(12345.6789))
+    # => 12,345.6789
+        
+    stdout.print_line('{%b}'.format(42))
+    # => 101010
+        
+    stdout.print_line('{%o}'.format(42))
+    # => 52
+        
+    stdout.print_line('{%d}'.format(42))
+    # => 42
+        
+    stdout.print_line('{%x}'.format(42))
+    # => 2a
+
+.. _api-e4566256ec0799e6e86fac60251f424d:
+
+C\.plus\_sign\(Plus\_sign\)
+---------------------------
+
+\`plus\_sign\` sets \`Plus\_sign\` as the sign of non\-negative numbers\.
+
+The default value is an empty \`str\` \"\"\.
+
+.. rubric:: Precondition
+
+\`Plus\_sign\` must be a \`str\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(42.show{(:S)
+      S.plus_sign('+')
+    })
+    # => +42
+        
+    stdout.print_line(0.show{(:S)
+      S.plus_sign('+')
+    })
+    # => +0
+        
+    stdout.print_line((-10).show{(:S)
+      S.plus_sign('+')
+    })
+    # => -10
+
+.. _api-8839fb8f30ceb5353fa0ea2fc7d9e552:
+
+C\.minus\_sign\(Minus\_sign\)
+-----------------------------
+
+\`minus\_sign\` sets \`Minus\_sign\` as the sign of negative numbers\.
+
+The default value is \"\-\"\.
+
+.. rubric:: Precondition
+
+\`Minus\_sign\` must be a \`str\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line((-10).show{(:S)
+      S.minus_sign('minus ')
+    })
+    # => minus 10
+        
+    stdout.print_line(42.show{(:S)
+      S.minus_sign('minus ')
+    })
+    # => 42
+        
+    stdout.print_line(0.show{(:S)
+      S.minus_sign('minus ')
+    })
+    # => 0
+
+.. _api-330d0c519190d04f0c222ba72b3ac4e5:
+
+C\.group\_sep\(Group\_sep\)
+---------------------------
+
+\`group\_sep\` sets \`Group\_sep\` as the digit grouping separator\.
+
+The default value is \"\,\"\.
+
+.. rubric:: Precondition
+
+\`Group\_sep\` must be a \`str\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(12345.6789.show{(:S)
+      S.group_sep('_')
+      S.group_len(3)
+    })
+    # => 12_345.6789
+        
+    stdout.print_line(37767.show{(:S)
+      S.group_sep('_')
+      S.group_len(2)
+      S.radix(16)
+    })
+    # => 7f_ff
+
+.. _api-74f4dd3f0914acb30dbe497c144c34a2:
+
+C\.group\_len\(Group\_len\)
+---------------------------
+
+\`group\_len\` sets \`Group\_len\` as the length of digits groups\.
+
+The default value is the plus infinity\. Thus\, by default\, the grouping separator is not displayed\.
+
+.. rubric:: Precondition
+
+Group\_len must be an int num bigger than or equal to 1
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(12345.6789.show{(:S)
+      S.group_len(3)
+    })
+    # => 12,345.6789
+
+.. _api-f89e62145eb2d1a954d6a985a90ea35d:
+
+C\.decimal\_sep\(Decimal\_sep\)
+-------------------------------
+
+\`decimal\_sep\` sets \`Decimal\_sep\` as the separator between the integral part and the fractional part\.
+
+.. rubric:: Precondition
+
+Decimal\_sep must be a str
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(12345.6789.show{(:S)
+      S.decimal_sep(' . ')
+    })
+    # => 12345 . 6789
+
+.. _api-02a41977ccf6554facd720574b092b70:
+
+C\.pad\_zero\(Min\_int\_digits\)
+--------------------------------
+
+\`pad\_zero\` sets \`Min\_int\_digits\` as the minimum number of the integral part to be output\.
+
+The default value is 1\.
+
+.. rubric:: Precondition
+
+\`Min\_int\_digits\` must be an int \`num\` greater than or equal to 1
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(12345.6789.show{(:S)
+      S.pad_zero(8)
+    })
+    # => 00012345.6789
+        
+    stdout.print_line((-42).show{(:S)
+      S.pad_zero(4)
+    })
+    # => -0042
+        
+    stdout.print_line(255.show{(:S)
+      S.pad_zero(4)
+      S.radix(16)
+    })
+    # => 00ff
+
+.. _api-bd0bf4cc8ffc34e9cecd2000f9d874dd:
+
+C\.radix\(Radix\)
+-----------------
+
+\`radix\` sets \`Radix\` as the radix of the result of \`show\` method\.
+
+The default value is 10\.
+
+.. rubric:: Preconditions
+
+\`Radix\` must be an int \`num\` in the range \[2\, 36\]\.
+
+If the \`num\` value which is shown is not an integer\, \`Radix\` must be 10\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(255.show{(:S)
+      S.radix(2)
+    })
+    # => 11111111
+        
+    stdout.print_line(255.show{(:S)
+      S.radix(16)
+    })
+    # => ff
+        
+    stdout.print_line((-255).show{(:S)
+      S.radix(16)
+    })
+    # => -ff
+

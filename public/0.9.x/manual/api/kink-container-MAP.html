@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.32. kink/container/MAP &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.33. kink/container/ORDERED_MAP" href="kink-container-ORDERED_MAP.html" />
+    <link rel="prev" title="6.31. kink/container/HASH_SET" href="kink-container-HASH_SET.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.32. kink/container/MAP</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-HASH_SET.html"><span class="section-number">6.31. </span>kink/container/HASH_SET</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-ORDERED_MAP.html"><span class="section-number">6.33. </span>kink/container/ORDERED_MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-container-map">
+<h1><span class="section-number">6.32. </span>kink/container/MAP<a class="headerlink" href="#kink-container-map" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-map" id="id1">type map</a></p>
+<ul>
+<li><p><a class="reference internal" href="#map-get-key-if-absent" id="id2">Map.get(Key ...[$if_absent])</a></p></li>
+<li><p><a class="reference internal" href="#map-get-opt-key" id="id3">Map.get_opt(Key)</a></p></li>
+<li><p><a class="reference internal" href="#map-have-key-key" id="id4">Map.have_key?(Key)</a></p></li>
+<li><p><a class="reference internal" href="#map-size" id="id5">Map.size</a></p></li>
+<li><p><a class="reference internal" href="#map-any" id="id6">Map.any?</a></p></li>
+<li><p><a class="reference internal" href="#map-set-key-val" id="id7">Map.set(Key Val)</a></p></li>
+<li><p><a class="reference internal" href="#map-pop-at-key" id="id8">Map.pop_at(Key)</a></p></li>
+<li><p><a class="reference internal" href="#map-clear" id="id9">Map.clear</a></p></li>
+<li><p><a class="reference internal" href="#map-key-iter" id="id10">Map.key_iter</a></p></li>
+<li><p><a class="reference internal" href="#map-pair-iter" id="id11">Map.pair_iter</a></p></li>
+<li><p><a class="reference internal" href="#x-y" id="id12">X == Y</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#map-is-val" id="id13">MAP.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-map">
+<span id="api-ae589d10ad3c21b0161e4f9cc033b008"></span><h2><span class="section-number">6.32.1. </span>type map<a class="headerlink" href="#type-map" title="Link to this heading">¶</a></h2>
+<p>`map` is an abstract type of key-value containers. Keys must be unique in a `map`, in the equivalence relation defined by the implementation.</p>
+<p>`ordered_map` is a subtype of `map` which supports total ordering of keys. See kink/container/ORDERED_MAP.</p>
+<section id="map-get-key-if-absent">
+<span id="api-e5ea465da899b1f60c757a0130e60bef"></span><h3><span class="section-number">6.32.1.1. </span>Map.get(Key ...[$if_absent])<a class="headerlink" href="#map-get-key-if-absent" title="Link to this heading">¶</a></h3>
+<p>`get` returns the value associated with a key equivalent to `Key`.</p>
+<p>If `Map` does not have such a key, `get` tail-calls $if_absent. The default value of $if_absent is a fun which raises an exception.</p>
+<p class="rubric">Preconditions</p>
+<p>`Key` must be in the domain of the equivalence relation of keys.</p>
+<p>$if_absent must be a thunk.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">of</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span> <span class="s1">&#39;two&#39;</span> <span class="m">2</span> <span class="s1">&#39;three&#39;</span> <span class="m">3</span> <span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get</span>(<span class="s1">&#39;one&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get</span>(<span class="s1">&#39;five&#39;</span>){ <span class="s1">&#39;big&#39;</span> }.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;big&quot;</span>
+
+<span class="nv">Map</span>.<span class="n">get</span>(<span class="s1">&#39;five&#39;</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   ...</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   {builtin:kink-mods/kink/container/FLAT_MAP.kn L138 C9 raise} { --&gt;raise(&#39;{}: no such key: {}&#39;.format(Desc Key.repr)) }</span>
+<span class="c1">#   Flat_map.get(Key ...[$if_absent]): no such key: &quot;five&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="map-get-opt-key">
+<span id="api-630f4d0db9fbd3d93575a6967dc6b4e2"></span><h3><span class="section-number">6.32.1.2. </span>Map.get_opt(Key)<a class="headerlink" href="#map-get-opt-key" title="Link to this heading">¶</a></h3>
+<p>If `Map` has a key equivalent to `Key`, `get_opt` returns [Val] where `Val` is the value associated with the key.</p>
+<p>If `Map` does not have such a key, `get_opt` returns [].</p>
+<p class="rubric">Precondition</p>
+<p>`Key` must be in the domain of the equivalence relation of keys.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">of</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span> <span class="s1">&#39;two&#39;</span> <span class="m">2</span> <span class="s1">&#39;three&#39;</span> <span class="m">3</span> <span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;one&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; [1]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;five&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; []</span>
+</pre></div>
+</div>
+</section>
+<section id="map-have-key-key">
+<span id="api-e1a4b17952ec950a0fafeb3074ad1b2c"></span><h3><span class="section-number">6.32.1.3. </span>Map.have_key?(Key)<a class="headerlink" href="#map-have-key-key" title="Link to this heading">¶</a></h3>
+<p>`have_key?` returns whether `Map` has a key equivalent to `Key`.</p>
+<p class="rubric">Precondition</p>
+<p>`Key` must be in the domain of the equivalence relation of keys.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">of</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span> <span class="s1">&#39;two&#39;</span> <span class="m">2</span> <span class="s1">&#39;three&#39;</span> <span class="m">3</span> <span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">have_key?</span>(<span class="s1">&#39;one&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">have_key?</span>(<span class="s1">&#39;five&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="map-size">
+<span id="api-3a77d10f8c78a391bea00288398c4367"></span><h3><span class="section-number">6.32.1.4. </span>Map.size<a class="headerlink" href="#map-size" title="Link to this heading">¶</a></h3>
+<p>`size` returns the number of key-value pairs in `Map`, as an integer `num`.</p>
+</section>
+<section id="map-any">
+<span id="api-26f66670e9967d093cad31eecd1d180a"></span><h3><span class="section-number">6.32.1.5. </span>Map.any?<a class="headerlink" href="#map-any" title="Link to this heading">¶</a></h3>
+<p>`any?` returns whether `Map` contains one or more entries.</p>
+</section>
+<section id="map-set-key-val">
+<span id="api-d56f3cad3184a893e04ba40b3b346a14"></span><h3><span class="section-number">6.32.1.6. </span>Map.set(Key Val)<a class="headerlink" href="#map-set-key-val" title="Link to this heading">¶</a></h3>
+<p>`set` associates `Key` as the key, to `Val` as the value.</p>
+<p>If `Map` does not have a key equivalent to `Key`, `set` makes a new association with `Key` and `Val`.</p>
+<p>If `Map` already has a key equivalent to `Key`, `set` overwrites the association with `Val`. In that case, `set` might overwrite the association with `Key`, or might keep the old key.</p>
+<p class="rubric">Precondition</p>
+<p>`Key` must be in the domain of the equivalence relation of keys.</p>
+<p class="rubric">Postconditions</p>
+<p>Map.have_key?(Key) will be true.</p>
+<p>Map.get(Key) will be `Val`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">of</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span> <span class="s1">&#39;two&#39;</span> <span class="m">2</span> <span class="s1">&#39;three&#39;</span> <span class="m">3</span>)
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;one&#39;</span> <span class="s1">&#39;ONE&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (flat_map &quot;four&quot;=&gt;4 &quot;one&quot;=&gt;&quot;ONE&quot; &quot;three&quot;=&gt;3 &quot;two&quot;=&gt;2)</span>
+</pre></div>
+</div>
+</section>
+<section id="map-pop-at-key">
+<span id="api-bfedea521b83b81bb5908b369e41880f"></span><h3><span class="section-number">6.32.1.7. </span>Map.pop_at(Key)<a class="headerlink" href="#map-pop-at-key" title="Link to this heading">¶</a></h3>
+<p>`pop_at` removes the key-value pair whose key is equivalent to `Key`, and returns the associated value.</p>
+<p class="rubric">Precondition</p>
+<p>`Key` must be in the domain of the equivalence relation of keys.</p>
+<p class="rubric">Postcondition</p>
+<p>Map.have_key?(Key) will be false.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">of</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span> <span class="s1">&#39;two&#39;</span> <span class="m">2</span> <span class="s1">&#39;three&#39;</span> <span class="m">3</span> <span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">pop_at</span>(<span class="s1">&#39;four&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 4</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (flat_map &quot;one&quot;=&gt;1 &quot;three&quot;=&gt;3 &quot;two&quot;=&gt;2)</span>
+</pre></div>
+</div>
+</section>
+<section id="map-clear">
+<span id="api-61184681b7e78ea1211623d809d25cc0"></span><h3><span class="section-number">6.32.1.8. </span>Map.clear<a class="headerlink" href="#map-clear" title="Link to this heading">¶</a></h3>
+<p>`clear` removes all the key-value pairs from `Map`.</p>
+</section>
+<section id="map-key-iter">
+<span id="api-38fc32cb4b8af3bcb03e3514879bc242"></span><h3><span class="section-number">6.32.1.9. </span>Map.key_iter<a class="headerlink" href="#map-key-iter" title="Link to this heading">¶</a></h3>
+<p>`key_iter` returns an `iter` of the keys.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">of</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span> <span class="s1">&#39;two&#39;</span> <span class="m">2</span> <span class="s1">&#39;three&#39;</span> <span class="m">3</span> <span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="nv">Map</span>.<span class="n">key_iter</span>.<span class="n">each</span>{(<span class="nv">:K</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">K</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;four&quot;</span>
+<span class="c1">#   &quot;one&quot;</span>
+<span class="c1">#   &quot;three&quot;</span>
+<span class="c1">#   &quot;two&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="map-pair-iter">
+<span id="api-1e9e053fba2914a3199537e704b69103"></span><h3><span class="section-number">6.32.1.10. </span>Map.pair_iter<a class="headerlink" href="#map-pair-iter" title="Link to this heading">¶</a></h3>
+<p>`pair_iter` returns an `iter` of a `vec` [Key Value] for all the key-value pairs.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">of</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span> <span class="s1">&#39;two&#39;</span> <span class="m">2</span> <span class="s1">&#39;three&#39;</span> <span class="m">3</span> <span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="nv">Map</span>.<span class="n">pair_iter</span>.<span class="n">each</span>{([<span class="nv">:K</span> <span class="nv">:V</span>])
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{} =&gt; {}&#39;</span>.<span class="n">format</span>(<span class="nv">K</span>.<span class="n">repr</span> <span class="nv">V</span>.<span class="n">repr</span>))
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;four&quot; =&gt; 4</span>
+<span class="c1">#   &quot;one&quot; =&gt; 1</span>
+<span class="c1">#   &quot;three&quot; =&gt; 3</span>
+<span class="c1">#   &quot;two&quot; =&gt; 2</span>
+</pre></div>
+</div>
+</section>
+<section id="x-y">
+<span id="api-e0d8b9d6cdc93492ebb517094ce1181d"></span><h3><span class="section-number">6.32.1.11. </span>X == Y<a class="headerlink" href="#x-y" title="Link to this heading">¶</a></h3>
+<p>`==` operator, or `op_eq` method, returns whether two maps `X` and Y` are equivalent.</p>
+<p>The two maps are equivalent when the following conditions are met:</p>
+<p>• `X` and `Y` has the equivalent set of keys.</p>
+<p>• For each key `K` of `X`, X.get(K) == Y.get(K) returns true.</p>
+<p class="rubric">Preconditions</p>
+<p>`Y` must be a `map`.</p>
+<p>The equivalence relations of keys of `X` and `Y` must be same.</p>
+<p>Values of `X` and `Y` must be comparable to each other using `==` operator.</p>
+</section>
+</section>
+<section id="map-is-val">
+<span id="api-7d3383de481bee0b3a9e45061af1adc5"></span><h2><span class="section-number">6.32.2. </span>MAP.is?(Val)<a class="headerlink" href="#map-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `map`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-HASH_SET.html"><span class="section-number">6.31. </span>kink/container/HASH_SET</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-ORDERED_MAP.html"><span class="section-number">6.33. </span>kink/container/ORDERED_MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

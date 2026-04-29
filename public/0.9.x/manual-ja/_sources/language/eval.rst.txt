@@ -1,0 +1,1068 @@
+==========
+Evaluation
+==========
+
+This chapter specifies the operational semantics of :dfn:`abstract instructions`
+within an :dfn:`abstract stack machine`,
+to indirectly give semantics of a Kink program.
+Abstract instructions are transformed from a Kink program
+through :term:`desugaring` and :term:`translation` steps.
+
+An :dfn:`abstract stack machine` is an abstract machine
+which evaluates :term:`abstract instructions <abstract instruction>`.
+
+An :dfn:`abstract instruction` is an instruction which is evaluated by the :term:`abstract stack machine`.
+
+Multiple abstract stack machines can exist in a single :term:`runtime`,
+and they can evaluate :term:`abstract instructions <abstract instruction>` in parallel.
+
+The abstract stack machine and abstract instructions are defined
+just to show how Kink programs should behave.
+Thus, an implementation of :term:`runtime` need not implement the abstract stack machine literally,
+however, the observable behavior must obey the definition.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Conventions
+===========
+
+Abstract instruction
+--------------------
+
+An abstract instruction is parenthesized like the following:
+
+::
+
+  (varref "op_store")
+
+Here, ``varref`` is the opcode of the instruction, and
+``"op_store"`` is the operand of the instruction.
+
+Every instruction has a location as an implicit operand.
+
+Data types
+----------
+
+The following data types are used as operands of abstract instructions:
+
+* val : a Kink val.
+* str : an immutable, finite length sequence of unicode codepoints,
+  which can be represented by a :doc:`str value </api/kink-STR>`.
+* num : a combination of (Mantissa, Scale),
+  which can be represented by a :doc:`num value </api/kink-NUM>`.
+* location : a combination of (Program_name, Program_text, Pos),
+  which can be represented by a :ref:`location value <api-33da096af45bcf193ac0fbc14b17592f>`.
+* a sequence of instructions.
+
+Sequence of instructions
+------------------------
+
+A sequence of instructions is represented by just placing instructions in order like the following:
+
+::
+
+  (emptyvec) (binding) (load "X") (add)
+
+If a sequence contains no instruction,
+the sequence is represented as follows:
+
+::
+
+  ∅
+
+.. _call_stack:
+
+Call stack
+----------
+
+An :dfn:`abstract stack machine` operates on its :dfn:`call stack`.
+
+A call stack consists of a sequence of instructions,
+and the sequence of instructions is updated every time a reduction rule is applied.
+
+A call stack is represented like the following:
+
+::
+
+  ^ (str "Foo") (dup) (remove) $
+
+Here, ``^`` is the mark of the top of the call stack,
+and ``$`` is the mark of the bottom of the call stack.
+
+Reduction rules
+---------------
+
+A reduction rule is written like the following:
+
+::
+
+  (val V) (dup) → (val V) (val V)
+
+It means that if there is a sub-sequence of instructions ``(val V) (dup)`` in the call stack,
+the reduction rule is applied, and the sub-sequence is updated to ``(val V) (val V)``.
+Note that ``V`` is a metavariable.
+In this case, the metavariable ``V`` represents a Kink val,
+because ``val`` instruction takes a Kink val as the operand.
+
+Additional conditions of a reduction rule can be given using comment lines which start with ``#``.
+
+If there are multiple reduction rules which can be applied for a call stack,
+the reduction rule which can be applied to the leftmost sequence is chosen.
+
+Metavariable
+------------
+
+In this chapter, metavariables of the following formats are used to represent 
+an abstract instruction, a sequence of abstruct instructions, and other data.
+
+``_snake_case_with_underscore_as_prefix_and_suffix_``
+  A sequence of abstract instructions.
+
+``Capitalized_snake_case``
+  An abstract instruction, a val, a str, a num, or a location, depending on the context.
+
+Initial state
+=============
+
+Evaluation of an abstract stack machine starts invoking a fun with no args.
+When evaluation is started with a fun val ``Fun``,
+the initial state of the call stack is:
+
+::
+
+  ^ (val Fun) (nada) (emptyvec) (call "..root..") $
+
+Terminal state
+==============
+
+If no reduction rule can be applied to the call stack,
+the call stack is said to be in a :dfn:`terminal state`.
+
+The terminal state should be represented in one of the following states.
+
+::
+
+  ^ (val V) $
+
+This terminal state means that the abstract stack machine terminates returining a val.
+
+::
+
+  ^ (uncaught Exc) $
+
+This terminal state means the abstract stack machine terminates with an uncaught exception.
+
+Abstract instructions
+=====================
+
+val instruction
+---------------
+
+``val`` instruction places a Kink val on the call stack.
+
+.. rubric:: syntax
+
+::
+
+  (val V)
+
+There is no reduction rule for ``val`` instruction.
+
+A single ``val`` instruction can be a terminal state of the :dfn:`abstract stack machine`.
+
+uncaught instruction
+--------------------
+
+``uncaught`` instruction means an exception which is not caught within the :dfn:`abstract stack machine`.
+
+.. rubric:: syntax
+
+::
+
+  (uncaught Exc)
+
+``Exc`` is an exception val.
+
+.. rubric:: reduction rule
+
+::
+
+  (uncaught Exc) Any → (uncaught Exc)
+
+* ``Any`` is any instruction
+
+This rule means that the uncaught exception is propagated until the terminal state.
+
+num instruction
+---------------
+
+``num`` instruction produces a num val.
+
+.. rubric:: syntax
+
+::
+
+  (num Num)
+
+``Num`` parameter is a num.
+
+.. rubric:: reduction rule
+
+::
+
+  (num Num)
+
+  → (val Num_val)
+  # where `Num_val` is a num val converted from `Num`.
+
+str instruction
+---------------
+
+``str`` instruction produces a str val.
+
+.. rubric:: syntax
+
+::
+
+  (str Str)
+
+``Str`` parameter is a str.
+
+.. rubric:: reduction rule
+
+::
+
+  (str Str)
+
+  → (val Str_val)
+  # where `Str_val` is a str val converted from `Str`
+
+nada instruction
+----------------
+
+``nada`` instruction produces ``nada`` val.
+
+.. rubric:: syntax
+
+::
+
+  (nada)
+
+.. rubric:: reduction rule
+
+::
+
+  (nada)
+
+  → (val Nada_val)
+  # where `Nada_val` is `nada` val
+
+fun instruction
+---------------
+
+``fun`` instruction produces a :term:`function` val.
+
+.. rubric:: syntax
+
+::
+
+  (fun _insns_)
+
+``_insns_`` is a sequence of instructions.
+
+.. rubric:: reduction rule
+
+::
+
+  (val Enclosing_binding) (fun _insns_)
+  # where
+  # • `Enclosing_binding` is a binding val.
+
+  → (val Fun)
+  # where
+  # • `Fun` is a fun val with instructions copied from `_insns_`,
+  #   replacing every occurrence of (enclosingbinding) by (val Enclosing_binding).
+
+emptyvec instruction
+--------------------
+
+``emptyvec`` instruction produces a newly created vec val with no element.
+
+.. rubric:: syntax
+
+::
+
+  (emptyvec)
+
+.. rubric:: reduction rule
+
+::
+
+  (emptyvec)
+
+  → (val Empty_vec)
+  # where `Empty_vec` is a newly created vec val with no element
+
+add instruction
+---------------
+
+``add`` instruction produces a newly created vec val adding an element to
+the back of an existing vec.
+
+.. rubric:: syntax
+
+::
+
+  (add)
+
+.. rubric:: reduction rule
+
+::
+
+  (val Vec) (val Elem) (add)
+  # where `Vec` is a vec val
+
+  → (val New_vec)
+  # where `New_vec` is a newly created vec val containing the elements of `Vec`
+  # at the front, and `Elem` at the back.
+
+
+concat instruction
+------------------
+
+``concat`` instruction produces ``doconcat`` and ``trace`` instructions.
+
+.. rubric:: syntax
+
+::
+
+  (concat)
+
+.. rubric:: reduction rules
+
+::
+
+  (concat)
+
+  → (doconcat) (trace "" Location)
+  # where
+  # • `Location` is the location of the implicit location of the `concat` instruction.
+
+Note that the trace is used when an exception occurs when
+a reduction rule to ``doconcat`` is applied.
+
+doconcat instruction
+--------------------
+
+``doconcat`` instruction produces a newly created vec val concatenating
+two vec vals.
+
+.. rubric:: syntax
+
+::
+
+  (doconcat)
+
+.. rubric:: reduction rules
+
+::
+
+  (val X) (val Y) (doconcat)
+  # where
+  # • `X` is a vec val
+  # • `Y` is a vec val
+
+  → (val New_vec)
+  # where `New_vec` is a newly created vec val
+  # concatenating `X` at the front, and `Y` at the back.
+
+::
+
+  (val X) (val Non_vec) (doconcat)
+  # where
+  # • `X` is a vec val
+  # • `Non_vec` is not a vec val
+
+  → (str Message) (traces) (exception) (raise)
+  # where
+  # • `Message` is an error message.
+
+dup instruction
+---------------
+
+``dup`` instruction duplicates the preceding val on the call stack.
+
+.. rubric:: syntax
+
+::
+
+  (dup)
+
+.. rubric:: reduction rule
+
+::
+
+  (val V) (dup) → (val V) (val V)
+
+flip instruction
+----------------
+
+``flip`` instruction swaps the preceding two vals on the call stack.
+
+.. rubric:: syntax
+
+::
+
+  (flip)
+
+.. rubric:: reduction rule
+
+::
+
+  (val A) (val B) (flip) → (val B) (val A)
+
+remove instruction
+------------------
+
+``remove`` instruction removes the preceding val from the call stack.
+
+.. rubric:: syntax
+
+::
+
+  (remove)
+
+.. rubric:: reduction rule
+
+::
+
+  (val V) (remove) → ∅
+
+varref instruction
+------------------
+
+``varref`` instruction produces a :doc:`varref val </api/kink-VARREF>`.
+
+.. rubric:: syntax
+
+::
+
+  (varref Symbol)
+
+``Symbol`` is a str.
+
+.. rubric:: reduction rule
+
+::
+
+  (val Owner) (varref Symbol)
+
+  → (val Varref)
+  # where `Varref` is a varref val whose owner is `Owner`, and whose symbol is `Symbol`.
+
+load instruction
+-----------------
+
+``load`` instruction does :term:`variable-load operation` for a variable.
+
+.. rubric:: syntax
+
+::
+
+  (load Symbol)
+
+``Symbol`` is a a str.
+
+.. rubric:: reduction rules
+
+::
+
+  (val Owner) (load Symbol)
+  # where the content of variable (`Owner`, `Symbol`) is not empty
+
+  → (val Content)
+  # where `Content` is the content of the variable (`Owner`, `Symbol`)
+
+
+::
+
+  (val Owner) (load Symbol)
+  # where the content of variable (`Owner`, `Symbol`) does not have a value.
+
+  → (str Message) (traces) (exception) (raise) (trace "" Location)
+  # where
+  # • `Message` is an error message.
+  # • `Location` is the implicit location of the `load` instruction.
+
+.. _checkfun-insn:
+
+checkfun instruction
+--------------------
+
+``checkfun`` instruction ensures that the preceding val is a fun val.
+
+.. rubric:: syntax
+
+::
+
+  (checkfun)
+
+.. rubric:: reduction rules
+
+::
+
+  (val Fun) (checkfun)
+  # where
+  # • `Fun` is a fun val.
+
+  → ∅
+
+::
+
+  (val Not_fun) (checkfun)
+  # where
+  # • `Not_fun` is not a fun val.
+
+  → (str Message) (traces) (exception) (raise) (trace "" Location)
+  # where
+  # • `Message` is an error message.
+  # • `Location` is the implicit location of the `checkfun` instruction.
+
+call instruction
+----------------
+
+``call`` instruction produces a sequence of instructions
+which calls a fun.
+
+.. rubric:: syntax
+
+::
+
+  (call Symbol)
+
+``Symbol`` is a str.
+
+.. rubric:: reduction rules
+
+::
+
+  (val Fun) (val Recv) (val Args) (call Symbol) (tail)
+  # where
+  # • `Fun` is a fun val.
+  # • `Args` is a vec val.
+
+  → (val Fun) (val Recv) (val Args) (tailcall) (tailtrace Symbol Location)
+  # where
+  # • `Location` is the implicit location of the `call` instruction.
+
+::
+
+  (val Fun) (val Recv) (val Args) (call Symbol) Non_tail
+  # where
+  # • `Fun` is a fun val.
+  # • `Args` is a vec val.
+  # • `Non_tail` is an instruction which is not `tail`
+
+  → (val Fun) (val Recv) (val Args) (docall) (trace Symbol Location) Non_tail
+  # where
+  # • `Location` is the implicit location of the `call` instruction.
+
+.. _tailcall_instruction:
+
+tailcall instruction
+--------------------
+
+``tailcall`` instruction sets up tail traces and invocation of a fun.
+A function call done by ``tailcall`` is said to be a :dfn:`tail call`.
+
+.. rubric:: syntax
+
+::
+
+  (tailcall)
+
+.. rubric:: reduction rule
+
+::
+
+  (tailcall) _tail_traces_
+  # where
+  # • `_tail_traces_` is a sequence of 0 or more `tailtrace` instructions.
+
+  → (docall) _snipped_tail_traces_
+  # where
+  # • `_snipped_tail_traces_` is a sequence of `tailtrace` instructions,
+  #   snipped from `_tail_traces_` following the the rule below.
+
+.. rubric:: tail trace snipping rule
+
+This specification requires that consecutive tail calls do not result in stack overflow.
+Such requirement is called :term:`tail call elimination`.
+To guarantee it, the sequence of ``tailtrace`` instructions is snipped as follows:
+
+* Each ``tailtrace`` instruction can be remvoed.
+* Each ``tailtrace`` instruction can be converted to
+  ``(tailtrace "" (program name="", program text="", pos index in the program text=0))``
+* The length of the sequence must be kept less than or equal to
+  the constant maximum number which the runtime defines.
+
+docall instruction
+------------------
+
+``docall`` instruction invokes a fun.
+
+.. rubric:: syntax
+
+::
+
+  (docall)
+
+.. rubric:: reduction rule
+
+::
+
+   (val Fun) (val Recv) (val Args) (docall)
+   # where
+   # • `Fun` is a fun val.
+   # • `Args` is a vec val.
+
+   → (val Recv) (val Args_copy) _fun_insns_ (tail)
+   # where
+   # • `_fun_insns_` is the insns within `Fun`.
+   # • `Args_copy` is a newly created vec val copying the elements of `Args`.
+
+traces instruction
+------------------
+
+``traces`` instruction makes a vec of trace vals
+from ``trace`` and ``tailtrace`` instructions in the call stack.
+
+.. rubric:: syntax
+
+::
+
+  (traces)
+
+.. rubric:: reduction rules
+
+::
+
+  (traces) _insns_ $
+  # where `_insns_` is a sequence of instructions.
+
+  → (val Traces) _insns_ $
+  # where
+  # • `Traces` is a newly created vec val of trace vals,
+  #   converted from `trace`, `tailtrace`, and `delimit` instructions in `_insns_` as follows,
+  #   reverting the order.
+  #   • From a `trace` instruction, a non-tail trace val is produced.
+  #   • From a `tailtrace` instruction, a tail trace val is produced.
+  #   • From a `delimit` instruction, a non-tail trace val is produced with symbol="..kont tag..",
+  #     and location=("", "", 0).
+
+
+exception instruction
+---------------------
+
+``exception`` instruction produces an :term:`exception` value.
+
+.. rubric:: syntax
+
+::
+
+  (exception)
+
+.. rubric:: reduction rule
+
+::
+
+  (val Message) (val Traces) (exception)
+  # where
+  # • `Message` is a str val
+  # • `Traces` is a vec of trace vals
+
+  → (val Exc)
+  # where `Exc` is an exception val made from `Message` and `Traces`
+
+raise instruction
+-----------------
+
+``raise`` instruction raises an exception.
+
+.. rubric:: syntax
+
+::
+
+  (raise)
+
+.. rubric:: reduction rules
+
+::
+
+  (val Exc) (raise) _no_escape_ (val Escape_tag) (delimit)
+  # where
+  # • `Escape_tag` is the escape tag (see kink/KONT_TAG.escape_tag).
+  # • `_no_escape_` is a sequence of instructions
+  #   which does not contain (delimit) directly preceded by (val Escape_tag).
+
+  → (val Fun) (val Escape_tag) (delimit)
+  # where `Fun` is a fun val like {(:cont_raised :cont_jump) cont_raised(Exc) }
+
+::
+
+  (val Exc) (raise) _no_escape_ $
+  # where
+  # • `_no_escape_` is a sequence of instructions
+  #   which does not contain (delimit) directly preceded by (val Escape_tag).
+
+  → (uncaught Exc) _no_escape_ $
+
+binding instruction
+-------------------
+
+``binding`` instruction is the place-holder of the current binding.
+
+.. rubric:: syntax
+
+::
+
+  (binding)
+
+enclosingbinding instruction
+----------------------------
+
+``enclosingbinding`` instruction is the place-holder of the enclosing binding.
+
+.. rubric:: syntax
+
+::
+
+  (enclosingbinding)
+
+clonebinding instruction
+------------------------
+
+``clonebinding`` instruction makes a new binding from the enclosing binding.
+
+.. rubric:: syntax
+
+::
+
+  (clonebinding)
+
+.. rubric:: reduction rule
+
+::
+
+  (val Enclosing_binding) (clonebinding)
+  # where
+  # • `Enclosing_binding` is a binding val.
+
+  → (val Binding)
+  # where
+  # • `Binding` is a newly created binding val,
+  #   copying all the vars of `Enclosing_binding`.
+
+
+setbinding instruction
+----------------------
+
+``setbinding`` instruction sets the current binding.
+
+.. rubric:: syntax
+
+::
+
+  (setbinding)
+
+.. rubric:: reduction rule
+
+::
+
+  (val Binding) (setbinding) _insns_ (tail)
+  # where
+  # • `Binding` is a binding val.
+  # • `_insns_` is a sequence of instructions
+  #   which does not contain `tail` instruction.
+
+  → _converted_insns_ (tail)
+  # where
+  # • `_converted_insns_` is a sequence of instructions
+  #   copied from `_insns_`,
+  #   replacing every occurrence of (binding) by (val Binding).
+
+.. _storerecvargs-insn:
+
+storerecvargs instruction
+-------------------------
+
+``storerecvargs`` instruction sets ``_Recv`` and ``_Args`` vars of the current binding.
+
+.. rubric:: syntax
+
+::
+
+  (storerecvargs)
+
+.. rubric:: reduction rule
+
+::
+
+  (val Recv) (val Args) (val Binding) (storerecvargs)
+  # where
+  # • `Args` is a vec val.
+  # • `Binding` is a binding val.
+
+  → ∅
+
+When this reduction rule is applied,
+``Recv`` is assigined to ``_Recv`` variable of ``Binding``,
+and ``Args`` is assigined to ``_Args`` variable of ``Binding``.
+
+tail instruction
+----------------
+
+``tail`` instruction is the marker of tail context.
+
+.. rubric:: syntax
+
+::
+
+  (tail)
+
+.. rubric:: reduction rule
+
+::
+
+  (tail) → ∅
+
+This rule means that ``tail`` instruction acts as NOP.
+
+.. _hostcall_instruction:
+
+hostcall instruction
+--------------------
+
+``hostcall`` instruction invokes a :term:`host procedure`.
+
+A :dfn:`host procedure` is an abstract unit of information
+to specify a procedure within the :term:`host system`,
+such as a function address, closure, object reference.
+A host procedure should take a single value as the argument,
+and return a single value as the result.
+
+.. rubric:: syntax
+
+::
+
+  (hostcall Host_proc)
+
+``Host_proc`` is a :dfn:`host procedure`.
+
+.. rubric:: reduction rule
+
+::
+
+  (val Arg) (hostcall Host_proc)
+
+  → (val Result)
+  # where
+  # • `Result` is the result of `Host_proc` with the argument `Arg`.
+
+canshift instruction
+--------------------
+
+``canshift`` instruction tests whether
+the call stack is delimited by a :term:`delimited continuation tag`.
+
+.. rubric:: syntax
+
+::
+
+  (canshift)
+
+.. rubric:: reduction rules
+
+::
+
+  (val Kont_tag) (canshift) _insns_ (val Kont_tag) (delimit)
+  # where
+  # • `Kont_tag` is a delimited continuation tag.
+  → (val True) _insns_ (val Kont_tag) (delimit)
+  # where
+  # • `True` is true val.
+
+  (val Kont_tag) (canshift) _no_kont_tag_ $
+  # where
+  # • `Kont_tag` is a delimited continuation tag.
+  # • `_no_kont_tag_` is a sequence of instructions
+  #   which does not contain (delimit) directly preceded by (val Kont_tag).
+  → (val False) _no_kont_tag_ $
+  # where
+  # • `False` is false val.
+
+.. _kont_instruction:
+
+kont instruction
+----------------
+
+``kont`` instruction makes a :term:`delimited continuation`
+function from the call stack.
+
+A :dfn:`delimited continuation`
+is a :term:`function` to resume the evaluation between ``kont`` instruction
+and ``delimit`` instruction, or in other words,
+from an invocation of :ref:`Kont_tag.shift <api-35db7c321b93a22b6e6164fab36bf940>`
+to the end of an invocation of :ref:`Kont_tag.reset <api-9877213663340a1e14488dc493151c3a>`.
+Construction of a delimited continuation is specified below.
+
+.. rubric:: syntax
+
+::
+
+  (kont)
+
+.. rubric:: reduction rule
+
+::
+
+  (val Kont_tag) (kont) (val Kont_tag) (abort) _insns_ (val Kont_tag) (delimit)
+  # where
+  # • `Kont_tag` is a delimited continuation tag.
+  # • `_insns_` is a sequence of instructions which does not contain (delimit)
+  #   directly preceded by (val Kont_tag).
+
+  → (val Kont_fun) (val Kont_tag) (abort) _insns_ (val Kont_tag) (delimit)
+  # where
+  # • `Kont_fun` is a delimited continuation created as follows:
+
+.. rubric:: making of a delimited continuation
+
+In the previous reduction rule, ``Kont_fun`` is a function
+which takes a single argument.
+When the function is called,
+at the tail of the invocation,
+the following sequence of instructions is evaluated:
+
+::
+
+  {push the argument of Kont_fun}
+  _no_delimit_
+  (val Kont_tag)
+  (delimit)
+
+abort instruction
+-----------------
+
+``abort`` instruction moves to the corresponding ``delimit``.
+
+.. rubric:: syntax
+
+::
+
+  (abort)
+
+.. rubric:: reduction rule
+
+::
+
+  (val Abort_fun) (val Kont_fun) (val Kont_tag) (abort) _insns_ (val Kont_tag) (delimit)
+  # where
+  # • `Abort_fun` is a fun val.
+  # • `Kont_fun` is a fun val.
+  # • `Kont_tag` is a delimited continuation tag.
+  # • `_insns_` is a  sequence of instructions which does not contain (delimit)
+  #   directly preceded by (val Kont_tag).
+
+  → (val Abort_fun) (nada) (emptyvec) (val Kont_fun) (add) (call "call") (val Kont_tag) (delimit)
+
+
+.. _delimit_instruction:
+
+delimit instruction
+-------------------
+
+``delimit`` instruction is a marker of a :term:`delimited continuation tag`
+in the call stack.
+
+A :dfn:`delimited continuation tag` is a value used to mark
+the delimiter of a :term:`delimited continuation`.
+A delimited continuation tag is a value of :ref:`type kont_tag <api-30c0ec5df9d2435c0132d55f5a695215>`.
+
+.. rubric:: syntax
+
+::
+
+  (delimit)
+
+.. rubric:: reduction rule
+
+::
+
+  (val X) (val Kont_tag) (delimit) → (val X)
+
+trace instruction
+-----------------
+
+``trace`` instruction places a non-tail trace.
+
+.. rubric:: syntax
+
+::
+
+  (trace Symbol Location)
+
+``Symbol`` is a str.
+``Location`` is a tuple of (program name, program text, pos index in the program text).
+
+.. rubric:: reduction rule
+
+::
+
+  (trace Symbol Location) → ∅
+
+This rule means that ``trace`` instruction acts as NOP.
+
+tailtrace instruction
+---------------------
+
+``tailtrace`` instruction places a tail trace.
+
+.. rubric:: syntax
+
+::
+
+  (tailtrace Symbol Location)
+
+``Symbol`` is a str.
+``Location`` is a tuple of (program name, program text, pos index in the program text).
+
+.. rubric:: reduction rule
+
+::
+
+  (tailtrace Symbol Location) → ∅
+
+This rule means that ``tailtrace`` instruction acts as NOP.
+
+Resource error
+==============
+
+The following reduction rule can be applied anytime,
+when any type of resource error happens,
+for example,
+when the length of the sequence of instructions of the call stack becomes too long (stack overflow).
+
+.. rubric:: reduction rule
+
+::
+
+  ^
+
+  → ^ (str Message) (traces) (exception) (raise)
+  # where
+  # • `Message` is an error message.
+
+.. vim: et sw=2 sts=2 et

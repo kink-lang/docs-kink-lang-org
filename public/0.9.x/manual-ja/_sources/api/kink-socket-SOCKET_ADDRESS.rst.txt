@@ -1,0 +1,46 @@
+=============================
+kink\/socket\/SOCKET\_ADDRESS
+=============================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-bf5011c931e6af1c43c80acfc22029b4:
+
+type socket\_address
+====================
+
+\`socket\_address\` is a supertype of \`ip\_port\` and \`unix\_domain\_socket\_path\`\.
+
+.. _api-9724e853398ec6b01fb204c46d25fdbc:
+
+Addr\.protocol\_family
+----------------------
+
+\`protocol\_family\` returns the protocol family of the socket address as \`protocol\_family\` type\.
+
+See kink\/socket\/PROTOCOL\_FAMILY for \`protocol\_family\` type\.
+
+.. _api-717af2205e34a52a417a1a27ebccb813:
+
+Addr1 \=\= Addr2
+----------------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns true if and only if one of the following conditions is met\.
+
+\• \`Addr1\` and \`Addr2\` are both values of \`ip\_port\` type\,   and they have the same ip address and the port number\.
+
+\• \`Addr1\` and \`Addr2\` are both values of \`unix\_domain\_socket\_path\` type\,   the paths of them are equal by \`\=\=\` operator of type \`str\`\.
+
+.. rubric:: Precondition
+
+\`Addr2\` must be a \`socket\_address\` value\.
+
+.. _api-1ad7ce0919bc678e30081cb9ea543013:
+
+SOCKET\_ADDRESS\.is\?\(Val\)
+============================
+
+\`is\?\` returns whether \`Val\` is a \`socket\_address\`\.
+

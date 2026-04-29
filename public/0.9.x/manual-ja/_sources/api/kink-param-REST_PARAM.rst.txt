@@ -1,0 +1,46 @@
+========================
+kink\/param\/REST\_PARAM
+========================
+
+Provides rest\_param data type\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-9f89a49ebeb96be8b8e6e9416354c61d:
+
+type rest\_param
+================
+
+A rest\_param is a param which consumes an arbitrary number of arguments\.
+
+See Vec\.op\_store for handling of params\.
+
+Usually\, a rest\_param is provided by Varref\.rest method\.
+
+Example\:
+
+.. code:: kink
+
+    [:A :B :R.rest] <- [1 2 3 4 5]
+    stdout.print_line(R.repr) # => [3 4 5]
+
+.. _api-f5d2a86d34e227301f94f021d3639802:
+
+Rest\_param\.pass\_rest\(Rest\_args\)
+-------------------------------------
+
+Rest\_param\.pass\_rest consumes Rest\_args as an arbitrary number of arguments\.
+
+Precondition\:
+
+\• Rest\_args must be a vec
+
+.. _api-5ac8400004e38d9575c9c111ad9b03d1:
+
+REST\_PARAM\.is\?\(Val\)
+========================
+
+REST\_PARAM\.is\? returns whether the Val is a rest\_param\.
+

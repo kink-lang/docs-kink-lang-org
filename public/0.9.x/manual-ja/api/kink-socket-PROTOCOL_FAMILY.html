@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.91. kink/socket/PROTOCOL_FAMILY &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.92. kink/socket/SOCKET_ADDRESS" href="kink-socket-SOCKET_ADDRESS.html" />
+    <link rel="prev" title="6.90. kink/socket/IP_PORT" href="kink-socket-IP_PORT.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.91. kink/socket/PROTOCOL_FAMILY</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-IP_PORT.html"><span class="section-number">6.90. </span>kink/socket/IP_PORT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-SOCKET_ADDRESS.html"><span class="section-number">6.92. </span>kink/socket/SOCKET_ADDRESS</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-socket-protocol-family">
+<h1><span class="section-number">6.91. </span>kink/socket/PROTOCOL_FAMILY<a class="headerlink" href="#kink-socket-protocol-family" title="Link to this heading">¶</a></h1>
+<p>ソケットAPIのプロトコルファミリを表す定数を提供する。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-protocol-family" id="id2">protocol_family型</a></p></li>
+<li><p><a class="reference internal" href="#protocol-family-ipv4" id="id3">PROTOCOL_FAMILY.ipv4</a></p></li>
+<li><p><a class="reference internal" href="#protocol-family-ipv6" id="id4">PROTOCOL_FAMILY.ipv6</a></p></li>
+<li><p><a class="reference internal" href="#protocol-family-unix" id="id5">PROTOCOL_FAMILY.unix</a></p></li>
+<li><p><a class="reference internal" href="#protocol-family-is-val" id="id6">PROTOCOL_FAMILY.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-protocol-family">
+<span id="api-d81bb093733d572cff79f87cf20009e8"></span><h2><span class="section-number">6.91.1. </span>protocol_family型<a class="headerlink" href="#type-protocol-family" title="Link to this heading">¶</a></h2>
+<p>protocol_familyの値は、ipv4, ipv6, unixのいずれかである。</p>
+<p>protocol_familyの値は相互に、 == 演算子、つまりop_eqメソッドで比較できる。</p>
+</section>
+<section id="protocol-family-ipv4">
+<span id="api-70a26ff1fc47956d6c884057f0ca29a2"></span><h2><span class="section-number">6.91.2. </span>PROTOCOL_FAMILY.ipv4<a class="headerlink" href="#protocol-family-ipv4" title="Link to this heading">¶</a></h2>
+<p>ipv4は、IPv4プロトコルを表す。</p>
+</section>
+<section id="protocol-family-ipv6">
+<span id="api-bbf9623cae8258198d423e4e83dc1e07"></span><h2><span class="section-number">6.91.3. </span>PROTOCOL_FAMILY.ipv6<a class="headerlink" href="#protocol-family-ipv6" title="Link to this heading">¶</a></h2>
+<p>ipv6は、IPv6プロトコルを表す。</p>
+</section>
+<section id="protocol-family-unix">
+<span id="api-3b26072aefa63d3f63b95729ae9e0724"></span><h2><span class="section-number">6.91.4. </span>PROTOCOL_FAMILY.unix<a class="headerlink" href="#protocol-family-unix" title="Link to this heading">¶</a></h2>
+<p>unixは、Unixドメインソケットプロトコルを表す。</p>
+</section>
+<section id="protocol-family-is-val">
+<span id="api-f44ab58224df81ced83e8222faa12d7d"></span><h2><span class="section-number">6.91.5. </span>PROTOCOL_FAMILY.is?(Val)<a class="headerlink" href="#protocol-family-is-val" title="Link to this heading">¶</a></h2>
+<p>is?は、Valがprotocol_familyの値かどうかを戻す。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-IP_PORT.html"><span class="section-number">6.90. </span>kink/socket/IP_PORT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-SOCKET_ADDRESS.html"><span class="section-number">6.92. </span>kink/socket/SOCKET_ADDRESS</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

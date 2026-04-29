@@ -1,0 +1,71 @@
+========================
+kink\/tls\/TRUST\_ANCHOR
+========================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-90ec7bf20ca489dc5b295fa6fc2762e9:
+
+type trust\_anchor
+==================
+
+trust\_anchor is a set of certificates used for TLS\.
+
+.. _api-00ad251e78dd7026d0abbbd81534145c:
+
+TRUST\_ANCHOR\.is\?\(Val\)
+==========================
+
+\`is\?\` returns whether \`Val\` is a trust\_anchor\.
+
+.. _api-8c9c6932fd1ffbb231bbf0711dabab95:
+
+TRUST\_ANCHOR\.read\_pkcs12\(Bin Password \.\.\.\[\$config\=\{\}\]\)
+====================================================================
+
+\`read\_pkcs12\` reads a \`trust\_anchor\` from \`Bin\` in PKCS \#12 format\, which is defined in RFC 7292\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\• C\.on\_wrong\_password\(\$wrong\_password\)\: default \= a fun which tail\-calls \$error
+
+.. rubric:: Result
+
+If a \`trust\_anchor\` is successfully read\, \`read\_pkcs12\` tail\-calsl \$success with the \`trust\_anchor\`\.
+
+If the password is wrong\, \`read\_pkcs12\` tail\-calls \$wrong\_password with no arg\.
+
+If an error occurs while reading the bin\, \`read\_pkcs12\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\• \`Bin\` must be a \`bin\`
+
+\• \`Password\` must be a \`str\`
+
+\• \$success must be a fun which takes a \`trust\_anchor\`
+
+\• \$error must be a fun which takes an \`exception\`
+
+\• \$wrong\_password must be a fun which takes no arg
+
+.. _api-e3adc8c7995b000dd77e31bd0efd3953:
+
+TRUST\_ANCHOR\.default
+======================
+
+\`default\` returns the default trust\_anchor provided by the runtime\, which usually consists of public root CAs\.
+
+.. _api-822c485c82aa4d5c4673662f8157b4f2:
+
+TRUST\_ANCHOR\.empty
+====================
+
+\`empty\` returns a trust\_anchor which trusts nothing\.
+

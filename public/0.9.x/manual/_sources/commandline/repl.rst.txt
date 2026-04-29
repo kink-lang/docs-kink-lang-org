@@ -1,0 +1,149 @@
+====
+REPL
+====
+
+.. highlight:: none
+
+REPL (read-evel-print loop) is an interactive shell of Kink language.
+The core functionality of REPL is provided by :doc:`kink/repl/REPL </api/kink-repl-REPL>` mod.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Start and stop
+==============
+
+To start REPL, execute kink command without spec-and-argv args (see :ref:`commandline format <commandline-kink-kinkw-format>`).
+
+REPL itself does not provide line editing or completion.
+Thus, in Unix-like environments, using `rlwrap <https://github.com/hanslub42/rlwrap>`_ is recommended.
+For example:
+
+::
+
+  $ rlwrap kink
+
+In windows environment, Command Prompt provides a basic line editing function.
+Thus, it might be enough to just invoking kink command.
+
+::
+
+  > kink
+
+To exit from REPL, kill the JVM process by pressing Ctrl+C.
+
+Usage
+=====
+
+REPL reads a Kink program from :ref:`stdin <api-80aae17bfe9cd10d64b7efe432c26191>`,
+and writes the result of ``repr`` method of the result of the program
+to :ref:`stdout <api-349441e1f68b69b4e716f5d05354b7ac>`.
+
+::
+
+  kink#0001:0001> 1 + 2 + 3
+    6
+
+  kink#0002:0001> 'foo' + 'bar'
+    "foobar"
+
+REPL reports a compile error if the input is not a valid program.
+
+::
+
+  kink#0001:0001> 1 + 2 + + 3
+    compile error: unexpected token: [kink#0001 L1 C9] 1 + 2 + -->+ 3
+
+REPL continues reading from stdin while the program can be valid with more input.
+
+::
+
+  kink#0001:0001> 1 +
+  kink#0001:0002\ 2 +
+  kink#0001:0003\ 3
+    6
+  kink#0002:0001> 'foo' +
+  kink#0002:0002\ 'bar'
+    "foobar"
+
+An environment is shared among execution of programs.
+Thus, you can use local variables to store data.
+
+::
+
+  kink#0001:0001> :dbl <- {(:N)
+  kink#0001:0002\   N * 2
+  kink#0001:0003\ }
+    nada
+  kink#0002:0001> :A <- 21
+    nada
+  kink#0003:0001> dbl(A)
+    42
+
+If the program raises an exception,
+the exception traces are printed to stdout.
+
+::
+
+  kink#0001:0001> 10 // 0
+    -- main exception
+    [..root..]
+    {..call by host..}
+    {..call by host..}
+    {startup}
+    {builtin:kink-mods/kink/_startup/STARTUP.kn L260 C3 _startup_aux} -->_startup_aux(Args Dep)
+    {builtin:kink-mods/kink/_startup/STARTUP.kn L243 C11 try} CONTROL.-->try(
+    [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.-->reset{
+    {..call by host..}
+    [..kont tag..]
+    [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = -->body
+    {..snip..}
+    {builtin:kink-mods/kink/javahost/JAVA_STREAM_INPUT.kn L93 C9 if} -->if(Size < 0
+    {builtin:kink-mods/kink/javahost/JAVA_STREAM_INPUT.kn L96 C13 success} -->success(Bin)
+    {builtin:kink-mods/kink/io/INPUT_SCANNER.kn L175 C19 consume} S.Dec.-->consume(Bin { loop(Line_or_all) } $decode_error)
+    {builtin:kink-mods/kink/_str/DECODER.kn L77 C5 if} -->if(Cr.call_method('isError').to_kink_bool
+    {builtin:kink-mods/kink/_str/DECODER.kn L79 C9 success} { -->success }
+    {builtin:kink-mods/kink/io/INPUT_SCANNER.kn L175 C33 loop} S.Dec.consume(Bin { -->loop(Line_or_all) } $decode_error)
+    {builtin:kink-mods/kink/io/INPUT_SCANNER.kn L169 C5 branch} -->branch(
+    {builtin:kink-mods/kink/io/INPUT_SCANNER.kn L170 C44 success} { Line_or_all.have_suffix?("\n") } { -->success(Line_or_all) }
+    {builtin:kink-mods/kink/repl/REPL.kn L151 C17 compile} PROGRAM.-->compile(Program){(:C)
+    {builtin:kink-mods/kink/PROGRAM.kn L80 C3 _compile_raw} -->_compile_raw(
+    {builtin:kink-mods/kink/PROGRAM.kn L134 C3 handler} -->handler
+    {builtin:kink-mods/kink/PROGRAM.kn L141 C16 success_cont} JAVA.wrap{ -->success_cont($compiled_fun) }
+    [builtin:kink-mods/kink/repl/REPL.kn L117 C15 try] CONTROL.-->try(
+    [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.-->reset{
+    {..call by host..}
+    [..kont tag..]
+    [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = -->body
+    {builtin:kink-mods/kink/repl/REPL.kn L118 C11 program} { -->program }
+    {kink#0001 L1 C4 op_intdiv} 10 -->// 0
+    Num.op_intdiv(Divisor): zero division: 10 is divided by 0
+
+Cancel the input
+================
+
+When you want to cancel the input of a program, insert EOF.
+
+In Unix like systems, press Control+D to insert EOF.
+
+::
+
+  kink#0003:0001> 10 +
+  kink#0003:0002\ 20 +
+  kink#0003:0003\ (press Control-D here)
+  kink#0004:0001>
+
+In Windows, press Control+Z and the return key to input EOF.
+
+::
+
+  kink#0003:0001> 10 +
+  kink#0003:0002\ 20 +
+  kink#0003:0003\ (press Control-Z and the return key here)
+  kink#0004:0001>
+
+When you press Control+Z and the return key at the beginning of the program,
+it terminates REPL.
+
+.. vim: et sw=2 sts=2 et

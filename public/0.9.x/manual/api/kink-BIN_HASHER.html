@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.4. kink/BIN_HASHER &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.5. kink/BOOL" href="kink-BOOL.html" />
+    <link rel="prev" title="6.3. kink/BINDING" href="kink-BINDING.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.4. kink/BIN_HASHER</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-BINDING.html"><span class="section-number">6.3. </span>kink/BINDING</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-BOOL.html"><span class="section-number">6.5. </span>kink/BOOL</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-bin-hasher">
+<h1><span class="section-number">6.4. </span>kink/BIN_HASHER<a class="headerlink" href="#kink-bin-hasher" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-bin-hasher" id="id1">type bin_hasher</a></p>
+<ul>
+<li><p><a class="reference internal" href="#hasher-hash-tail-bin-bin-of" id="id2">Hasher.hash(...[Tail_bin=BIN.of()])</a></p></li>
+<li><p><a class="reference internal" href="#hasher-bin" id="id3">Hasher + Bin</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#bin-hasher-for-hash-algorithm-config" id="id4">BIN_HASHER.for(Hash_algorithm ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#bin-hasher-is-val" id="id5">BIN_HASHER.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-bin-hasher">
+<span id="api-50404809bac753c9be0ad7e0a3fa2fbc"></span><h2><span class="section-number">6.4.1. </span>type bin_hasher<a class="headerlink" href="#type-bin-hasher" title="Link to this heading">¶</a></h2>
+<p>`bin_hasher` is, conceptually, an immutable tuple of (Hash_algorithm, Accumulated_bin). When `Tail_bin` is given by `hash` method, it calculates a hash value of (Accumulated_bin + Tail_bin) by Hash_algorithm.</p>
+<p>Implementations are allowed not to hold Accumulated_bin itself. Instead, holding the internal state calculated from `Accumulated_bin` is allowed.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:BIN_HASHER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Md5</span> &lt;- <span class="nv">BIN_HASHER</span>.<span class="n">for</span>(<span class="s1">&#39;MD5&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Md5</span>.<span class="n">hash</span>.<span class="n">repr</span>)
+<span class="c1"># md5(∅)</span>
+<span class="c1"># =&gt; (bin 0xd4 0x1d 0x8c 0xd9 0x8f 0x00 0xb2 0x04 0xe9 0x80 0x09 0x98 0xec 0xf8 0x42 0x7e)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Md5</span>.<span class="n">hash</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)).<span class="n">repr</span>)
+<span class="c1"># md5(1 2 3)</span>
+<span class="c1"># =&gt; (bin 0x52 0x89 0xdf 0x73 0x7d 0xf5 0x73 0x26 0xfc 0xdd 0x22 0x59 0x7a 0xfb 0x1f 0xac)</span>
+
+<span class="nv">:Md5_123</span> &lt;- <span class="nv">Md5</span> + <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Md5_123</span>.<span class="n">hash</span>.<span class="n">repr</span>)
+<span class="c1"># md5(1 2 3)</span>
+<span class="c1"># =&gt; (bin 0x52 0x89 0xdf 0x73 0x7d 0xf5 0x73 0x26 0xfc 0xdd 0x22 0x59 0x7a 0xfb 0x1f 0xac)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Md5_123</span>.<span class="n">hash</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">4</span> <span class="m">5</span> <span class="m">6</span>)).<span class="n">repr</span>)
+<span class="c1"># md5(1 2 3 4 5 6)</span>
+<span class="c1"># =&gt; (bin 0x6a 0xc1 0xe5 0x6b 0xc7 0x8f 0x03 0x10 0x59 0xbe 0x7b 0xe8 0x54 0x52 0x2c 0x4c)</span>
+</pre></div>
+</div>
+<section id="hasher-hash-tail-bin-bin-of">
+<span id="api-d9d9ea9d7870acff5719f00592512290"></span><h3><span class="section-number">6.4.1.1. </span>Hasher.hash(...[Tail_bin=BIN.of()])<a class="headerlink" href="#hasher-hash-tail-bin-bin-of" title="Link to this heading">¶</a></h3>
+<p>`hash` calculates a hash value from (Accumulated_bin + Tail_bin), then return it as a `bin`.</p>
+<p class="rubric">Precondition</p>
+<p>• `Tail_bin` must be a `bin`</p>
+</section>
+<section id="hasher-bin">
+<span id="api-7b29855d4e71be0b33d6e2312dbf9f6e"></span><h3><span class="section-number">6.4.1.2. </span>Hasher + Bin<a class="headerlink" href="#hasher-bin" title="Link to this heading">¶</a></h3>
+<p>`+` operator, or `op_add` method, makes a new `bin_hasher` of (Hash_algorithm, Accumulated_bin + Bin).</p>
+<p class="rubric">Precondition</p>
+<p>• `Bin` must be a `bin`.</p>
+</section>
+</section>
+<section id="bin-hasher-for-hash-algorithm-config">
+<span id="api-b72109886bb16f524c8cead8a48d831d"></span><h2><span class="section-number">6.4.2. </span>BIN_HASHER.for(Hash_algorithm ...[$config={}])<a class="headerlink" href="#bin-hasher-for-hash-algorithm-config" title="Link to this heading">¶</a></h2>
+<p>`for` makes a `bin_hasher` of (Hash_algorithm, BIN.of()).</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = a fun which raises an exception.</p>
+<p>If a `bin_hasher` is created, `for` tail-calls $success with the `bin_hasher`.</p>
+<p>If `Hash_algorithm` is not supported, `for` tail-calls $error with no arg.</p>
+<p class="rubric">Precondition</p>
+<p>• `Hash_algorithm` must be a `str`.</p>
+</section>
+<section id="bin-hasher-is-val">
+<span id="api-13f73ee67f41164e2dfda55cf8bba1e3"></span><h2><span class="section-number">6.4.3. </span>BIN_HASHER.is?(Val)<a class="headerlink" href="#bin-hasher-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `bin_hasher`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-BINDING.html"><span class="section-number">6.3. </span>kink/BINDING</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-BOOL.html"><span class="section-number">6.5. </span>kink/BOOL</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+=====================
+kink\/json\/JSON\_VAL
+=====================
+
+Converts a JSON str to Kink data\, and vice versa\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-099358b0a71f555fc771ada495c38bda:
+
+JSON\_VAL\.null
+===============
+
+JSON\_VAL\.null returns null\, which corresponds to “null” JSON literal\.
+
+.. _api-d0628f4cc08af2a926c1977e71192d94:
+
+JSON\_VAL\.null\?\(Val\)
+========================
+
+JSON\_VAL\.null\? returns whether Val is a json\_null\.
+
+.. _api-94d2d10d087069257a8d583addb15627:
+
+JSON\_VAL\.is\?\(Val\)
+======================
+
+JSON\_VAL\.is\? returns whether Val is a JSON value\.
+
+.. _api-dfa3aceb380f08c00c1b31e12dd5b98e:
+
+JSON\_VAL\.eq\?\(X Y\)
+======================
+
+JSON\_VAL\.eq\? returns whether X and Y are equal json\_vals\.
+
+Preconditions\:
+
+\• X must be a json\_val\.
+
+\• Y must be a json\_val\.
+

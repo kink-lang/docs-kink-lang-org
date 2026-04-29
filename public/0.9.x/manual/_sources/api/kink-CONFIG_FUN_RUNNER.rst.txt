@@ -1,0 +1,141 @@
+=========================
+kink\/CONFIG\_FUN\_RUNNER
+=========================
+
+Read simple configuration from a config function as a map\.
+
+Example\:
+
+.. code:: kink
+
+    :CONFIG_FUN_RUNNER.require_from('kink/')
+        
+    :open_file <- {(:Config.opt)
+      :config = Config.just{ {} }
+      :Map = _run_config_fun($config)
+        
+      :Append? = Map.have_key?('append')
+      stdout.print('Append? = {}'.format(Append?.repr))
+        
+      Map.get_opt('buffer').with_elems(
+        { stdout.print(', No buffer') }
+        {(:Buf_size)
+          stdout.print(', Buffer size = {}'.format(Buf_size))
+        }
+      )
+        
+      Map.get_opt('newline').with_elems(
+        { stdout.print_line(', No newline') }
+        {(:Newline)
+          stdout.print_line(', Newline = {}'.format(Newline.repr))
+        }
+      )
+    }
+        
+    :_run_config_fun <- CONFIG_FUN_RUNNER.new{(:Rc)
+      Rc.no_arg('append')
+      Rc.opt_arg('buffer' { 2048 })
+      Rc.req_arg('newline')
+    }
+        
+    open_file
+    # => Append? = false, No buffer, No newline
+        
+    open_file{(:C)
+      C.append
+      C.buffer(1024)
+      C.newline("\n")
+    }
+    # => Append? = true, Buffer size = 1024, Newline = "\n"
+        
+    open_file{(:C)
+      C.buffer
+    }
+    # => Append? = false, Buffer size = 2048, No newline
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-0974c779d31c6b60c767f47118dc8174:
+
+CONFIG\_FUN\_RUNNER\.new\(\$runner\_config\_fun\)
+=================================================
+
+\`new\` makes a function to get simple setup from config functions\. Methods of config values are specified by \$runner\_config\_fun\.
+
+Precondition\:
+
+\• \$runner\_config\_fun must be a function which takes a \`runner\_config\` value\.
+
+\`new\` returns a function\. Let\'s call this a runner function\. The runner function takes a config function\, which takes a config value containing the methods specified by \$runner\_config\_fun\. The runner function calls the config function with a config value\, and returns a result map\. See methods of \`runner\_config\` type for entries of the result map\.
+
+.. _api-c3d4a867c36cefa94b42c2f9555ffcf9:
+
+type runner\_config
+===================
+
+Config value for CONFIG\_FUN\_RUNNER\.new\.
+
+.. _api-129409def001d7c30b4700f8314a9f44:
+
+Rc\.no\_arg\(Method\_name\)
+---------------------------
+
+\`no\_arg\` specifies that a config value has a method with the specified \`Method\_name\`\, and the method does not take an argument\.
+
+Precondition\:
+
+\• \`Method\_name\` must be a str\.
+
+When the created method is called for a config value\, an unspecified value is set to the result map associated with \`Method\_name\` as the key\.
+
+.. _api-e91eae2bb8f17f2348028aa85c16869c:
+
+Rc\.req\_arg\(Method\_name \.\.\.\[\$validate\=\{\}\]\)
+-------------------------------------------------------
+
+\`req\_arg\` specifies that a config value has a method with the specified \`Method\_name\`\, and the method takes an argument\.
+
+Preconditions\:
+
+\• \`Method\_name\` must be a str\.
+
+\• \$validate must be a fun which takes an argument\.
+
+When the created method is called for a config value\, the argument of the method is set to the result map\, associated with \`Method\_name\` as the key\.
+
+\$validate is called with the method argument before the value is set\, so that it can validate the argument\. If the method argument is not acceptable\, \$validate can raise an exception\. The result of \$validate is ignored\.
+
+.. _api-f61b0f1497afd3d280b379d022712bef:
+
+Rc\.req\_fun\(Method\_name\)
+----------------------------
+
+\`req\_fun\` specifies that a config value has a method with the specified \`Method\_name\`\, the method takes an argument\, and the method validates that the argument is a fun\.
+
+Besides validation\, the behavior of the added method is same with one added by \`req\_arg\`\.
+
+.. rubric:: Precondition
+
+\• \`Method\_name\` must be a str\.
+
+.. _api-a3dd8b5aa8e05ceb8be0bcc9e7956064:
+
+Rc\.opt\_arg\(Method\_name \$make\_default \.\.\.\[\$validate\=\{\}\]\)
+-----------------------------------------------------------------------
+
+\`opt\_arg\` specifies that a config value has a method with the specified \`Method\_name\`\, and the method takes an optional argument\.
+
+Preconditions\:
+
+\• \`Method\_name\` must be a str
+
+\• \$make\_default must be a thunk\.
+
+\• \$validate must be a fun which takes an argument\.
+
+When the created method is called with an argument\, the argument is set to the result map\, associated with \`Method\_name\` as the key\. If the method is called without an argument\, a value created by \$make\_default is set to the result map\, associated with \`Method\_name\` as the key\.
+
+\$validate is called with the method argument before the value is set\, so that it can validate the argument\. If the method argument is not acceptable\, \$validate can raise an exception\. The result of \$validate is ignored\.
+

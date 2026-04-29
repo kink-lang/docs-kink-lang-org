@@ -1,0 +1,342 @@
+=======
+Testing
+=======
+
+Software tests can be implemented using
+:doc:`kink/test/TEST </api/kink-test-TEST>` module.
+They can be executed by the launchable module
+:doc:`kink/test/TEST_TOOL </api/kink-test-TEST_TOOL>`.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Writing and running tests
+=========================
+
+Assume you have a module org/example/RAT
+under the file src/main/org/example/RAT.kn as follows.
+RAT module provides rational number type.
+
+::
+
+  # src/main/org/example/RAT.kn
+
+  :NUM.require_from('kink/')
+
+  :Rat_trait <- [
+    'numer' {[:R]
+      R.Numer
+    }
+
+    'denom' {[:R]
+      R.Denom
+    }
+
+    'op_eq' {[:X](:Y)
+      X.numer * Y.denom == Y.numer * X.denom
+    }
+
+    'repr' {[:R]
+      '(rat {}/{})'.format(R.numer R.denom)
+    }
+  ]
+
+  :new <- {(:Numer :Denom)
+    Denom != 0 || raise(
+      'RAT.new(Numer Denom): Denom must be nonzero, but was zero')
+    new_val(
+      ... Rat_trait
+      'Numer' Numer
+      'Denom' Denom
+    )
+  }
+
+Now, let's write tests of the module
+in the file src/test/org/example/RAT_test.kn.
+You can implement a test by calling TEST.test function.
+You can pass a descriptive name of the test as the first argument of TEST.test.
+
+::
+
+  # src/test/org/example/RAT_test.kn.
+
+  :RAT.require_from('org/example/')
+  :TEST.require_from('kink/test/')
+
+  TEST.test('numer is provided by RAT.new'){
+    :Rat = RAT.new(2 5)
+    :Result = Rat.numer
+    Result == 2 || raise('got {}'.format(Result.repr))
+  }
+
+  TEST.test('denom is provided by RAT.new'){
+    :Rat = RAT.new(2 5)
+    :Result = Rat.denom
+    Result == 5 || raise('got {}'.format(Result.repr))
+  }
+
+As you can see, assertion is done by checking the condition
+and explicitly raising an exception.
+
+You can run the tests by the following commandline.
+
+.. code:: none
+
+   $ kink -p src/main mod:kink/test/TEST_TOOL src/test
+   ..
+   Success 2 Failure 0 Skipped 0
+
+``-p main`` is specified because org/example/RAT module
+is defined under src/main.
+The last argument ``src/test`` is the directory of tests.
+Every file with a path ending with ``_test.kn`` under the directory
+is loaded as a test program.
+
+Two periods in the output mean that two tests succeeded.
+The last line of the output is the summary of test execution,
+which says two tests succeeded, no test failed, and no test was skipped.
+In that case, the command exits with the exit status 0.
+
+Let's add a test with a wrong assertion.
+
+::
+
+  TEST.test('wrong expectation for .denom'){
+    :Rat = RAT.new(2 5)
+    :Result = Rat.denom
+    Result == 0 || raise('got {}'.format(Result.repr))
+  }
+
+Then run the tests again.
+
+.. code:: none
+
+  $ kink -p src/main mod:kink/test/TEST_TOOL src/test
+
+  ..!
+  Failure: src/test/org/example/RAT_test.kn; wrong expectation for .denom
+    -- main exception
+    [(root)]
+    {..call by host..}
+    {..call by host..}
+    {startup}
+    {builtin:kink-mods/kink/_startup/STARTUP.kn L238 C3 _startup_aux} -->_startup_aux(Args Dep)
+    {builtin:kink-mods/kink/_startup/STARTUP.kn L221 C11 try} CONTROL.-->try(
+    [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.-->reset{
+    ,,,
+    ,,,
+    [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = -->body
+    {builtin:kink-mods/kink/test/TEST.kn L311 C15 _test_thunk} { T.-->_test_thunk }
+    {src/test/org/example/RAT_test.kn L21 C15 op_logor} Result == 0 -->|| raise('got {}'.format(Result.repr))
+    {..call by host..}
+    {src/test/org/example/RAT_test.kn L21 C18 raise} Result == 0 || -->raise('got {}'.format(Result.repr))
+    got 5
+
+
+  Success 2 Failure 1 Skipped 0
+
+As you can see, the exception is reported to the standard output.
+If one or more tests fail, the command exists with nonzero exit status.
+
+Grouping tests
+==============
+
+Tests can be grouped by TEST.group.
+Groups can be nested.
+Group names will be parts of the test address,
+along with the program file path and the test name.
+
+Let's rewrite the test program as follows.
+
+::
+
+  # src/test/org/example/RAT_test.kn.
+
+  :RAT.require_from('org/example/')
+  :TEST.require_from('kink/test/')
+
+  TEST.group('Rat val'){
+    TEST.test('numer is provided by RAT.new'){
+      :Rat = RAT.new(2 5)
+      :Result = Rat.numer
+      Result == 2 || raise('got {}'.format(Result.repr))
+    }
+
+    TEST.test('denom is provided by RAT.new'){
+      :Rat = RAT.new(2 5)
+      :Result = Rat.denom
+      Result == 5 || raise('got {}'.format(Result.repr))
+    }
+
+    TEST.group('Rat == Another_rat'){
+      TEST.test('1/2 == 1/2'){
+        RAT.new(1 2) == RAT.new(1 2) || raise('got false')
+      }
+
+      TEST.test('2/4 == 3/6'){
+        RAT.new(2 4) == RAT.new(3 6) || raise('got false')
+      }
+
+      TEST.test('1/2 != 1/3'){
+        RAT.new(1 2) == RAT.new(1 3) && raise('got true')
+      }
+    }
+  }
+
+Then, run the tests with ``--verbose`` mode.
+``--verbose`` mode outputs the test address for each test.
+
+.. code:: none
+
+  $ kink -p src/main/ mod:kink/test/TEST_TOOL src/test/ --verbose
+  src/test/org/example/RAT_test.kn; Rat val; numer is provided by RAT.new : Success 0.052 sec
+  src/test/org/example/RAT_test.kn; Rat val; denom is provided by RAT.new : Success 0.005 sec
+  src/test/org/example/RAT_test.kn; Rat val; Rat == Another_rat; 1/2 == 1/2 : Success 0.005 sec
+  src/test/org/example/RAT_test.kn; Rat val; Rat == Another_rat; 2/4 == 3/6 : Success 0.005 sec
+  src/test/org/example/RAT_test.kn; Rat val; Rat == Another_rat; 1/2 != 1/3 : Success 0.005 sec
+
+  Success 5 Failure 0 Skipped 0
+
+As you see, group names are included in test addresses.
+
+Parameterized tests
+===================
+
+When you want to parameterize tests,
+or run single logic with multiple data sets,
+you can do so by calling TEST.test in a loop.
+
+For example, the test program can be rewritten as follows.
+
+::
+
+  # src/test/org/example/RAT_test.kn.
+
+  :RAT.require_from('org/example/')
+  :TEST.require_from('kink/test/')
+
+  TEST.group('Rat val'){
+    TEST.test('numer is provided by RAT.new'){
+      :Rat = RAT.new(2 5)
+      :Result = Rat.numer
+      Result == 2 || raise('got {}'.format(Result.repr))
+    }
+
+    TEST.test('denom is provided by RAT.new'){
+      :Rat = RAT.new(2 5)
+      :Result = Rat.denom
+      Result == 5 || raise('got {}'.format(Result.repr))
+    }
+
+    TEST.group('Rat == Another_rat'){
+      [ [RAT.new(1 2) RAT.new(1 2) true]
+        [RAT.new(2 4) RAT.new(3 6) true]
+        [RAT.new(1 2) RAT.new(1 3) false]
+      ].each{([:X :Y :Expected])
+        TEST.test('({} == {}) == {}'.format(X.repr Y.repr Expected.repr)){
+          :Actual = X == Y
+          Actual == Expected || raise('got {}'.format(Actual.repr))
+        }
+      }
+    }
+  }
+
+Asserting an exception is raised
+================================
+
+When you want to assert that the target function raises an exception,
+you can do so by catching an exception by CONTROL.try.
+
+::
+
+  :TEST.require_from('kink/test/')
+  :CONTROL.require_from('kink/')
+
+  TEST.test('denom must not be zero'){
+    CONTROL.try(
+      { RAT.new(1 0) }
+
+      # RAT.new must raise an exception
+      {(:R) raise('got {}'.format(R.repr)) }
+
+      # the exception message must have 'RAT.new' and 'zero'
+      {(:Exc)
+        :Msg = Exc.message
+        Msg.have_slice?('RAT.new') && Msg.have_slice?('zero') || Exc.raise
+      }
+    )
+  }
+
+Skipping a test
+===============
+
+Sometimes you might want to run a specific test
+only when a certain condition is met.
+You can do so by calling TEST.skip in the test thunk.
+
+For example, you might want to 
+
+(1) ignore a test because the target code has not yet been implemented,
+(2) run a test only on a Windoes system, or
+(3) run a test only for integration testing.
+
+Let's rewrite the test program as follows.
+
+::
+
+  # src/test/org/example/RAT_test.kn.
+
+  :RAT.require_from('org/example/')
+  :TEST.require_from('kink/test/')
+  :RUNTIME.require_from('kink/')
+
+  # (1)
+  TEST.test('1/2  <= 2/3'){
+    # Rat.op_le has not yet been implemented
+    TEST.skip
+
+    RAT.new(1 2) <= RAT.new(2/3) || raise('got false')
+  }
+
+  # (2)
+  TEST.test('executed only on windows'){
+    RUNTIME.windows? || TEST.skip
+
+    :Rat = RAT.new(2 5)
+    :Result = Rat.numer
+    Result == 2 || raise('got {}'.format(Result.repr))
+  }
+
+  # (3)
+  TEST.test('executed only when label "integration" is given'){
+    TEST.have_label?('integration') || TEST.skip
+
+    :Rat = RAT.new(2 5)
+    :Result = Rat.denom
+    Result == 5 || raise('got {}'.format(Result.repr))
+  }
+
+Let's execute the tests.
+When you are on a Unix system, all the tests are skipped.
+Three hyphens mean three tests were skipped.
+
+.. code:: none
+
+  $ kink -p src/main mod:kink/test/TEST_TOOL src/test
+  ---
+  Success 0 Failure 0 Skipped 3
+
+Then, run them as integration testing.
+You can pass a label through ``--label`` option.
+It can be tested by TEST.have_label?.
+
+.. code:: none
+
+  $ kink -p src/main mod:kink/test/TEST_TOOL src/test --label integration
+  --.
+  Success 1 Failure 0 Skipped 2
+
+This time, the third test is executed, because TEST.have_label? returns true.
+
+.. vim: et sw=2 sts=2

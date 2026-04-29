@@ -1,0 +1,101 @@
+=======================
+kink\/doc\/model\/BLOCK
+=======================
+
+Provides blocks in sections of docs\.
+
+A block is either a paragraph block or a preformatted code block\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-5c1975a56084c052ffc80ba5f3d97a9f:
+
+type block
+==========
+
+A block is a text block in a section of a doc page\.
+
+.. _api-373399257a68d0434305ac53476b4654:
+
+Block\.text
+-----------
+
+Block\.text returns the text of the block\.
+
+.. _api-51283f777897decab1f7eeabd642f013:
+
+Block\.type
+-----------
+
+\`type\` method returns the type of \`Block\` in block\_type enum type\.
+
+.. _api-a2685142858e5e776e66e15ee1d0072c:
+
+Block\.to\_json\_val
+--------------------
+
+Block\.to\_json\_val converts the block to a JSON val\.
+
+Example\:
+
+.. code:: kink
+
+    :BLOCK.require_from('kink/doc/model/')
+        
+    :Para <- BLOCK.new_paragraph('hey!')
+    stdout.print_line(Para.to_json_val.repr)
+    # => Flat_map("text" "hey!"; "type" "paragraph")
+        
+    :Code <- BLOCK.new_code("1 + 2\n")
+    stdout.print_line(Code.to_json_val.repr)
+    # => Flat_map("text" "1 + 2\n"; "type" "code")
+
+.. _api-77b270d10e356fbe85428df97c388216:
+
+Block\.op\_eq\(Another\_block\)
+-------------------------------
+
+Two blocks are equal when they are of the same variant \(paragraph or code\)\, and have the same text\.
+
+.. _api-0275ac0a2bdaf70c13adaf6377960399:
+
+BLOCK\.new\_paragraph\(Text\)
+=============================
+
+\`new\_paragraph\` makes a block whose type is \"paragraph\"\.
+
+Precondition\:
+
+\• Text must be a str matching the pattern “\[\^\\u0000\-\\u0020\\u007f\]\(\[\^\\u0000\-\\u001f\\u007f\]\*\[\^\\u0000\-\\u0020\\u007f\]\)\?”
+
+.. _api-659c6bb5d1f25bc54db1c9489b951744:
+
+BLOCK\.new\_code\(Text\)
+========================
+
+\`new\_code\` makes a block whose type is \"code\"\.
+
+Precondition\:
+
+\• \`Text\` must be a str matching the pattern “\(\[\^\\u0000\-\\u001f\\u007f\]\*\\n\)\+”
+
+.. _api-f0d7cdc6977af398aeafbb0166a10cab:
+
+BLOCK\.new\_heading\(Text\)
+===========================
+
+\`new\_heading\` makes a block whose type is \"heading\"\.
+
+Precondition\:
+
+\• Text must be a str matching the pattern “\[\^\\u0000\-\\u0020\\u007f\]\(\[\^\\u0000\-\\u001f\\u007f\]\*\[\^\\u0000\-\\u0020\\u007f\]\)\?”
+
+.. _api-97d330a2e5b386b1db3899fb2d5af37a:
+
+BLOCK\.is\?\(Val\)
+==================
+
+BLOCK\.is\? returns whether Val is a block\.
+

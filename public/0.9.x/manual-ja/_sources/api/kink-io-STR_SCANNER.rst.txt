@@ -1,0 +1,31 @@
+======================
+kink\/io\/STR\_SCANNER
+======================
+
+Provides \`scanner\` implementation which extracts strings from \`str\`\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-de8c31988ef7d14de7b8689da1799880:
+
+STR\_SCANNER\.new\(Str\)
+========================
+
+\`new\` returns a \`scanner\` which extracts strings from \`Str\`\.
+
+.. rubric:: Precondition
+
+\`Str\` must be a \`str\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :STR_SCANNER.require_from('kink/io/')
+        
+    :S <- STR_SCANNER.new("foo\nbar\nbaz\n")
+    stdout.print_line(S.scan_line.repr) # => "foo\n"
+    stdout.print_line(S.scan_all.repr) # => "ar\nbaz\n"
+

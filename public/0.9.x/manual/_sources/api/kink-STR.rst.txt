@@ -1,0 +1,715 @@
+=========
+kink\/STR
+=========
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-88bfa8d53b158d62e93928353ba002c1:
+
+type str
+========
+
+\`str\` type is a finite\-length immutable string of Unicode code points\.
+
+About Unicode code points\, see\: https\:\/\/www\.unicode\.org\/versions\/Unicode17\.0\.0\/core\-spec\/chapter\-3\/\#G22700
+
+.. rubric:: Surrogate code points
+
+\`str\` may contain surrogate code points\, but handling of them is runtime implementation dependent\.
+
+For example\, if code points are encoded in 16bit code units\, paired surrogate code points might be merged to an out\-of\-BMP code point\.
+
+.. code:: kink
+
+    :STR.require_from('kink/')
+        
+    :Str <- STR.from_codepoints([0xd800 0xdc00])
+    stdout.print_line(Str.codepoints.repr)  # => [65536]
+
+.. _api-486dd39bdf6a9aec769ae7c5f1bd522d:
+
+Str\.codepoints
+---------------
+
+\`codepoints\` returns a \`vec\` of the code points of \`Str\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('xyz'.codepoints.repr) # => [120 121 122]
+
+.. _api-45ba95ea01db2a48aaabf062a55e0dc8:
+
+Str\.size
+---------
+
+\`size\` returns the number of code points in \`Str\` as an int num\.
+
+.. _api-fb3f401e6a199d2dab202bbacff910b7:
+
+Str\.any\?
+----------
+
+\`any\?\` returns whether \`Str\` contains one or more code points\.
+
+.. _api-477220aa4bb1b49d64961b19c32f85fb:
+
+Str\.get\(Codepoint\_ind\)
+--------------------------
+
+\`get\` returns the code point at the index of \`Codepoint\_ind\`\.
+
+The result is an int \`num\` which represents the code point\.
+
+.. rubric:: Precondition
+
+\`Codepoint\_ind\` must be an int \`num\` in the range \[0\, Str\.size \- 1\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('xyz'.get(0).repr) # => 120
+
+.. _api-fefd35ff64b8ca2fca24de74d2d4556a:
+
+Str\.slice\(From To\)
+---------------------
+
+\`slice\` makes a slice of \`Str\`\, and returns the slice as a \`str\`\.
+
+The slice is made of code points in the range \[From\, To\)\. The result \`str\` will include \`To \- From\` code points\.
+
+.. rubric:: Preconditions
+
+\`From\` and \`To\` must be integer \`num\` values\.
+
+0 \<\= From \<\= To \<\= Str\.size
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Str <- 'foobar'
+    :Slice <- Str.slice(1 4)
+    stdout.print_line(Slice.repr) # => "oob"
+
+.. _api-0f98c58ccdf0544fc9e1fc74acdde8c4:
+
+Str\.take\_front\(N\)
+---------------------
+
+\`take\_front\` makes a \`str\` containing the first \`N\` code points of \`Str\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an int \`num\` in the range \[0\, Str\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('foobar'.take_front(2).repr)  # => "fo"
+
+.. _api-9cfe37de0dc8c7881d1e3868fc77f189:
+
+Str\.take\_back\(N\)
+--------------------
+
+\`take\_back\` makes a \`str\` containing the last \`N\` code points of \`Str\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an int \`num\` in the range \[0\, Str\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('foobar'.take_back(2).repr)  # => "ar"
+
+.. _api-455cbc9de23c0e9d2f49d636ee3480c7:
+
+Str\.drop\_front\(N\)
+---------------------
+
+\`drop\_front\` makes a \`str\` dropping the first \`N\` code points of \`Str\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an int \`num\` in the range \[0\, Str\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('foobar'.drop_front(2).repr)  # => "obar"
+
+.. _api-3476cc045e4e1fd57ab70dae23a5b18b:
+
+Str\.drop\_back\(N\)
+--------------------
+
+\`drop\_back\` makes a \`str\` dropping the last \`N\` code points of \`Str\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an int \`num\` in the range \[0\, Str\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('foobar'.drop_back(2).repr)  # => "foob"
+
+.. _api-40dc2be7e5fe3839e7c92d0948234e12:
+
+Str\.search\_slice\(Slice Min\_pos \.\.\.\[\$config\=\{\}\]\)
+-------------------------------------------------------------
+
+\`search\_slice\` searches the slice in \`Str\`\, starting search from the code point index \`Min\_pos\`\, and produces \`Pos\` which is the code point index where the matched slice starts\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity\.
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception\.
+
+\`search\_slice\` tries to find the smallest \`Pos\` which is \>\= \`Min\_pos\`\, such that \`Str\.slice\(Pos Slice\.size\)\` is equal to \`Slice\`\. If such \`Pos\` is found\, \`search\_slice\` tail\-calls \$success with \`Pos\`\. If not found\, \`search\_slice\` tail\-calls \$error with no arg\.
+
+.. rubric:: Preconditions
+
+\`Slice\` must be a \`str\`\.
+
+\`Min\_pos\` must be an int \`num\` in the range \[0\, Str\.size\]\.
+
+\$success must be a fun which takes an int \`num\`\.
+
+\$error must be a fun which takes no param\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('foofoo'.search_slice('oo' 0).repr) # => 1
+    stdout.print_line('foofoo'.search_slice('oo' 1).repr) # => 1
+    stdout.print_line('foofoo'.search_slice('oo' 2).repr) # => 4
+        
+    'foofoo'.search_slice('oo' 5)
+    # Output:
+    #   -- main exception
+    #   ,,,
+    #   Str.search_slice(Slice Min_pos ...[$config]): slice not found
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :attempt_search <- {(:Str :Min_pos :Slice)
+      Str.search_slice(Slice Min_pos){(:C)
+        C.on_success{(:Pos)
+          stdout.print_line('found at: {}'.format(Pos.repr))
+        }
+        C.on_error{
+          stdout.print_line('not found')
+        }
+      }
+    }
+    attempt_search('foofoo' 0 'oo')  # => found at: 1
+    attempt_search('foofoo' 1 'oo')  # => found at: 1
+    attempt_search('foofoo' 2 'oo')  # => found at: 4
+    attempt_search('foofoo' 3 'oo')  # => found at: 4
+    attempt_search('foofoo' 4 'oo')  # => found at: 4
+    attempt_search('foofoo' 5 'oo')  # => not found
+    attempt_search('foofoo' 6 'oo')  # => not found
+
+.. _api-85102334de1415a177070ac3bb4d240f:
+
+Str\.have\_prefix\?\(Prefix\)
+-----------------------------
+
+\`have\_prefix\?\` returns whether \`Str\` has the slice \`Prefix\` at the front\.
+
+If \`Str\.take\_front\(Prefix\.size\)\` is equal to \`Prefix\`\, \`have\_prefix\?\` returns true\. If not\, \`have\_prefix\?\` returns false\.
+
+.. rubric:: Precondition
+
+\`Prefix\` must be a \`str\`\.
+
+.. _api-19ecc51377efe8a0d20aea4e256b8bb6:
+
+Str\.have\_suffix\?\(Suffix\)
+-----------------------------
+
+\`have\_suffix\?\` returns whether \`Str\` has the slice \`Suffix\` at the back\.
+
+If \`Str\.take\_back\(Str\.size\)\` is equal to \`Suffix\`\, \`have\_suffix\?\` returns true\. If not\, \`have\_suffix\?\` returns false\.
+
+.. rubric:: Precondition
+
+\`Suffix\` must be a \`str\`\.
+
+.. _api-301c065d3c3dadc20fb88092da2f3d93:
+
+Str\.have\_slice\?\(Slice\)
+---------------------------
+
+\`have\_slice\?\` returns whether \`Str\` has \`Slice\` as a slice\.
+
+If there is \`Ind\` such that \`Str\.slice\(Ind Ind \+ Slice\.size\)\` is equal to \`Slice\`\, \`have\_slice\?\` returns true\. If not\, \`have\_slice\?\` returns false\.
+
+.. rubric:: Precondition
+
+\`Slice\` must be a \`str\`\.
+
+.. _api-9bb44aecdc5fd68a9e8364496d8c0bc2:
+
+Str\.trim
+---------
+
+\`trim\` returns a slice of \`Str\` trimming space\-like characters from the front and the back\.
+
+\`trim\` returns the longest slice of \`Str\` which does not start with a space\-like character\, and does not end with a space\-like character\.
+
+Space\-like characters are code points in the range \[U\+0000\, U\+0020\]\, or U\+007f\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(" \t\r\nfoobar\n\r\t ".trim.repr) # => "foobar"
+    stdout.print_line(" \t\r\n\n\r\t ".trim.repr)       # => ""
+
+.. _api-66d9089aa6179c5518101425973cc2ad:
+
+Str\.trim\_front
+----------------
+
+\`trim\_front\` returns a slice of \`Str\` trimming space\-like characters from the front\.
+
+\`trim\_front\` returns the longest slice of \`Str\` which does not start with a space\-like character\.
+
+See \`trim\` for the definition of space\-like characters\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(" \t\r\nfoobar\n\r\t ".trim_front.repr) # => "foobar\n\r\t "
+    stdout.print_line(" \t\r\n\n\r\t ".trim_front.repr)       # => ""
+
+.. _api-b7a355573935d79eb84a9d9e6a954633:
+
+Str\.trim\_back
+---------------
+
+\`trim\_back\` returns a slice of \`Str\` trimming space\-like characters from the back\.
+
+\`trim\_back\` returns the longest slice of \`Str\` which does not end with a space\-like character\.
+
+See \`trim\` for the definition of space\-like characters\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(" \t\r\nfoobar\n\r\t ".trim_back.repr) # => " \t\r\nfoobar"
+    stdout.print_line(" \t\r\n\n\r\t ".trim_back.repr)       # => ""
+
+.. _api-fbe4441564a258a66c2e74b9a444187b:
+
+Str\.ascii\_upcase
+------------------
+
+\`ascii\_upcase\` converts code points of ASCII lowercase letters \(from U\+0061\=\'a\' to U\+007A\=\'z\'\) in \`Str\` to the corresponding ASCII uppercase letters \(from U\+0041\=\'A\' to U\+005A\=\'Z\'\)\.
+
+\`ascii\_upcase\` does not change code points except for ASCII lowercase letters\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('Azkaban'.ascii_upcase.repr) # => "AZKABAN"
+    stdout.print_line('+-*/%<>'.ascii_upcase.repr) # => "+-*/%<>"
+    stdout.print_line('Товарищ'.ascii_upcase.repr) # => "Товарищ"
+
+.. _api-7f012b4376912f2b2d94e96ec7e59d22:
+
+Str\.ascii\_downcase
+--------------------
+
+\`ascii\_downcase\` converts code points of ASCII uppercase letters \(from U\+0041\=\'A\' to U\+005A\=\'Z\'\) in \`Str\` to the corresponding ASCII lowercase letters \(from U\+0061\=\'a\' to U\+007A\=\'z\'\)\.
+
+\`ascii\_downcase\` does not change code points except for ASCII uppercase letters\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('aZKABAN'.ascii_downcase.repr)  # => "azkaban"
+    stdout.print_line('+-*/%<>'.ascii_downcase.repr)  # => "+-*/%<>"
+    stdout.print_line('Товарищ'.ascii_downcase.repr)  # => "Товарищ"
+
+.. _api-3900a257364db84894ed1071a3054068:
+
+Str\.format\(\.\.\. Args\) \/ Str\.format\(\$config\)
+-----------------------------------------------------
+
+\`format\` generates a str which is formatted using \`Str\` as a template\.
+
+\`format\` has two overloads\.
+
+.. rubric:: Overload\: Str\.format\(\.\.\. Args\)
+
+When called with variadic args \`Args\`\, \`format\` uses each element of \`Args\` as a positional argument\.
+
+Preconditions\:
+
+\• \`Str\` must be a \`str\` which suffices the syntax described below\.
+
+\• Each element of \`Args\` must have \`show\` method\.
+
+.. rubric:: Overload\: Str\.format\(\$config\)
+
+When called with \$config fun\, \`format\` uses \$config as a config fun\.
+
+Preconditions\:
+
+\• \`Str\` must be a \`str\` which suffices the syntax described below\.
+
+\• \$config must be a fun which takes a \`format\_config\`\.
+
+.. rubric:: The format of the template str
+
+A template str can contain placeholders delimited by braces \"\{\" and \"\}\"\. Str\.format invokes \.show\(\.\.\.\[\$config\]\) method of the arg corresponding to each placeholder\, and emplaces the result str in the placeholder\.
+
+There are following variants of placeholders\.
+
+\• \"\{\}\"\: takes a positional argument\, with an empty str \"\" as  the spec\.
+
+\• \"\{\%xxx\}\"\: takes a positional argument\, with the spec \"xxx\"\.
+
+\• \"\{Foo\}\"\: takes a named argument with the name \"Foo\"\, with an empty str \"\" as the spec\.
+
+\• \"\{Foo\%xxx\}\"\: takes a named argument with the name \"Foo\"\, with the spec \"xxx\"\.
+
+The name str must not contain \"\{\"\, \"\}\" and \"\%\"\.
+
+The spec str is passed to Show\_config\.spec\(Spec\) method\. The spec str must not contain \"\{\" or \"\}\"\.
+
+If you want to include literal \"\{\" and \"\}\" in the template str\, escape them as \"\{\{\" and \"\}\}\"\.
+
+.. rubric:: Examples
+
+.. code:: kink
+
+    stdout.print_line('{} == 0x{%04x}'.format(42 42))
+    # => 42 == 0x002a
+        
+    stdout.print_line('{}: message: {}'.format('WARN' 'something went wrong'))
+    # => WARN: message: something went wrong
+
+With locale\:
+
+.. code:: kink
+
+    :LOCALE.require_from('kink/')
+        
+    :Str <- 'Id: {%04d}, Name: {}, Elevation: {%,d} meters'.format{(:C)
+      C.locale(LOCALE.for('da-DK'))
+      C.arg(12)
+      C.arg('Mount Fuji')
+      C.arg(3776.24)
+    }
+    stdout.print_line(Str)
+    # => Id: 0012, Name: Mount Fuji, Elevation: 3.776,24 meters
+
+Using named args\:
+
+.. code:: kink
+
+    :LOCALE.require_from('kink/')
+        
+    :Str <- 'Id: {Id%04d}, Name: {Name}, Elevation: {Elevation%,d} meters'.format{(:C)
+      C.locale(LOCALE.for('da-DK'))
+      C.named_arg('Id' 12)
+      C.named_arg('Name' 'Mount Fuji')
+      C.named_arg('Elevation' 3776.24)
+    }
+    stdout.print_line(Str)
+    # => Id: 0012, Name: Mount Fuji, Elevation: 3.776,24 meters
+
+.. _api-dd44dbd36cae21676177062a64222853:
+
+Str1 \+ Str2
+------------
+
+\`\+\` operator\, or \`op\_add\` method\, makes a str containing the code points of \`Str1\` in the front\, and the code points of \`Str2\` in the back\.
+
+.. rubric:: Precondition
+
+\`Str2\` must be a \`str\`
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Str <- 'foo' + 'bar'
+    stdout.print_line(Str.repr) # => "foobar"
+
+.. _api-68e604ebb640f0871cfd486999445e93:
+
+Str \* N
+--------
+
+\`\*\` operator\, or \`op\_mul\` method\, makes a \`str\` repeating \`Str\`\, \`N\` times\.
+
+.. rubric:: Precondition
+
+\`N\` must be a nonnegative int \`num\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(('foo' * 0).repr) # => ""
+    stdout.print_line(('foo' * 1).repr) # => "foo"
+    stdout.print_line(('foo' * 2).repr) # => "foofoo"
+    stdout.print_line(('foo' * 3).repr) # => "foofoofoo"
+
+.. _api-e461b6f0978f21154235248e2fdda4f7:
+
+Str1 \=\= Str2
+--------------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether two strings contain the same sequence of code points\.
+
+.. rubric:: Precondition
+
+\`Str1\` and \`Str2\` must be \`str\` type\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(('foo' == 'foo').repr)  # => true
+    stdout.print_line(('foo' != 'foo').repr)  # => false
+        
+    stdout.print_line(('foo' == 'FOO').repr)  # => false
+    stdout.print_line(('foo' != 'FOO').repr)  # => true
+
+.. _api-76164063a0a6184957b3cafcdb92dcba:
+
+Str1 \<\= Str2
+--------------
+
+\`\<\=\` operator\, or \`op\_le\` method\, compares the code points of the strings lexicographically\, then returns whether \`Str1\` is less than or equal to \`Str2\`\. Comparison is done based on the magnitude relationship of Unicode code points\, from the front to the back\.
+
+Note that the result of comparison may differ from java\.lang\.String\.compareTo\, because String\.compareTo compares strings based on 16bit code units\.
+
+.. rubric:: Precondition
+
+\`Str2\` must be a \`str\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(('fo' <= 'foo').repr)   # => true
+    stdout.print_line(('foo' <= 'foo').repr)  # => true
+    stdout.print_line(('fooo' <= 'foo').repr) # => false
+    stdout.print_line(("\x{ffff}" <= "\x{10000}").repr) # => true
+
+.. _api-ec9e7f088a1d7e78f58d776459b0e456:
+
+Str\.show\(\.\.\.\[\$config\=\{\}\]\)
+-------------------------------------
+
+\`show\` returns \`Str\` itself\.
+
+\`show\` can take an optional parameter \$config\, but it is never used\.
+
+For the generic contract of \.show methods\, see \`\*\.show\(\.\.\.\[\$config\]\)\` in this article\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('xyz'.show)
+    # Output:
+    #   xyz
+        
+    stdout.print_line('xyz'.show{})
+    # Output:
+    #   xyz
+        
+    stdout.print_line("foo\nbar".show)
+    # Output:
+    #   foo
+    #   bar
+
+.. _api-37a73555aab4b7cde2ae69615d91f7e9:
+
+Str\.repr
+---------
+
+\`repr\` returns the string representation of \`Str\` for debugging\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('xyz'.repr)       # => "xyz"
+    stdout.print_line("foo\nbar".repr)  # => "foo\nbar"
+
+.. _api-de8a2420aead37088d28781b61b2b8b2:
+
+type format\_config
+===================
+
+\`\`format\_config\`\` is a config val of Str\.format\.
+
+.. _api-050e71243cb950523303ec0bc8d4a31d:
+
+Format\_config\.arg\(Pos\_arg\)
+-------------------------------
+
+\`arg\` method adds a positional arg\.
+
+The number of invocations of \`arg\` method must be equal to the unnamed placeholders\.
+
+.. rubric:: Precondition
+
+\`Pos\_arg\` must support \.show\(\.\.\.\[\$config\]\) method\.
+
+.. _api-4d7813e2056e6a081b0d42b42a01eedd:
+
+Format\_config\.named\_arg\(Name Arg\)
+--------------------------------------
+
+\`named\_arg\` method adds a named arg\.
+
+It is permitted to pass \`Name\` which is not referenced in the template str\.
+
+.. rubric:: Preconditions
+
+\`Name\` must be a nonempty \`str\` which is accepted by regex \`\[a\-zA\-Z\_\]\[a\-zA\-Z0\-9\_\?\]\*\`\.
+
+\`Arg\` must support \.show\(\.\.\.\[\$config\]\) method\.
+
+The set of Name1\, Name2 \,\,\, must be a superset of the names of the named arguments in the template\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line('X={X}, Y={Y}'.format{(:C)
+        C.named_arg('X' 10)
+        C.named_arg('Y' 20)
+        C.named_arg('Z' 30) # Z is not in the template str, but it is OK
+      }
+    )
+    # => X=10, Y=20
+
+.. _api-d9afbf27b31c7617c898073b16f85e79:
+
+Format\_config\.locale\(Locale\)
+--------------------------------
+
+\`locale\` method specifies the locale\. \`Locale\` is passed to \`show\` methods of each placeholder\.
+
+.. rubric:: Precondition
+
+\`Locale\` must be a \`locale\`
+
+.. _api-f1368a419359bab97cc47d69d26fd8fb:
+
+\*\.show\(\.\.\.\[\$config\=\{\}\]\) methods
+============================================
+
+This section specifies the generic contract of \`show\` methods of any types\.
+
+\`show\` method is expected to return a str which represents the receiver val\. While \`repr\` method is used for debugging messages\, \`show\` method is used for UI messages\.
+
+Usually\, \`show\` methods are called from Str\.format\.
+
+.. rubric:: Config methods
+
+\• C\.locale\(Locale\)\: default \= Locale\.root
+
+\• C\.spec\(Spec\)\: default \= \'\'
+
+\`Locale\` must be a \`locale\` type\. \`show\` method may use the locale to localize the result\.
+
+\`Spec\` must be a \`str\` type\. \`show\` method may use the spec to vary the result\. The syntax of \`Spec\` is dependent on the implementation of \`show\` method\, but \`show\` method must at least accept an empty string \'\' as \`Spec\`\.
+
+Example\:
+
+.. code:: kink
+
+    :LOCALE.require_from('kink/')
+    :Shown <- 3776.24.show{(:S)
+      S.locale(LOCALE.for('da-DK'))
+      S.spec(',d')
+    }
+    stdout.print_line(Shown.repr) # => "3.776,24"
+
+\`show\` method can optionally provide extra config methods\. For example\, Num\.show provides \`radix\` and \`pad\_zero\` config methods\:
+
+.. code:: kink
+
+    :Shown <- 255.show{(:S)
+      S.radix(16)
+      S.pad_zero(4)
+    }
+    stdout.print_line(Shown.repr) # => "00ff"
+
+.. _api-44ab2b46d46a323a71c6323b2cf194f0:
+
+STR\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a str val\.
+
+.. _api-9b2020a08d0489817e2f48a4a900f780:
+
+STR\.from\_codepoints\(Codepoints\)
+===================================
+
+\`from\_codepoints\` returns a \`str\` which contains the code points\.
+
+.. rubric:: Precondition
+
+\`Codepoints\` must be a sequence which supports \`each\` method\, such as a \`vec\` or an \`iter\`\.
+
+Elements of \`Codepoints\` must be int nums in the range \[0x000000\, 0x10ffff\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :STR.require_from('kink/')
+    :Str <- STR.from_codepoints([120 121 122])
+    stdout.print_line(Str.repr) # => "xyz"
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+    :STR.require_from('kink/')
+    :Str <- STR.from_codepoints(ITER.of(120 121 122))
+    stdout.print_line(Str.repr) # => "xyz"
+
+.. _api-86f7f3afcd73e25ca09df8015d75ccc6:
+
+STR\.default\_newline
+=====================
+
+\`default\_newline\` returns the default line separator of the runtime\.
+
+The result is a \`str\`\, either \"\\r\\n\" or \"\\n\"\.
+

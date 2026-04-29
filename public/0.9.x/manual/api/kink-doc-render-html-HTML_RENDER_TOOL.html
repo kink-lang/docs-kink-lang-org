@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.48. kink/doc/render/html/HTML_RENDER_TOOL &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.49. kink/doc/render/sphinx/SPHINX_RENDER_TOOL" href="kink-doc-render-sphinx-SPHINX_RENDER_TOOL.html" />
+    <link rel="prev" title="6.47. kink/doc/model/SECTION" href="kink-doc-model-SECTION.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.48. kink/doc/render/html/HTML_RENDER_TOOL</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-doc-model-SECTION.html"><span class="section-number">6.47. </span>kink/doc/model/SECTION</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-doc-render-sphinx-SPHINX_RENDER_TOOL.html"><span class="section-number">6.49. </span>kink/doc/render/sphinx/SPHINX_RENDER_TOOL</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-doc-render-html-html-render-tool">
+<h1><span class="section-number">6.48. </span>kink/doc/render/html/HTML_RENDER_TOOL<a class="headerlink" href="#kink-doc-render-html-html-render-tool" title="Link to this heading">¶</a></h1>
+<p>Launcheable mod to render a kink doc to a single HTML file.</p>
+<p>Usage: kink [Kink_options]... mod:kink/doc/render/html/HTML_RENDER_TOOL [Mod_options] &lt;JSON &gt;HTML</p>
+<p>The command reads the kink doc JSON from the standard input, converts it to a single HTML file, and writes it to the standard output.</p>
+<p class="rubric">Mod_options</p>
+<p>• --style {Style_file_path} : gives the file path of the alternative CSS file.   The file content must be encoded by UTF-8.   It is inserted in the style element of the HTML file.</p>
+<p>• --template {Template_file_path} : gives the file path of the alternative   HTML template file.   See the next section for details.</p>
+<p class="rubric">HTML template content</p>
+<p>The HTML template must be encoded by UTF-8, and be a Str.format template string. It can contain placeholders `{Title}` for the HTML-escaped document title, `{Style}` for the CSS, and `{Body}` for the content of &lt;body&gt; element.</p>
+<p>The default template is as follows:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>&lt;!<span class="nv">DOCTYPE</span> <span class="n">html</span>&gt;
+&lt;<span class="n">html</span>&gt;
+&lt;<span class="n">head</span>&gt;
+  &lt;<span class="n">meta</span> <span class="n">charset</span>=<span class="s2">&quot;utf-8&quot;</span> /&gt;
+  &lt;<span class="n">title</span>&gt;{<span class="nv">Title</span>}&lt;/<span class="n">title</span>&gt;
+  &lt;<span class="n">style</span>&gt;
+{<span class="nv">Style</span>}
+  &lt;/<span class="n">style</span>&gt;
+&lt;/<span class="n">head</span>&gt;
+&lt;<span class="n">body</span>&gt;
+{<span class="nv">Body</span>}
+&lt;/<span class="n">body</span>&gt;
+&lt;/<span class="n">html</span>&gt;
+</pre></div>
+</div>
+<p class="rubric">Exit statuses</p>
+<p>If the command generates an HTML file successfully, it exits with 0 as the exit status.</p>
+<p>If not, the command exits with a non-zero exit status.</p>
+<p class="rubric">Usage example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">$ kink</span> <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="nv">DOC_PARSE_TOOL</span> --<span class="n">title</span> <span class="s1">&#39;API reference&#39;</span> <span class="n">src</span> &gt;<span class="n">doc</span>.<span class="n">json</span>
+...
+<span class="nv">$ kink</span> <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="n">render</span>/<span class="n">html</span>/<span class="nv">HTML_RENDER_TOOL</span> &lt;<span class="n">doc</span>.<span class="n">json</span> &gt;<span class="n">doc</span>.<span class="n">html</span>
+</pre></div>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#html-render-tool-main-argv" id="id1">HTML_RENDER_TOOL.main(Argv)</a></p></li>
+</ul>
+</nav>
+<section id="html-render-tool-main-argv">
+<span id="api-ba2b9cdbcaad2987f13975bda140aac0"></span><h2><span class="section-number">6.48.1. </span>HTML_RENDER_TOOL.main(Argv)<a class="headerlink" href="#html-render-tool-main-argv" title="Link to this heading">¶</a></h2>
+<p>Launcher of the mod.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-doc-model-SECTION.html"><span class="section-number">6.47. </span>kink/doc/model/SECTION</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-doc-render-sphinx-SPHINX_RENDER_TOOL.html"><span class="section-number">6.49. </span>kink/doc/render/sphinx/SPHINX_RENDER_TOOL</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

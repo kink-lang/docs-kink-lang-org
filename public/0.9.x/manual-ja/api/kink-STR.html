@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.23. kink/STR &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.24. kink/TRACE" href="kink-TRACE.html" />
+    <link rel="prev" title="6.22. kink/STOPWATCH" href="kink-STOPWATCH.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.23. kink/STR</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-STOPWATCH.html"><span class="section-number">6.22. </span>kink/STOPWATCH</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-TRACE.html"><span class="section-number">6.24. </span>kink/TRACE</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-str">
+<h1><span class="section-number">6.23. </span>kink/STR<a class="headerlink" href="#kink-str" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-str" id="id4">str 型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#str-codepoints" id="id5">Str.codepoints</a></p></li>
+<li><p><a class="reference internal" href="#str-size" id="id6">Str.size</a></p></li>
+<li><p><a class="reference internal" href="#str-any" id="id7">Str.any?</a></p></li>
+<li><p><a class="reference internal" href="#str-get-codepoint-ind" id="id8">Str.get(Codepoint_ind)</a></p></li>
+<li><p><a class="reference internal" href="#str-slice-from-to" id="id9">Str.slice(From To)</a></p></li>
+<li><p><a class="reference internal" href="#str-take-front-n" id="id10">Str.take_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#str-take-back-n" id="id11">Str.take_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#str-drop-front-n" id="id12">Str.drop_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#str-drop-back-n" id="id13">Str.drop_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#str-search-slice-slice-min-pos-config" id="id14">Str.search_slice(Slice Min_pos ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#str-have-prefix-prefix" id="id15">Str.have_prefix?(Prefix)</a></p></li>
+<li><p><a class="reference internal" href="#str-have-suffix-suffix" id="id16">Str.have_suffix?(Suffix)</a></p></li>
+<li><p><a class="reference internal" href="#str-have-slice-slice" id="id17">Str.have_slice?(Slice)</a></p></li>
+<li><p><a class="reference internal" href="#str-trim" id="id18">Str.trim</a></p></li>
+<li><p><a class="reference internal" href="#str-trim-front" id="id19">Str.trim_front</a></p></li>
+<li><p><a class="reference internal" href="#str-trim-back" id="id20">Str.trim_back</a></p></li>
+<li><p><a class="reference internal" href="#str-ascii-upcase" id="id21">Str.ascii_upcase</a></p></li>
+<li><p><a class="reference internal" href="#str-ascii-downcase" id="id22">Str.ascii_downcase</a></p></li>
+<li><p><a class="reference internal" href="#str-format-args-str-format-config" id="id23">Str.format(... Args) / Str.format($config)</a></p></li>
+<li><p><a class="reference internal" href="#str1-str2" id="id24">Str1 + Str2</a></p></li>
+<li><p><a class="reference internal" href="#str-n" id="id25">Str * N</a></p></li>
+<li><p><a class="reference internal" href="#api-e461b6f0978f21154235248e2fdda4f7" id="id26">Str1 == Str2</a></p></li>
+<li><p><a class="reference internal" href="#api-76164063a0a6184957b3cafcdb92dcba" id="id27">Str1 &lt;= Str2</a></p></li>
+<li><p><a class="reference internal" href="#str-show-config" id="id28">Str.show(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#str-repr" id="id29">Str.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#type-format-config" id="id30">format_config 型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#format-config-arg-pos-arg" id="id31">Format_config.arg(Pos_arg)</a></p></li>
+<li><p><a class="reference internal" href="#format-config-named-arg-name-arg" id="id32">Format_config.named_arg(Name Arg)</a></p></li>
+<li><p><a class="reference internal" href="#format-config-locale-locale" id="id33">Format_config.locale(Locale)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#show-config-methods" id="id34">*.show(...[$config={}]) メソッド</a></p></li>
+<li><p><a class="reference internal" href="#str-is-val" id="id35">STR.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#str-from-codepoints-codepoints" id="id36">STR.from_codepoints(Codepoints)</a></p></li>
+<li><p><a class="reference internal" href="#str-default-newline" id="id37">STR.default_newline</a></p></li>
+</ul>
+</nav>
+<section id="type-str">
+<span id="api-88bfa8d53b158d62e93928353ba002c1"></span><h2><span class="section-number">6.23.1. </span>str 型<a class="headerlink" href="#type-str" title="Link to this heading">¶</a></h2>
+<p>str は有限長の不変なUnicodeコードポイントの文字列である。</p>
+<p>Unicodeコードポイントについては右記を参照: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G22700</p>
+<p class="rubric">サロゲートコードポイント</p>
+<p>str はサロゲートコードポイントを含むかもしれないが、その扱いはランタイムの実装に依存する。</p>
+<p>たとえば、コードポイントが16ビットのコードユニットでエンコードされている場合、対になったサロゲートコードポイントは、BMP外のコードポイントにマージされるかもしれない。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:STR</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Str</span> &lt;- <span class="nv">STR</span>.<span class="n">from_codepoints</span>([<span class="m">0xd800</span> <span class="m">0xdc00</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">codepoints</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [65536]</span>
+</pre></div>
+</div>
+<section id="str-codepoints">
+<span id="api-486dd39bdf6a9aec769ae7c5f1bd522d"></span><h3><span class="section-number">6.23.1.1. </span>Str.codepoints<a class="headerlink" href="#str-codepoints" title="Link to this heading">¶</a></h3>
+<p>codepoints は Str のコードポイントを含む vec を戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">codepoints</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [120 121 122]</span>
+</pre></div>
+</div>
+</section>
+<section id="str-size">
+<span id="api-45ba95ea01db2a48aaabf062a55e0dc8"></span><h3><span class="section-number">6.23.1.2. </span>Str.size<a class="headerlink" href="#str-size" title="Link to this heading">¶</a></h3>
+<p>size は Str のコードポイントの数を整数の num として戻す。</p>
+</section>
+<section id="str-any">
+<span id="api-fb3f401e6a199d2dab202bbacff910b7"></span><h3><span class="section-number">6.23.1.3. </span>Str.any?<a class="headerlink" href="#str-any" title="Link to this heading">¶</a></h3>
+<p>any?はStrが1個以上のコードポイントを含んでいるかどうかを戻す。</p>
+</section>
+<section id="str-get-codepoint-ind">
+<span id="api-477220aa4bb1b49d64961b19c32f85fb"></span><h3><span class="section-number">6.23.1.4. </span>Str.get(Codepoint_ind)<a class="headerlink" href="#str-get-codepoint-ind" title="Link to this heading">¶</a></h3>
+<p>get は Codepoint_ind の位置のコードポイントを戻す。</p>
+<p>結果はコードポイントを表す整数の num だ。</p>
+<p class="rubric">事前条件</p>
+<p>Codepoint_ind は、 [0, Str.size - 1] の範囲に含まれる整数の num でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">get</span>(<span class="m">0</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 120</span>
+</pre></div>
+</div>
+</section>
+<section id="str-slice-from-to">
+<span id="api-fefd35ff64b8ca2fca24de74d2d4556a"></span><h3><span class="section-number">6.23.1.5. </span>Str.slice(From To)<a class="headerlink" href="#str-slice-from-to" title="Link to this heading">¶</a></h3>
+<p>sliceは、Strのスライスを作ってstr値として戻す。</p>
+<p>スライスは、[From, To)の範囲のコードポイントからなる。結果のstrは、(To - From)個のコードポイントを持つ。</p>
+<p class="rubric">事前条件</p>
+<p>FromとToは整数のnum値でなければならない。</p>
+<p>0 &lt;= From &lt;= To &lt;= Str.size</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Str</span> &lt;- <span class="s1">&#39;foobar&#39;</span>
+<span class="nv">:Slice</span> &lt;- <span class="nv">Str</span>.<span class="n">slice</span>(<span class="m">1</span> <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;oob&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-take-front-n">
+<span id="api-0f98c58ccdf0544fc9e1fc74acdde8c4"></span><h3><span class="section-number">6.23.1.6. </span>Str.take_front(N)<a class="headerlink" href="#str-take-front-n" title="Link to this heading">¶</a></h3>
+<p>take_front は Str の最初の N 個のコードポイントを含む str を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>N は[0, Str.size]の範囲に含まれる整数の num でなければならない</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>.<span class="n">take_front</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;fo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-take-back-n">
+<span id="api-9cfe37de0dc8c7881d1e3868fc77f189"></span><h3><span class="section-number">6.23.1.7. </span>Str.take_back(N)<a class="headerlink" href="#str-take-back-n" title="Link to this heading">¶</a></h3>
+<p>take_back は Str の最後の N 個のコードポイントを含む str を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>N は[0, Str.size]の範囲に含まれる整数の num でなければならない</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>.<span class="n">take_back</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;ar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-drop-front-n">
+<span id="api-455cbc9de23c0e9d2f49d636ee3480c7"></span><h3><span class="section-number">6.23.1.8. </span>Str.drop_front(N)<a class="headerlink" href="#str-drop-front-n" title="Link to this heading">¶</a></h3>
+<p>drop_front は Str から最初の N 個のコードポイントを除いた str を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>N は[0, Str.size]の範囲に含まれる整数の num でなければならない</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>.<span class="n">drop_front</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;obar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-drop-back-n">
+<span id="api-3476cc045e4e1fd57ab70dae23a5b18b"></span><h3><span class="section-number">6.23.1.9. </span>Str.drop_back(N)<a class="headerlink" href="#str-drop-back-n" title="Link to this heading">¶</a></h3>
+<p>drop_back は Str の最後の N 個のコードポイントを除いた str を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>N は[0, Str.size]の範囲に含まれる整数の num でなければならない</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>.<span class="n">drop_back</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foob&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-search-slice-slice-min-pos-config">
+<span id="api-40dc2be7e5fe3839e7c92d0948234e12"></span><h3><span class="section-number">6.23.1.10. </span>Str.search_slice(Slice Min_pos ...[$config={}])<a class="headerlink" href="#str-search-slice-slice-min-pos-config" title="Link to this heading">¶</a></h3>
+<p>search_slice は Str の中でスライスを探す。探索をコードポイントの添字 Min_pos から始めて、見つかったスライスが始まるコードポイントの添字である Pos を出力する。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL.identity.</p>
+<p>• C.on_error($error): default = 例外を投げる関数</p>
+<p>search_slice は、 Pos &gt;= Min_pos と Str.slice(Pos Slice.size) == Slice を満たす最も小さい Pos を探す。もしそのような Pos が見つかれば、 search_slice は $success を、 Pos を引数として末尾呼び出しする。もし見つからなければ、 search_slice は $error を引数なしで末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>Slice は str 型でなければならない。</p>
+<p>Min_pos は [0, Str.size] の範囲の整数の num でなければならない。</p>
+<p>$success は整数の num を取る関数でなければならない。</p>
+<p>$error はパラメータなしの関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foofoo&#39;</span>.<span class="n">search_slice</span>(<span class="s1">&#39;oo&#39;</span> <span class="m">0</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foofoo&#39;</span>.<span class="n">search_slice</span>(<span class="s1">&#39;oo&#39;</span> <span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foofoo&#39;</span>.<span class="n">search_slice</span>(<span class="s1">&#39;oo&#39;</span> <span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 4</span>
+
+<span class="s1">&#39;foofoo&#39;</span>.<span class="n">search_slice</span>(<span class="s1">&#39;oo&#39;</span> <span class="m">5</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   Str.search_slice(Slice Min_pos ...[$config]): slice not found</span>
+</pre></div>
+</div>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:attempt_search</span> &lt;- {(<span class="nv">:Str</span> <span class="nv">:Min_pos</span> <span class="nv">:Slice</span>)
+  <span class="nv">Str</span>.<span class="n">search_slice</span>(<span class="nv">Slice</span> <span class="nv">Min_pos</span>){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Pos</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;found at: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Pos</span>.<span class="n">repr</span>))
+    }
+    <span class="nv">C</span>.<span class="n">on_error</span>{
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;not found&#39;</span>)
+    }
+  }
+}
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">0</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 1</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">1</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 1</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">2</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 4</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">3</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 4</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">4</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 4</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">5</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; not found</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">6</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; not found</span>
+</pre></div>
+</div>
+</section>
+<section id="str-have-prefix-prefix">
+<span id="api-85102334de1415a177070ac3bb4d240f"></span><h3><span class="section-number">6.23.1.11. </span>Str.have_prefix?(Prefix)<a class="headerlink" href="#str-have-prefix-prefix" title="Link to this heading">¶</a></h3>
+<p>have_prefix? はStr の先頭が Prefix かどうかを戻す。</p>
+<p>Str.take_front(Prefix.size) が Prefix に等しいとき、 have_prefix? はtrueを戻す。そうでなければ、 have_prefix? はfalseを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Prefix は str 型でなければならない。</p>
+</section>
+<section id="str-have-suffix-suffix">
+<span id="api-19ecc51377efe8a0d20aea4e256b8bb6"></span><h3><span class="section-number">6.23.1.12. </span>Str.have_suffix?(Suffix)<a class="headerlink" href="#str-have-suffix-suffix" title="Link to this heading">¶</a></h3>
+<p>have_suffix? は Str の末尾が Suffix かどうかを戻す。</p>
+<p>Str.take_back(Prefix.size) が Suffix に等しいとき、 have_suffix?? はtrueを戻す。そうでなければ、 have_suffix? はfalseを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Suffix は str 型でなければならない。</p>
+</section>
+<section id="str-have-slice-slice">
+<span id="api-301c065d3c3dadc20fb88092da2f3d93"></span><h3><span class="section-number">6.23.1.13. </span>Str.have_slice?(Slice)<a class="headerlink" href="#str-have-slice-slice" title="Link to this heading">¶</a></h3>
+<p>have_slice? は Str が Slice をスライスとして持っているかどうかを戻す。</p>
+<p>もし Str.slice(Ind Ind + Slice.size) が Slice と等しいような Ind があれば、 have_slice? はtrueを戻す。なければ、 have_slice? はfalseを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Slice は str 型でなければならない。</p>
+</section>
+<section id="str-trim">
+<span id="api-9bb44aecdc5fd68a9e8364496d8c0bc2"></span><h3><span class="section-number">6.23.1.14. </span>Str.trim<a class="headerlink" href="#str-trim" title="Link to this heading">¶</a></h3>
+<p>trim は Str の先頭と末尾から空白類の文字を取り除いたスライスを戻す。</p>
+<p>trim は Str のスライスのうち、空白類の文字で始まらず、空白類の文字で終わらない最長のスライスを戻す。</p>
+<p>空白類の文字は、[U+0000, U+0020]の範囲内のコードポイント、あるいはU+007fである。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n</span><span class="s2">foobar</span><span class="se">\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foobar&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; &quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-trim-front">
+<span id="api-66d9089aa6179c5518101425973cc2ad"></span><h3><span class="section-number">6.23.1.15. </span>Str.trim_front<a class="headerlink" href="#str-trim-front" title="Link to this heading">¶</a></h3>
+<p>trim_front は Str の先頭から空白類の文字を取り除いたスライスを戻す。</p>
+<p>trim_front は Str のスライスのうち、空白類の文字で始まらない最長のスライスを戻す。</p>
+<p>空白類の文字の定義は trim を見よ。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n</span><span class="s2">foobar</span><span class="se">\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim_front</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foobar\n\r\t &quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim_front</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; &quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-trim-back">
+<span id="api-b7a355573935d79eb84a9d9e6a954633"></span><h3><span class="section-number">6.23.1.16. </span>Str.trim_back<a class="headerlink" href="#str-trim-back" title="Link to this heading">¶</a></h3>
+<p>trim_back は Str の末尾から空白類の文字を取り除いたスライスを戻す。</p>
+<p>trim_back は Str のスライスのうち、空白類の文字で終わらない最長のスライスを戻す。</p>
+<p>空白類の文字の定義は trim を見よ。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n</span><span class="s2">foobar</span><span class="se">\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim_back</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot; \t\r\nfoobar&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim_back</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; &quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-ascii-upcase">
+<span id="api-fbe4441564a258a66c2e74b9a444187b"></span><h3><span class="section-number">6.23.1.17. </span>Str.ascii_upcase<a class="headerlink" href="#str-ascii-upcase" title="Link to this heading">¶</a></h3>
+<p>ascii_upcase は、 Str 中のASCII小文字のコードポイント(U+0061='a' から U+007A='z')を、対応するASCII大文字(U+0041='A' から U+005A='Z')に変換する。</p>
+<p>ascii_upcase は、ASCII小文字以外のコードポイントを変換しない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Azkaban&#39;</span>.<span class="n">ascii_upcase</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;AZKABAN&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;+-*/%&lt;&gt;&#39;</span>.<span class="n">ascii_upcase</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;+-*/%&lt;&gt;&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Товарищ&#39;</span>.<span class="n">ascii_upcase</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;Товарищ&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-ascii-downcase">
+<span id="api-7f012b4376912f2b2d94e96ec7e59d22"></span><h3><span class="section-number">6.23.1.18. </span>Str.ascii_downcase<a class="headerlink" href="#str-ascii-downcase" title="Link to this heading">¶</a></h3>
+<p>ascii_downcase は、 Str 中のASCII大文字のコードポイント(U+0041='A' から U+005A='Z')を、対応するASCII小文字(U+0061='a' から U+007A='z')に変換する。</p>
+<p>ascii_downcase はASCII大文字以外のコードポイントを変換しない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;aZKABAN&#39;</span>.<span class="n">ascii_downcase</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;azkaban&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;+-*/%&lt;&gt;&#39;</span>.<span class="n">ascii_downcase</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;+-*/%&lt;&gt;&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Товарищ&#39;</span>.<span class="n">ascii_downcase</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;Товарищ&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-format-args-str-format-config">
+<span id="api-3900a257364db84894ed1071a3054068"></span><h3><span class="section-number">6.23.1.19. </span>Str.format(... Args) / Str.format($config)<a class="headerlink" href="#str-format-args-str-format-config" title="Link to this heading">¶</a></h3>
+<p>format は、 Str をテンプレートとして str を生成する。</p>
+<p>format にはふたつのオーバーロードがある。</p>
+<p class="rubric">オーバーロード: Str.format(... Args)</p>
+<p>可変長の引数 Args が渡されたとき、 format は Args の各要素を位置引数として使う。</p>
+<p>事前条件:</p>
+<p>• Str は下記する文法を満たす str でなければならない。</p>
+<p>• Args の各要素は show メソッドを持っていなければならない。</p>
+<p class="rubric">オーバーロード: Str.format($config)</p>
+<p>$config関数が渡されたとき、 format は$configをコンフィグ関数として使う。</p>
+<p>事前条件:</p>
+<p>• Str は下記する文法を満たす str でなければならない。</p>
+<p>• $configは format_config を引数として取る関数でなければならない。</p>
+<p class="rubric">テンプレート文字列の書式</p>
+<p>テンプレート文字列には、波括弧 &quot;{&quot; と &quot;}&quot; で区切られたプレースホルダを含められる。 format はプレースホルダに対応する引数について、 .show(...[$config]) メソッドを呼び、その結果の文字列をプレースホルダの場所に埋め込む。</p>
+<p>プレースホルダには次の変種がある。</p>
+<p>• &quot;{}&quot;: 位置引数を取り、空文字列 &quot;&quot; を指示子とする。</p>
+<p>• &quot;{%xxx}&quot;: 位置引数を取り、 &quot;xxx&quot; を指示子とする。</p>
+<p>• &quot;{Foo}&quot;: &quot;Foo&quot; という名前の名前引数を取り、空文字列 &quot;&quot; を指示子とする。</p>
+<p>• &quot;{Foo%xxx}&quot;:  &quot;Foo&quot; という名前の名前引数を取り、 &quot;xxx&quot; を指示子とする。</p>
+<p>名前には &quot;{&quot;, &quot;}&quot;, &quot;%&quot; が含められない。</p>
+<p>指示子は Show_config.spec(Spec) メソッドに渡される。指示子には &quot;{&quot;, &quot;}&quot; が含められない。</p>
+<p>テンプレート文字列に &quot;{&quot; と &quot;}&quot; を含めたい場合、 &quot;{{&quot;, &quot;}}&quot; としてエスケープする。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{} == 0x{%04x}&#39;</span>.<span class="n">format</span>(<span class="m">42</span> <span class="m">42</span>))
+<span class="c1"># =&gt; 42 == 0x002a</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{}: message: {}&#39;</span>.<span class="n">format</span>(<span class="s1">&#39;WARN&#39;</span> <span class="s1">&#39;something went wrong&#39;</span>))
+<span class="c1"># =&gt; WARN: message: something went wrong</span>
+</pre></div>
+</div>
+<p>ロケールを指定:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Str</span> &lt;- <span class="s1">&#39;Id: {%04d}, Name: {}, Elevation: {%,d} meters&#39;</span>.<span class="n">format</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;da-DK&#39;</span>))
+  <span class="nv">C</span>.<span class="n">arg</span>(<span class="m">12</span>)
+  <span class="nv">C</span>.<span class="n">arg</span>(<span class="s1">&#39;Mount Fuji&#39;</span>)
+  <span class="nv">C</span>.<span class="n">arg</span>(<span class="m">3776.24</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>)
+<span class="c1"># =&gt; Id: 0012, Name: Mount Fuji, Elevation: 3.776,24 meters</span>
+</pre></div>
+</div>
+<p>名前引数を使う:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Str</span> &lt;- <span class="s1">&#39;Id: {Id%04d}, Name: {Name}, Elevation: {Elevation%,d} meters&#39;</span>.<span class="n">format</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;da-DK&#39;</span>))
+  <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Id&#39;</span> <span class="m">12</span>)
+  <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Name&#39;</span> <span class="s1">&#39;Mount Fuji&#39;</span>)
+  <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Elevation&#39;</span> <span class="m">3776.24</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>)
+<span class="c1"># =&gt; Id: 0012, Name: Mount Fuji, Elevation: 3.776,24 meters</span>
+</pre></div>
+</div>
+</section>
+<section id="str1-str2">
+<span id="api-dd44dbd36cae21676177062a64222853"></span><h3><span class="section-number">6.23.1.20. </span>Str1 + Str2<a class="headerlink" href="#str1-str2" title="Link to this heading">¶</a></h3>
+<p>+ 演算子、つまりop_addメソッドは、Str1のコードポイント列を前に、Str2のコードポイント列を後ろに配した文字列を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Str は str 型でなければならない</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Str</span> &lt;- <span class="s1">&#39;foo&#39;</span> + <span class="s1">&#39;bar&#39;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foobar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-n">
+<span id="api-68e604ebb640f0871cfd486999445e93"></span><h3><span class="section-number">6.23.1.21. </span>Str * N<a class="headerlink" href="#str-n" title="Link to this heading">¶</a></h3>
+<p>* 演算子、つまりop_mulメソッドは、StrをN回繰り返した文字列を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>N は非負整数の num でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> * <span class="m">0</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> * <span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> * <span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foofoo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> * <span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foofoofoo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="api-e461b6f0978f21154235248e2fdda4f7">
+<span id="id2"></span><h3><span class="section-number">6.23.1.22. </span>Str1 == Str2<a class="headerlink" href="#api-e461b6f0978f21154235248e2fdda4f7" title="Link to this heading">¶</a></h3>
+<p>== 演算子、つまりop_eqメソッドは、ふたつの文字列が同じコードポイントの列から成っているかどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Str1 と Str2 は str 型でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> == <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> != <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> == <span class="s1">&#39;FOO&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> != <span class="s1">&#39;FOO&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="api-76164063a0a6184957b3cafcdb92dcba">
+<span id="id3"></span><h3><span class="section-number">6.23.1.23. </span>Str1 &lt;= Str2<a class="headerlink" href="#api-76164063a0a6184957b3cafcdb92dcba" title="Link to this heading">¶</a></h3>
+<p>&lt;= 演算子、つまりop_leメソッドは、ふたつの文字列のコードポイントを辞書順で比較し、Str1がStr2以下かどうかを戻す。比較はUnicodeのコードポイントの大小関係に従って、先頭から末尾にかけて行われる。</p>
+<p>比較の結果は java.lang.String.compareTo と異なり得ることに注意しよう。これは、String.compareToが文字列の比較を16ビットのコードユニットを元に行うためだ。</p>
+<p class="rubric">事前条件</p>
+<p>Str2はstr型でなければならない</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;fo&#39;</span> &lt;= <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> &lt;= <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;fooo&#39;</span> &lt;= <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s2">&quot;</span><span class="se">\x{ffff}</span><span class="s2">&quot;</span> &lt;= <span class="s2">&quot;</span><span class="se">\x{10000}</span><span class="s2">&quot;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="str-show-config">
+<span id="api-ec9e7f088a1d7e78f58d776459b0e456"></span><h3><span class="section-number">6.23.1.24. </span>Str.show(...[$config={}])<a class="headerlink" href="#str-show-config" title="Link to this heading">¶</a></h3>
+<p>show は Str 自体を戻す。</p>
+<p>show は省略可能なパラメータ$configを取れるが、これが呼ばることはない。</p>
+<p>.showメソッドの一般的な契約については、この記事中の *.show(...[$config]) を見よ。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">show</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   xyz</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">show</span>{})
+<span class="c1"># Output:</span>
+<span class="c1">#   xyz</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot;foo</span><span class="se">\n</span><span class="s2">bar&quot;</span>.<span class="n">show</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   foo</span>
+<span class="c1">#   bar</span>
+</pre></div>
+</div>
+</section>
+<section id="str-repr">
+<span id="api-37a73555aab4b7cde2ae69615d91f7e9"></span><h3><span class="section-number">6.23.1.25. </span>Str.repr<a class="headerlink" href="#str-repr" title="Link to this heading">¶</a></h3>
+<p>repr は Str のデバッグ用の文字列表現を戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; &quot;xyz&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot;foo</span><span class="se">\n</span><span class="s2">bar&quot;</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo\nbar&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="type-format-config">
+<span id="api-de8a2420aead37088d28781b61b2b8b2"></span><h2><span class="section-number">6.23.2. </span>format_config 型<a class="headerlink" href="#type-format-config" title="Link to this heading">¶</a></h2>
+<p>format_config は Str.format のコンフィグ値である。</p>
+<section id="format-config-arg-pos-arg">
+<span id="api-050e71243cb950523303ec0bc8d4a31d"></span><h3><span class="section-number">6.23.2.1. </span>Format_config.arg(Pos_arg)<a class="headerlink" href="#format-config-arg-pos-arg" title="Link to this heading">¶</a></h3>
+<p>arg メソッドは位置引数を追加する。</p>
+<p>arg メソッドの呼び出し回数は、名前のないプレースホルダの数と同じでなければならない。</p>
+<p class="rubric">事前条件</p>
+<p>Pos_arg は .show(...[$config]) メソッドを提供しなければならない。</p>
+</section>
+<section id="format-config-named-arg-name-arg">
+<span id="api-4d7813e2056e6a081b0d42b42a01eedd"></span><h3><span class="section-number">6.23.2.2. </span>Format_config.named_arg(Name Arg)<a class="headerlink" href="#format-config-named-arg-name-arg" title="Link to this heading">¶</a></h3>
+<p>named_arg メソッドは名前引数を追加する。</p>
+<p>テンプレート文字列中で参照されない Name を渡しても構わない。</p>
+<p class="rubric">事前条件</p>
+<p>Name は空でない str である必要がある。また、正規表現 <code class="regexp docutils literal notranslate"><span class="pre">[a-zA-Z_][a-zA-Z0-9_?]*</span></code> に受け入れられる必要がある。</p>
+<p>Arg は .show(...[$config]) メソッドを提供しなければならない。</p>
+<p>Name1, Name2, ,,, の集合は、テンプレート中の名前引数の名前の集合の上位集合でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={X}, Y={Y}&#39;</span>.<span class="n">format</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;X&#39;</span> <span class="m">10</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Y&#39;</span> <span class="m">20</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Z&#39;</span> <span class="m">30</span>) <span class="c1"># Z is not in the template str, but it is OK</span>
+  }
+)
+<span class="c1"># =&gt; X=10, Y=20</span>
+</pre></div>
+</div>
+</section>
+<section id="format-config-locale-locale">
+<span id="api-d9afbf27b31c7617c898073b16f85e79"></span><h3><span class="section-number">6.23.2.3. </span>Format_config.locale(Locale)<a class="headerlink" href="#format-config-locale-locale" title="Link to this heading">¶</a></h3>
+<p>locale メソッドはロケールを指定する。 Locale は各プレースホルダの show メソッドに渡される。</p>
+<p class="rubric">事前条件</p>
+<p>Locale は locale 型でなければならない。</p>
+</section>
+</section>
+<section id="show-config-methods">
+<span id="api-f1368a419359bab97cc47d69d26fd8fb"></span><h2><span class="section-number">6.23.3. </span>*.show(...[$config={}]) メソッド<a class="headerlink" href="#show-config-methods" title="Link to this heading">¶</a></h2>
+<p>この節では、任意の型の show メソッドについて一般的な契約を述べる。</p>
+<p>show メソッドには、レシーバを表現する文字列を戻すことが期待される。 repr メソッドがデバッグメッセージに使われるのに対して、 show メソッドはUIメッセージに使われる。</p>
+<p>通常、 show メソッドはStr.formatから呼ばれる。</p>
+<p class="rubric">コンフィグメソッド</p>
+<p>• C.locale(Locale): default = Locale.root</p>
+<p>• C.spec(Spec): default = ''</p>
+<p>Locale は locale 型でなければならない。 show メソッドはロケールを用いて結果をローカライズできる。</p>
+<p>Spec は str 型でなければならない。 show メソッドはこの指示子を用いて結果を調整できる。指示子の文法は show メソッドの実装に依存するが、少なくとも show メソッドは空文字列 '' を指示子として受け取れなければならない。</p>
+<p>例:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Shown</span> &lt;- <span class="m">3776.24</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;da-DK&#39;</span>))
+  <span class="nv">S</span>.<span class="n">spec</span>(<span class="s1">&#39;,d&#39;</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Shown</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;3.776,24&quot;</span>
+</pre></div>
+</div>
+<p>show メソッドは上記以外のコンフィグメソッドも提供できる。たとえば、Num.showは radix と pad_zero というコンフィグメソッドを提供する:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Shown</span> &lt;- <span class="m">255</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">16</span>)
+  <span class="nv">S</span>.<span class="n">pad_zero</span>(<span class="m">4</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Shown</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;00ff&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-is-val">
+<span id="api-44ab2b46d46a323a71c6323b2cf194f0"></span><h2><span class="section-number">6.23.4. </span>STR.is?(Val)<a class="headerlink" href="#str-is-val" title="Link to this heading">¶</a></h2>
+<p>is? は Val が str であるかどうかを戻す。</p>
+</section>
+<section id="str-from-codepoints-codepoints">
+<span id="api-9b2020a08d0489817e2f48a4a900f780"></span><h2><span class="section-number">6.23.5. </span>STR.from_codepoints(Codepoints)<a class="headerlink" href="#str-from-codepoints-codepoints" title="Link to this heading">¶</a></h2>
+<p>from_codepoints は指定されたコードポイントを含む str を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Codepoints は each メソッドを提供する列でなければならない。たとえば vec や iter など。</p>
+<p>Codepoints の要素は [0x000000, 0x10ffff] の範囲の整数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:STR</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Str</span> &lt;- <span class="nv">STR</span>.<span class="n">from_codepoints</span>([<span class="m">120</span> <span class="m">121</span> <span class="m">122</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;xyz&quot;</span>
+</pre></div>
+</div>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<span class="nv">:STR</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Str</span> &lt;- <span class="nv">STR</span>.<span class="n">from_codepoints</span>(<span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">120</span> <span class="m">121</span> <span class="m">122</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;xyz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-default-newline">
+<span id="api-86f7f3afcd73e25ca09df8015d75ccc6"></span><h2><span class="section-number">6.23.6. </span>STR.default_newline<a class="headerlink" href="#str-default-newline" title="Link to this heading">¶</a></h2>
+<p>default_newline はランタイムのデフォルトの行区切りを戻す。</p>
+<p>結果は str で、 &quot;\r\n&quot; か &quot;\n&quot; のどちらかである。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-STOPWATCH.html"><span class="section-number">6.22. </span>kink/STOPWATCH</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-TRACE.html"><span class="section-number">6.24. </span>kink/TRACE</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

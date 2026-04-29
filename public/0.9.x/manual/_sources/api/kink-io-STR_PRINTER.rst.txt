@@ -1,0 +1,32 @@
+======================
+kink\/io\/STR\_PRINTER
+======================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-0f524b0be7461637ad73889a195615b1:
+
+STR\_PRINTER\.new\(Newline\)
+============================
+
+\`new\` makes a \`printer\` which builds a string\, with \`Newline\` used as Printer\.newline\.
+
+The result \`printer\` also has \`str\` method\. It returns a \`str\` val which joins strings passed to \`print\` method\, and strings passed to \`print\_line\` plus \`newline\`\.
+
+.. rubric:: Precondition
+
+\`Newline\` must be a \`str\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :STR_PRINTER.require_from('kink/io/')
+        
+    :P <- STR_PRINTER.new("\r\n")
+    P.print_line('foo')
+    P.print_line('bar')
+    stdout.print_line(P.str.repr) # => "foo\r\nbar\r\n"
+

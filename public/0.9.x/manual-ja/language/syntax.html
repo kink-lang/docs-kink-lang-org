@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>3.1. 構文 &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="3.2. 意味論" href="semantics.html" />
+    <link rel="prev" title="3. 言語仕様" href="index.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>3.1. 構文</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html"><span class="section-number">3. </span>言語仕様</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="semantics.html"><span class="section-number">3.2. </span>意味論</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="syntax">
+<h1><span class="section-number">3.1. </span>構文<a class="headerlink" href="#syntax" title="Link to this heading">¶</a></h1>
+<p>この章では、プログラムテキストの構文解析がどのように行われるかを述べる。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#steps-of-analysis" id="id4">解析の手順</a></p></li>
+<li><p><a class="reference internal" href="#morphemes" id="id5">形態素</a></p>
+<ul>
+<li><p><a class="reference internal" href="#whitespace-and-comments" id="id6">Whitespace and comments</a></p></li>
+<li><p><a class="reference internal" href="#symbol-tokens" id="id7">Symbol tokens</a></p></li>
+<li><p><a class="reference internal" href="#num-tokens" id="id8">Num tokens</a></p></li>
+<li><p><a class="reference internal" href="#string-tokens" id="id9">文字列トークン</a></p></li>
+<li><p><a class="reference internal" href="#binding-token" id="id10">Binding token</a></p></li>
+<li><p><a class="reference internal" href="#punctuation-marks-and-operators" id="id11">Punctuation marks and operators</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#abstract-source-tree" id="id12">Abstract source tree</a></p></li>
+</ul>
+</nav>
+<section id="steps-of-analysis">
+<h2><span class="section-number">3.1.1. </span>解析の手順<a class="headerlink" href="#steps-of-analysis" title="Link to this heading">¶</a></h2>
+<p><em class="dfn">プログラムテキスト</em> は <a class="reference external" href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G25539">unicode scalar value</a> の列である。</p>
+<p>プログラムテキストは、まず形態素の列に分割される。分割は、最長一致法をもちいて、先頭から末尾まで行われる。</p>
+<p>次に形態素の列は、トークンでない形態素を省くことにより、トークンの列に変換される。</p>
+<p>ついで、トークンの列は、 <a class="reference internal" href="#grammar-token-program"><code class="xref std std-token docutils literal notranslate"><span class="pre">program</span></code></a> の抽象構文木としてパースされる。</p>
+</section>
+<section id="morphemes">
+<h2><span class="section-number">3.1.2. </span>形態素<a class="headerlink" href="#morphemes" title="Link to this heading">¶</a></h2>
+<section id="whitespace-and-comments">
+<h3><span class="section-number">3.1.2.1. </span>Whitespace and comments<a class="headerlink" href="#whitespace-and-comments" title="Link to this heading">¶</a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>正規表現</p></th>
+<th class="head"><p>形態素の種別</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="regexp docutils literal notranslate"><span class="pre">\u0020|\u000a|\u000d\u000a</span></code></p></td>
+<td><p>Whitespace</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="regexp docutils literal notranslate"><span class="pre">#[^\u000d\u000a]*</span></code></p></td>
+<td><p>Comment</p></td>
+</tr>
+</tbody>
+</table>
+<p><em class="dfn">Whitespace</em> is used to make a program text easy to read
+and to separate tokens from each other.
+Space (U+0020), LF (U+000a), and CR+LF (U+000d, U+000a)
+are whitespace character sequences.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>Horizontal tab (U+0009) is not a valid whitespace character.
+This design decision is intended to avoid bikeshed discussion about indentation.</p>
+</div>
+<p>The categories of morphemes <code class="docutils literal notranslate"><span class="pre">(</span></code>, <code class="docutils literal notranslate"><span class="pre">[</span></code> and <code class="docutils literal notranslate"><span class="pre">{</span></code> may
+differ when they are located after whitespace characters.
+See <a class="reference internal" href="#token-type"><span class="std std-ref">the description of token types</span></a> for detail.</p>
+<p id="comment"><em class="dfn">Comments</em> are used to describe the program text.
+A number sign <code class="docutils literal notranslate"><span class="pre">#</span></code> (U+0023) indicates a start of a comment.
+The comment continues till the end of the line,
+which is before the CR or LF character or the end of the program text.
+Comments are treated as whitespace characters.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foo&#39;</span>*<span class="m">2</span>)      <span class="c1"># =&gt; foofoo</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>( <span class="s1">&#39;foo&#39;</span> * <span class="m">2</span> )  <span class="c1"># =&gt; foofoo</span>
+
+<span class="c1"># Comment line</span>
+<span class="n">do_something</span>  <span class="c1"># trailing comment</span>
+</pre></div>
+</div>
+<p>Whitespace characters and comments are not tokens.</p>
+</section>
+<section id="symbol-tokens">
+<span id="symbol-token"></span><h3><span class="section-number">3.1.2.2. </span>Symbol tokens<a class="headerlink" href="#symbol-tokens" title="Link to this heading">¶</a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>正規表現</p></th>
+<th class="head"><p>形態素の種別</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="regexp docutils literal notranslate"><span class="pre">[a-z_][a-z0-9_?]*</span></code></p></td>
+<td><p>Fun symbol token</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="regexp docutils literal notranslate"><span class="pre">([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*</span></code></p></td>
+<td><p>Data symbol token</p></td>
+</tr>
+</tbody>
+</table>
+<p>A <em class="dfn">symbol token</em> consists of a leading ascii letter (a-zA-Z) or an underscore <code class="docutils literal notranslate"><span class="pre">_</span></code> (U+005f),
+and a trailing sequence of zero or more ascii letters (a-zA-Z), ascii digits (0-9),
+underscores <code class="docutils literal notranslate"><span class="pre">_</span></code> (U+005f) and question marks <code class="docutils literal notranslate"><span class="pre">?</span></code> (U+0x3f).</p>
+<p>There are two types of symbol tokens: function symbol tokens and data symbol tokens.</p>
+<p>A <em class="dfn">function symbol token</em> is a symbol token which represents a <a class="reference internal" href="../glossary.html#term-function-symbol"><span class="xref std std-term">function symbol</span></a>.
+Function symbols are commonly used for names of variables which contain functions.
+The following are exmaples of function symbols.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">any?</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_loop</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">take_5</span></code></p></li>
+</ul>
+<p>A <em class="dfn">data symbol token</em> is a symbol token which represents a <a class="reference internal" href="../glossary.html#term-data-symbol"><span class="xref std std-term">data symbol</span></a>.
+Data symbols are commonly used for names of variables which contain ordinary values.
+The following are examples of data symbols.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">More_lines?</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ArrayList_class</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FLAT_MAP</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_HASH_TABLE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rarely_Used</span></code></p></li>
+</ul>
+</section>
+<section id="num-tokens">
+<span id="num-token"></span><h3><span class="section-number">3.1.2.3. </span>Num tokens<a class="headerlink" href="#num-tokens" title="Link to this heading">¶</a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>正規表現</p></th>
+<th class="head"><p>形態素の種別</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="regexp docutils literal notranslate"><span class="pre">[0-9][0-9_]*(\.[0-9][0-9_]*)?(?![a-zA-Z0-9_?])</span></code></p></td>
+<td><p>Num token (base10)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="regexp docutils literal notranslate"><span class="pre">0b_*[01][01_]*(?![a-zA-Z0-9_?])</span></code></p></td>
+<td><p>Num token (base2)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="regexp docutils literal notranslate"><span class="pre">0x_*[0-9a-f][0-9a-f_]*(?![a-zA-Z0-9_?])</span></code></p></td>
+<td><p>Num token (base16)</p></td>
+</tr>
+</tbody>
+</table>
+<p>There are three types of <em class="dfn">num tokens</em>: base10, base16 and base2.
+A base10 num token represents a num in decimal,
+base16 in hexadecimal,
+and base2 in binary.</p>
+<p>The fractional part can be represented only by base10 num tokens.
+Digits before the period <code class="docutils literal notranslate"><span class="pre">.</span></code> (U+002e) represents the integer portion,
+and digits after the period represents the fractional portion.</p>
+<p>Underscore characters <code class="docutils literal notranslate"><span class="pre">_</span></code> (U+005f) can be placed for spacing.</p>
+<p>These are examples of num tokens, each of which represents 42.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">42</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">42__</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0042</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0x2a</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0b_10_1010</span></code></p></li>
+</ul>
+<p>These are examples of num tokens with the fractional portion.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0.0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0.001</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">3.141_592_653</span></code></p></li>
+</ul>
+<p>All base10, base2 and base16 num tokens cannot be directly followed
+by a character which can form a symbol.
+This limitation is represented as <code class="regexp docutils literal notranslate"><span class="pre">(?![a-zA-Z0-9_?])</span></code>.
+Thus, for example, a code fragment <code class="docutils literal notranslate"><span class="pre">24h</span></code> causes a syntax error.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>Without this rule, for example, <code class="docutils literal notranslate"><span class="pre">0b123</span></code> is parsed as <code class="docutils literal notranslate"><span class="pre">0b1</span></code> and <code class="docutils literal notranslate"><span class="pre">23</span></code>.
+It is certainly error prone.</p>
+</div>
+<p>Each num token represents a number the scale of which is the count of digits of the fractional portion,
+and the mantissa of which is the integer made of the digits.</p>
+</section>
+<section id="string-tokens">
+<span id="str-token"></span><h3><span class="section-number">3.1.2.4. </span>文字列トークン<a class="headerlink" href="#string-tokens" title="Link to this heading">¶</a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>正規表現</p></th>
+<th class="head"><p>形態素の種別</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="regexp docutils literal notranslate"><span class="pre">'(''|[^'\u000d\000a])*'</span></code></p></td>
+<td><p>文字列トークン（単純）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="regexp docutils literal notranslate"><span class="pre">&quot;([^&quot;\u000d\u000a\\]|\\[0abtnvfre&quot;\\]|\\x\{[0-9a-f]{1,6}\})*&quot;</span></code></p></td>
+<td><p>文字列トークン（リッチ）</p></td>
+</tr>
+</tbody>
+</table>
+<p><em class="dfn">文字列トークン</em> には単純とリッチの二種類がある。</p>
+<p><em class="dfn">単純文字列トークン</em> の中では、ふたつの一重引用符 <code class="docutils literal notranslate"><span class="pre">'</span></code> (U+0027)にはさまれた文字が、文字列の中身になる。ただし、一重引用符自体を文字列に含みたい場合は、一重引用符をふたつ続ける。</p>
+<p>単純文字列トークンの例:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'Hello</span> <span class="pre">world'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'Let''s</span> <span class="pre">go!'</span></code> (これは <code class="docutils literal notranslate"><span class="pre">&quot;Let's</span> <span class="pre">go!&quot;</span></code> を表す)</p></li>
+</ul>
+<p><em class="dfn">リッチ文字列トークン</em> の中では、ふたつの二重引用符  <code class="docutils literal notranslate"><span class="pre">&quot;</span></code> (U+0022)にはさまれた文字が、文字列の中身になる。このトークンの中では、バックスラッシュ \ (U+005c)で始まる列が特殊な文字を表す。たとえば、ラインフィード (<code class="docutils literal notranslate"><span class="pre">\n</span></code>)や二重引用符(<code class="docutils literal notranslate"><span class="pre">\&quot;</span></code>)のように。</p>
+<p>リッチ文字列トークンの例:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;Let's</span> <span class="pre">go!&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;GET</span> <span class="pre">/index.html</span> <span class="pre">HTTP/1.1\r\nHost:</span> <span class="pre">host.example.org\r\n&quot;</span></code></p></li>
+</ul>
+<p><em class="dfn">バックスラッシュ記法</em> の一覧:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>記法</p></th>
+<th class="head"><p>Unicode</p></th>
+<th class="head"><p>説明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">\0</span></code></p></td>
+<td><p>U+0000</p></td>
+<td><p>ヌル文字</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">\a</span></code></p></td>
+<td><p>U+0007</p></td>
+<td><p>ベル文字</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">\b</span></code></p></td>
+<td><p>U+0008</p></td>
+<td><p>後退</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">\t</span></code></p></td>
+<td><p>U+0009</p></td>
+<td><p>水平タブ</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">\n</span></code></p></td>
+<td><p>U+000a</p></td>
+<td><p>ラインフィード</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">\v</span></code></p></td>
+<td><p>U+000b</p></td>
+<td><p>垂直タブ</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">\f</span></code></p></td>
+<td><p>U+000c</p></td>
+<td><p>書式送り</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">\r</span></code></p></td>
+<td><p>U+000d</p></td>
+<td><p>キャリッジリターン</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">\e</span></code></p></td>
+<td><p>U+001b</p></td>
+<td><p>エスケープ文字</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">\&quot;</span></code></p></td>
+<td><p>U+0022</p></td>
+<td><p>二重引用符  <code class="docutils literal notranslate"><span class="pre">&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">\\</span></code></p></td>
+<td><p>U+005c</p></td>
+<td><p>バックスラッシュ <code class="docutils literal notranslate"><span class="pre">\</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">\x{xxxxxx}</span></code></p></td>
+<td><p>U+xxxxxx</p></td>
+<td><p><a class="reference external" href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G25539">Unicode scalar value</a> で指定された文字。xxxxxxは1つから6つ並んだ16進数の桁(0-9a-f)で、0からd7ff<sub>16</sub> またはe000<sub>16</sub> から10ffff<sub>16</sub> の範囲（いずれも包含的）の整数を表す。</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>正規表現が示すように、単純文字列トークン、リッチ文字列トークンともに、複数行のプログラム行にまたがることはできない。これは、エディタープラグインなどの外部ツールが、容易に字句解析できるようにするためである。複数行に渡るテキストをプログラムから扱いたい場合は、リッチ文字列トークンでバックスラッシュ記法を使うか、 <a class="reference internal" href="../modsystem.html#modsystem-data-file-source"><span class="std std-ref">データファイルモジュール</span></a> を同梱すると良い。</p>
+</div>
+</section>
+<section id="binding-token">
+<span id="id2"></span><h3><span class="section-number">3.1.2.5. </span>Binding token<a class="headerlink" href="#binding-token" title="Link to this heading">¶</a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>正規表現</p></th>
+<th class="head"><p>形態素の種別</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="regexp docutils literal notranslate"><span class="pre">\binding(?![a-zA-Z0-9_?])</span></code></p></td>
+<td><p>Binding token</p></td>
+</tr>
+</tbody>
+</table>
+<p>A <em class="dfn">binding token</em> is literally <code class="docutils literal notranslate"><span class="pre">\binding</span></code>.
+It is used for a binding expression.</p>
+</section>
+<section id="punctuation-marks-and-operators">
+<span id="punctuation-operator"></span><h3><span class="section-number">3.1.2.6. </span>Punctuation marks and operators<a class="headerlink" href="#punctuation-marks-and-operators" title="Link to this heading">¶</a></h3>
+<p>Tokens other than described above are <em class="dfn">punctuation marks</em> or <em class="dfn">operators</em>.</p>
+<p>Some morphemes, like <code class="docutils literal notranslate"><span class="pre">$</span></code>, are reduced to different tokens depending on
+whether it is placed just after a whitespace character or not.
+If the morpheme is placed after a whitespace character,
+the token is represented with a prefix <code class="docutils literal notranslate"><span class="pre">ws</span></code>,
+like <code class="docutils literal notranslate"><span class="pre">ws$</span></code>.
+If the morpheme is not placed after a whitespace character,
+the token is represented with a prefix <code class="docutils literal notranslate"><span class="pre">nows</span></code>, like <code class="docutils literal notranslate"><span class="pre">nows$</span></code>.</p>
+<p>Other morphemes, like <code class="docutils literal notranslate"><span class="pre">==</span></code>, are reduced to a single token
+not depending on whether it is placed just after a whitespace character or not.
+Those tokens are represented literally like <code class="docutils literal notranslate"><span class="pre">==</span></code>.</p>
+<p>The list of punctuation marks and operators:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Token</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">!</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_lognot</span></code> operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">~</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_not</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;-</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_store</span></code> operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">||</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_logor</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_logand</span></code> operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">==</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_eq</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">!=</span></code></p></td>
+<td><p>not-equal operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;</span></code></p></td>
+<td><p>less-than operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&gt;</span></code></p></td>
+<td><p>greater-than operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;=</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_le</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&gt;=</span></code></p></td>
+<td><p>greater-than-or-equal-to operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">|</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_or</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">^</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_xor</span></code> operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&amp;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_and</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_shl</span></code> operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_shr</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">+</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_add</span></code> operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_sub</span></code> operator, or <code class="docutils literal notranslate"><span class="pre">op_minus</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">*</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_mul</span></code> operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_div</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">//</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_intdiv</span></code> operator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">%</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">op_rem</span></code> operator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">=</span></code></p></td>
+<td><p>Let clauses</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nows:</span></code></p></td>
+<td><p>Local variable references</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ws:</span></code></p></td>
+<td><p>Member variable references</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nows$</span></code></p></td>
+<td><p>Local variable load of a <a class="reference internal" href="../glossary.html#term-function-symbol"><span class="xref std std-term">function symbol</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ws$</span></code></p></td>
+<td><p>Member variable load of a <a class="reference internal" href="../glossary.html#term-function-symbol"><span class="xref std std-term">function symbol</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.</span></code></p></td>
+<td><p>Access to variables or functions</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">...</span></code></p></td>
+<td><p>Elements spreading</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nows[</span></code></p></td>
+<td><p>Vectors, formal receivers, or actual receivers</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ws[</span></code></p></td>
+<td><p>Vectors</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">]</span></code></p></td>
+<td><p>Closing</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nows{</span></code></p></td>
+<td><p>Function expressions or function arguments</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ws{</span></code></p></td>
+<td><p>Function expressions</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">}</span></code></p></td>
+<td><p>Closing</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nows(</span></code></p></td>
+<td><p>Parentheses expressions, formal arguments, or actual arguments</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ws(</span></code></p></td>
+<td><p>Parentheses expressions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">)</span></code></p></td>
+<td><p>Closing</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="abstract-source-tree">
+<span id="id3"></span><h2><span class="section-number">3.1.3. </span>Abstract source tree<a class="headerlink" href="#abstract-source-tree" title="Link to this heading">¶</a></h2>
+<p>The list describes the parsing rule of the <a class="reference internal" href="#grammar-token-program"><code class="xref std std-token docutils literal notranslate"><span class="pre">program</span></code></a> abstract source tree, or AST,
+from the token sequence of a program text.</p>
+<p>There are several shift/reduce conflicts in the rules, and the parser always choose to shift.</p>
+<pre>
+<strong id="grammar-token-program">program          </strong> ::=  <a class="reference internal" href="#grammar-token-toplevel"><code class="xref docutils literal notranslate"><span class="pre">toplevel</span></code></a>
+<strong id="grammar-token-toplevel">toplevel         </strong> ::=  <a class="reference internal" href="#grammar-token-empty"><code class="xref docutils literal notranslate"><span class="pre">empty</span></code></a>
+                       <a class="reference internal" href="#grammar-token-expression"><code class="xref docutils literal notranslate"><span class="pre">expression</span></code></a> <a class="reference internal" href="#grammar-token-toplevel"><code class="xref docutils literal notranslate"><span class="pre">toplevel</span></code></a>
+<strong id="grammar-token-seq">seq              </strong> ::=  <a class="reference internal" href="#grammar-token-empty"><code class="xref docutils literal notranslate"><span class="pre">empty</span></code></a>
+                       <a class="reference internal" href="#grammar-token-substantial_seq"><code class="xref docutils literal notranslate"><span class="pre">substantial_seq</span></code></a>
+<strong id="grammar-token-substantial_seq">substantial_seq  </strong> ::=  <a class="reference internal" href="#grammar-token-expression"><code class="xref docutils literal notranslate"><span class="pre">expression</span></code></a>
+                       <a class="reference internal" href="#grammar-token-expression"><code class="xref docutils literal notranslate"><span class="pre">expression</span></code></a> <a class="reference internal" href="#grammar-token-substantial_seq"><code class="xref docutils literal notranslate"><span class="pre">substantial_seq</span></code></a>
+                       <a class="reference internal" href="#grammar-token-expression"><code class="xref docutils literal notranslate"><span class="pre">expression</span></code></a> '=' <a class="reference internal" href="#grammar-token-expression"><code class="xref docutils literal notranslate"><span class="pre">expression</span></code></a> <a class="reference internal" href="#grammar-token-substantial_seq"><code class="xref docutils literal notranslate"><span class="pre">substantial_seq</span></code></a>
+<strong id="grammar-token-expression">expression       </strong> ::=  <a class="reference internal" href="#grammar-token-store_op"><code class="xref docutils literal notranslate"><span class="pre">store_op</span></code></a>
+<strong id="grammar-token-store_op">store_op         </strong> ::=  <a class="reference internal" href="#grammar-token-logor_op"><code class="xref docutils literal notranslate"><span class="pre">logor_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-logor_op"><code class="xref docutils literal notranslate"><span class="pre">logor_op</span></code></a> '&lt;-' <a class="reference internal" href="#grammar-token-logor_op"><code class="xref docutils literal notranslate"><span class="pre">logor_op</span></code></a>
+<strong id="grammar-token-logor_op">logor_op         </strong> ::=  <a class="reference internal" href="#grammar-token-logand_op"><code class="xref docutils literal notranslate"><span class="pre">logand_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-logand_op"><code class="xref docutils literal notranslate"><span class="pre">logand_op</span></code></a> '||' <a class="reference internal" href="#grammar-token-logor_op"><code class="xref docutils literal notranslate"><span class="pre">logor_op</span></code></a>
+<strong id="grammar-token-logand_op">logand_op        </strong> ::=  <a class="reference internal" href="#grammar-token-relation_op"><code class="xref docutils literal notranslate"><span class="pre">relation_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-relation_op"><code class="xref docutils literal notranslate"><span class="pre">relation_op</span></code></a> '&amp;&amp;' <a class="reference internal" href="#grammar-token-logand_op"><code class="xref docutils literal notranslate"><span class="pre">logand_op</span></code></a>
+<strong id="grammar-token-relation_op">relation_op      </strong> ::=  <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '==' <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '!=' <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '&lt;' <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '&gt;' <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '&lt;=' <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '&gt;=' <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a>
+<strong id="grammar-token-add_op">add_op           </strong> ::=  <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '+' <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '-' <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '|' <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-add_op"><code class="xref docutils literal notranslate"><span class="pre">add_op</span></code></a> '^' <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a>
+<strong id="grammar-token-multiply_op">multiply_op      </strong> ::=  <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a> '*' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a> '/' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a> '//' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a> '%' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a> '&amp;' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a> '&lt;&lt;' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+                       <a class="reference internal" href="#grammar-token-multiply_op"><code class="xref docutils literal notranslate"><span class="pre">multiply_op</span></code></a> '&gt;&gt;' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+<strong id="grammar-token-unary_op">unary_op         </strong> ::=  <a class="reference internal" href="#grammar-token-primary"><code class="xref docutils literal notranslate"><span class="pre">primary</span></code></a>
+                       '-' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+                       '!' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+                       '~' <a class="reference internal" href="#grammar-token-unary_op"><code class="xref docutils literal notranslate"><span class="pre">unary_op</span></code></a>
+<strong id="grammar-token-primary">primary          </strong> ::=  <a class="reference internal" href="#grammar-token-num"><code class="xref docutils literal notranslate"><span class="pre">num</span></code></a>
+                       <a class="reference internal" href="#grammar-token-str"><code class="xref docutils literal notranslate"><span class="pre">str</span></code></a>
+                       <a class="reference internal" href="#grammar-token-binding"><code class="xref docutils literal notranslate"><span class="pre">binding</span></code></a>
+                       <a class="reference internal" href="#grammar-token-paren"><code class="xref docutils literal notranslate"><span class="pre">paren</span></code></a>
+                       <a class="reference internal" href="#grammar-token-vec"><code class="xref docutils literal notranslate"><span class="pre">vec</span></code></a>
+                       <a class="reference internal" href="#grammar-token-fun"><code class="xref docutils literal notranslate"><span class="pre">fun</span></code></a>
+                       <a class="reference internal" href="#grammar-token-local_load"><code class="xref docutils literal notranslate"><span class="pre">local_load</span></code></a>
+                       <a class="reference internal" href="#grammar-token-member_load"><code class="xref docutils literal notranslate"><span class="pre">member_load</span></code></a>
+                       <a class="reference internal" href="#grammar-token-local_varref"><code class="xref docutils literal notranslate"><span class="pre">local_varref</span></code></a>
+                       <a class="reference internal" href="#grammar-token-member_varref"><code class="xref docutils literal notranslate"><span class="pre">member_varref</span></code></a>
+                       <a class="reference internal" href="#grammar-token-local_call"><code class="xref docutils literal notranslate"><span class="pre">local_call</span></code></a>
+                       <a class="reference internal" href="#grammar-token-member_call"><code class="xref docutils literal notranslate"><span class="pre">member_call</span></code></a>
+<strong id="grammar-token-num">num              </strong> ::=  NUM
+<strong id="grammar-token-str">str              </strong> ::=  STRING
+<strong id="grammar-token-binding">binding          </strong> ::=  BINDING
+<strong id="grammar-token-paren">paren            </strong> ::=  'nows(' <a class="reference internal" href="#grammar-token-seq"><code class="xref docutils literal notranslate"><span class="pre">seq</span></code></a> ')'
+                       'ws(' <a class="reference internal" href="#grammar-token-seq"><code class="xref docutils literal notranslate"><span class="pre">seq</span></code></a> ')'
+<strong id="grammar-token-vec">vec              </strong> ::=  'nows[' <a class="reference internal" href="#grammar-token-vec_body"><code class="xref docutils literal notranslate"><span class="pre">vec_body</span></code></a> ']'
+                       'ws[' <a class="reference internal" href="#grammar-token-vec_body"><code class="xref docutils literal notranslate"><span class="pre">vec_body</span></code></a> ']'
+<strong id="grammar-token-fun">fun              </strong> ::=  'nows{' <a class="reference internal" href="#grammar-token-fun_body"><code class="xref docutils literal notranslate"><span class="pre">fun_body</span></code></a> '}'
+                       'ws{' <a class="reference internal" href="#grammar-token-fun_body"><code class="xref docutils literal notranslate"><span class="pre">fun_body</span></code></a> '}'
+<strong id="grammar-token-local_load">local_load       </strong> ::=  DATA_SYM | nows'$' FUN_SYM | ws'$' FUN_SYM
+<strong id="grammar-token-local_varref">local_varref     </strong> ::=  'nows:' DATA_SYM
+                       'ws:' DATA_SYM
+                       'nows:' FUN_SYM
+                       'ws:' FUN_SYM
+<strong id="grammar-token-local_call">local_call       </strong> ::=  FUN_SYM <a class="reference internal" href="#grammar-token-recv"><code class="xref docutils literal notranslate"><span class="pre">recv</span></code></a> <a class="reference internal" href="#grammar-token-args"><code class="xref docutils literal notranslate"><span class="pre">args</span></code></a>
+<strong id="grammar-token-member_load">member_load      </strong> ::=  <a class="reference internal" href="#grammar-token-primary"><code class="xref docutils literal notranslate"><span class="pre">primary</span></code></a> '.' DATA_SYM
+                       <a class="reference internal" href="#grammar-token-primary"><code class="xref docutils literal notranslate"><span class="pre">primary</span></code></a> 'nows$' FUN_SYM
+<strong id="grammar-token-member_varref">member_varref    </strong> ::=  <a class="reference internal" href="#grammar-token-primary"><code class="xref docutils literal notranslate"><span class="pre">primary</span></code></a> 'nows:' DATA_SYM
+                       <a class="reference internal" href="#grammar-token-primary"><code class="xref docutils literal notranslate"><span class="pre">primary</span></code></a> 'nows:' FUN_SYM
+<strong id="grammar-token-member_call">member_call      </strong> ::=  <a class="reference internal" href="#grammar-token-primary"><code class="xref docutils literal notranslate"><span class="pre">primary</span></code></a> '.' FUN_SYM <a class="reference internal" href="#grammar-token-recv"><code class="xref docutils literal notranslate"><span class="pre">recv</span></code></a> <a class="reference internal" href="#grammar-token-args"><code class="xref docutils literal notranslate"><span class="pre">args</span></code></a>
+<strong id="grammar-token-recv">recv             </strong> ::=  <a class="reference internal" href="#grammar-token-empty"><code class="xref docutils literal notranslate"><span class="pre">empty</span></code></a>
+                       'nows[' <a class="reference internal" href="#grammar-token-expression"><code class="xref docutils literal notranslate"><span class="pre">expression</span></code></a> ']'
+<strong id="grammar-token-args">args             </strong> ::=  <a class="reference internal" href="#grammar-token-paren_args"><code class="xref docutils literal notranslate"><span class="pre">paren_args</span></code></a> <a class="reference internal" href="#grammar-token-fun_args"><code class="xref docutils literal notranslate"><span class="pre">fun_args</span></code></a>
+<strong id="grammar-token-paren_args">paren_args       </strong> ::=  <a class="reference internal" href="#grammar-token-empty"><code class="xref docutils literal notranslate"><span class="pre">empty</span></code></a>
+                       'nows(' <a class="reference internal" href="#grammar-token-vec_body"><code class="xref docutils literal notranslate"><span class="pre">vec_body</span></code></a> ')'
+<strong id="grammar-token-fun_args">fun_args         </strong> ::=  <a class="reference internal" href="#grammar-token-empty"><code class="xref docutils literal notranslate"><span class="pre">empty</span></code></a>
+                       <a class="reference internal" href="#grammar-token-fun_arg"><code class="xref docutils literal notranslate"><span class="pre">fun_arg</span></code></a> <a class="reference internal" href="#grammar-token-fun_args"><code class="xref docutils literal notranslate"><span class="pre">fun_args</span></code></a>
+<strong id="grammar-token-fun_arg">fun_arg          </strong> ::=  'nows{' <a class="reference internal" href="#grammar-token-fun_body"><code class="xref docutils literal notranslate"><span class="pre">fun_body</span></code></a> '}'
+<strong id="grammar-token-vec_body">vec_body         </strong> ::=  <a class="reference internal" href="#grammar-token-empty"><code class="xref docutils literal notranslate"><span class="pre">empty</span></code></a>
+                       <a class="reference internal" href="#grammar-token-elements_producer"><code class="xref docutils literal notranslate"><span class="pre">elements_producer</span></code></a> <a class="reference internal" href="#grammar-token-vec_body"><code class="xref docutils literal notranslate"><span class="pre">vec_body</span></code></a>
+<strong id="grammar-token-elements_producer">elements_producer</strong> ::=  <a class="reference internal" href="#grammar-token-expression"><code class="xref docutils literal notranslate"><span class="pre">expression</span></code></a>
+                       '...' <a class="reference internal" href="#grammar-token-expression"><code class="xref docutils literal notranslate"><span class="pre">expression</span></code></a>
+<strong id="grammar-token-fun_body">fun_body         </strong> ::=  <a class="reference internal" href="#grammar-token-formal_receiver"><code class="xref docutils literal notranslate"><span class="pre">formal_receiver</span></code></a> <a class="reference internal" href="#grammar-token-formal_args"><code class="xref docutils literal notranslate"><span class="pre">formal_args</span></code></a> <a class="reference internal" href="#grammar-token-seq"><code class="xref docutils literal notranslate"><span class="pre">seq</span></code></a>
+<strong id="grammar-token-formal_receiver">formal_receiver  </strong> ::=  <a class="reference internal" href="#grammar-token-empty"><code class="xref docutils literal notranslate"><span class="pre">empty</span></code></a>
+                       'nows[' <a class="reference internal" href="#grammar-token-expression"><code class="xref docutils literal notranslate"><span class="pre">expression</span></code></a> ']'
+<strong id="grammar-token-formal_args">formal_args      </strong> ::=  <a class="reference internal" href="#grammar-token-empty"><code class="xref docutils literal notranslate"><span class="pre">empty</span></code></a>
+                       'nows(' <a class="reference internal" href="#grammar-token-vec_body"><code class="xref docutils literal notranslate"><span class="pre">vec_body</span></code></a> ')'
+<strong id="grammar-token-empty">empty            </strong> ::= 
+</pre>
+<p id="token-type">The following identifiers represent token types.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Token type</p></th>
+<th class="head"><p>説明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FUN_SYM</p></td>
+<td><p><a class="reference internal" href="#symbol-token"><span class="std std-ref">Function symbol token</span></a> such as <code class="docutils literal notranslate"><span class="pre">print</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>DATA_SYM</p></td>
+<td><p><a class="reference internal" href="#symbol-token"><span class="std std-ref">Data symbol token</span></a> such as <code class="docutils literal notranslate"><span class="pre">Count</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>NUM</p></td>
+<td><p><a class="reference internal" href="#num-token"><span class="std std-ref">Num token</span></a> such as <code class="docutils literal notranslate"><span class="pre">42</span></code> or <code class="docutils literal notranslate"><span class="pre">3.14159</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>STRING</p></td>
+<td><p><a class="reference internal" href="#str-token"><span class="std std-ref">String token</span></a> such as <code class="docutils literal notranslate"><span class="pre">'Peng!'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>BINDING</p></td>
+<td><p><a class="reference internal" href="#binding-token"><span class="std std-ref">Binding token</span></a> <code class="docutils literal notranslate"><span class="pre">\binding</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Those enclosed by single quotation marks</p></td>
+<td><p><a class="reference internal" href="#punctuation-operator"><span class="std std-ref">Punctuation marks or operators</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html"><span class="section-number">3. </span>言語仕様</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="semantics.html"><span class="section-number">3.2. </span>意味論</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

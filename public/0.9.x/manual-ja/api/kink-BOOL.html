@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.5. kink/BOOL &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.6. kink/CHARSET" href="kink-CHARSET.html" />
+    <link rel="prev" title="6.4. kink/BIN_HASHER" href="kink-BIN_HASHER.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.5. kink/BOOL</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-BIN_HASHER.html"><span class="section-number">6.4. </span>kink/BIN_HASHER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-CHARSET.html"><span class="section-number">6.6. </span>kink/CHARSET</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-bool">
+<h1><span class="section-number">6.5. </span>kink/BOOL<a class="headerlink" href="#kink-bool" title="Link to this heading">¶</a></h1>
+<p>Companion mod for bool vals.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-bool" id="id2">type bool</a></p>
+<ul>
+<li><p><a class="reference internal" href="#bool-op-eq-arg-bl" id="id3">Bool.op_eq(Arg_bl)</a></p></li>
+<li><p><a class="reference internal" href="#bool-repr" id="id4">Bool.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#bool-is-val" id="id5">BOOL.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-bool">
+<span id="api-4114da34f96e8d8f51b850be2f586125"></span><h2><span class="section-number">6.5.1. </span>type bool<a class="headerlink" href="#type-bool" title="Link to this heading">¶</a></h2>
+<p>Bool vals are true or false,</p>
+<p>See `if` preloaded fun for 1-way or 2-way branch.</p>
+<p>For multi-way branch, use `branch` preloaded fun.</p>
+<p>See `op_lognot`, `op_logor`, `op_logand` preloaded funs for logical operations. They are translated from !, ||, and &amp;&amp; operators. Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># whether S has a whitespace character on the head or the tail</span>
+<span class="nv">:strippable?</span> &lt;- {(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">any?</span> &amp;&amp; (<span class="nv">S</span>.<span class="n">get</span>(<span class="m">0</span>) == <span class="m">0x20</span> || <span class="nv">S</span>.<span class="n">get</span>(<span class="nv">S</span>.<span class="n">size</span> - <span class="m">1</span>) == <span class="m">0x20</span>)
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">strippable?</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">strippable?</span>(<span class="s1">&#39; foo&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">strippable?</span>(<span class="s1">&#39;foo &#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">strippable?</span>(<span class="s1">&#39;&#39;</span>).<span class="n">repr</span>)     <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+<section id="bool-op-eq-arg-bl">
+<span id="api-5e13249ccd82055f19a86811319e5146"></span><h3><span class="section-number">6.5.1.1. </span>Bool.op_eq(Arg_bl)<a class="headerlink" href="#bool-op-eq-arg-bl" title="Link to this heading">¶</a></h3>
+<p>Bool.op_eq returns whether two bool vals are equal.</p>
+<p>Arg_bl must be a bool.</p>
+<p>If both Bool and Arg_bl are true, or both Bool and Arg_bl are false, Bool.op_eq returns true.</p>
+<p>If Bool is true and Arg_bl is false, or Bool is false and Arg_bl is true, Bool.op_eq returns false.</p>
+<p>Note that an expression “X == Y” is translated to “(X).op_eq(Y)”. See Semantics section of the manual.</p>
+</section>
+<section id="bool-repr">
+<span id="api-96ec3c036cb6c4bb0e22e09472be6f5f"></span><h3><span class="section-number">6.5.1.2. </span>Bool.repr<a class="headerlink" href="#bool-repr" title="Link to this heading">¶</a></h3>
+<p>Bool.repr returns &quot;true&quot; for true, &quot;false&quot; for false.</p>
+</section>
+</section>
+<section id="bool-is-val">
+<span id="api-720ddc3162ac38219e5bf4db24f92857"></span><h2><span class="section-number">6.5.2. </span>BOOL.is?(Val)<a class="headerlink" href="#bool-is-val" title="Link to this heading">¶</a></h2>
+<p>BOOL.is? returns whether the Val is a bool val.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BOOL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BOOL</span>.<span class="n">is?</span>(<span class="n">true</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BOOL</span>.<span class="n">is?</span>(<span class="n">false</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BOOL</span>.<span class="n">is?</span>(<span class="m">42</span>).<span class="n">repr</span>)     <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-BIN_HASHER.html"><span class="section-number">6.4. </span>kink/BIN_HASHER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-CHARSET.html"><span class="section-number">6.6. </span>kink/CHARSET</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

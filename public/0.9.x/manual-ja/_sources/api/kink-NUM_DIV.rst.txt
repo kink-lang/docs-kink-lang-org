@@ -1,0 +1,267 @@
+==============
+kink\/NUM\_DIV
+==============
+
+The companion mod for num\_div vals\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-10b9390ed1e764fc662783b7e5d8cd23:
+
+type num\_div
+=============
+
+A num\_div val \(Dividend\, Divisor\) represents a division of Dividend by Divisor\, where Dividend is a num\, and Divisor is a non\-zero num\.
+
+Num\_div vals are usually made by Num\.op\_div or Num\.round\.
+
+Example\:
+
+.. code:: kink
+
+    :NUM_DIV.require_from('kink/')
+    stdout.print_line(NUM_DIV.new(10 3).ceil(3).repr)   # => 0.334
+    stdout.print_line(NUM_DIV.new(10 3).floor(3).repr)  # => 0.333
+        
+    stdout.print_line((10 / 3).ceil(3).repr)  # => 0.334
+    stdout.print_line((10 / 3).floor(3).repr) # => 0.333
+        
+    stdout.print_line(1.23456.round.ceil(3).repr)   # => 1.235
+    stdout.print_line(1.23456.round.floor(3).repr)  # => 1.234
+
+.. _api-1cc14fc4af2b979b9ec78ef550308671:
+
+Num\_div\.dividend
+------------------
+
+Num\_div\.dividend returns Dividend of the Num\_div\.
+
+The result is a num\.
+
+Example\:
+
+.. code:: kink
+
+    :D <- 1.2 / 3.4
+    stdout.print_line(D.dividend.repr)  # => 1.2
+
+.. _api-ad5d873578222eda1c9b59c614c22011:
+
+Num\_div\.divisor
+-----------------
+
+Num\_div\.divisor returns Divisor of the Num\_div\.
+
+The result is a num\.
+
+Example\:
+
+.. code:: kink
+
+    :D <- 1.2 / 3.4
+    stdout.print_line(D.divisor.repr)  # => 3.4
+
+.. _api-bc3c25f372309c0e5e20969aff83e2fe:
+
+Num\_div\.ceil\(Scale\)
+-----------------------
+
+Num\_div\.ceil does toward\-plus\-infinity rounding to the result of the division\.
+
+Precondition\:
+
+\• Scale must be an int num
+
+The result is the smallest num with the Scale not less than the result of the division\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line((-0.16).round.ceil(1).repr) # => (-0.1)
+    stdout.print_line((-0.15).round.ceil(1).repr) # => (-0.1)
+    stdout.print_line((-0.14).round.ceil(1).repr) # => (-0.1)
+        
+    stdout.print_line((-0.06).round.ceil(1).repr) # => 0.0
+    stdout.print_line((-0.05).round.ceil(1).repr) # => 0.0
+    stdout.print_line((-0.04).round.ceil(1).repr) # => 0.0
+        
+    stdout.print_line(0.04.round.ceil(1).repr)  # => 0.1
+    stdout.print_line(0.05.round.ceil(1).repr)  # => 0.1
+    stdout.print_line(0.06.round.ceil(1).repr)  # => 0.1
+        
+    stdout.print_line(0.14.round.ceil(1).repr)  # => 0.2
+    stdout.print_line(0.15.round.ceil(1).repr)  # => 0.2
+    stdout.print_line(0.16.round.ceil(1).repr)  # => 0.2
+
+.. _api-244cd265fafb6a4ee724da7f2fb9b7b7:
+
+Num\_div\.floor\(Scale\)
+------------------------
+
+Num\_div\.floor does toward\-minus\-infinity rounding to the result of the division\.
+
+Precondition\:
+
+\• Scale must be an int num
+
+The result is the biggest num with the Scale not more than the result of the division\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line((-0.16).round.floor(1).repr)  # => (-0.2)
+    stdout.print_line((-0.15).round.floor(1).repr)  # => (-0.2)
+    stdout.print_line((-0.14).round.floor(1).repr)  # => (-0.2)
+        
+    stdout.print_line((-0.06).round.floor(1).repr)  # => (-0.1)
+    stdout.print_line((-0.05).round.floor(1).repr)  # => (-0.1)
+    stdout.print_line((-0.04).round.floor(1).repr)  # => (-0.1)
+        
+    stdout.print_line(0.04.round.floor(1).repr) # => 0.0
+    stdout.print_line(0.05.round.floor(1).repr) # => 0.0
+    stdout.print_line(0.06.round.floor(1).repr) # => 0.0
+        
+    stdout.print_line(0.14.round.floor(1).repr) # => 0.1
+    stdout.print_line(0.15.round.floor(1).repr) # => 0.1
+    stdout.print_line(0.16.round.floor(1).repr) # => 0.1
+
+.. _api-1beb735912665b2ed782e7e3308c1664:
+
+Num\_div\.half\_ceil\(Scale\)
+-----------------------------
+
+Num\_div\.half\_ceil does toward\-nearest rounding to the result of the division with tie\-breaking toward plus infinity\.
+
+Precondition\:
+
+\• Scale must be an int num
+
+The result is the num with the Scale nearest to the result of the division\. If there are two such nums\, the bigger one is returned\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line((-0.16).round.half_ceil(1).repr)  # => (-0.2)
+    stdout.print_line((-0.15).round.half_ceil(1).repr)  # => (-0.1)
+    stdout.print_line((-0.14).round.half_ceil(1).repr)  # => (-0.1)
+        
+    stdout.print_line((-0.06).round.half_ceil(1).repr)  # => (-0.1)
+    stdout.print_line((-0.05).round.half_ceil(1).repr)  # => 0.0
+    stdout.print_line((-0.04).round.half_ceil(1).repr)  # => 0.0
+        
+    stdout.print_line(0.04.round.half_ceil(1).repr) # => 0.0
+    stdout.print_line(0.05.round.half_ceil(1).repr) # => 0.1
+    stdout.print_line(0.06.round.half_ceil(1).repr) # => 0.1
+        
+    stdout.print_line(0.14.round.half_ceil(1).repr) # => 0.1
+    stdout.print_line(0.15.round.half_ceil(1).repr) # => 0.2
+    stdout.print_line(0.16.round.half_ceil(1).repr) # => 0.2
+
+.. _api-f98b5420930e1110196b41c786ffd3e0:
+
+Num\_div\.half\_floor\(Scale\)
+------------------------------
+
+Num\_div\.half\_floor does toward\-nearest rounding to the result of the division with tie\-breaking toward minus infinity\.
+
+Precondition\:
+
+\• Scale must be an int num
+
+The result is the num with the Scale nearest to the result of the division\. If there are two such nums\, the smaller one is returned\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line((-0.16).round.half_floor(1).repr) # => (-0.2)
+    stdout.print_line((-0.15).round.half_floor(1).repr) # => (-0.2)
+    stdout.print_line((-0.14).round.half_floor(1).repr) # => (-0.1)
+        
+    stdout.print_line((-0.06).round.half_floor(1).repr) # => (-0.1)
+    stdout.print_line((-0.05).round.half_floor(1).repr) # => (-0.1)
+    stdout.print_line((-0.04).round.half_floor(1).repr) # => 0.0
+        
+    stdout.print_line(0.04.round.half_floor(1).repr)  # => 0.0
+    stdout.print_line(0.05.round.half_floor(1).repr)  # => 0.0
+    stdout.print_line(0.06.round.half_floor(1).repr)  # => 0.1
+        
+    stdout.print_line(0.14.round.half_floor(1).repr)  # => 0.1
+    stdout.print_line(0.15.round.half_floor(1).repr)  # => 0.1
+    stdout.print_line(0.16.round.half_floor(1).repr)  # => 0.2
+
+.. _api-90456558cd75fee0e38c25c62fa50993:
+
+Num\_div\.half\_even\(Scale\)
+-----------------------------
+
+Num\_div\.half\_even does bankers’ rounding to the result of the division\.
+
+Precondition\:
+
+\• Scale must be an int num
+
+The result is the num with the Scale nearest to the result of the division\. If there are two such nums\, the num with an even Mantissa is returned\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line((-0.16).round.half_even(1).repr)  # => (-0.2)
+    stdout.print_line((-0.15).round.half_even(1).repr)  # => (-0.2)
+    stdout.print_line((-0.14).round.half_even(1).repr)  # => (-0.1)
+        
+    stdout.print_line((-0.06).round.half_even(1).repr)  # => (-0.1)
+    stdout.print_line((-0.05).round.half_even(1).repr)  # => 0.0
+    stdout.print_line((-0.04).round.half_even(1).repr)  # => 0.0
+        
+    stdout.print_line(0.04.round.half_even(1).repr) # => 0.0
+    stdout.print_line(0.05.round.half_even(1).repr) # => 0.0
+    stdout.print_line(0.06.round.half_even(1).repr) # => 0.1
+        
+    stdout.print_line(0.14.round.half_even(1).repr) # => 0.1
+    stdout.print_line(0.15.round.half_even(1).repr) # => 0.2
+    stdout.print_line(0.16.round.half_even(1).repr) # => 0.2
+
+.. _api-22a463b98e7095b562ce3e9a19abeb7b:
+
+Num\_div\.repr
+--------------
+
+Num\_div\.repr returns a str such as \"\(1\.2\/\(\-3\.4\)\)\"
+
+.. _api-0833bd4e4fe6b26d24ca44708464cedd:
+
+NUM\_DIV\.new\(Dividend Divisor\)
+=================================
+
+NUM\_DIV\.new makes a num\_div val with \(Dividend\, Divisor\)\.
+
+Preconditions\:
+
+\• Dividend must be a num
+
+\• Divisor must be a num
+
+\• Divisor must not be equal to 0
+
+Example\:
+
+.. code:: kink
+
+    :NUM_DIV.require_from('kink/')
+    stdout.print_line(NUM_DIV.new(10 3).ceil(3).repr)   # => 0.334
+    stdout.print_line(NUM_DIV.new(10 3).floor(3).repr)  # => 0.333
+
+.. _api-b6eea992e503046c995d4232a8362baf:
+
+NUM\_DIV\.is\?\(Val\)
+=====================
+
+NUM\_DIV\.is\? returns whether Val is  a num\_div val\.
+

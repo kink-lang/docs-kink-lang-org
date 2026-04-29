@@ -1,0 +1,65 @@
+====================
+kink\/thread\/ATOMIC
+====================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-75364b7665ceea111ab7a973750f32e2:
+
+type atomic
+===========
+
+\`atomic\` is a reference to a value\. \`atomic\` supports read and write actions ordered by the synchronization order\, and atomic compare\-and\-set action\.
+
+.. _api-b3f8858290eed55096f0c6e4224cbbe8:
+
+Atomic\.load
+------------
+
+\`load\` gets the value which \`Atomic\` references as a synchronization action\, and returns the value\.
+
+.. _api-060528159d8a1a31a749798dea82cea2:
+
+Atomic \<\- New
+---------------
+
+\`\<\-\` operator\, or \`op\_store\` method\, writes \`New\` as the referenced value of \`Atomic\`\. The write operations is done as a synchronization action\.
+
+.. _api-d17619141c24088cdde3d4554e01ac67:
+
+Atomic\.compare\_and\_set\(Expected New\)
+-----------------------------------------
+
+\`compare\_and\_set\` performs an atomic compare\-and\-set operation on \`Atomic\`\. If \`New\` is written\, \`compare\_and\_set\` returns true\. If \`New\` is not written\, \`compare\_and\_set\` returns false\.
+
+\`compare\_and\_set\` reads the referenced value with the memory semantics of \`load\`\. If the read value is same as \`Expected\`\, \`compare\_and\_set\` writes \`New\` as the referenced value of\`Atomic\`\, with the memory semantics of \`\<\-\` operator\. If the read value is not same as \`Expected\`\, \`compare\_and\_set\` returns false\.
+
+.. _api-5cf1bb5e43a23c67e4133f8ff37d37e9:
+
+Atomic\.update\(\$compute\_new\)
+--------------------------------
+
+\`update\` is a convenient method to atomically update the referenced value of \`Atomic\`\, with a value computed from the current value\.
+
+𝄋 \`update\` reads the current value\, called \`Old\`\, with the memory semantics of \`load\`\. Then \`update\` calls compute\_new\(Old\) to get a value \`New\`\. After that\, \`update\` performs compare\-and\-set operation with \`Old\` as the expected current value\, and \`New\` as the new value\. If \`New\` is written\, \`update\` returns a \`vec\` \[Old New\]\. If \`New\` is not written\, \`update\` restarts from 𝄋\.
+
+.. rubric:: Precondition
+
+\$compute\_new must be a fun which takes an arg\.
+
+.. _api-4decf7b4a4bbf5c4b774e0bac9f75f1b:
+
+ATOMIC\.new\(Initial\_val\)
+===========================
+
+\`new\` returns a new \`atomic\` which references \`Initial\_val\`\.
+
+.. _api-155625a6945ea39b14eb4a06ab4455fb:
+
+ATOMIC\.is\?\(Val\)
+===================
+
+\`is\?\` returns whether \`Val\` is an \`atomic\`\.
+

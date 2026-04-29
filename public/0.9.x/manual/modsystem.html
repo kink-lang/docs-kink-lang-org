@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>5. Module system &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="6. Builtin library API" href="api/index.html" />
+    <link rel="prev" title="4. Object system" href="object.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>5. Module system</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="object.html"><span class="section-number">4. </span>Object system</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="api/index.html"><span class="section-number">6. </span>Builtin library API</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="module-system">
+<h1><span class="section-number">5. </span>Module system<a class="headerlink" href="#module-system" title="Link to this heading">¶</a></h1>
+<p>A <em class="dfn">module system</em> is a subsystem of the <a class="reference internal" href="glossary.html#term-runtime"><span class="xref std std-term">runtime</span></a> which manages <a class="reference internal" href="glossary.html#term-module"><span class="xref std std-term">modules</span></a>.</p>
+<p>A <em class="dfn">module</em> is a value loaded by the <a class="reference internal" href="glossary.html#term-module-system"><span class="xref std std-term">module system</span></a>.
+Usually, a module has a set of functions of a single feature group as its variables.
+“Module” can be abbreviated to “mod.”</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#module-names" id="id2">Module names</a></p></li>
+<li><p><a class="reference internal" href="#module-base-paths" id="id3">Module base paths</a></p></li>
+<li><p><a class="reference internal" href="#module-source-types" id="id4">Module source types</a></p>
+<ul>
+<li><p><a class="reference internal" href="#builtin-component" id="id5">Builtin component</a></p></li>
+<li><p><a class="reference internal" href="#kink-program-file" id="id6">Kink program file</a></p></li>
+<li><p><a class="reference internal" href="#data-file" id="id7">Data file</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#module-loading" id="id8">Module loading</a></p>
+<ul>
+<li><p><a class="reference internal" href="#is-associated" id="id9"><code class="docutils literal notranslate"><span class="pre">is_associated</span></code></a></p></li>
+<li><p><a class="reference internal" href="#find-source" id="id10"><code class="docutils literal notranslate"><span class="pre">find_source</span></code></a></p></li>
+<li><p><a class="reference internal" href="#make-builtin-mod" id="id11"><code class="docutils literal notranslate"><span class="pre">make_builtin_mod</span></code></a></p></li>
+<li><p><a class="reference internal" href="#compile-and-run" id="id12"><code class="docutils literal notranslate"><span class="pre">compile_and_run</span></code></a></p></li>
+<li><p><a class="reference internal" href="#make-data-mod" id="id13"><code class="docutils literal notranslate"><span class="pre">make_data_mod</span></code></a></p></li>
+<li><p><a class="reference internal" href="#associate" id="id14"><code class="docutils literal notranslate"><span class="pre">associate</span></code></a></p></li>
+<li><p><a class="reference internal" href="#get-associated" id="id15"><code class="docutils literal notranslate"><span class="pre">get_associated</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#launchable-module" id="id16">Launchable module</a></p></li>
+</ul>
+</nav>
+<section id="module-names">
+<h2><span class="section-number">5.1. </span>Module names<a class="headerlink" href="#module-names" title="Link to this heading">¶</a></h2>
+<p>The module name must match the regex pattern:
+<code class="docutils literal notranslate"><span class="pre">([a-z_][a-z0-9_]*/)*_*[A-Z][A-Z0-9_]*</span></code>.</p>
+<p>Examples of valid module names:</p>
+<ul class="simple">
+<li><p>MAIN</p></li>
+<li><p>kink/STR</p></li>
+<li><p>kink/test/TEST</p></li>
+<li><p>org/example/_internal/INTERNAL_MOD</p></li>
+<li><p>com/example/_PRIVATE_MOD</p></li>
+</ul>
+</section>
+<section id="module-base-paths">
+<span id="id1"></span><h2><span class="section-number">5.2. </span>Module base paths<a class="headerlink" href="#module-base-paths" title="Link to this heading">¶</a></h2>
+<p>Modules sources can be placed under directories of the file system.
+Those directories are called <em class="dfn">module base paths</em>.</p>
+<p>Module base paths are provided by <a class="reference internal" href="commandline/kink-kinkw.html#pathoption"><span class="std std-ref">-p / --path</span></a> commandline option,
+or by <a class="reference internal" href="api/kink-MOD.html#api-82a542809dbc766c2795a2ac99f618be"><span class="std std-ref">MOD.add_path</span></a>.</p>
+</section>
+<section id="module-source-types">
+<h2><span class="section-number">5.3. </span>Module source types<a class="headerlink" href="#module-source-types" title="Link to this heading">¶</a></h2>
+<p>There are three types of module sources.</p>
+<section id="builtin-component">
+<h3><span class="section-number">5.3.1. </span>Builtin component<a class="headerlink" href="#builtin-component" title="Link to this heading">¶</a></h3>
+<p>The runtime provides builtin components as sources of modules,
+namely builtin modules.
+You can see the specification of public builtin modules in <a class="reference internal" href="api/index.html"><span class="doc">Builtin library API</span></a>.
+There can also be private builtin modules which are not parts of the public API.</p>
+</section>
+<section id="kink-program-file">
+<h3><span class="section-number">5.3.2. </span>Kink program file<a class="headerlink" href="#kink-program-file" title="Link to this heading">¶</a></h3>
+<p>A Kink program file under a module base path can be a source of a module.
+The path of the Kink program file must be in the form
+<code class="docutils literal notranslate"><span class="pre">{module</span> <span class="pre">base</span> <span class="pre">path}/{module</span> <span class="pre">name}.kn</span></code>.
+The file must be encoded in UTF-8.</p>
+<p>For example, assume <code class="docutils literal notranslate"><span class="pre">org/example/TARAI</span></code> is the module name,
+and the module base paths are <code class="docutils literal notranslate"><span class="pre">/home/you/kinkmod</span></code> and <code class="docutils literal notranslate"><span class="pre">/usr/share/kinkmod</span></code>.
+In that case, the Kink program file can be located at one of the following paths:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/home/you/kinkmod/org/example/TARAI.kn</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/usr/share/kinkmod/org/example/TARAI.kn</span></code></p></li>
+</ul>
+<p>The top level <a class="reference internal" href="api/kink-BINDING.html#api-3a046d0b373eaacef45ecba66825bf5b"><span class="std std-ref">binding</span></a> of the program will be the module.
+See <a class="reference internal" href="#modsystem-compile-and-run"><span class="std std-ref">compile_and_run</span></a> pseudo procedure for details.</p>
+<p class="rubric">Example</p>
+<p>Assume you have a module source program file of <code class="docutils literal notranslate"><span class="pre">org/example/rat/RAT</span></code> module,
+at /home/me/mymods/org/example/rat/RAT.kn as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Rat_trait</span>
+    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
+    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
+  )
+}
+
+<span class="nv">:Rat_trait</span> &lt;- [
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Numer</span>
+  }
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Denom</span>
+  }
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>]
+    <span class="s1">&#39;{}/{}&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>)
+  }
+]
+</pre></div>
+</div>
+<p>Assume you have a program file client.kn at the current directory.
+client.kn uses RAT module.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:RAT</span>.<span class="n">require_from</span>(<span class="s1">&#39;org/example/rat/&#39;</span>)
+
+<span class="nv">:Rat</span> &lt;- <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">3</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;rat: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Rat</span>.<span class="n">repr</span>))
+</pre></div>
+</div>
+<p>You can run client.kn as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">$ kink</span> --<span class="n">path</span> /<span class="n">home</span>/<span class="n">me</span>/<span class="n">mymods</span> <span class="n">client</span>.<span class="n">kn</span>
+<span class="n">rat</span>: <span class="m">1</span>/<span class="m">3</span>
+</pre></div>
+</div>
+<p>Since <code class="docutils literal notranslate"><span class="pre">RAT</span></code> module is just a top level binding, it also has non-public variables like <code class="docutils literal notranslate"><span class="pre">Rat_trait</span></code>.
+You might want to access those non-public variables for unit testing.</p>
+</section>
+<section id="data-file">
+<span id="modsystem-data-file-source"></span><h3><span class="section-number">5.3.3. </span>Data file<a class="headerlink" href="#data-file" title="Link to this heading">¶</a></h3>
+<p>A file of an arbitrary byte array under a module base path can be a
+source of a module.
+The path of the data file must be in the form
+<code class="docutils literal notranslate"><span class="pre">{module</span> <span class="pre">base</span> <span class="pre">path}/{module</span> <span class="pre">name}.data</span></code>.</p>
+<p>The byte array is provided as a <a class="reference internal" href="api/kink-BIN.html#api-82b05762775bcc1b8e8b6a637617beaf"><span class="std std-ref">bin</span></a>,
+through <code class="docutils literal notranslate"><span class="pre">data</span></code> function of the module.
+See <a class="reference internal" href="#modsystem-make-data-mod"><span class="std std-ref">make_data_mod</span></a> pseudo procedure for details.</p>
+<p class="rubric">Example</p>
+<p>Data file sources allow you to package data in any format together with modules.
+For example, assume you have a UTF-8 text file
+/home/me/mymods/org/example/conversation/_PROMPT_TEMPLATE.data
+as follows.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Your name is {Name}.
+You work in {Department}.
+Always state your name at the beginning of a conversation.
+</pre></div>
+</div>
+<p>Assume you have a program file
+/home/me/mymods/org/example/conversation/TOOL.kn
+as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:_PROMPT_TEMPLATE</span>.<span class="n">require_from</span>(<span class="s1">&#39;org/example/conversation/&#39;</span>)
+<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/charset/&#39;</span>)
+
+<span class="nv">:main</span> &lt;- {
+  <span class="nv">:Bin</span> = <span class="nv">_PROMPT_TEMPLATE</span>.<span class="n">data</span>
+  <span class="nv">:Template</span> = <span class="nv">CHARSET</span>.<span class="n">utf8</span>.<span class="n">bin_to_str</span>(<span class="nv">Bin</span>)
+  <span class="nv">:Prompt</span> = <span class="nv">Template</span>.<span class="n">format</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Name&#39;</span> <span class="s1">&#39;John Doe&#39;</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Department&#39;</span> <span class="s1">&#39;Support Department&#39;</span>)
+  }
+  <span class="n">stdout</span>.<span class="n">print</span>(<span class="nv">Prompt</span>)
+}
+</pre></div>
+</div>
+<p>TOOL mod has <code class="docutils literal notranslate"><span class="pre">main</span></code> fun.
+So it is a <a class="reference internal" href="#modsystem-launchable"><span class="std std-ref">launchable module</span></a>.
+You can run the mod as follows.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink --path /home/me/mymods mod:com/example/conversation/TOOL
+Your name is John Doe.
+You work in Support Department.
+Always state your name at the beginning of a conversation.
+</pre></div>
+</div>
+</section>
+</section>
+<section id="module-loading">
+<h2><span class="section-number">5.4. </span>Module loading<a class="headerlink" href="#module-loading" title="Link to this heading">¶</a></h2>
+<p>A module can be loaded from the module system by specifying a string
+of the module name.
+Module loading can be done by <a class="reference internal" href="api/kink-VARREF.html#api-63597fda3177ac30803c3405d3dd7ba7"><span class="std std-ref">Varref.require_from</span></a>,
+or <a class="reference internal" href="api/kink-MOD.html#api-36236434317e1c52d15948d18e2c4bc2"><span class="std std-ref">MOD.require</span></a>.
+Module loading ends with three statuses: <code class="docutils literal notranslate"><span class="pre">success</span></code>, <code class="docutils literal notranslate"><span class="pre">not_found</span></code>, or <code class="docutils literal notranslate"><span class="pre">compile_error</span></code>.</p>
+<p>Module loading is done as shown in the pseudo code:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">is_associated</span><span class="p">(</span><span class="no">Mod_name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="no">Source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find_source</span><span class="p">(</span><span class="no">Mod_name</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">not_found</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="no">Source</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">builtin</span><span class="w"> </span><span class="n">component</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="no">Mod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_builtin_mod</span><span class="p">(</span><span class="no">Source</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">elsif</span><span class="w"> </span><span class="no">Source</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="no">Kink</span><span class="w"> </span><span class="n">program</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="no">Mod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compile_and_run</span><span class="p">(</span><span class="no">Source</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">compile_error</span><span class="p">(</span><span class="no">Compile_error</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">assert</span><span class="w"> </span><span class="no">Source</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">file</span>
+<span class="w">    </span><span class="no">Mod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_data_mod</span><span class="p">(</span><span class="no">Source</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">associate</span><span class="p">(</span><span class="no">Mod_name</span><span class="w"> </span><span class="no">Mod</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">return</span><span class="w"> </span><span class="n">success</span><span class="p">(</span><span class="n">get_associated</span><span class="p">(</span><span class="no">Mod_name</span><span class="p">))</span>
+</pre></div>
+</div>
+<section id="is-associated">
+<h3><span class="section-number">5.4.1. </span><code class="docutils literal notranslate"><span class="pre">is_associated</span></code><a class="headerlink" href="#is-associated" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">is_associated</span></code> pseudo procedure returns true when the specified module name
+is already associated with a module, or returns false.</p>
+</section>
+<section id="find-source">
+<h3><span class="section-number">5.4.2. </span><code class="docutils literal notranslate"><span class="pre">find_source</span></code><a class="headerlink" href="#find-source" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">find_source</span></code> pseudo procedure searches for
+the source of a module with the specified module name.
+If the search fails, the module loading process ends with <code class="docutils literal notranslate"><span class="pre">not_found</span></code> status.
+<code class="docutils literal notranslate"><span class="pre">find_source</span></code> can be defined like the following pseudo code.</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">find_source</span><span class="p">(</span><span class="no">Mod_name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="n">builtin</span><span class="w"> </span><span class="n">component</span><span class="w"> </span><span class="n">exists</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="no">Mod_name</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">builtin</span><span class="w"> </span><span class="n">component</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="n">base_dir</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">module_base_paths</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">kn_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">base_dir</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="no">Mod_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;.kn&#39;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">kn_path</span><span class="w"> </span><span class="n">exists</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">kn_path</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="no">Kink</span><span class="w"> </span><span class="n">program</span><span class="w"> </span><span class="n">file</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">base_dir</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="no">Mod_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;.data&#39;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">data_path</span><span class="w"> </span><span class="n">exists</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">data_path</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">file</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">not_found</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="make-builtin-mod">
+<h3><span class="section-number">5.4.3. </span><code class="docutils literal notranslate"><span class="pre">make_builtin_mod</span></code><a class="headerlink" href="#make-builtin-mod" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">make_builtin_mod</span></code> pseudo procedure makes a module from a builtin component of the runtime.</p>
+</section>
+<section id="compile-and-run">
+<span id="modsystem-compile-and-run"></span><h3><span class="section-number">5.4.4. </span><code class="docutils literal notranslate"><span class="pre">compile_and_run</span></code><a class="headerlink" href="#compile-and-run" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">compile_and_run</span></code> pseudo procedure
+<a class="reference internal" href="api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">compiles the source of a module in a Kink program</span></a>,
+and makes a module using the compiled program.
+If the compilation fails, the module loading process ends with <code class="docutils literal notranslate"><span class="pre">compile_error</span></code> status.</p>
+<p><code class="docutils literal notranslate"><span class="pre">compile_and_run</span></code> can be defined like the following pseudo Kink code.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BINDING</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/charset/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/porgram/&#39;</span>)
+
+<span class="nv">:compile_and_run</span> &lt;- {(<span class="nv">:Source</span>)
+  <span class="nv">:Text</span> = <span class="nv">CHARSET</span>.<span class="n">utf8</span>.<span class="n">bin_to_str</span>(<span class="nv">Source</span>.<span class="n">bin</span>)
+  <span class="nv">:Program</span> = <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="nv">Source</span>.<span class="n">file_path</span> <span class="nv">Text</span>)
+  <span class="nv">:Mod</span> = <span class="nv">BINDING</span>.<span class="n">new</span>
+  <span class="nv">Mod:repr</span> &lt;- <span class="n">_make_repr</span>
+  <span class="nv">:run_program</span> = <span class="nv">Program</span>.<span class="n">compile</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">binding</span>(<span class="nv">Mod</span>)
+    <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Compile_error</span>)
+      <span class="n">_end_compile_error</span>(<span class="nv">Compile_error</span>)
+    }
+  }
+  <span class="n">run_program</span>
+  <span class="nv">Mod</span>
+}
+</pre></div>
+</div>
+</section>
+<section id="make-data-mod">
+<span id="modsystem-make-data-mod"></span><h3><span class="section-number">5.4.5. </span><code class="docutils literal notranslate"><span class="pre">make_data_mod</span></code><a class="headerlink" href="#make-data-mod" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">make_data_mod</span></code> pseudo procedure makes a module from a byte array
+like the following pseudo Kink code.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:make_data_mod</span> &lt;- {(<span class="nv">:Source</span>)
+  <span class="nv">:Mod</span> = <span class="n">new_val</span>
+  <span class="nv">:Bin</span> = <span class="nv">Source</span>.<span class="n">bin</span>
+  <span class="nv">Mod:data</span> &lt;- {() <span class="nv">Bin</span> }
+  <span class="nv">Mod:repr</span> &lt;- <span class="n">_make_repr</span>
+  <span class="nv">Mod</span>
+}
+</pre></div>
+</div>
+</section>
+<section id="associate">
+<h3><span class="section-number">5.4.6. </span><code class="docutils literal notranslate"><span class="pre">associate</span></code><a class="headerlink" href="#associate" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">associate</span></code> pseudo procedure tests whether the module name is already associated with a module,
+and if not, associates the module name with the specified module.
+The test and association are performed as an atomic operation.</p>
+</section>
+<section id="get-associated">
+<h3><span class="section-number">5.4.7. </span><code class="docutils literal notranslate"><span class="pre">get_associated</span></code><a class="headerlink" href="#get-associated" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">get_associated</span></code> pseudo procedure returns the module
+associated with the module name.</p>
+</section>
+</section>
+<section id="launchable-module">
+<span id="modsystem-launchable"></span><h2><span class="section-number">5.5. </span>Launchable module<a class="headerlink" href="#launchable-module" title="Link to this heading">¶</a></h2>
+<p>If a module have <code class="docutils literal notranslate"><span class="pre">main</span></code> function, it can be run from the commandline.
+See <a class="reference internal" href="commandline/kink-kinkw.html"><span class="doc">kink and kinkw commands</span></a> for details.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="object.html"><span class="section-number">4. </span>Object system</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="api/index.html"><span class="section-number">6. </span>Builtin library API</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

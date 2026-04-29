@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.68. kink/javahost/JAVA_PROXY &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.69. kink/javahost/JAVA_STREAM_INPUT" href="kink-javahost-JAVA_STREAM_INPUT.html" />
+    <link rel="prev" title="6.67. kink/javahost/JAVA_CHANNEL_OUTPUT" href="kink-javahost-JAVA_CHANNEL_OUTPUT.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.68. kink/javahost/JAVA_PROXY</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-javahost-JAVA_CHANNEL_OUTPUT.html"><span class="section-number">6.67. </span>kink/javahost/JAVA_CHANNEL_OUTPUT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-JAVA_STREAM_INPUT.html"><span class="section-number">6.69. </span>kink/javahost/JAVA_STREAM_INPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-javahost-java-proxy">
+<h1><span class="section-number">6.68. </span>kink/javahost/JAVA_PROXY<a class="headerlink" href="#kink-javahost-java-proxy" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#java-proxy-new-interface-handler-config" id="id1">JAVA_PROXY.new(Interface $handler ...[$config={}])</a></p></li>
+</ul>
+</nav>
+<section id="java-proxy-new-interface-handler-config">
+<span id="api-e983bebce8034ca135e11da64358ffed"></span><h2><span class="section-number">6.68.1. </span>JAVA_PROXY.new(Interface $handler ...[$config={}])<a class="headerlink" href="#java-proxy-new-interface-handler-config" title="Link to this heading">¶</a></h2>
+<p>`new` makes a Java object which delegates actions of its methods to a Kink function $handler.</p>
+<p>Config methods:</p>
+<p>• C.also_implement(Also_implement): default = []</p>
+<p>• C.override_tostring</p>
+<p>• C.override_equals</p>
+<p>• C.override_hashcode</p>
+<p>• C.override_default</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = a function which raises an exception</p>
+<p>The created Java object will be an instance of java.lang.reflect.Proxy, which implements `Interface` and interfaces in `Also_implement`.</p>
+<p>If proxy creation succeeds, `new` tail-calls $success with a `java` value (proxy, Interface), where `proxy` is the created instance.</p>
+<p>If proxy creation fails with IllegalArgumentException, as described in the specification of Proxy.newProxyInstance, `new` tail-calls $error with a `java` value (iae, IllegalArgumentException), where `iae` is the thrown IllegalArgumentException.</p>
+<p class="rubric">Invocation</p>
+<p>Invocations of proxy methods, except for those described later, are delegated to $handler.</p>
+<p>When a method is invoked, a new abstract stack machine is created, then $handler is called with the java.lang.reflect.Method object, and a `vec` of the arguments of the Java method, in the abstract stack machine.</p>
+<p>The first argument of $handler is a `java` value (method, java.lang.reflect.Method), where `method` is the java.lang.reflect.Method object of the invoked method.</p>
+<p>The second argument of $handler is a `vec` of `java` values (arg, argType). Here, `argType` is the corresponding parameter type of the method. If `argType` is a reference type, `arg` is the passed argument itself. If `argType` is a primitive type, `arg` is a wrapper instance which wraps the argument.</p>
+<p class="rubric">Invocation of toString</p>
+<p>If C.override_tostring is not called, Object.toString() method of the proxy returns a string like &quot;java-kink-proxy(java.lang.Runnable)&quot;.</p>
+<p>If C.override_tostring is called, the invocation of toString() is delegated to $handler.</p>
+<p class="rubric">Invocation of equals</p>
+<p>If C.override_equals is not called, Object.equals(Object) method of the proxy tests the identity using Java references by Java == operator.</p>
+<p>If C.override_equals is called, the invocation of equals(Object) is delegated to $handler.</p>
+<p class="rubric">Invocation of hashCode</p>
+<p>If C.override_hashcode is not called, Object.hashCode() method of the proxy returns a result of System.identityHashCode().</p>
+<p>If C.override_hashcode is called, the invocation of hashCode() is delegated to $handler.</p>
+<p class="rubric">Invocation of interface default methods</p>
+<p>If C.override_default is not called, interface default methods of the proxy delegate the invocations to the implementations of the default methods.</p>
+<p>If C.override_default is called, the invocations are delegated to $handler.</p>
+<p class="rubric">To return from the invocation</p>
+<p>If the return type of the method is a reference type, to order that the invocation return a value `ref` of the reference type, $handler must return a `java` value (ref, *).</p>
+<p>If the return type of the method is char, boolean, byte, short, int, long, float, or double, to order that the invocation return a value `primitive`, $handler must return a `java` value (wrapper, *), where `wrapper` is a wrapper instance object which wraps `primitive`.</p>
+<p>If the return type of the method is void, to order that the invocation return, $handler must return any value other than `java_throw`.</p>
+<p class="rubric">To throw a Java Throwable from the invocation</p>
+<p>To order that the invocation throw a Java Throwable, $handler must return a `java_throw`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Interface` must be a `java` value (cl, *), where `cl` is an instance of java.lang.Class.</p>
+<p>`Also_implement` must be a `vec` of `java` values (cl, *), where `cl` is an instance of java.lang.Class.</p>
+<p>$success must be a function which takes a `java` value.</p>
+<p>$error must be a function which takes a `java` value of an IllegalArgumentException.</p>
+<p class="rubric">Example: Make a proxy instance</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:JAVA_PROXY</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:IntUnaryOperator_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.util.function.IntUnaryOperator&#39;</span>)
+
+<span class="nv">:Increment</span> &lt;- <span class="nv">JAVA_PROXY</span>.<span class="n">new</span>(<span class="nv">IntUnaryOperator_class</span>){(<span class="nv">:Method</span> <span class="nv">:Args</span>)
+  <span class="nv">Method</span>.<span class="n">call_method</span>(<span class="s1">&#39;getName&#39;</span>).<span class="n">to_kink_str</span> == <span class="s1">&#39;applyAsInt&#39;</span> || <span class="n">raise</span>(<span class="s1">&#39;unexpected method&#39;</span>)
+  <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="nv">Args</span>.<span class="n">front</span>.<span class="n">to_kink_num</span> + <span class="m">1</span>)
+}
+
+<span class="nv">:Double</span> &lt;- <span class="nv">JAVA_PROXY</span>.<span class="n">new</span>(<span class="nv">IntUnaryOperator_class</span>){(<span class="nv">:Method</span> <span class="nv">:Args</span>)
+  <span class="nv">Method</span>.<span class="n">call_method</span>(<span class="s1">&#39;getName&#39;</span>).<span class="n">to_kink_str</span> == <span class="s1">&#39;applyAsInt&#39;</span> || <span class="n">raise</span>(<span class="s1">&#39;unexpected method&#39;</span>)
+  <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="nv">Args</span>.<span class="n">front</span>.<span class="n">to_kink_num</span> * <span class="m">2</span>)
+}
+
+<span class="nv">:Increment_then_double</span> &lt;- <span class="nv">Increment</span>.<span class="n">call_method</span>(<span class="s1">&#39;andThen&#39;</span> <span class="nv">Double</span>) <span class="c1"># call default implementation</span>
+<span class="nv">:R</span> &lt;- <span class="nv">Increment_then_double</span>.<span class="n">call_method</span>(<span class="s1">&#39;applyAsInt&#39;</span> <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">3</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">R</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (java &quot;8&quot; as int)</span>
+</pre></div>
+</div>
+<p class="rubric">Example: Override toString</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:JAVA_PROXY</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:IntUnaryOperator_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.util.function.IntUnaryOperator&#39;</span>)
+<span class="nv">:Object_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Object&#39;</span>)
+
+<span class="nv">:Increment</span> &lt;- <span class="nv">JAVA_PROXY</span>.<span class="n">new</span>(<span class="nv">IntUnaryOperator_class</span>
+  {(<span class="nv">:Method</span> <span class="nv">:Args</span>)
+    <span class="nv">:Method_name</span> = <span class="nv">Method</span>.<span class="n">call_method</span>(<span class="s1">&#39;getName&#39;</span>).<span class="n">to_kink_str</span>
+    <span class="n">branch</span>(
+      { <span class="nv">Method_name</span> == <span class="s1">&#39;toString&#39;</span> } {
+        <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;IntUnaryOperator(increment the int)&#39;</span>)
+      }
+      { <span class="nv">Method_name</span> == <span class="s1">&#39;applyAsInt&#39;</span> } {
+        <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="nv">Args</span>.<span class="n">front</span>.<span class="n">to_kink_num</span> + <span class="m">1</span>)
+      }
+      { <span class="n">true</span> } {
+        <span class="nv">Method_name</span> == <span class="s1">&#39;applyAsInt&#39;</span> || <span class="n">raise</span>(<span class="s1">&#39;unexpected method&#39;</span>)
+        <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="nv">Args</span>.<span class="n">front</span>.<span class="n">to_kink_num</span> + <span class="m">1</span>)
+      }
+    )
+  }
+  {(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">override_tostring</span> }
+)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Increment</span>.<span class="n">call_method</span>(<span class="s1">&#39;applyAsInt&#39;</span> <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">3</span>)).<span class="n">repr</span>)
+<span class="c1"># =&gt; (java &quot;4&quot; as int)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Increment</span>.<span class="n">as</span>(<span class="nv">Object_class</span>).<span class="n">call_method</span>(<span class="s1">&#39;toString&#39;</span>).<span class="n">to_kink_str</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; &quot;IntUnaryOperator(increment the int)&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-javahost-JAVA_CHANNEL_OUTPUT.html"><span class="section-number">6.67. </span>kink/javahost/JAVA_CHANNEL_OUTPUT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-JAVA_STREAM_INPUT.html"><span class="section-number">6.69. </span>kink/javahost/JAVA_STREAM_INPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

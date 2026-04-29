@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.98. kink/test/TEST &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.99. kink/test/TEST_TOOL" href="kink-test-TEST_TOOL.html" />
+    <link rel="prev" title="6.97. kink/test/COLLECT_FROM_FILE" href="kink-test-COLLECT_FROM_FILE.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.98. kink/test/TEST</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-test-COLLECT_FROM_FILE.html"><span class="section-number">6.97. </span>kink/test/COLLECT_FROM_FILE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-test-TEST_TOOL.html"><span class="section-number">6.99. </span>kink/test/TEST_TOOL</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-test-test">
+<h1><span class="section-number">6.98. </span>kink/test/TEST<a class="headerlink" href="#kink-test-test" title="Link to this heading">¶</a></h1>
+<p>Software testing.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TEST</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/test/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="c1"># Test collection</span>
+<span class="nv">:Tests</span> &lt;- <span class="nv">TEST</span>.<span class="n">collect_in</span>{
+  <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;10 + 20 == 30&#39;</span>){
+    <span class="nv">:Sum</span> = <span class="m">10</span> + <span class="m">20</span>
+    <span class="nv">Sum</span> == <span class="m">30</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Sum</span>.<span class="n">repr</span>))
+  }
+  <span class="nv">TEST</span>.<span class="n">group</span>(<span class="s1">&#39;Num.op_mul&#39;</span>){
+    <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;10 * 20 == 200&#39;</span>){
+      <span class="nv">:Prod</span> = <span class="m">10</span> * <span class="m">20</span>
+      <span class="nv">Prod</span> == <span class="m">200</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Prod</span>.<span class="n">repr</span>))
+    }
+    <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;20 * 30 == 600&#39;</span>){
+      <span class="nv">:Prod</span> = <span class="m">20</span> * <span class="m">30</span>
+      <span class="nv">Prod</span> == <span class="m">600</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Prod</span>.<span class="n">repr</span>))
+    }
+  }
+}
+
+<span class="c1"># Test execution</span>
+<span class="nv">Tests</span>.<span class="n">each</span>{(<span class="nv">:T</span>)
+  <span class="nv">T</span>.<span class="n">run</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;OK! [{}]&#39;</span>.<span class="n">format</span>(<span class="nv">T</span>.<span class="n">address</span>)) }
+    <span class="nv">C</span>.<span class="n">on_skip</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Skipped [{}]&#39;</span>.<span class="n">format</span>(<span class="nv">T</span>.<span class="n">address</span>)) }
+    <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Exc</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Failed: {} [{}]&#39;</span>.<span class="n">format</span>(<span class="nv">Exc</span>.<span class="n">message</span> <span class="nv">T</span>.<span class="n">address</span>))
+    }
+  }
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   OK! [10 + 20 == 30]</span>
+<span class="c1">#   OK! [Num.op_mul; 10 * 20 == 200]</span>
+<span class="c1">#   OK! [Num.op_mul; 20 * 30 == 600]</span>
+</pre></div>
+</div>
+<p class="rubric">Test collection</p>
+<p>Test is created by TEST.test. Tests can be grouped by TEST.group, which can be nested.</p>
+<p>`test` and `group` must be called within an invocation of TEST.collect_in. Created tests are returned from `collect_in` as a vec.</p>
+<p class="rubric">Test execution</p>
+<p>A test can be executed by Test.run. The result of test execution is success, error, or skip.</p>
+<p class="rubric">Actual usecase</p>
+<p>Usually, tests are implemented in source files named as *_test.kn, and executed by kink/test/TEST_TOOL module. See kink/test/TEST_TOOL for details.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#test-test-name-test-thunk" id="id2">TEST.test(Name $test_thunk)</a></p></li>
+<li><p><a class="reference internal" href="#test-group-group-name-thunk" id="id3">TEST.group(Group_name $thunk)</a></p></li>
+<li><p><a class="reference internal" href="#test-have-label-label" id="id4">TEST.have_label?(Label)</a></p></li>
+<li><p><a class="reference internal" href="#test-skip" id="id5">TEST.skip</a></p></li>
+<li><p><a class="reference internal" href="#test-collect-in-thunk" id="id6">TEST.collect_in($thunk)</a></p></li>
+<li><p><a class="reference internal" href="#type-test" id="id7">type test</a></p>
+<ul>
+<li><p><a class="reference internal" href="#test-run-config-fun" id="id8">Test.run(...[$config_fun={}])</a></p></li>
+<li><p><a class="reference internal" href="#test-address-parts" id="id9">Test.address_parts</a></p></li>
+<li><p><a class="reference internal" href="#test-address" id="id10">Test.address</a></p></li>
+<li><p><a class="reference internal" href="#test-repr" id="id11">Test.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#test-is-val" id="id12">TEST.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#type-run-config" id="id13">type run_config</a></p>
+<ul>
+<li><p><a class="reference internal" href="#c-labels-labels" id="id14">C.labels(Labels)</a></p></li>
+<li><p><a class="reference internal" href="#c-on-success-success-cont" id="id15">C.on_success($success_cont)</a></p></li>
+<li><p><a class="reference internal" href="#c-on-error-error-cont" id="id16">C.on_error($error_cont)</a></p></li>
+<li><p><a class="reference internal" href="#c-on-skip-skip-cont" id="id17">C.on_skip($skip_cont)</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="test-test-name-test-thunk">
+<span id="api-910c66692a00d9859d4831630c07af19"></span><h2><span class="section-number">6.98.1. </span>TEST.test(Name $test_thunk)<a class="headerlink" href="#test-test-name-test-thunk" title="Link to this heading">¶</a></h2>
+<p>`test` registers a test to the current collecting session.</p>
+<p>Preconditions:</p>
+<p>• `Name` must be a str.</p>
+<p>• $test_thunk must be a thunk.</p>
+<p>• `test` must be called within invocation of TEST.collect_in.</p>
+<p>`Name` becomes the last part of `address` of the registered test.</p>
+<p>$test_thunk is the test thunk.</p>
+<p>• If $test_thunk returns a value, it is marked as a success.</p>
+<p>• If $test_thunk raises an exception, it is marked as an error.</p>
+<p>• If TEST.skip is called within $test_thunk, it is marked as skip.</p>
+</section>
+<section id="test-group-group-name-thunk">
+<span id="api-b916f99ec03be96eecf1809b6cf59e65"></span><h2><span class="section-number">6.98.2. </span>TEST.group(Group_name $thunk)<a class="headerlink" href="#test-group-group-name-thunk" title="Link to this heading">¶</a></h2>
+<p>`group` makes a group of tests.</p>
+<p>`group` calls $thunk. Tests registered within the invocation of $thunk become members of the group.</p>
+<p>Invocation of `group` can be nested. It makes nested groups.</p>
+<p>Preconditions:</p>
+<p>• `Group_name` must be a str.</p>
+<p>• $thunk must be a thunk.</p>
+<p>• `group` must be called within invocation of TEST.collect_in.</p>
+<p>`Group_name` becomes a part of `address` of member tests.</p>
+<p>Note that there is no data type which represents a group. Groups are used just to make `address` of tests.</p>
+</section>
+<section id="test-have-label-label">
+<span id="api-c37cd77ce3ac30ea43359cf2ffb5d2d6"></span><h2><span class="section-number">6.98.3. </span>TEST.have_label?(Label)<a class="headerlink" href="#test-have-label-label" title="Link to this heading">¶</a></h2>
+<p>`have_label?` returns whether the test label set has the specified label.</p>
+<p>Preconditions:</p>
+<p>• `have_label?` must be called within invocation of a test thunk.</p>
+<p>• `Label` must be a str.</p>
+<p>See TEST.skip for an example.</p>
+</section>
+<section id="test-skip">
+<span id="api-eae58053833e744e5fd787fa1b8ba747"></span><h2><span class="section-number">6.98.4. </span>TEST.skip<a class="headerlink" href="#test-skip" title="Link to this heading">¶</a></h2>
+<p>`skip` marks the current test skipped, and terminates invocation of the test thunk by returning (see CONTROL.with_return).</p>
+<p>Precondition:</p>
+<p>• `skip` must be called within invocation of a test thunk.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># example_test.kn</span>
+
+<span class="nv">:TEST</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/test/&#39;</span>)
+<span class="nv">:RUNTIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;Windows specific test&#39;</span>){
+  <span class="nv">RUNTIME</span>.<span class="n">windows?</span> || <span class="nv">TEST</span>.<span class="n">skip</span>
+
+  <span class="nv">:Result</span> = <span class="n">_call_win_api</span>
+  <span class="nv">Result</span> == <span class="s1">&#39;ok&#39;</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+}
+
+<span class="nv">:_call_win_api</span> &lt;- { <span class="s1">&#39;ok&#39;</span> }
+
+<span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;Heavy test&#39;</span>){
+  <span class="nv">TEST</span>.<span class="n">have_label?</span>(<span class="s1">&#39;heavy&#39;</span>) || <span class="nv">TEST</span>.<span class="n">skip</span>
+
+  <span class="nv">:Result</span> = <span class="n">_do_heavy_calculation</span>
+  <span class="nv">Result</span> == <span class="m">42</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+}
+
+<span class="nv">:_do_heavy_calculation</span> &lt;- { <span class="m">42</span> }
+
+<span class="c1"># On a unix system:</span>
+
+<span class="c1"># $ kink mod:kink/test/TEST_TOOL example_test.kn --verbose</span>
+<span class="c1"># example_test.kn; Windows specific test : Skipped</span>
+<span class="c1"># example_test.kn; Heavy test : Skipped</span>
+<span class="c1">#</span>
+<span class="c1"># Success 0 Failure 0 Skipped 2</span>
+
+<span class="c1"># $ kink mod:kink/test/TEST_TOOL example_test.kn --verbose --label heavy</span>
+<span class="c1"># example_test.kn; Windows specific test : Skipped</span>
+<span class="c1"># example_test.kn; Heavy test : Success</span>
+<span class="c1">#</span>
+<span class="c1"># Success 1 Failure 0 Skipped 1</span>
+</pre></div>
+</div>
+</section>
+<section id="test-collect-in-thunk">
+<span id="api-21eea5317816fa601f06ea3bff30f00d"></span><h2><span class="section-number">6.98.5. </span>TEST.collect_in($thunk)<a class="headerlink" href="#test-collect-in-thunk" title="Link to this heading">¶</a></h2>
+<p>`collect_in` calls $thunk, and returns a vec of tests created during invocation of $thunk.</p>
+<p>Precondition:</p>
+<p>• `collect_in` must not be called during invocation of `collect_in`.</p>
+</section>
+<section id="type-test">
+<span id="api-4706f15720bb888a4914e1a77ea0ea33"></span><h2><span class="section-number">6.98.6. </span>type test<a class="headerlink" href="#type-test" title="Link to this heading">¶</a></h2>
+<p>A test case.</p>
+<section id="test-run-config-fun">
+<span id="api-030b040a293e59b8b9bb3ff245ac3c07"></span><h3><span class="section-number">6.98.6.1. </span>Test.run(...[$config_fun={}])<a class="headerlink" href="#test-run-config-fun" title="Link to this heading">¶</a></h3>
+<p>`run` calls the test thunk.</p>
+<p>Precondition:</p>
+<p>• $config_fun must be a fun which takes `run_config`.</p>
+<p>Result:</p>
+<p>• If the test thunk returns without raising an exception,  or being skipped by TEST.skip,  `run` tail-calls the success cont.</p>
+<p>• If the test thunk raises an exception,   `run` tail-calls the error cont with the exception.</p>
+<p>• If TEST.skip is called during the invocation of the test thunk,   `run` tail-calls the skip cont.</p>
+</section>
+<section id="test-address-parts">
+<span id="api-7e096744389fc29f47858c702cc9ad39"></span><h3><span class="section-number">6.98.6.2. </span>Test.address_parts<a class="headerlink" href="#test-address-parts" title="Link to this heading">¶</a></h3>
+<p>`address_parts` returns a vec of the names of the groups and the test.</p>
+<p>The group names appear from shallower ones to deeper ones. The test name appears as the last part.</p>
+<p>In the next program, the test named “returns 42” is in the group “FOO.bar”, which is in the super group “mod FOO”. Therefore, Test.address_parts returns [&quot;mod FOO&quot; &quot;FOO.bar&quot; &quot;returns 42&quot;].</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Tests</span> = <span class="nv">TEST</span>.<span class="n">collect_in</span>{
+  <span class="nv">TEST</span>.<span class="n">group</span>(<span class="s1">&#39;mod FOO&#39;</span>){
+    <span class="nv">TEST</span>.<span class="n">group</span>(<span class="s1">&#39;FOO.bar&#39;</span>){
+      <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;returns 42&#39;</span>){
+        <span class="nv">:Result</span> = <span class="nv">FOO</span>.<span class="n">bar</span>
+        <span class="nv">Result</span> == <span class="m">42</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+      }
+    }
+  }
+}
+<span class="nv">:Test</span> = <span class="nv">Tests</span>.<span class="n">front</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Test</span>.<span class="n">address_parts</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;mod FOO&quot; &quot;FOO.bar&quot; &quot;returns 42&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="test-address">
+<span id="api-7a93bf5ed10f48f8accee6a0b472db19"></span><h3><span class="section-number">6.98.6.3. </span>Test.address<a class="headerlink" href="#test-address" title="Link to this heading">¶</a></h3>
+<p>`address` returns the address representation of this test.</p>
+<p>It concatenates the groups and the name, such as &quot;mod FOO; FOO.bar; returns 42&quot;.</p>
+</section>
+<section id="test-repr">
+<span id="api-ad9ba178afd3ec3b8e77f8412de01155"></span><h3><span class="section-number">6.98.6.4. </span>Test.repr<a class="headerlink" href="#test-repr" title="Link to this heading">¶</a></h3>
+<p>`repr` returns the str representation of the test, such as &quot;(test mod FOO; FOO.bar; returns 42)&quot;.</p>
+</section>
+</section>
+<section id="test-is-val">
+<span id="api-7b119c1f55592f38463cdd03ea6ef31e"></span><h2><span class="section-number">6.98.7. </span>TEST.is?(Val)<a class="headerlink" href="#test-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a test.</p>
+</section>
+<section id="type-run-config">
+<span id="api-d3f2d7091cbc34324a2a45924eb496e4"></span><h2><span class="section-number">6.98.8. </span>type run_config<a class="headerlink" href="#type-run-config" title="Link to this heading">¶</a></h2>
+<p>The config val type of Test.run.</p>
+<section id="c-labels-labels">
+<span id="api-9be4d821ec5b5d810591334542cd0396"></span><h3><span class="section-number">6.98.8.1. </span>C.labels(Labels)<a class="headerlink" href="#c-labels-labels" title="Link to this heading">¶</a></h3>
+<p>`labels` sets `Labels` as the test label set of the test thunk invocation.</p>
+<p>Precondition:</p>
+<p>• `Labels` must be a set of strs.</p>
+<p>If `labels` is not called, an empty set is used as the test label set.</p>
+</section>
+<section id="c-on-success-success-cont">
+<span id="api-badea21551180f5b53e38ab0c0230f06"></span><h3><span class="section-number">6.98.8.2. </span>C.on_success($success_cont)<a class="headerlink" href="#c-on-success-success-cont" title="Link to this heading">¶</a></h3>
+<p>`on_success` sets $success_cont as the success cont.</p>
+<p>Precondition:</p>
+<p>• $success_cont must be a thunk.</p>
+<p>If `on_success` is not called, a NOP thunk {} is used as the success cont.</p>
+</section>
+<section id="c-on-error-error-cont">
+<span id="api-9247c38fc8da3d167acca88b571f55a9"></span><h3><span class="section-number">6.98.8.3. </span>C.on_error($error_cont)<a class="headerlink" href="#c-on-error-error-cont" title="Link to this heading">¶</a></h3>
+<p>`on_error` sets $error_cont as the error cont.</p>
+<p>Precondition:</p>
+<p>• $error_cont must be a fun which takes an exception.</p>
+<p>If `on_error` is not called, a fallback function is used. The fallback function raises the exception passed as the parameter.</p>
+</section>
+<section id="c-on-skip-skip-cont">
+<span id="api-885bf536e3c395bf3fad84ec2a5e5957"></span><h3><span class="section-number">6.98.8.4. </span>C.on_skip($skip_cont)<a class="headerlink" href="#c-on-skip-skip-cont" title="Link to this heading">¶</a></h3>
+<p>`on_skip` sets $skip_cont as the skip cont.</p>
+<p>Precondition:</p>
+<p>• $skip_cont must be a thunk.</p>
+<p>If `on_skip` is not called, a NOP thunk {} is used as the skip cont.</p>
+</section>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-test-COLLECT_FROM_FILE.html"><span class="section-number">6.97. </span>kink/test/COLLECT_FROM_FILE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-test-TEST_TOOL.html"><span class="section-number">6.99. </span>kink/test/TEST_TOOL</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

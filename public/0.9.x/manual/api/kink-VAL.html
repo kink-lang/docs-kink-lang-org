@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.25. kink/VAL &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.26. kink/VARREF" href="kink-VARREF.html" />
+    <link rel="prev" title="6.24. kink/TRACE" href="kink-TRACE.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.25. kink/VAL</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-TRACE.html"><span class="section-number">6.24. </span>kink/TRACE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-val">
+<h1><span class="section-number">6.25. </span>kink/VAL<a class="headerlink" href="#kink-val" title="Link to this heading">¶</a></h1>
+<p>Provides funs for vals in general.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-val" id="id1">type val</a></p>
+<ul>
+<li><p><a class="reference internal" href="#val-repr" id="id2">Val.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#val-id-hash-val" id="id3">VAL.id_hash(Val)</a></p></li>
+<li><p><a class="reference internal" href="#val-same-x-y" id="id4">VAL.same?(X Y)</a></p></li>
+<li><p><a class="reference internal" href="#val-var-syms-val" id="id5">VAL.var_syms(Val)</a></p></li>
+<li><p><a class="reference internal" href="#val-identity-val" id="id6">VAL.identity(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-val">
+<span id="api-68cc92efb7d516f5f1a8aebdb2e9cad8"></span><h2><span class="section-number">6.25.1. </span>type val<a class="headerlink" href="#type-val" title="Link to this heading">¶</a></h2>
+<p>`val` is the universal supertype, or the supertype of all other types. Every value is an instance of `val` type.</p>
+<p>`val` type has only one method: `repr`. It means that every value of Kink has `repr` method.</p>
+<section id="val-repr">
+<span id="api-7f7a08be81781b5fdb57b1bce9c6a4da"></span><h3><span class="section-number">6.25.1.1. </span>Val.repr<a class="headerlink" href="#val-repr" title="Link to this heading">¶</a></h3>
+<p>`repr` returns a `str` which describes `Val` for debugging purpose.</p>
+<p>The format of the result differs for each type:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">new_val</span>.<span class="n">repr</span>)         <span class="c1"># =&gt; (val id_hash=123)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>].<span class="n">repr</span>)         <span class="c1"># =&gt; [1 2 3]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; (bin 0x01 0x02 0x03)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot;hello world</span><span class="se">\n</span><span class="s2">&quot;</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;hello world\n&quot;</span>
+</pre></div>
+</div>
+<p>For example, the result of `repr` can be used to construct an error message:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:to_int</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">N</span>) || <span class="n">raise</span>(
+    <span class="s1">&#39;to_int(N): N must be a num, but was {}&#39;</span>.<span class="n">format</span>(<span class="nv">N</span>.<span class="n">repr</span>))
+  <span class="nv">N</span> // <span class="m">1</span>
+}
+
+<span class="n">to_int</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   ...</span>
+<span class="c1">#   {(stdin) L4 C17 raise} NUM.is?(N) || --&gt;raise(</span>
+<span class="c1">#   to_int(N): N must be a num, but was &quot;foo&quot;</span>
+</pre></div>
+</div>
+<p>The runtime also uses the result of `repr` to construct an error message:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;foo&#39;</span>.<span class="n">bar</span>
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   ...</span>
+<span class="c1">#   [(stdin) L1 C7] &#39;foo&#39;.--&gt;bar</span>
+<span class="c1">#   no such var: bar not found in &quot;foo&quot;</span>
+</pre></div>
+</div>
+<p>Apart from error messages, `repr` might be used to construct log messages.</p>
+<p>There are some requirements for implementations of `repr`.</p>
+<p class="rubric">`repr` must return a `str` value</p>
+<p>As described above, `repr` is used to construct error messages, and callers expect that `repr` returns a `str` value. If `repr` returns a non-str value, hence it breaks the expectation, things can get really messy.</p>
+<p class="rubric">`repr` must return a finite length `str` for data of infinite length or depth</p>
+<p>If you implement a container type, probably your `repr` implementation calls `repr` method of elements. Make sure that `repr` properly returns a finite length `str` for data of infinite length or depth.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Y</span> &lt;- [<span class="m">4</span> <span class="m">5</span> <span class="m">6</span>]
+<span class="nv">:X</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="nv">Y</span>]
+<span class="nv">Y</span>.<span class="n">push_back</span>(<span class="nv">X</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [1 2 3 [4 5 6 [,,,]]]</span>
+</pre></div>
+</div>
+<p>Recursion check can be done using `dyn` val. Check the implementation of kink/container/FLAT_SET for example.</p>
+<p class="rubric">Keep the result short enough</p>
+<p>If the result of `repr` is too long, it can mess up the debug output. So make sure that the result is short enough.</p>
+</section>
+</section>
+<section id="val-id-hash-val">
+<span id="api-2d36b72d68d811f56ce0ba7352a8818a"></span><h2><span class="section-number">6.25.2. </span>VAL.id_hash(Val)<a class="headerlink" href="#val-id-hash-val" title="Link to this heading">¶</a></h2>
+<p>`id_hash` returns an int `num` appointed for `Val`. Invocations of `id_hash` for the same value always return the same integer.</p>
+<p>The result can be used as a hash code of the identity of the value.</p>
+</section>
+<section id="val-same-x-y">
+<span id="api-4aa2adc68b7c0aa43a6373fdc23e61d3"></span><h2><span class="section-number">6.25.3. </span>VAL.same?(X Y)<a class="headerlink" href="#val-same-x-y" title="Link to this heading">¶</a></h2>
+<p>`same?` returns whether two args, `X` and ``Y`, are the same value.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:test_identity</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)
+  <span class="n">if</span>(<span class="nv">VAL</span>.<span class="n">same?</span>(<span class="nv">X</span> <span class="nv">Y</span>)
+    { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;same&#39;</span>) }
+    { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;different&#39;</span>) }
+  )
+}
+<span class="nv">:V</span> &lt;- <span class="n">new_val</span>
+<span class="n">test_identity</span>(<span class="nv">V</span> <span class="nv">V</span>)        <span class="c1"># =&gt; same</span>
+<span class="n">test_identity</span>(<span class="nv">V</span> <span class="n">new_val</span>)  <span class="c1"># =&gt; different</span>
+</pre></div>
+</div>
+</section>
+<section id="val-var-syms-val">
+<span id="api-c65e133bba43714af029cba11754dd2b"></span><h2><span class="section-number">6.25.4. </span>VAL.var_syms(Val)<a class="headerlink" href="#val-var-syms-val" title="Link to this heading">¶</a></h2>
+<p>`var_syms` does variable-symbols operation, and returns the set of syms of the vars of `Val`.</p>
+<p>The result is a `set` of `str` values.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:V</span> &lt;- <span class="n">new_val</span>(<span class="s1">&#39;Data&#39;</span> <span class="m">42</span> <span class="s1">&#39;fun&#39;</span> {})
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">VAL</span>.<span class="n">var_syms</span>(<span class="nv">V</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (flat_set &quot;Data&quot; &quot;fun&quot; &quot;repr&quot;)</span>
+</pre></div>
+</div>
+</section>
+<section id="val-identity-val">
+<span id="api-ce30e92c8bb96e52425438471e4d64c8"></span><h2><span class="section-number">6.25.5. </span>VAL.identity(Val)<a class="headerlink" href="#val-identity-val" title="Link to this heading">¶</a></h2>
+<p>`identity` returns `Val`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">VAL</span>.<span class="n">identity</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-TRACE.html"><span class="section-number">6.24. </span>kink/TRACE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+======================
+kink\/tls\/TLS\_SERVER
+======================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-9021256bdecf20a3dbca4b952f4d79b7:
+
+type tls\_server
+================
+
+A \`tls\_server\` is a factory of server side TLS connections\.
+
+A \`tls\_server\` holds various data which live longer than single TLS connections\, such as key pairs\, certificates\, and data for session resumption\.
+
+.. _api-26403f32104843e912be057c437d25b9:
+
+Serv\.connect\(Tcp \.\.\.\[\$config\=\{\}\]\)
+---------------------------------------------
+
+\`connect\` makes a new \`tls\` connection\, and does the initial handshake\.
+
+Config methods\:
+
+\• C\.req\_cert
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If C\.req\_cert is called\, the TLS connection desires certificate\-based client authentications\, and verifies the returned certificate\. If no certificate is returned from the client\, or verification fails\, \`connect\` results in an error\. Note that\, if you desire client certs\, usually you also need to configure the \`tls\_server\` with a non\-empty \`trust\_anchor\`\.
+
+If the connection is made and the initial handshake succeeds\, \`connect\` tail\-calls \$success with the created \`tls\` connection\.
+
+If the connection is not made\, or the initial handshake fails\, \`connect\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\• \`Tcp\` must be a \`tcp\`\, which the TLS connection uses\.
+
+\• The protocol family of \`Tcp\` must be IPv4 or IPv6\.
+
+\• \`Tcp\` must be open\.
+
+\• \$success must be a fun which takes a \`tls\`
+
+\• \$error must be a fun which takes an \`exception\`
+
+.. _api-3aa9d9decfe516a28ba58db6bbc06e3c:
+
+TLS\_SERVER\.new\(Key\_pair\_set \.\.\.\[\$config\=\{\}\]\)
+===========================================================
+
+\`new\` makes a new tls\_server\.
+
+Config methods\:
+
+\• C\.trust\_anchor\(Ta\)\: default \= empty trust\_anchor
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\`Ta\` is used to verify certificates of TLS clients\.
+
+If a tls\_server is successfully made\, \`new\` tails\-calls \$success with the \`tls\_server\`\.
+
+If creation results in an error\, \`new\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\• \`Key\_pair\_set\` must be a key\_pair\_set\,   which contains the key pairs of the TLS server\.
+
+\• \`Ta\` must be a \`trust\_anchor\`\.
+
+\• \$success must be a fun which takes a \`tls\_server\`\.
+
+\• \$error must be a fun which takes an \`exception\`\.
+
+.. _api-315efaaea8dd085560dba53a1ce887f6:
+
+TLS\_SERVER\.is\?\(Val\)
+========================
+
+\`is\?\` returns whether \`Val\` is a tls\_server\.
+

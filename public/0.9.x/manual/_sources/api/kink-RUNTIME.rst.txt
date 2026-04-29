@@ -1,0 +1,72 @@
+=============
+kink\/RUNTIME
+=============
+
+Information of the Kink runtime system\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-be564c1147fa5427b1bbfda95581f4ea:
+
+RUNTIME\.major\_version
+=======================
+
+\`major\_version\` returns the major version of the runtime as an int number\.
+
+Versioning scheme of Kink follows Semantic Versioning 2\.0\.0\. See\:
+
+https\:\/\/semver\.org\/
+
+.. _api-44da2e561eb2f91c82ff65f25897d449:
+
+RUNTIME\.minor\_version
+=======================
+
+\`minor\_version\` returns the minor version of the runtime as an int number\.
+
+Versioning scheme of Kink follows Semantic Versioning 2\.0\.0\. See\:
+
+https\:\/\/semver\.org\/
+
+.. _api-8f3187892cdebdcb25dbed63205175df:
+
+RUNTIME\.patch\_version
+=======================
+
+\`patch\_version\` returns the patch version of the runtime as an int number\.
+
+Versioning scheme of Kink follows Semantic Versioning 2\.0\.0\. See\:
+
+https\:\/\/semver\.org\/
+
+.. _api-c3b4e8984181d2c52bd08edde07e831e:
+
+RUNTIME\.version\_str
+=====================
+
+\`version\_str\` returns the version string of the runtime such as \'1\.2\.3\'\.
+
+Versioning scheme of Kink follows Semantic Versioning 2\.0\.0\. See\:
+
+https\:\/\/semver\.org\/
+
+.. _api-42f866b44d9ffa6c0fe0ee50f9bbece6:
+
+RUNTIME\.windows\?
+==================
+
+\`windows\?\` returns whether the runtime is drectly running on a Windows system\.
+
+It is assumed that if the runtime is running on Windows\, it is not on Unix\, and vice versa\. Thus\, only one of \`windows\?\` and \`unix\?\` returns true\.
+
+.. _api-ffa01e6b6ca8b9566ae75de2a966c573:
+
+RUNTIME\.unix\?
+===============
+
+\`unix\?\` returns whether the runtime is drectly running on a Unix\-like system\.
+
+It is assumed that if the runtime is running on Windows\, it is not on Unix\-like\, and vice versa\. Thus\, only one of \`windows\?\` and \`unix\?\` returns true\.
+

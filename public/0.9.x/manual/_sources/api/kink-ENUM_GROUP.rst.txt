@@ -1,0 +1,96 @@
+=================
+kink\/ENUM\_GROUP
+=================
+
+Generation of enum values\.
+
+Example\:
+
+.. code:: kink
+
+    :ENUM_GROUP.require_from('kink/')
+        
+    :Eg <- ENUM_GROUP.new('FILE_TYPE')
+        
+    Eg.register(:file)
+    Eg.register(:directory)
+    Eg.register(:symbolic_link)
+        
+    stdout.print_line(file.repr)  # => FILE_TYPE.file
+        
+    stdout.print_line((file == file).repr)      # => true
+    stdout.print_line((file == directory).repr) # => false
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-14915eddb04b3d010297bd669824d8b7:
+
+type enum\_group
+================
+
+An \`enum\_group\` is a generator of a set of enum values\.
+
+.. _api-59b5c6a5db3e6dfe87ead6d043591275:
+
+Enum\_group\.new\_member\(Name\)
+--------------------------------
+
+\`new\_member\` returns a new enum value of the enum group\. \`Name\` is used as the name of the enum value\.
+
+The result enum value provides the following methods\:
+
+\• M\.op\_eq\(Arg\)\: returns whether \`M\` and \`Arg\` are the same enum value\.   \`Arg\` must be a member of the same enum group as one of \`M\`\.
+
+\• M\.repr\: returns a str like in the format of \'\{group name\}\.\{enum name\}\'\,   like \'PROTOCOL\_FAMILY\.ipv6\'\.
+
+.. rubric:: Precondition
+
+\• \`Name\` must be a str\.
+
+.. _api-435f62220362afd78bd05939fb766851:
+
+Enum\_group\.register\(Varref\)
+-------------------------------
+
+\`register\` makes a new enum value\, and sets a constant fun which returns the enum value to \`Varref\`\.
+
+.. rubric:: Precondition
+
+\• \`Varref\` must be a varref\.
+
+.. _api-bd974959328220875cfcf53265d01a7d:
+
+Enum\_group\.name
+-----------------
+
+\`name\` returns the name of the enum group\.
+
+.. _api-62607da2bd5113ff080fa2d99b50a022:
+
+Enum\_group\.all
+----------------
+
+\`all\` returns all the enum values of the enum group\, in the order that the members were created\.
+
+.. _api-dd3fb1341be629eeadd81cc3eed414c0:
+
+Enum\_group\.have\?\(Val\)
+--------------------------
+
+\`have\?\` returns whether \`Val\` is a member of the enum group\.
+
+.. _api-1f683b942e1437f94bb0b639d357b83b:
+
+ENUM\_GROUP\.new\(Name\)
+========================
+
+\`new\` makes a new \`enum\_group\`\.
+
+\`Name\` is used as the name of the enum group\.
+
+.. rubric:: Precondition
+
+\• \`Name\` must be a str\.
+

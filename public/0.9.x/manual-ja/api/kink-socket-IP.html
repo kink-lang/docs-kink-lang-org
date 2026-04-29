@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.89. kink/socket/IP &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.90. kink/socket/IP_PORT" href="kink-socket-IP_PORT.html" />
+    <link rel="prev" title="6.88. kink/socket/DATAGRAM" href="kink-socket-DATAGRAM.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.89. kink/socket/IP</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-DATAGRAM.html"><span class="section-number">6.88. </span>kink/socket/DATAGRAM</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-IP_PORT.html"><span class="section-number">6.90. </span>kink/socket/IP_PORT</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-socket-ip">
+<h1><span class="section-number">6.89. </span>kink/socket/IP<a class="headerlink" href="#kink-socket-ip" title="Link to this heading">¶</a></h1>
+<p>IPv4とIPv6の両方について、IPアドレスと、ホスト名解決を提供する。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-ip" id="id2">ip 型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ip-bin" id="id3">Ip.bin</a></p></li>
+<li><p><a class="reference internal" href="#ip-protocol-family" id="id4">Ip.protocol_family</a></p></li>
+<li><p><a class="reference internal" href="#ip-text" id="id5">Ip.text</a></p></li>
+<li><p><a class="reference internal" href="#ip-repr" id="id6">Ip.repr</a></p></li>
+<li><p><a class="reference internal" href="#x-y" id="id7">X == Y</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ip-new-bin" id="id8">IP.new(Bin)</a></p></li>
+<li><p><a class="reference internal" href="#ip-is-val" id="id9">IP.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#ip-for-hostname-hostname-config" id="id10">IP.for_hostname(Hostname ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#ip-all-for-hostname-hostname" id="id11">IP.all_for_hostname(Hostname)</a></p></li>
+<li><p><a class="reference internal" href="#ip-any" id="id12">IP.any</a></p></li>
+<li><p><a class="reference internal" href="#ip-any-ipv4" id="id13">IP.any_ipv4</a></p></li>
+</ul>
+</nav>
+<section id="type-ip">
+<span id="api-a3cd4e3e41e645cba28e4ff2222a1ba6"></span><h2><span class="section-number">6.89.1. </span>ip 型<a class="headerlink" href="#type-ip" title="Link to this heading">¶</a></h2>
+<p>ipは、IPv4かIPv6のアドレスをバイナリ形式で表す。</p>
+<section id="ip-bin">
+<span id="api-4c6034ceedcc7a2ab62de905ae3cb0e4"></span><h3><span class="section-number">6.89.1.1. </span>Ip.bin<a class="headerlink" href="#ip-bin" title="Link to this heading">¶</a></h3>
+<p>binメソッドは、IPアドレスをbin型で戻す。</p>
+<p>IpがIPv4アドレスの場合、binメソッドは長さ4のbin値を戻す。</p>
+<p>IpがIPv6アドレスの場合、binメソッドは長さ16のbin値を戻す。</p>
+</section>
+<section id="ip-protocol-family">
+<span id="api-4f27c8b1f809e1b2dfa42684b6f231b9"></span><h3><span class="section-number">6.89.1.2. </span>Ip.protocol_family<a class="headerlink" href="#ip-protocol-family" title="Link to this heading">¶</a></h3>
+<p>protocol_familyは、IPアドレスのプロトコルファミリをprotocol_family型で戻す。結果はPROTOCOL_FAMILY.ipv4かPROTOCOL_FAMILY.ipv6のどちらかである。</p>
+</section>
+<section id="ip-text">
+<span id="api-59e375bb016a0039541afa6f8de7a22f"></span><h3><span class="section-number">6.89.1.3. </span>Ip.text<a class="headerlink" href="#ip-text" title="Link to this heading">¶</a></h3>
+<p>textはIPアドレスのテキスト表現をstr型で戻す。</p>
+<p>IpがIPv4アドレスの場合、textはドット付き10進記法のstrを戻す。</p>
+<p>IpがIPv6アドレスの場合、textは、RFC 2732に規定された形式のstrを戻す。結果は小文字アルファベットを使い、ゼロの桁の省略を行わない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IP</span>.<span class="n">for_hostname</span>(<span class="s1">&#39;127.0.0.1&#39;</span>).<span class="n">text</span>)
+<span class="c1"># =&gt; 127.0.0.1</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IP</span>.<span class="n">for_hostname</span>(<span class="s1">&#39;ff02::1&#39;</span>).<span class="n">text</span>)
+<span class="c1"># =&gt; ff02:0000:0000:0000:0000:0000:0000:0001</span>
+</pre></div>
+</div>
+</section>
+<section id="ip-repr">
+<span id="api-e82acf2156af5fcf689e39255b19a27d"></span><h3><span class="section-number">6.89.1.4. </span>Ip.repr<a class="headerlink" href="#ip-repr" title="Link to this heading">¶</a></h3>
+<p>reprはIpのデバッグ用途のstr表現を戻す。たとえば、&quot;(ip 127.0.0.1)&quot;や&quot;(ip ff02:0000:0000:0000:0000:0000:0000:0001)&quot;のように。</p>
+</section>
+<section id="x-y">
+<span id="api-62f159b80d24bc6a0be11f4b2b1706b3"></span><h3><span class="section-number">6.89.1.5. </span>X == Y<a class="headerlink" href="#x-y" title="Link to this heading">¶</a></h3>
+<p>== 演算子、またはop_eqメソッドは、ふたつのip値が同じIPアドレスを表しているかどうかを戻す。</p>
+</section>
+</section>
+<section id="ip-new-bin">
+<span id="api-89595b2554e2a60f8d9c53182b984e73"></span><h2><span class="section-number">6.89.2. </span>IP.new(Bin)<a class="headerlink" href="#ip-new-bin" title="Link to this heading">¶</a></h2>
+<p>newは、IPv4かIPv6のip値を作る。</p>
+<p>Binのサイズが4の場合、作られたip値はIPv4のアドレスになる。Binのサイズが16の場合、作られたip値はIPv6のアドレスになる。</p>
+<p class="rubric">事前条件</p>
+<p>Binはサイズ4か16のbin値でなければならない。</p>
+</section>
+<section id="ip-is-val">
+<span id="api-0f52f634cbbf93c4560c094915fe5c67"></span><h2><span class="section-number">6.89.3. </span>IP.is?(Val)<a class="headerlink" href="#ip-is-val" title="Link to this heading">¶</a></h2>
+<p>is?はValがip値であるかどうかを戻す。</p>
+</section>
+<section id="ip-for-hostname-hostname-config">
+<span id="api-ebf9427f83d41412b00952354f81f845"></span><h2><span class="section-number">6.89.4. </span>IP.for_hostname(Hostname ...[$config={}])<a class="headerlink" href="#ip-for-hostname-hostname-config" title="Link to this heading">¶</a></h2>
+<p>for_hostnameはHostnameをIPアドレスに解決する。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>HostnameがIPアドレスに解決された場合、for_hostnameは、ip値を引数として$successを末尾呼び出しする。</p>
+<p>HostnameがIPアドレスに解決されなかった場合、for_hostnameはexceptionを引数として$errorを末尾呼び出しする。</p>
+<p class="rubric">名前解決</p>
+<p>Hostnameは次のように解決される。</p>
+<p>• ドット付き10進記法のIPv4アドレス。例: 127.0.0.1</p>
+<p>• RFC 2373に規定されたIPv6アドレスのテキスト表現。例: ff06::c3</p>
+<p>• RFC 3986に規定された、IPv6リテラルアドレス形式。例: [ff06::c3]</p>
+<p>• ホスト名。例: localhost, www.example.org</p>
+<p>一般に、ホスト名は複数のIPアドレスに解決されることがある。たとえば、DNSサーバは複数のAレコード、AAAAレコードを戻すかもしれない。for_hostnameは、それらのうちのひとつを結果とする。</p>
+<p class="rubric">事前条件</p>
+<p>Hostnameはstr値でなければならない。</p>
+<p>$successはip値でなければならない。</p>
+<p>$errorはexceptionを取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+
+<span class="c1"># IPv4 address</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IP</span>.<span class="n">for_hostname</span>(<span class="s1">&#39;127.0.0.1&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; (ip 127.0.0.1)</span>
+
+<span class="c1"># IPv6 address</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IP</span>.<span class="n">for_hostname</span>(<span class="s1">&#39;ff06::c3&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; (ip ff06:0000:0000:0000:0000:0000:0000:00c3)</span>
+
+<span class="c1"># IPv6 literal address format</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IP</span>.<span class="n">for_hostname</span>(<span class="s1">&#39;[ff06::c3]&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; (ip ff06:0000:0000:0000:0000:0000:0000:00c3)</span>
+
+<span class="c1"># Host name</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IP</span>.<span class="n">for_hostname</span>(<span class="s1">&#39;www.example.com&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; (ip 93.184.215.14)</span>
+</pre></div>
+</div>
+</section>
+<section id="ip-all-for-hostname-hostname">
+<span id="api-5be7f04aba36dd0bcd26272cd7ed7b77"></span><h2><span class="section-number">6.89.5. </span>IP.all_for_hostname(Hostname)<a class="headerlink" href="#ip-all-for-hostname-hostname" title="Link to this heading">¶</a></h2>
+<p>all_for_hostnameは、Hostnameに対応するip値のvecを戻す。名前解決のやり方はfor_hostnameと同じである。</p>
+<p class="rubric">結果</p>
+<p>HostnameがIPアドレスに解決されない場合、all_for_hostnameは空のvecを戻す。</p>
+<p>HostnameがひとつのIPアドレスに解決される場合、all_for_hostnameは、ひとつのip値を含むvecを戻す。</p>
+<p>Hostnameが複数のIPアドレスに解決される場合、all_for_hostnameは複数のip値を含むvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Hostnameはstr値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IP</span>.<span class="n">all_for_hostname</span>(<span class="s1">&#39;127.0.0.1&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; [(ip 127.0.0.1)]</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IP</span>.<span class="n">all_for_hostname</span>(<span class="s1">&#39;www.example.com&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; [(ip 93.184.215.14) (ip 2606:2800:021f:cb07:6820:80da:af6b:8b2c)]</span>
+</pre></div>
+</div>
+</section>
+<section id="ip-any">
+<span id="api-63aaf8893ca2242acf021fa88ce02268"></span><h2><span class="section-number">6.89.6. </span>IP.any<a class="headerlink" href="#ip-any" title="Link to this heading">¶</a></h2>
+<p>anyはin6addr_anyのアドレスを戻す。これは、IPv6アドレス [::] に対応する。</p>
+<p>このアドレスは、任意のIPv4またはIPv6ホストからの接続を受け入れたり、データグラムパケットを受信するために使える。</p>
+</section>
+<section id="ip-any-ipv4">
+<span id="api-8586b98b689768438ccf106fbed8eab7"></span><h2><span class="section-number">6.89.7. </span>IP.any_ipv4<a class="headerlink" href="#ip-any-ipv4" title="Link to this heading">¶</a></h2>
+<p>any_ipv4はINADDR_ANYのアドレスを戻す。これは、IPv4アドレス 0.0.0.0 に対応する。</p>
+<p>このアドレスは、任意のIPv4ホストからの接続を受け入れたり、データグラムパケットを受信するために使える。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-DATAGRAM.html"><span class="section-number">6.88. </span>kink/socket/DATAGRAM</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-IP_PORT.html"><span class="section-number">6.90. </span>kink/socket/IP_PORT</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

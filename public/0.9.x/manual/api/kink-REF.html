@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.20. kink/REF &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.21. kink/RUNTIME" href="kink-RUNTIME.html" />
+    <link rel="prev" title="6.19. kink/PROCESS" href="kink-PROCESS.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.20. kink/REF</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-PROCESS.html"><span class="section-number">6.19. </span>kink/PROCESS</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-RUNTIME.html"><span class="section-number">6.21. </span>kink/RUNTIME</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-ref">
+<h1><span class="section-number">6.20. </span>kink/REF<a class="headerlink" href="#kink-ref" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-ref" id="id1">type ref</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ref-load" id="id2">Ref.load</a></p></li>
+<li><p><a class="reference internal" href="#ref-new-val" id="id3">Ref &lt;- New_val</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ref-is-val" id="id4">REF.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-ref">
+<span id="api-a7bb87ccff07365043328fc9f076ecc9"></span><h2><span class="section-number">6.20.1. </span>type ref<a class="headerlink" href="#type-ref" title="Link to this heading">¶</a></h2>
+<p>`ref` is an abstract type which can store and load a value.</p>
+<section id="ref-load">
+<span id="api-0679eafb6f73238b84fe08d6d6d75899"></span><h3><span class="section-number">6.20.1.1. </span>Ref.load<a class="headerlink" href="#ref-load" title="Link to this heading">¶</a></h3>
+<p>`load` returns the current value which `Ref` contains.</p>
+<p>`load` must not raise an exception.</p>
+</section>
+<section id="ref-new-val">
+<span id="api-367b6a5470bfc2f72aba391c62285b6e"></span><h3><span class="section-number">6.20.1.2. </span>Ref &lt;- New_val<a class="headerlink" href="#ref-new-val" title="Link to this heading">¶</a></h3>
+<p>`&lt;-` operator, or `op_store` method, sets `New_val` as the new value of `Ref`.</p>
+<p>`&lt;-` operator may raise an exception when preconditions for `Ref` and `New_val` are not met. For example, if `Ref` accepts only `str` values, but `New_val` is an `num`, `&lt;-` operator may raise an exception.</p>
+<p>`&lt;-` operator may adjust `New_val` to an acceptable value. For example, if `New_val` is a `num` value 1000, but `Ref` accepts `num` values from 0 to 99, `&lt;-` operator may set 99 as the new value.</p>
+</section>
+</section>
+<section id="ref-is-val">
+<span id="api-f06a454a092d01364fbc8de24c65b388"></span><h2><span class="section-number">6.20.2. </span>REF.is?(Val)<a class="headerlink" href="#ref-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `ref` value.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-PROCESS.html"><span class="section-number">6.19. </span>kink/PROCESS</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-RUNTIME.html"><span class="section-number">6.21. </span>kink/RUNTIME</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.9. kink/CONTROL &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.10. kink/DYN" href="kink-DYN.html" />
+    <link rel="prev" title="6.8. kink/CONFIG_FUN_RUNNER" href="kink-CONFIG_FUN_RUNNER.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.9. kink/CONTROL</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-CONFIG_FUN_RUNNER.html"><span class="section-number">6.8. </span>kink/CONFIG_FUN_RUNNER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-DYN.html"><span class="section-number">6.10. </span>kink/DYN</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-control">
+<h1><span class="section-number">6.9. </span>kink/CONTROL<a class="headerlink" href="#kink-control" title="Link to this heading">¶</a></h1>
+<p>The mod which provides various control funs.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#control-try-body-cont-returned-cont-raised" id="id1">CONTROL.try($body $cont_returned $cont_raised)</a></p></li>
+<li><p><a class="reference internal" href="#control-while-cond-body" id="id2">CONTROL.while($cond $body)</a></p></li>
+<li><p><a class="reference internal" href="#control-with-finally-body" id="id3">CONTROL.with_finally($body)</a></p></li>
+<li><p><a class="reference internal" href="#control-with-return-body" id="id4">CONTROL.with_return($body)</a></p></li>
+</ul>
+</nav>
+<section id="control-try-body-cont-returned-cont-raised">
+<span id="api-a6e09ce11834a45ca32157ca739083ee"></span><h2><span class="section-number">6.9.1. </span>CONTROL.try($body $cont_returned $cont_raised)<a class="headerlink" href="#control-try-body-cont-returned-cont-raised" title="Link to this heading">¶</a></h2>
+<p>`try` traps an exception raised within invocation of $body.</p>
+<p>Preconditions:</p>
+<p>• $body must be a thunk fun</p>
+<p>• $cont_returned must be a fun which takes an argument, which is the result of $body</p>
+<p>• $cont_raised must be a fun which takes an exception raised in the invocation of $body</p>
+<p>`try` invokes $body with no args.</p>
+<p>If the invocation of $body terminates without raising an exception, `try` tail-calls $cont_returned with the result of the invocation of $body.</p>
+<p>If the invocation of $body terminates raising an exception, `try` tail-calls $cont_raised with the exception.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TRACE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:attempt_divide_10_by</span> &lt;- {(<span class="nv">:Divisor</span>)
+  <span class="nv">CONTROL</span>.<span class="n">try</span>(
+    { <span class="m">10</span> // <span class="nv">Divisor</span> }
+    {(<span class="nv">:Result</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;result: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>))
+    }
+    {(<span class="nv">:Exc</span>)
+      <span class="nv">Exc</span>.<span class="n">desc_iter</span>.<span class="n">each</span>{(<span class="nv">:Line</span>)
+        <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Line</span>)
+      }
+    }
+  )
+}
+
+<span class="n">attempt_divide_10_by</span>(<span class="m">2</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   result: 5</span>
+
+<span class="n">attempt_divide_10_by</span>(<span class="m">0</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [..root..]</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {startup}</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L260 C3 _startup_aux} --&gt;_startup_aux(Args Dep)</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L243 C11 try} CONTROL.--&gt;try(</span>
+<span class="c1">#   [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.--&gt;reset{</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   [..kont tag..]</span>
+<span class="c1">#   [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = --&gt;body</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L245 C7 _start} --&gt;_start(Non_opts Dep)</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L137 C3 if} --&gt;if(Non_opts == []</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L152 C20 call} { :Source_spec --&gt;= Non_opts.front</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L153 C20 call} :Script_args --&gt;= Non_opts.drop_front(1)</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L154 C7 branch} --&gt;branch(</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L180 C34 call} [:Source_desc :Script] --&gt;= _scan_from(Source_spec Dep)</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L182 C20 call} :Binding --&gt;= BINDING.new</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L184 C11 _run_script} --&gt;_run_script(Binding $script_fun Script_args)</span>
+<span class="c1">#   [builtin:kink-mods/kink/_startup/STARTUP.kn L128 C3 script_fun] --&gt;script_fun</span>
+<span class="c1">#   {(stdin) L22 C1 attempt_divide_10_by} --&gt;attempt_divide_10_by(0)</span>
+<span class="c1">#   {(stdin) L5 C11 try} CONTROL.--&gt;try(</span>
+<span class="c1">#   [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.--&gt;reset{</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   [..kont tag..]</span>
+<span class="c1">#   [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = --&gt;body</span>
+<span class="c1">#   {(stdin) L6 C10 op_intdiv} { 10 --&gt;// Divisor }</span>
+<span class="c1">#   Num.op_intdiv(Divisor): zero division: 10 is divided by 0</span>
+</pre></div>
+</div>
+<p>`try` internally uses kink/KONT_TAG.escape_tag to trap an exception.</p>
+</section>
+<section id="control-while-cond-body">
+<span id="api-a9b17d47fee600f79293b1bfa745e1e9"></span><h2><span class="section-number">6.9.2. </span>CONTROL.while($cond $body)<a class="headerlink" href="#control-while-cond-body" title="Link to this heading">¶</a></h2>
+<p>CONTROL.while calls $body repeatedly while $cond returns true.</p>
+<p>Preconditions:</p>
+<p>• $cond must be a thunk fun which returns a bool</p>
+<p>• $body must be a thunk fun</p>
+<p>CONTROL.while first calls $cond with no args. If $cond returns true, CONTROL.while calls $body with no args. It repeats until Fun returns false.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Vec</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>]
+<span class="nv">CONTROL</span>.<span class="n">while</span>{ <span class="nv">Vec</span>.<span class="n">any?</span> }{
+  <span class="nv">:N</span> = <span class="nv">Vec</span>.<span class="n">pop_front</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   1</span>
+<span class="c1">#   2</span>
+<span class="c1">#   3</span>
+</pre></div>
+</div>
+</section>
+<section id="control-with-finally-body">
+<span id="api-29c676e2986aaddd539609b493b6faaf"></span><h2><span class="section-number">6.9.3. </span>CONTROL.with_finally($body)<a class="headerlink" href="#control-with-finally-body" title="Link to this heading">¶</a></h2>
+<p>`with_finally` provides functionality of resource releases at the end of the procedure which uses the resources.</p>
+<p>`with_finally` calls $body with $finally fun, and returns the result of $body. Within the invocation of $body, $finally can be called with $cleanup thunk.</p>
+<p>$cleanup thunk is ensured to be called after the invocation of $body ends in the following ways:</p>
+<p>(1) When the invocation of $body returns a val,</p>
+<p>(2) When the invocation of $body is terminated by $return fun of CONTROL.with_return, or</p>
+<p>(3) When the invocation of $body raises an exception.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:FILE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+
+<span class="nv">:Text</span> &lt;- <span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="nv">:In</span> = <span class="nv">FILE</span>.<span class="n">open_to_read</span>(<span class="s1">&#39;/path/to/file&#39;</span>)
+  <span class="n">finally</span>{ <span class="nv">In</span>.<span class="n">close</span> }
+  <span class="nv">CHARSET</span>.<span class="n">utf8</span>.<span class="n">bin_to_str</span>(<span class="nv">In</span>.<span class="n">read_all</span>)
+}
+<span class="n">stdout</span>.<span class="n">print</span>(<span class="nv">Text</span>)  <span class="c1"># prints the text in /path/to/file</span>
+</pre></div>
+</div>
+<p>In the example above, `In` is closed when exiting from `with_finally`, no matter whether `read_all` raises an exception or not.</p>
+<p>$finally can be called multiple times. If $finally is called with thunks `T1`, `T2`, ,,, `Tn` respectively in that order, the thunks are called at the end of the invocation of $body in the order `Tn` ,,, `T2`, `T1`.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="n">finally</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;T1&#39;</span>) }
+  <span class="n">finally</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;T2&#39;</span>) }
+  <span class="n">finally</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;T3&#39;</span>) }
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   T3</span>
+<span class="c1">#   T2</span>
+<span class="c1">#   T1</span>
+</pre></div>
+</div>
+<p>`with_finally` traps only KONT_TAG.escape_tag. Thus, when invocation of $body is aborted by `shift` operation of any other kont tags, $cleanup thunks are not invoked.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:KONT_TAG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:cleanup_not_called</span> &lt;- {
+  <span class="nv">:Tag</span> = <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+  <span class="nv">Tag</span>.<span class="n">reset</span>{
+    <span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+      <span class="n">finally</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;does not reach here&#39;</span>) }
+      <span class="nv">Tag</span>.<span class="n">shift</span>{ <span class="n">nada</span> }
+    }
+  }
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;done&#39;</span>)
+}
+
+<span class="n">cleanup_not_called</span> <span class="c1"># =&gt; done</span>
+</pre></div>
+</div>
+<p class="rubric">Detailed semantics</p>
+<p>Invocation of $finally guards the delimited continuation of the invocation of $body by hypothetical __rest__ fun. For example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="n">__leading__</span>
+  <span class="n">finally</span>(<span class="nv">$cleanup</span>)
+  <span class="n">__rest__</span>
+}
+</pre></div>
+</div>
+<p>The program above is equivalent to the following:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="n">__leading__</span>
+  <span class="n">__ensure__</span>(
+    { <span class="n">__rest__</span> }
+    <span class="nv">$cleanup</span>
+  )
+}
+</pre></div>
+</div>
+<p>Here, __ensure__ does the following:</p>
+<p>• Executes __rest__.</p>
+<p>• If __rest__ returns a val, __ensure__ calls $cleanup.</p>
+<p>• If __rest__ is terminated by $return fun of CONTROL.with_return with a thunk `T`,   __ensure__ calls $cleanup and calls return(T).</p>
+<p>• If __rest__ raises an exception `E`,   __ensure__ calls $cleanup within a guard of CONTROL.try.   If $cleanup returns a val, __ensure__ raises `E`.   If $cleanup raises an exception `F`, __ensure__raises `E+F`.</p>
+</section>
+<section id="control-with-return-body">
+<span id="api-a4599f5bf37ae1ee2080db91914c982f"></span><h2><span class="section-number">6.9.4. </span>CONTROL.with_return($body)<a class="headerlink" href="#control-with-return-body" title="Link to this heading">¶</a></h2>
+<p>`with_return` provides functionality of early-return.</p>
+<p>`with_return` calls $body with a fun. Here we call the fun as $return. You can call $return with a thunk, $cont, to end the invocation of `with_return`. `with_return` tail-calls $cont. Thus, the result of the thunk will be the result of `with_return`.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:to_fizz_buzz</span> &lt;- {(<span class="nv">:Num</span>)
+  <span class="nv">CONTROL</span>.<span class="n">with_return</span>{(<span class="nv">:return</span>)
+    <span class="n">if</span>(<span class="nv">Num</span> % <span class="m">15</span> == <span class="m">0</span>){ <span class="n">return</span>{ <span class="s1">&#39;fizzbuzz&#39;</span> } }
+    <span class="n">if</span>(<span class="nv">Num</span> % <span class="m">3</span> == <span class="m">0</span>){ <span class="n">return</span>{ <span class="s1">&#39;fizz&#39;</span> } }
+    <span class="n">if</span>(<span class="nv">Num</span> % <span class="m">5</span> == <span class="m">0</span>){ <span class="n">return</span>{ <span class="s1">&#39;buzz&#39;</span> } }
+    <span class="n">return</span>{ <span class="nv">Num</span>.<span class="n">show</span> }
+  }
+}
+
+<span class="m">1</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">20</span>)
+.<span class="n">map</span>{(<span class="nv">:N</span>) <span class="n">to_fizz_buzz</span>(<span class="nv">N</span>) }
+.<span class="n">each</span>{(<span class="nv">:S</span>) <span class="n">stdout</span>.<span class="n">print</span>(<span class="nv">S</span> + <span class="s1">&#39; &#39;</span>) }
+<span class="c1"># =&gt; 1 2 fizz 4 buzz fizz 7 8 fizz buzz 11 fizz 13 14 fizzbuzz 16 17 fizz 19 buzz</span>
+</pre></div>
+</div>
+<p>Invocation of $body must end by calling $return or by raising an exception.</p>
+<p class="rubric">$cont is tail-called</p>
+<p>`with_return` tail-calls $cont passed to $return. Thus, you can safely implement a loop using `with_return`.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:gcd</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)
+  <span class="nv">CONTROL</span>.<span class="n">with_return</span>{(<span class="nv">:return</span>)
+    <span class="nv">:R</span> = <span class="nv">X</span> % <span class="nv">Y</span>
+    <span class="n">if</span>(<span class="nv">R</span> == <span class="m">0</span>){ <span class="n">return</span>{ <span class="nv">Y</span> } }
+
+    <span class="n">return</span>{ <span class="n">gcd</span>(<span class="nv">Y</span> <span class="nv">R</span>) }
+  }
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">gcd</span>(<span class="m">1071</span> <span class="m">462</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 21</span>
+</pre></div>
+</div>
+<p class="rubric">Nested invocation</p>
+<p>Invocation of `with_return` can be nested like below:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:R</span> &lt;- <span class="nv">CONTROL</span>.<span class="n">with_return</span>{(<span class="nv">:return</span>)
+  <span class="nv">CONTROL</span>.<span class="n">with_return</span>{(<span class="nv">:inner_return</span>)
+    <span class="n">return</span>{ <span class="m">42</span> }
+    <span class="n">raise</span>(<span class="s1">&#39;does not reach here&#39;</span>)
+  }
+  <span class="n">raise</span>(<span class="s1">&#39;does not reach here either&#39;</span>)
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">R</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p class="rubric">Note</p>
+<p>`with_return` internally uses KONT_TAG.escape_tag to implement non local exit.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-CONFIG_FUN_RUNNER.html"><span class="section-number">6.8. </span>kink/CONFIG_FUN_RUNNER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-DYN.html"><span class="section-number">6.10. </span>kink/DYN</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

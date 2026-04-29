@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.87. kink/repl/REPL &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.88. kink/socket/DATAGRAM" href="kink-socket-DATAGRAM.html" />
+    <link rel="prev" title="6.86. kink/regex/REGEX" href="kink-regex-REGEX.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.87. kink/repl/REPL</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-regex-REGEX.html"><span class="section-number">6.86. </span>kink/regex/REGEX</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-DATAGRAM.html"><span class="section-number">6.88. </span>kink/socket/DATAGRAM</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-repl-repl">
+<h1><span class="section-number">6.87. </span>kink/repl/REPL<a class="headerlink" href="#kink-repl-repl" title="Link to this heading">¶</a></h1>
+<p>Provides REPL (read-eval-print-loop) tool.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#repl-run-config" id="id1">REPL.run(...[$config = {}])</a></p></li>
+</ul>
+</nav>
+<section id="repl-run-config">
+<span id="api-ab91e1f50aa587e1d12d0b6ad0510060"></span><h2><span class="section-number">6.87.1. </span>REPL.run(...[$config = {}])<a class="headerlink" href="#repl-run-config" title="Link to this heading">¶</a></h2>
+<p>`run` runs REPL tool.</p>
+<p>$config must take `Config` val. `Config` val has the following configuration methods.</p>
+<p>• Config.printer(Printer): configures `Printer`   as the printer by which the REPL tool prints out prompts, messages, and results.   If `printer` is not called, the REPL tool uses stdout.</p>
+<p>• Config.scanner(Scanner): configures `Scanner`   as the scanner from which the REPL tool scans programs.   If `scanner` is not called, the REPL tool uses stdin.</p>
+<p>• Config.binding(Binding): sets `Binding`   as the binding with which programs are run.   If `binding` is not called, the REPL tool makes a new empty binding.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-regex-REGEX.html"><span class="section-number">6.86. </span>kink/regex/REGEX</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-DATAGRAM.html"><span class="section-number">6.88. </span>kink/socket/DATAGRAM</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

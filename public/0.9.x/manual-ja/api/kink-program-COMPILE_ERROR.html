@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.78. kink/program/COMPILE_ERROR &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.79. kink/program/LOCATION" href="kink-program-LOCATION.html" />
+    <link rel="prev" title="6.77. kink/param/REST_PARAM" href="kink-param-REST_PARAM.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.78. kink/program/COMPILE_ERROR</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-param-REST_PARAM.html"><span class="section-number">6.77. </span>kink/param/REST_PARAM</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-program-LOCATION.html"><span class="section-number">6.79. </span>kink/program/LOCATION</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-program-compile-error">
+<h1><span class="section-number">6.78. </span>kink/program/COMPILE_ERROR<a class="headerlink" href="#kink-program-compile-error" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-compile-error" id="id2">compile_error型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#err-message" id="id3">Err.message</a></p></li>
+<li><p><a class="reference internal" href="#err-from" id="id4">Err.from</a></p></li>
+<li><p><a class="reference internal" href="#err-to" id="id5">Err.to</a></p></li>
+<li><p><a class="reference internal" href="#err-desc" id="id6">Err.desc</a></p></li>
+<li><p><a class="reference internal" href="#err1-err2" id="id7">Err1 == Err2</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#compile-error-new-message-from-to" id="id8">COMPILE_ERROR.new(Message From To)</a></p></li>
+<li><p><a class="reference internal" href="#compile-error-is-val" id="id9">COMPILE_ERROR.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-compile-error">
+<span id="api-90981ed8c8e11e27e7d317361c204f62"></span><h2><span class="section-number">6.78.1. </span>compile_error型<a class="headerlink" href="#type-compile-error" title="Link to this heading">¶</a></h2>
+<p>compile_errorは、プログラムのコンパイルのエラーである。</p>
+<p>compile_errorは次の属性からなる。</p>
+<p>• Message: エラーメッセージのstr。</p>
+<p>• From: エラーの開始位置のlocation。</p>
+<p>• To: エラーの終了位置のlocation。</p>
+<p class="rubric">不変条件</p>
+<p>From.program == To.program</p>
+<p>From.pos &lt;= To.pos</p>
+<section id="err-message">
+<span id="api-5ec1c2142158027330771345131c2cdc"></span><h3><span class="section-number">6.78.1.1. </span>Err.message<a class="headerlink" href="#err-message" title="Link to this heading">¶</a></h3>
+<p>messageは、ErrのMessage属性を戻す。</p>
+</section>
+<section id="err-from">
+<span id="api-d492808cdf7595ed9af63b62faddaa45"></span><h3><span class="section-number">6.78.1.2. </span>Err.from<a class="headerlink" href="#err-from" title="Link to this heading">¶</a></h3>
+<p>fromは、ErrのFrom属性を戻す。</p>
+</section>
+<section id="err-to">
+<span id="api-15ce4579ade453484a2debf95b9335f6"></span><h3><span class="section-number">6.78.1.3. </span>Err.to<a class="headerlink" href="#err-to" title="Link to this heading">¶</a></h3>
+<p>toは、ErrのTo属性を戻す。</p>
+</section>
+<section id="err-desc">
+<span id="api-35f3dd531004ca43754d376f0f94e5a3"></span><h3><span class="section-number">6.78.1.4. </span>Err.desc<a class="headerlink" href="#err-desc" title="Link to this heading">¶</a></h3>
+<p>descは、プログラマのためにコンパイルエラーを叙述するstrを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:COMPILE_ERROR</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s1">&#39;Foo + @@ Bar&#39;</span>)
+<span class="nv">:From</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">6</span>)
+<span class="nv">:To</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">8</span>)
+<span class="nv">:Err</span> &lt;- <span class="nv">COMPILE_ERROR</span>.<span class="n">new</span>(<span class="s1">&#39;unknown operator&#39;</span> <span class="nv">From</span> <span class="nv">To</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Err</span>.<span class="n">desc</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;unknown operator: [foo.kn L1 C7] Foo + --&gt;@@ Bar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="err1-err2">
+<span id="api-cf3baa368d25b7c395416f6d172bc6fa"></span><h3><span class="section-number">6.78.1.5. </span>Err1 == Err2<a class="headerlink" href="#err1-err2" title="Link to this heading">¶</a></h3>
+<p>== 演算子、つまりop_eqメソッドは、Err1とErr2が、等しいMessage, From, To属性を持っているかどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Err2はcompile_errorでなければならない。</p>
+</section>
+</section>
+<section id="compile-error-new-message-from-to">
+<span id="api-0c121d4685999e25b549bd3b7780ed33"></span><h2><span class="section-number">6.78.2. </span>COMPILE_ERROR.new(Message From To)<a class="headerlink" href="#compile-error-new-message-from-to" title="Link to this heading">¶</a></h2>
+<p>newは、渡された属性を持つ新しいcompile_errorを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Messageはstrでなければならない。</p>
+<p>FromとToはlocation値でなければならない。</p>
+<p>From.program == To.program</p>
+<p>From.pos &lt;= To.pos</p>
+</section>
+<section id="compile-error-is-val">
+<span id="api-8de54eaac2ef61e148eb7cd4169f436f"></span><h2><span class="section-number">6.78.3. </span>COMPILE_ERROR.is?(Val)<a class="headerlink" href="#compile-error-is-val" title="Link to this heading">¶</a></h2>
+<p>is?は、Valがcompile_errorかどうかを戻す。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-param-REST_PARAM.html"><span class="section-number">6.77. </span>kink/param/REST_PARAM</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-program-LOCATION.html"><span class="section-number">6.79. </span>kink/program/LOCATION</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

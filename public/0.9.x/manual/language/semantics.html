@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>3.2. Semantics &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.3. Evaluation" href="eval.html" />
+    <link rel="prev" title="3.1. Syntax" href="syntax.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>3.2. Semantics</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="syntax.html"><span class="section-number">3.1. </span>Syntax</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="eval.html"><span class="section-number">3.3. </span>Evaluation</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="semantics">
+<h1><span class="section-number">3.2. </span>Semantics<a class="headerlink" href="#semantics" title="Link to this heading">¶</a></h1>
+<p>This chapter specifies the semantics of Kink programs as transformation
+into <a class="reference internal" href="../glossary.html#term-abstract-instruction"><span class="xref std std-term">abstract instructions</span></a> of the <a class="reference internal" href="../glossary.html#term-abstract-stack-machine"><span class="xref std std-term">abstract stack machine</span></a>.
+The transformation is comprised of the two steps: <a class="reference internal" href="../glossary.html#term-desugaring"><span class="xref std std-term">desugaring</span></a> and <a class="reference internal" href="../glossary.html#term-translation"><span class="xref std std-term">translation</span></a>.</p>
+<p>The following is an example program.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:foo</span> &lt;- {
+  <span class="nv">:Vec</span> = [<span class="m">10</span> <span class="m">20</span> <span class="m">30</span>]
+  <span class="nv">Vec</span>.<span class="n">each</span>{(<span class="nv">:E</span>) <span class="n">bar</span>(<span class="nv">E</span>) }
+}
+</pre></div>
+</div>
+<p>The program above is desugared as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="k">\binding</span><span class="nv">:foo</span>.<span class="n">op_store</span>({
+  { [<span class="k">\binding</span><span class="nv">:Vec</span>].<span class="n">op_store</span>(<span class="k">\binding</span>.<span class="nv">_Args</span>)
+    <span class="k">\binding</span>.<span class="nv">Vec</span>.<span class="n">each</span>({
+      [<span class="k">\binding</span><span class="nv">:E</span>].<span class="n">op_store</span>(<span class="k">\binding</span>.<span class="nv">_Args</span>)
+      <span class="k">\binding</span>.<span class="n">bar</span>[()](<span class="k">\binding</span>.<span class="nv">E</span>)
+    })
+  }.<span class="n">call</span>(() [[<span class="m">10</span> <span class="m">20</span> <span class="m">30</span>]])
+})
+</pre></div>
+</div>
+<p>Then translated into abstract instructions as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">binding</span>)
+(<span class="n">varref</span> <span class="s2">&quot;foo&quot;</span>)
+(<span class="n">dup</span>)
+(<span class="n">load</span> <span class="s2">&quot;op_store&quot;</span>)
+(<span class="n">dup</span>)
+(<span class="n">checkfun</span>)
+(<span class="n">flip</span>)
+(<span class="n">emptyvec</span>)
+(<span class="n">binding</span>)
+(<span class="n">fun</span>
+  (<span class="n">enclosingbinding</span>)
+  (<span class="n">clonebinding</span>)
+  (<span class="n">dup</span>)
+  (<span class="n">setbinding</span>)
+  (<span class="n">storerecvargs</span>)
+
+  (<span class="n">binding</span>)
+  (<span class="n">fun</span>
+    (<span class="n">enclosingbinding</span>)
+    (<span class="n">clonebinding</span>)
+    (<span class="n">dup</span>)
+    (<span class="n">setbinding</span>)
+    (<span class="n">storerecvargs</span>)
+
+    (<span class="n">emptyvec</span>)
+    (<span class="n">binding</span>)
+    (<span class="n">varref</span> <span class="s2">&quot;Vec&quot;</span>)
+    (<span class="n">add</span>)
+    (<span class="n">dup</span>)
+    (<span class="n">load</span> <span class="s2">&quot;op_store&quot;</span>)
+    (<span class="n">dup</span>)
+    (<span class="n">checkfun</span>)
+    (<span class="n">flip</span>)
+    (<span class="n">emptyvec</span>)
+    (<span class="n">binding</span>)
+    (<span class="n">load</span> <span class="s2">&quot;_Args&quot;</span>)
+    (<span class="n">add</span>)
+    (<span class="n">call</span> <span class="s2">&quot;op_store&quot;</span>)
+    (<span class="n">remove</span>)
+
+    (<span class="n">binding</span>)
+    (<span class="n">load</span> <span class="s2">&quot;Vec&quot;</span>)
+    (<span class="n">dup</span>)
+    (<span class="n">load</span> <span class="s2">&quot;each&quot;</span>)
+    (<span class="n">dup</span>)
+    (<span class="n">checkfun</span>)
+    (<span class="n">flip</span>)
+    (<span class="n">emptyvec</span>)
+
+    (<span class="n">binding</span>)
+    (<span class="n">fun</span>
+      (<span class="n">enclosingbinding</span>)
+      (<span class="n">clonebinding</span>)
+      (<span class="n">dup</span>)
+      (<span class="n">setbinding</span>)
+      (<span class="n">storerecvargs</span>)
+
+      (<span class="n">emptyvec</span>)
+      (<span class="n">binding</span>)
+      (<span class="n">varref</span> <span class="s2">&quot;E&quot;</span>)
+      (<span class="n">add</span>)
+      (<span class="n">dup</span>)
+      (<span class="n">load</span> <span class="s2">&quot;op_store&quot;</span>)
+      (<span class="n">dup</span>)
+      (<span class="n">checkfun</span>)
+      (<span class="n">flip</span>)
+      (<span class="n">emptyvec</span>)
+      (<span class="n">binding</span>)
+      (<span class="n">load</span> <span class="s2">&quot;_Args&quot;</span>)
+      (<span class="n">add</span>)
+      (<span class="n">call</span> <span class="s2">&quot;op_store&quot;</span>)
+      (<span class="n">binding</span>)
+      (<span class="n">load</span> <span class="s2">&quot;bar&quot;</span>)
+      (<span class="n">dup</span>)
+      (<span class="n">checkfun</span>)
+      (<span class="n">nada</span>)
+      (<span class="n">emptyvec</span>)
+      (<span class="n">binding</span>)
+      (<span class="n">load</span> <span class="s2">&quot;E&quot;</span>)
+      (<span class="n">add</span>)
+      (<span class="n">call</span> <span class="s2">&quot;bar&quot;</span>)
+    )
+    (<span class="n">add</span>)
+    (<span class="n">call</span> <span class="s2">&quot;each&quot;</span>)
+  )
+  (<span class="n">dup</span>)
+  (<span class="n">load</span> <span class="s2">&quot;call&quot;</span>)
+  (<span class="n">dup</span>)
+  (<span class="n">checkfun</span>)
+  (<span class="n">flip</span>)
+  (<span class="n">emptyvec</span>)
+  (<span class="n">nada</span>)
+  (<span class="n">add</span>)
+  (<span class="n">emptyvec</span>)
+  (<span class="n">num</span> <span class="m">10</span>)
+  (<span class="n">add</span>)
+  (<span class="n">num</span> <span class="m">20</span>)
+  (<span class="n">add</span>)
+  (<span class="n">num</span> <span class="m">30</span>)
+  (<span class="n">add</span>)
+  (<span class="n">add</span>)
+  (<span class="n">call</span> <span class="s2">&quot;call&quot;</span>)
+)
+(<span class="n">add</span>)
+(<span class="n">call</span> <span class="s2">&quot;op_store&quot;</span>)
+</pre></div>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#desugaring" id="id4">Desugaring</a></p>
+<ul>
+<li><p><a class="reference internal" href="#programs" id="id5">Programs</a></p></li>
+<li><p><a class="reference internal" href="#let-clauses" id="id6">Let clauses</a></p></li>
+<li><p><a class="reference internal" href="#operator-expressions" id="id7">Operator expressions</a></p></li>
+<li><p><a class="reference internal" href="#function-bodies" id="id8">Function bodies</a></p></li>
+<li><p><a class="reference internal" href="#actual-arguments-vectors" id="id9">Actual arguments vectors</a></p></li>
+<li><p><a class="reference internal" href="#local-load-expressions" id="id10">Local load expressions</a></p></li>
+<li><p><a class="reference internal" href="#local-reference-expressions" id="id11">Local reference expressions</a></p></li>
+<li><p><a class="reference internal" href="#local-call-expressions" id="id12">Local call expressions</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#translation" id="id13">Translation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id3" id="id14">Programs</a></p></li>
+<li><p><a class="reference internal" href="#sequences-without-let-clauses" id="id15">Sequences without let clauses</a></p></li>
+<li><p><a class="reference internal" href="#expressions" id="id16">Expressions</a></p></li>
+<li><p><a class="reference internal" href="#primary-expressions" id="id17">Primary expressions</a></p></li>
+<li><p><a class="reference internal" href="#number-expressions" id="id18">Number expressions</a></p></li>
+<li><p><a class="reference internal" href="#string-expressions" id="id19">String expressions</a></p></li>
+<li><p><a class="reference internal" href="#binding-expressions" id="id20">Binding expressions</a></p></li>
+<li><p><a class="reference internal" href="#parentheses-expressions" id="id21">Parentheses expressions</a></p></li>
+<li><p><a class="reference internal" href="#vector-expressions" id="id22">Vector expressions</a></p></li>
+<li><p><a class="reference internal" href="#vector-bodies" id="id23">Vector bodies</a></p></li>
+<li><p><a class="reference internal" href="#elements-producers" id="id24">Elements producers</a></p></li>
+<li><p><a class="reference internal" href="#function-expressions" id="id25">Function expressions</a></p></li>
+<li><p><a class="reference internal" href="#member-load-expressions" id="id26">Member load expressions</a></p></li>
+<li><p><a class="reference internal" href="#member-reference-expressions" id="id27">Member reference expressions</a></p></li>
+<li><p><a class="reference internal" href="#member-call-expressions" id="id28">Member call expressions</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="desugaring">
+<span id="id1"></span><h2><span class="section-number">3.2.1. </span>Desugaring<a class="headerlink" href="#desugaring" title="Link to this heading">¶</a></h2>
+<p><em class="dfn">Desugaring</em> is transformation of a program into the <em class="dfn">desugared form</em>.</p>
+<section id="programs">
+<h3><span class="section-number">3.2.1.1. </span>Programs<a class="headerlink" href="#programs" title="Link to this heading">¶</a></h3>
+<p>A Kink <a class="reference internal" href="syntax.html#grammar-token-program"><code class="xref std std-token docutils literal notranslate"><span class="pre">program</span></code></a> is composed of zero or more toplevel expressions.</p>
+<p>When a program is composed of expressions <code class="docutils literal notranslate"><span class="pre">E1</span></code>, <code class="docutils literal notranslate"><span class="pre">E2</span></code>, ,,, <code class="docutils literal notranslate"><span class="pre">En</span></code>,
+the program is <em class="dfn">desugared</em> to a parentheses expression <code class="docutils literal notranslate"><span class="pre">(E1</span> <span class="pre">E2</span> <span class="pre">,,,</span> <span class="pre">En)</span></code>.</p>
+</section>
+<section id="let-clauses">
+<span id="letclause"></span><h3><span class="section-number">3.2.1.2. </span>Let clauses<a class="headerlink" href="#let-clauses" title="Link to this heading">¶</a></h3>
+<p>A let clause in the form <code class="docutils literal notranslate"><span class="pre">E1</span> <span class="pre">=</span> <span class="pre">E2</span> <span class="pre">S</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">E1</span></code> and <code class="docutils literal notranslate"><span class="pre">E2</span></code> are <a class="reference internal" href="syntax.html#grammar-token-expression"><code class="xref std std-token docutils literal notranslate"><span class="pre">expressions</span></code></a>
+and <code class="docutils literal notranslate"><span class="pre">S</span></code> is a <a class="reference internal" href="syntax.html#grammar-token-substantial_seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">substantial_seq</span></code></a>,
+is <em class="dfn">desugared</em> to <code class="docutils literal notranslate"><span class="pre">{(E1)</span> <span class="pre">S</span> <span class="pre">}.call(()</span> <span class="pre">[E2])</span></code>.</p>
+<p>Example program with let clauses:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:fun</span> &lt;- {
+  <span class="nv">:add</span> = {(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }
+  <span class="nv">:Sum</span> = <span class="n">add</span>(<span class="m">10</span> <span class="m">20</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">show</span>)  <span class="c1"># =&gt; 30</span>
+}
+</pre></div>
+</div>
+<p>The program above is <em class="dfn">desugared</em> to the following program.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:fun</span> &lt;- {
+  {(<span class="nv">:add</span>)
+    {(<span class="nv">:Sum</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">show</span>)
+    }.<span class="n">call</span>(() [<span class="n">add</span>(<span class="m">10</span> <span class="m">20</span>)])
+  }.<span class="n">call</span>(() [{(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }])
+}
+</pre></div>
+</div>
+</section>
+<section id="operator-expressions">
+<h3><span class="section-number">3.2.1.3. </span>Operator expressions<a class="headerlink" href="#operator-expressions" title="Link to this heading">¶</a></h3>
+<p>Operator expressions are syntactic sugar for
+member call expressions (<a class="reference internal" href="syntax.html#grammar-token-member_call"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_call</span></code></a>).</p>
+<p>Here is the list of operators.</p>
+<table class="docutils align-default" id="operatorlist">
+<colgroup>
+<col style="width: 12.5%" />
+<col style="width: 12.5%" />
+<col style="width: 56.2%" />
+<col style="width: 18.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Priority</p></th>
+<th class="head"><p>Token type</p></th>
+<th class="head"><p>Operators</p></th>
+<th class="head"><p>Associativity</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Lowest</p></td>
+<td><p><a class="reference internal" href="syntax.html#grammar-token-store_op"><code class="xref std std-token docutils literal notranslate"><span class="pre">store_op</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;-</span></code></p></td>
+<td><p>Non-associative</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference internal" href="syntax.html#grammar-token-logor_op"><code class="xref std std-token docutils literal notranslate"><span class="pre">logor_op</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">||</span></code></p></td>
+<td><p>Right-associative</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><a class="reference internal" href="syntax.html#grammar-token-logand_op"><code class="xref std std-token docutils literal notranslate"><span class="pre">logand_op</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code></p></td>
+<td><p>Right-associative</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference internal" href="syntax.html#grammar-token-relation_op"><code class="xref std std-token docutils literal notranslate"><span class="pre">relation_op</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">==</span></code>, <code class="docutils literal notranslate"><span class="pre">!=</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;=</span></code></p></td>
+<td><p>Non-associative</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><a class="reference internal" href="syntax.html#grammar-token-add_op"><code class="xref std std-token docutils literal notranslate"><span class="pre">add_op</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">+</span></code>, <code class="docutils literal notranslate"><span class="pre">-</span></code>, <code class="docutils literal notranslate"><span class="pre">|</span></code>, <code class="docutils literal notranslate"><span class="pre">^</span></code></p></td>
+<td><p>Left-associative</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference internal" href="syntax.html#grammar-token-multiply_op"><code class="xref std std-token docutils literal notranslate"><span class="pre">multiply_op</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">//</span></code>, <code class="docutils literal notranslate"><span class="pre">%</span></code>, <code class="docutils literal notranslate"><span class="pre">&amp;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code></p></td>
+<td><p>Left-associative</p></td>
+</tr>
+<tr class="row-even"><td><p>Highest</p></td>
+<td><p><a class="reference internal" href="syntax.html#grammar-token-unary_op"><code class="xref std std-token docutils literal notranslate"><span class="pre">unary_op</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-</span></code>, <code class="docutils literal notranslate"><span class="pre">!</span></code>, <code class="docutils literal notranslate"><span class="pre">~</span></code></p></td>
+<td><p>Unary</p></td>
+</tr>
+</tbody>
+</table>
+<p>Each operator expression is <em class="dfn">desugared</em> as follows.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Operator expression</p></th>
+<th class="head"><p>Desugared as</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&lt;-</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_store(Y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">||</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">\binding.op_logor[()](X</span> <span class="pre">{</span> <span class="pre">Y</span> <span class="pre">})</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&amp;&amp;</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">\binding.op_logand[()](X</span> <span class="pre">{</span> <span class="pre">Y</span> <span class="pre">})</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">==</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_eq(Y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">!=</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">\binding.op_lognot[()]((X).op_eq(Y))</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&lt;</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">\binding.op_lognot[()]((Y).op_le(X))</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&gt;</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">\binding.op_lognot[()]((X).op_le(Y))</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&lt;=</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_le(Y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&gt;=</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(Y).op_le(X)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">+</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_add(Y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_sub(Y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">|</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_or(Y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">^</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_xor(Y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">*</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_mul(Y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">/</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_div(Y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">//</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_intdiv(Y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">%</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_rem(Y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&amp;</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_and(Y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&lt;&lt;</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_shl(Y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">&gt;&gt;</span> <span class="pre">Y</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(X).op_shr(Y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-</span> <span class="pre">U</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(U).op_minus()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">!</span> <span class="pre">U</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">\binding.op_lognot[()](U)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">~</span> <span class="pre">U</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(U).op_not()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="function-bodies">
+<h3><span class="section-number">3.2.1.4. </span>Function bodies<a class="headerlink" href="#function-bodies" title="Link to this heading">¶</a></h3>
+<p>Formal receivers and formal arguments in function bodies (<a class="reference internal" href="syntax.html#grammar-token-fun_body"><code class="xref std std-token docutils literal notranslate"><span class="pre">fun_body</span></code></a>)
+are syntactic sugar for member call expressions (<a class="reference internal" href="syntax.html#grammar-token-member_call"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_call</span></code></a>).</p>
+<p>Function bodies are categorized in four groups:
+with or without the formal receiver, and with or without the formal arguments.
+The following table describes how each group is <em class="dfn">desugared</em>.
+In the table, <code class="docutils literal notranslate"><span class="pre">C</span></code> denotes a sequence (<a class="reference internal" href="syntax.html#grammar-token-seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">seq</span></code></a>),
+<code class="docutils literal notranslate"><span class="pre">E</span></code> denotes an <a class="reference internal" href="syntax.html#grammar-token-expression"><code class="xref std std-token docutils literal notranslate"><span class="pre">expression</span></code></a>,
+and <code class="docutils literal notranslate"><span class="pre">VB</span></code> denotes a vector body (<a class="reference internal" href="syntax.html#grammar-token-vec_body"><code class="xref std std-token docutils literal notranslate"><span class="pre">vec_body</span></code></a>),</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.8%" />
+<col style="width: 18.8%" />
+<col style="width: 25.0%" />
+<col style="width: 37.5%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Formal receiver</p></th>
+<th class="head"><p>Formal arguments</p></th>
+<th class="head"><p>Seq after formal receiver and arguments</p></th>
+<th class="head"><p>Desugared as</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>∅</p></td>
+<td><p>∅</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>∅</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(VB)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[VB].op_store(\binding._Args)</span> <span class="pre">(C)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[E]</span></code></p></td>
+<td><p>∅</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(E).op_store(\binding._Recv)</span> <span class="pre">(C)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[E]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(VB)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">C</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(E).op_store(\binding._Recv)</span> <span class="pre">[VB].op_store(\binding._Args)</span> <span class="pre">(C)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Therefore, <code class="docutils literal notranslate"><span class="pre">fun1</span></code> and <code class="docutils literal notranslate"><span class="pre">fun2</span></code> in the following example are equivalent.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:fun1</span> &lt;- {[<span class="nv">:Self</span>](<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>)
+  <span class="s1">&#39;result&#39;</span>
+}
+
+<span class="nv">:fun2</span> &lt;- {
+  <span class="nv">:Self</span> &lt;- <span class="nv">_Recv</span>
+  [<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>] &lt;- <span class="nv">_Args</span>
+  <span class="s1">&#39;result&#39;</span>
+}
+</pre></div>
+</div>
+</section>
+<section id="actual-arguments-vectors">
+<h3><span class="section-number">3.2.1.5. </span>Actual arguments vectors<a class="headerlink" href="#actual-arguments-vectors" title="Link to this heading">¶</a></h3>
+<p>Actual arguments vectors (<a class="reference internal" href="syntax.html#grammar-token-args"><code class="xref std std-token docutils literal notranslate"><span class="pre">args</span></code></a>) are categorized in two groups:
+those with parentheses (<a class="reference internal" href="syntax.html#grammar-token-paren_args"><code class="xref std std-token docutils literal notranslate"><span class="pre">paren_args</span></code></a>) and without parentheses.</p>
+<p>The following table describes how each group of actual arguments vectors
+are <em class="dfn">desugared</em>.
+In the table, <code class="docutils literal notranslate"><span class="pre">E1</span></code>, <code class="docutils literal notranslate"><span class="pre">E2</span></code>, ... <code class="docutils literal notranslate"><span class="pre">En</span></code> denotes zero or more elements producers (<a class="reference internal" href="syntax.html#grammar-token-elements_producer"><code class="xref std std-token docutils literal notranslate"><span class="pre">elements_producer</span></code></a>).
+<code class="docutils literal notranslate"><span class="pre">FB1</span></code>, <code class="docutils literal notranslate"><span class="pre">FB2</span></code>, ... <code class="docutils literal notranslate"><span class="pre">FBm</span></code> denotes function bodies (<a class="reference internal" href="syntax.html#grammar-token-fun_body"><code class="xref std std-token docutils literal notranslate"><span class="pre">fun_body</span></code></a>)
+of zero or more function arguments (<a class="reference internal" href="syntax.html#grammar-token-fun_arg"><code class="xref std std-token docutils literal notranslate"><span class="pre">fun_arg</span></code></a>) in the original form.
+or zero or more functions (<a class="reference internal" href="syntax.html#grammar-token-fun"><code class="xref std std-token docutils literal notranslate"><span class="pre">fun</span></code></a>) in the <em class="dfn">desugared form</em>.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Original form</p></th>
+<th class="head"><p>Desugared as</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">(E1</span> <span class="pre">E2</span> <span class="pre">‹...snip...›</span> <span class="pre">En){</span> <span class="pre">FB1</span> <span class="pre">}{</span> <span class="pre">FB2</span> <span class="pre">}‹...snip...›{</span> <span class="pre">FBm</span> <span class="pre">}</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(E1</span> <span class="pre">E2</span> <span class="pre">‹...snip...›</span> <span class="pre">En</span> <span class="pre">{</span> <span class="pre">FB1</span> <span class="pre">}</span> <span class="pre">{</span> <span class="pre">FB2</span> <span class="pre">}</span> <span class="pre">‹...snip...›</span> <span class="pre">{</span> <span class="pre">FBm</span> <span class="pre">})</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">FB1</span> <span class="pre">}{</span> <span class="pre">FB2</span> <span class="pre">}‹...snip...›{</span> <span class="pre">FBm</span> <span class="pre">}</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">({</span> <span class="pre">FB1</span> <span class="pre">}</span> <span class="pre">{</span> <span class="pre">FB2</span> <span class="pre">}</span> <span class="pre">‹...snip...›</span> <span class="pre">{</span> <span class="pre">FBm</span> <span class="pre">})</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Therefore, in the following example,
+each pair of invocations of <code class="docutils literal notranslate"><span class="pre">show</span></code>, <code class="docutils literal notranslate"><span class="pre">if</span></code> and <code class="docutils literal notranslate"><span class="pre">fold</span></code> are mutually equivalent.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">Num</span>.<span class="n">show</span>
+<span class="nv">Num</span>.<span class="n">show</span>()
+
+<span class="n">if</span>(<span class="nv">Str</span>.<span class="n">any?</span>){ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;not empty&#39;</span>) }
+<span class="n">if</span>(<span class="nv">Str</span>.<span class="n">any?</span> { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;not empty&#39;</span>) })
+
+<span class="nv">Vec</span>.<span class="n">fold</span>(<span class="m">0</span>){(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span>}
+<span class="nv">Vec</span>.<span class="n">fold</span>(<span class="m">0</span> {(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span>})
+</pre></div>
+</div>
+</section>
+<section id="local-load-expressions">
+<h3><span class="section-number">3.2.1.6. </span>Local load expressions<a class="headerlink" href="#local-load-expressions" title="Link to this heading">¶</a></h3>
+<p>Local load expressions (<a class="reference internal" href="syntax.html#grammar-token-local_load"><code class="xref std std-token docutils literal notranslate"><span class="pre">local_load</span></code></a>) are syntactic sugar for
+member load expressions (<a class="reference internal" href="syntax.html#grammar-token-member_load"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_load</span></code></a>) of the local binding.
+The local load expression in the form <code class="docutils literal notranslate"><span class="pre">Data</span></code> is <em class="dfn">desugared</em> to <code class="docutils literal notranslate"><span class="pre">\binding.Data</span></code>.
+The local load expression in the form <code class="docutils literal notranslate"><span class="pre">$fun</span></code> is <em class="dfn">desugared</em> to <code class="docutils literal notranslate"><span class="pre">\binding$fun</span></code>.</p>
+<p>In the following example, <code class="docutils literal notranslate"><span class="pre">fun1</span></code> and <code class="docutils literal notranslate"><span class="pre">fun2</span></code> are equivalent,
+thus the invocations of both functions output <code class="docutils literal notranslate"><span class="pre">42</span></code> to the standard output.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:fun1</span> &lt;- {(<span class="nv">:Val</span> <span class="nv">:output</span>)
+  <span class="nv">:output_copy</span> = <span class="nv">$output</span>
+  <span class="n">output_copy</span>(<span class="nv">Val</span>)
+}
+<span class="n">fun1</span>(<span class="m">42</span> {(<span class="nv">:X</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">show</span>) })  <span class="c1"># =&gt; 42</span>
+
+<span class="nv">:fun2</span> &lt;- {(<span class="nv">:Val</span> <span class="nv">:output</span>)
+  <span class="nv">:output_copy</span> = <span class="k">\binding</span><span class="nv">$output</span>
+  <span class="n">output_copy</span>(<span class="k">\binding</span>.<span class="nv">Val</span>)
+}
+<span class="n">fun2</span>(<span class="m">42</span> {(<span class="nv">:X</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="k">\binding</span>.<span class="nv">X</span>.<span class="n">show</span>) })  <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+</section>
+<section id="local-reference-expressions">
+<h3><span class="section-number">3.2.1.7. </span>Local reference expressions<a class="headerlink" href="#local-reference-expressions" title="Link to this heading">¶</a></h3>
+<p>Local reference expressions (<a class="reference internal" href="syntax.html#grammar-token-local_varref"><code class="xref std std-token docutils literal notranslate"><span class="pre">local_varref</span></code></a>) are syntactic sugar for
+member reference expressions (<a class="reference internal" href="syntax.html#grammar-token-member_varref"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_varref</span></code></a>) of the local binding.
+The local reference expression in the form <code class="docutils literal notranslate"><span class="pre">:Data</span></code> is <em class="dfn">desugared</em> to <code class="docutils literal notranslate"><span class="pre">\binding:Data</span></code>.
+The local reference expression in the form <code class="docutils literal notranslate"><span class="pre">:fun</span></code> is <em class="dfn">desugared</em> to <code class="docutils literal notranslate"><span class="pre">\binding:fun</span></code>.</p>
+<p>In the following example, <code class="docutils literal notranslate"><span class="pre">fun1</span></code> and <code class="docutils literal notranslate"><span class="pre">fun2</span></code> are equivalent,
+thus the invocations of both functions output <code class="docutils literal notranslate"><span class="pre">42</span></code> to the standard output.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:fun1</span> &lt;- {
+  <span class="nv">:Val</span> = <span class="m">42</span>
+  <span class="nv">:output</span> = {(<span class="nv">:X</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">show</span>) }
+  <span class="n">output</span>(<span class="nv">Val</span>)
+}
+<span class="n">fun1</span>  <span class="c1"># =&gt; 42</span>
+
+<span class="k">\binding</span><span class="nv">:fun2</span> &lt;- {
+  <span class="k">\binding</span><span class="nv">:Val</span> = <span class="m">42</span>
+  <span class="k">\binding</span><span class="nv">:output</span> = {(<span class="k">\binding</span><span class="nv">:X</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">show</span>) }
+  <span class="n">output</span>(<span class="nv">Val</span>)
+}
+<span class="n">fun2</span>  <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+</section>
+<section id="local-call-expressions">
+<h3><span class="section-number">3.2.1.8. </span>Local call expressions<a class="headerlink" href="#local-call-expressions" title="Link to this heading">¶</a></h3>
+<p>Local call expressions (<a class="reference internal" href="syntax.html#grammar-token-local_call"><code class="xref std std-token docutils literal notranslate"><span class="pre">local_call</span></code></a>) are syntactic sugar for
+member call expressions (<a class="reference internal" href="syntax.html#grammar-token-member_call"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_call</span></code></a>) of functions owned by the local binding.</p>
+<p>The local call expression in the form <code class="docutils literal notranslate"><span class="pre">fun(VB)</span></code> is <em class="dfn">desugared</em> to <code class="docutils literal notranslate"><span class="pre">\binding.fun[()](VB)</span></code>, where <code class="docutils literal notranslate"><span class="pre">VB</span></code> is a vector body.</p>
+<p>The local call expression in the form <code class="docutils literal notranslate"><span class="pre">fun[R](VB)</span></code> is <em class="dfn">desugared</em> to <code class="docutils literal notranslate"><span class="pre">\binding.fun[R](VB)</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">R</span></code> is an expression and <code class="docutils literal notranslate"><span class="pre">VB</span></code> is a vector body.</p>
+<p>In the following example, <code class="docutils literal notranslate"><span class="pre">fun1</span></code> and <code class="docutils literal notranslate"><span class="pre">fun2</span></code> are equivalent,
+thus the invocations of both functions output <code class="docutils literal notranslate"><span class="pre">hello</span> <span class="pre">world</span></code> to the standard output.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:print_arg</span> &lt;- {(<span class="nv">:Arg</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Arg</span>.<span class="n">show</span>)
+}
+
+<span class="nv">:print_recv</span> &lt;- {[<span class="nv">:R</span>]
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">R</span>.<span class="n">show</span>)
+}
+
+<span class="nv">:fun1</span> &lt;- {
+  <span class="n">print_arg</span>(<span class="s1">&#39;hello &#39;</span>)
+  <span class="n">print_recv</span>[<span class="s1">&#39;world&#39;</span>]
+}
+<span class="n">fun1</span>  <span class="c1"># =&gt; hello world</span>
+
+<span class="nv">:fun2</span> &lt;- {
+  <span class="k">\binding</span>.<span class="n">print_arg</span>[()](<span class="s1">&#39;hello &#39;</span>)
+  <span class="k">\binding</span>.<span class="n">print_recv</span>[<span class="s1">&#39;world&#39;</span>]()
+}
+<span class="n">fun2</span>  <span class="c1"># =&gt; hello world</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="translation">
+<span id="id2"></span><h2><span class="section-number">3.2.2. </span>Translation<a class="headerlink" href="#translation" title="Link to this heading">¶</a></h2>
+<p><em class="dfn">Translation</em> is transformation of the <a class="reference internal" href="../glossary.html#term-desugared-form"><span class="xref std std-term">desugared form</span></a> of a program into a sequence of
+<a class="reference internal" href="../glossary.html#term-abstract-instruction"><span class="xref std std-term">abstract instructions</span></a>.</p>
+<section id="id3">
+<h3><span class="section-number">3.2.2.1. </span>Programs<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p>In the <em class="dfn">desugared form</em>,
+a <a class="reference internal" href="syntax.html#grammar-token-program"><code class="xref std std-token docutils literal notranslate"><span class="pre">program</span></code></a> is composed of a single parentheses expression.</p>
+<p>Translation of a program <code class="docutils literal notranslate"><span class="pre">P</span></code> to a sequence of <em class="dfn">abstract instructions</em> <code class="docutils literal notranslate"><span class="pre">tprogram(P)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">P</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tprogram(P)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">T</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">T</span></code> : <a class="reference internal" href="syntax.html#grammar-token-paren"><code class="xref std std-token docutils literal notranslate"><span class="pre">paren</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tparen(T)»</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sequences-without-let-clauses">
+<h3><span class="section-number">3.2.2.2. </span>Sequences without let clauses<a class="headerlink" href="#sequences-without-let-clauses" title="Link to this heading">¶</a></h3>
+<p>In the <em class="dfn">desguared form</em>, thus without let clauses,
+a sequence (<a class="reference internal" href="syntax.html#grammar-token-seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">seq</span></code></a>) is a sequence of zero ore more expressions.
+If the sequence consists of no expressions, it produces the value <code class="docutils literal notranslate"><span class="pre">()</span></code> (called “nada”).
+If the sequence consists of one or more expressions,
+it evaluates the expressions in the order they appears,
+and produces the result of the last expression.</p>
+<p>Grammatically, a sequence is composed of either <a class="reference internal" href="syntax.html#grammar-token-empty"><code class="xref std std-token docutils literal notranslate"><span class="pre">empty</span></code></a>
+or a substantial sequence (<a class="reference internal" href="syntax.html#grammar-token-substantial_seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">substantial_seq</span></code></a>).
+A substantial sequence is composed of a single expression,
+or a pair of an expression and a substantial sequence.</p>
+<p>Translation of a sequence <code class="docutils literal notranslate"><span class="pre">S</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tseq(S)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">S</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tseq(S)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">∅</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">∅</span></code> : <a class="reference internal" href="syntax.html#grammar-token-empty"><code class="xref std std-token docutils literal notranslate"><span class="pre">empty</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(nada)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SS</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SS</span></code> : <a class="reference internal" href="syntax.html#grammar-token-substantial_seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">substantial_seq</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tsubstantial_seq(SS)»</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Translation of a substantial sequence
+<code class="docutils literal notranslate"><span class="pre">SS</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tsubstantial_seq(SS)</span></code> is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">SS</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tsubstantial_seq(SS)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">E</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">E</span></code> : <a class="reference internal" href="syntax.html#grammar-token-expression"><code class="xref std std-token docutils literal notranslate"><span class="pre">expression</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«texpression(E)»</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">E</span></code> <code class="docutils literal notranslate"><span class="pre">SSS</span></code></p></td>
+<td><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">E</span></code> : <a class="reference internal" href="syntax.html#grammar-token-expression"><code class="xref std std-token docutils literal notranslate"><span class="pre">expression</span></code></a></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">SSS</span></code> : <a class="reference internal" href="syntax.html#grammar-token-substantial_seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">substantial_seq</span></code></a></div>
+</div>
+</td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«texpression(E)»</span> <span class="pre">(remove)</span> <span class="pre">«tsubstantial_seq(SSS)»</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>In the following example,
+<code class="docutils literal notranslate"><span class="pre">fun1</span></code> outputs the result of an empty sequence, which is nada.
+<code class="docutils literal notranslate"><span class="pre">fun2</span></code> outputs the result of
+a sequence comprising three expressions <code class="docutils literal notranslate"><span class="pre">'foo'</span></code>, <code class="docutils literal notranslate"><span class="pre">'bar'</span></code> and <code class="docutils literal notranslate"><span class="pre">'baz'</span></code>;
+the result is <code class="docutils literal notranslate"><span class="pre">'baz'</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:fun1</span> &lt;- {
+  <span class="nv">:Result</span> = ()
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; nada</span>
+}
+<span class="n">fun1</span>
+
+<span class="nv">:fun2</span> &lt;- {
+  <span class="nv">:Result</span> = (<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;baz&quot;</span>
+}
+<span class="n">fun2</span>
+</pre></div>
+</div>
+</section>
+<section id="expressions">
+<h3><span class="section-number">3.2.2.3. </span>Expressions<a class="headerlink" href="#expressions" title="Link to this heading">¶</a></h3>
+<p>In the normalized form,
+an <a class="reference internal" href="syntax.html#grammar-token-expression"><code class="xref std std-token docutils literal notranslate"><span class="pre">expression</span></code></a> can be eventually reduced to a single primary expression (<a class="reference internal" href="syntax.html#grammar-token-primary"><code class="xref std std-token docutils literal notranslate"><span class="pre">primary</span></code></a>).</p>
+<p>Therefore, translation of an expression <code class="docutils literal notranslate"><span class="pre">E</span></code> to an instruction sequence
+<code class="docutils literal notranslate"><span class="pre">texpression(E)</span></code> is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">E</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">texpression(E)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">P</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">P</span></code> : <a class="reference internal" href="syntax.html#grammar-token-primary"><code class="xref std std-token docutils literal notranslate"><span class="pre">primary</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tprimary(P)»</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="primary-expressions">
+<h3><span class="section-number">3.2.2.4. </span>Primary expressions<a class="headerlink" href="#primary-expressions" title="Link to this heading">¶</a></h3>
+<p>Translation of a primary expression <code class="docutils literal notranslate"><span class="pre">P</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tprimary(P)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">P</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tprimary(P)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">N</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">N</span></code> : <a class="reference internal" href="syntax.html#grammar-token-num"><code class="xref std std-token docutils literal notranslate"><span class="pre">num</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tnum(N)»</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S</span></code> : <a class="reference internal" href="syntax.html#grammar-token-str"><code class="xref std std-token docutils literal notranslate"><span class="pre">str</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tstr(S)»</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CE</span></code> : <a class="reference internal" href="syntax.html#grammar-token-binding"><code class="xref std std-token docutils literal notranslate"><span class="pre">binding</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tbinding(CE)»</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">P</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">P</span></code> : <a class="reference internal" href="syntax.html#grammar-token-paren"><code class="xref std std-token docutils literal notranslate"><span class="pre">paren</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tparen(P)»</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">V</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">V</span></code> : <a class="reference internal" href="syntax.html#grammar-token-vec"><code class="xref std std-token docutils literal notranslate"><span class="pre">vec</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tvec(V)»</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">F</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">F</span></code> : <a class="reference internal" href="syntax.html#grammar-token-fun"><code class="xref std std-token docutils literal notranslate"><span class="pre">fun</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tfun(F)»</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">D</span></code> : <a class="reference internal" href="syntax.html#grammar-token-member_load"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_load</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tmember_load(D)»</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">R</span></code> : <a class="reference internal" href="syntax.html#grammar-token-member_varref"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_varref</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tmember_varref(R)»</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AC</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AC</span></code> : <a class="reference internal" href="syntax.html#grammar-token-member_call"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_call</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tmember_call(AC)»</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="number-expressions">
+<h3><span class="section-number">3.2.2.5. </span>Number expressions<a class="headerlink" href="#number-expressions" title="Link to this heading">¶</a></h3>
+<p>A number expression (<a class="reference internal" href="syntax.html#grammar-token-num"><code class="xref std std-token docutils literal notranslate"><span class="pre">num</span></code></a>) produces a number value.</p>
+<p>Translation of a number expression <code class="docutils literal notranslate"><span class="pre">N</span></code> to an instruction <code class="docutils literal notranslate"><span class="pre">tnum(N)</span></code> is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">N</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tnum(N)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NN</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NN</span></code> : <code class="docutils literal notranslate"><span class="pre">NUM</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(num</span> <span class="pre">«NN</span> <span class="pre">as</span> <span class="pre">num»)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>In the following example,
+<code class="docutils literal notranslate"><span class="pre">fun1</span></code> outputs the result of the integer number expression <code class="docutils literal notranslate"><span class="pre">42</span></code>.
+<code class="docutils literal notranslate"><span class="pre">fun2</span></code> outputs the result of the decimal number expression <code class="docutils literal notranslate"><span class="pre">3.14</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:fun1</span> &lt;- {
+  <span class="nv">:Result</span> = <span class="m">42</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">show</span>)  <span class="c1"># =&gt; 42</span>
+}
+<span class="n">fun1</span>
+
+<span class="nv">:fun2</span> &lt;- {
+  <span class="nv">:Result</span> = <span class="m">3.14</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">show</span>)  <span class="c1"># =&gt; 3.14</span>
+}
+<span class="n">fun2</span>
+</pre></div>
+</div>
+</section>
+<section id="string-expressions">
+<h3><span class="section-number">3.2.2.6. </span>String expressions<a class="headerlink" href="#string-expressions" title="Link to this heading">¶</a></h3>
+<p>A string expression (<a class="reference internal" href="syntax.html#grammar-token-str"><code class="xref std std-token docutils literal notranslate"><span class="pre">str</span></code></a>) produces a string value.</p>
+<p>Translation of a string expression <code class="docutils literal notranslate"><span class="pre">S</span></code> to an instruction <code class="docutils literal notranslate"><span class="pre">tstr(S)</span></code> is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">S</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tstr(S)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SS</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SS</span></code> : <code class="docutils literal notranslate"><span class="pre">STRING</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(str</span> <span class="pre">«SS</span> <span class="pre">as</span> <span class="pre">str»)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The following example outputs the result of the string expression <code class="docutils literal notranslate"><span class="pre">'foo'</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Result</span> &lt;- <span class="s1">&#39;foo&#39;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>)  <span class="c1"># =&gt; foo</span>
+</pre></div>
+</div>
+</section>
+<section id="binding-expressions">
+<h3><span class="section-number">3.2.2.7. </span>Binding expressions<a class="headerlink" href="#binding-expressions" title="Link to this heading">¶</a></h3>
+<p>A binding expression produces the current binding.</p>
+<p>Translation of a binding expression <code class="docutils literal notranslate"><span class="pre">CE</span></code> to an instruction <code class="docutils literal notranslate"><span class="pre">tbinding(CE)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">CE</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tbinding(CE)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'\binding'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(binding)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The following example outputs the value of the variable <code class="docutils literal notranslate"><span class="pre">Val</span></code> of the current binding,
+namely, the local variable <code class="docutils literal notranslate"><span class="pre">Val</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Val</span> &lt;- <span class="m">42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="k">\binding</span>.<span class="nv">Val</span>.<span class="n">show</span>)  <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+</section>
+<section id="parentheses-expressions">
+<h3><span class="section-number">3.2.2.8. </span>Parentheses expressions<a class="headerlink" href="#parentheses-expressions" title="Link to this heading">¶</a></h3>
+<p>A pair of parentheses is used to enclose a sequence as a primary expression.</p>
+<p>Translation of a parentheses expression <code class="docutils literal notranslate"><span class="pre">P</span></code>
+to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tparen(P)</span></code> is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">P</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tparen(P)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENPAREN</span></code> <code class="docutils literal notranslate"><span class="pre">S</span></code> <code class="docutils literal notranslate"><span class="pre">')'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S</span></code> : <a class="reference internal" href="syntax.html#grammar-token-seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">seq</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tseq(S)»</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WS_OPENPAREN</span></code> <code class="docutils literal notranslate"><span class="pre">S</span></code> <code class="docutils literal notranslate"><span class="pre">')'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S</span></code> : <a class="reference internal" href="syntax.html#grammar-token-seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">seq</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tseq(S)»</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>In the following example,
+the addition <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">+</span> <span class="pre">4</span></code> is calculated before the mulliplication.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Val</span> &lt;- <span class="m">7</span> * (<span class="m">2</span> + <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Val</span>.<span class="n">show</span>)  <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+</section>
+<section id="vector-expressions">
+<h3><span class="section-number">3.2.2.9. </span>Vector expressions<a class="headerlink" href="#vector-expressions" title="Link to this heading">¶</a></h3>
+<p>A vector expression is used to make a vector.</p>
+<p>Translation of a vector expression <code class="docutils literal notranslate"><span class="pre">V</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tvec(V)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">V</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tvec(V)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENBRACKET</span></code> <code class="docutils literal notranslate"><span class="pre">VB</span></code> <code class="docutils literal notranslate"><span class="pre">']'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">VB</span></code> : <a class="reference internal" href="syntax.html#grammar-token-vec_body"><code class="xref std std-token docutils literal notranslate"><span class="pre">vec_body</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(emptyvec)</span> <span class="pre">«tvec_body(VB)»</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WS_OPENBRACKET</span></code> <code class="docutils literal notranslate"><span class="pre">VB</span></code> <code class="docutils literal notranslate"><span class="pre">']'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">VB</span></code> : <a class="reference internal" href="syntax.html#grammar-token-vec_body"><code class="xref std std-token docutils literal notranslate"><span class="pre">vec_body</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(emptyvec)</span> <span class="pre">«tvec_body(VB)»</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vector-bodies">
+<h3><span class="section-number">3.2.2.10. </span>Vector bodies<a class="headerlink" href="#vector-bodies" title="Link to this heading">¶</a></h3>
+<p>A vector body (<a class="reference internal" href="syntax.html#grammar-token-vec_body"><code class="xref std std-token docutils literal notranslate"><span class="pre">vec_body</span></code></a>) is used in vector expressions and actual arguments in function calls
+(and formal arguments in not normalized forms) to produce elements of vectors.</p>
+<p>Translation of a vector body <code class="docutils literal notranslate"><span class="pre">VB</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tvec_body(VB)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">VB</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tvec_body(VB)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">∅</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">∅</span></code> : <a class="reference internal" href="syntax.html#grammar-token-empty"><code class="xref std std-token docutils literal notranslate"><span class="pre">empty</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">∅</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EP</span></code> <code class="docutils literal notranslate"><span class="pre">VVB</span></code></p></td>
+<td><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">EP</span></code> : <a class="reference internal" href="syntax.html#grammar-token-elements_producer"><code class="xref std std-token docutils literal notranslate"><span class="pre">elements_producer</span></code></a></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">VVB</span></code> : <a class="reference internal" href="syntax.html#grammar-token-vec_body"><code class="xref std std-token docutils literal notranslate"><span class="pre">vec_body</span></code></a></div>
+</div>
+</td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«telements_producer(EP)»</span> <span class="pre">«tvec_body(VVB)»</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>In the following example,
+the vector <code class="docutils literal notranslate"><span class="pre">Spreaded</span></code> is expanded in the second vector literal.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Spreaded</span> &lt;- [<span class="m">42</span> <span class="m">3.14</span>]
+<span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> ...<span class="nv">Spreaded</span> <span class="s1">&#39;bar&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;foo&quot; 42 3.14 &quot;bar&quot;]</span>
+</pre></div>
+</div>
+<p>In the following example,
+the vector <code class="docutils literal notranslate"><span class="pre">Spreaded</span></code> is spreaded in the arguments vector for the function call of <code class="docutils literal notranslate"><span class="pre">fun</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:fun</span> &lt;- {
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">_Args</span>.<span class="n">repr</span>)
+}
+<span class="nv">:Spreaded</span> &lt;- [<span class="m">42</span> <span class="m">3.14</span>]
+<span class="n">fun</span>(<span class="s1">&#39;foo&#39;</span> ...<span class="nv">Spreaded</span> <span class="s1">&#39;bar&#39;</span>)  <span class="c1"># =&gt; [&quot;foo&quot; 42 3.14 &quot;bar&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="elements-producers">
+<h3><span class="section-number">3.2.2.11. </span>Elements producers<a class="headerlink" href="#elements-producers" title="Link to this heading">¶</a></h3>
+<p>An elements producer (<a class="reference internal" href="syntax.html#grammar-token-elements_producer"><code class="xref std std-token docutils literal notranslate"><span class="pre">elements_producer</span></code></a>) is a content of vector bodies.</p>
+<p>Translation of an element producer <code class="docutils literal notranslate"><span class="pre">EP</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">telements_producer(EP)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">EP</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">telements_producer(EP)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">E</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">E</span></code> : <a class="reference internal" href="syntax.html#grammar-token-expression"><code class="xref std std-token docutils literal notranslate"><span class="pre">expression</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«texpression(E)»</span> <span class="pre">(add)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'...'</span></code> <code class="docutils literal notranslate"><span class="pre">E</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">E</span></code> : <a class="reference internal" href="syntax.html#grammar-token-expression"><code class="xref std std-token docutils literal notranslate"><span class="pre">expression</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«texpression(E)»</span> <span class="pre">(concat)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="function-expressions">
+<span id="functionexpression"></span><h3><span class="section-number">3.2.2.12. </span>Function expressions<a class="headerlink" href="#function-expressions" title="Link to this heading">¶</a></h3>
+<p>A function expression (<a class="reference internal" href="syntax.html#grammar-token-fun"><code class="xref std std-token docutils literal notranslate"><span class="pre">fun</span></code></a>) produces a function value.</p>
+<p>Translation of a function expression <code class="docutils literal notranslate"><span class="pre">F</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tfun(F)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">F</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tfun(F)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OPENBRACE</span></code> <code class="docutils literal notranslate"><span class="pre">S</span></code> <code class="docutils literal notranslate"><span class="pre">'}'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S</span></code> : <a class="reference internal" href="syntax.html#grammar-token-seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">seq</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(binding)</span> <span class="pre">(fun</span> <span class="pre">(enclosingbinding)</span> <span class="pre">(clonebinding)</span> <span class="pre">(dup)</span> <span class="pre">(setbinding)</span> <span class="pre">(storerecvargs)</span> <span class="pre">«tseq(S)»)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">WS_OPENBRACE</span></code> <code class="docutils literal notranslate"><span class="pre">S</span></code> <code class="docutils literal notranslate"><span class="pre">'}'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S</span></code> : <a class="reference internal" href="syntax.html#grammar-token-seq"><code class="xref std std-token docutils literal notranslate"><span class="pre">seq</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(binding)</span> <span class="pre">(fun</span> <span class="pre">(enclosingbinding)</span> <span class="pre">(clonebinding)</span> <span class="pre">(dup)</span> <span class="pre">(setbinding)</span> <span class="pre">(storerecvargs)</span> <span class="pre">«tseq(S)»)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="member-load-expressions">
+<h3><span class="section-number">3.2.2.13. </span>Member load expressions<a class="headerlink" href="#member-load-expressions" title="Link to this heading">¶</a></h3>
+<p>A member load expression (<a class="reference internal" href="syntax.html#grammar-token-member_load"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_load</span></code></a>) loads a variable of the owner.</p>
+<p>Translation of a member load expression <code class="docutils literal notranslate"><span class="pre">D</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tmember_load(D)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">D</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tmember_load(D)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">P</span></code> <code class="docutils literal notranslate"><span class="pre">'.'</span></code> <code class="docutils literal notranslate"><span class="pre">N</span></code></p></td>
+<td><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">P</span></code> : <a class="reference internal" href="syntax.html#grammar-token-primary"><code class="xref std std-token docutils literal notranslate"><span class="pre">primary</span></code></a></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">N</span></code> : <code class="docutils literal notranslate"><span class="pre">DATA_SYM</span></code></div>
+</div>
+</td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tprimary(P)»</span> <span class="pre">(load</span> <span class="pre">«N</span> <span class="pre">as</span> <span class="pre">str»)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">P</span></code> <code class="docutils literal notranslate"><span class="pre">DOLLAR</span></code> <code class="docutils literal notranslate"><span class="pre">V</span></code></p></td>
+<td><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">P</span></code> : <a class="reference internal" href="syntax.html#grammar-token-primary"><code class="xref std std-token docutils literal notranslate"><span class="pre">primary</span></code></a></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">V</span></code> : <code class="docutils literal notranslate"><span class="pre">FUN_SYM</span></code></div>
+</div>
+</td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tprimary(E)»</span> <span class="pre">(load</span> <span class="pre">«V</span> <span class="pre">as</span> <span class="pre">str»)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="member-reference-expressions">
+<h3><span class="section-number">3.2.2.14. </span>Member reference expressions<a class="headerlink" href="#member-reference-expressions" title="Link to this heading">¶</a></h3>
+<p>A member reference expression (<a class="reference internal" href="syntax.html#grammar-token-member_varref"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_varref</span></code></a>) produces a variable reference of the owner.</p>
+<p>Translation of a member reference expression <code class="docutils literal notranslate"><span class="pre">R</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tmember_varref(R)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">R</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tmember_varref(R)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">P</span></code> <code class="docutils literal notranslate"><span class="pre">COLON</span></code> <code class="docutils literal notranslate"><span class="pre">N</span></code></p></td>
+<td><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">P</span></code> : <a class="reference internal" href="syntax.html#grammar-token-primary"><code class="xref std std-token docutils literal notranslate"><span class="pre">primary</span></code></a></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">N</span></code> : <code class="docutils literal notranslate"><span class="pre">DATA_SYM</span></code></div>
+</div>
+</td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tprimary(P)»</span> <span class="pre">(varref</span> <span class="pre">«N</span> <span class="pre">as</span> <span class="pre">str»)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">P</span></code> <code class="docutils literal notranslate"><span class="pre">COLON</span></code> <code class="docutils literal notranslate"><span class="pre">V</span></code></p></td>
+<td><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">P</span></code> : <a class="reference internal" href="syntax.html#grammar-token-primary"><code class="xref std std-token docutils literal notranslate"><span class="pre">primary</span></code></a></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">V</span></code> : <code class="docutils literal notranslate"><span class="pre">FUN_SYM</span></code></div>
+</div>
+</td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tprimary(P)»</span> <span class="pre">(varref</span> <span class="pre">«V</span> <span class="pre">as</span> <span class="pre">str»)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="member-call-expressions">
+<h3><span class="section-number">3.2.2.15. </span>Member call expressions<a class="headerlink" href="#member-call-expressions" title="Link to this heading">¶</a></h3>
+<p>A member call expression (<a class="reference internal" href="syntax.html#grammar-token-member_call"><code class="xref std std-token docutils literal notranslate"><span class="pre">member_call</span></code></a>) invokes a function.</p>
+<p>Translation of a member call expression <code class="docutils literal notranslate"><span class="pre">C</span></code> to an instruction sequence <code class="docutils literal notranslate"><span class="pre">tmember_call(C)</span></code>
+is defined as follows.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.6%" />
+<col style="width: 14.3%" />
+<col style="width: 57.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Composition of <code class="docutils literal notranslate"><span class="pre">C</span></code></p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">tmember_call(C)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">P</span></code> <code class="docutils literal notranslate"><span class="pre">'.'</span></code> <code class="docutils literal notranslate"><span class="pre">V</span></code> <code class="docutils literal notranslate"><span class="pre">OPENBRACKET</span></code> <code class="docutils literal notranslate"><span class="pre">R</span></code> <code class="docutils literal notranslate"><span class="pre">']'</span></code> <code class="docutils literal notranslate"><span class="pre">OPENPAREN</span></code> <code class="docutils literal notranslate"><span class="pre">VB</span></code> <code class="docutils literal notranslate"><span class="pre">')'</span></code></p></td>
+<td><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">P</span></code> : <a class="reference internal" href="syntax.html#grammar-token-primary"><code class="xref std std-token docutils literal notranslate"><span class="pre">primary</span></code></a></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">V</span></code> : <code class="docutils literal notranslate"><span class="pre">FUN_SYM</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">R</span></code> : <a class="reference internal" href="syntax.html#grammar-token-expression"><code class="xref std std-token docutils literal notranslate"><span class="pre">expression</span></code></a></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">VB</span></code> : <a class="reference internal" href="syntax.html#grammar-token-vec_body"><code class="xref std std-token docutils literal notranslate"><span class="pre">vec_body</span></code></a></div>
+</div>
+</td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tprimary(P)»</span> <span class="pre">(load</span> <span class="pre">«V</span> <span class="pre">as</span> <span class="pre">str»)</span> <span class="pre">(dup)</span> <span class="pre">(checkfun)</span> <span class="pre">«texpression(R)»</span> <span class="pre">(emptyvec)</span> <span class="pre">«tvec_body(VB)»</span> <span class="pre">(call</span> <span class="pre">«V</span> <span class="pre">as</span> <span class="pre">str»)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">P</span></code> <code class="docutils literal notranslate"><span class="pre">'.'</span></code> <code class="docutils literal notranslate"><span class="pre">V</span></code> <code class="docutils literal notranslate"><span class="pre">OPENPAREN</span></code> <code class="docutils literal notranslate"><span class="pre">VB</span></code> <code class="docutils literal notranslate"><span class="pre">')'</span></code></p></td>
+<td><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">P</span></code> : <a class="reference internal" href="syntax.html#grammar-token-primary"><code class="xref std std-token docutils literal notranslate"><span class="pre">primary</span></code></a></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">V</span></code> : <code class="docutils literal notranslate"><span class="pre">FUN_SYM</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">VB</span></code> : <a class="reference internal" href="syntax.html#grammar-token-vec_body"><code class="xref std std-token docutils literal notranslate"><span class="pre">vec_body</span></code></a></div>
+</div>
+</td>
+<td><p><code class="docutils literal notranslate"><span class="pre">«tprimary(P)»</span> <span class="pre">(dup)</span> <span class="pre">(load</span> <span class="pre">«V</span> <span class="pre">as</span> <span class="pre">str»)</span> <span class="pre">(dup)</span> <span class="pre">(checkfun)</span> <span class="pre">(flip)</span> <span class="pre">(emptyvec)</span> <span class="pre">«tvec_body(VB)»</span> <span class="pre">(call</span> <span class="pre">«V</span> <span class="pre">as</span> <span class="pre">str»)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>In the first form,
+<code class="docutils literal notranslate"><span class="pre">P</span></code> is the owner of the function variable with the symbol <code class="docutils literal notranslate"><span class="pre">V</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">R</span></code> is the actual receiver passed to the function call.
+The actual receiver will be stored to <code class="docutils literal notranslate"><span class="pre">_Recv</span></code> variable of the binding
+of the function call. See <a class="reference internal" href="eval.html#storerecvargs-insn"><span class="std std-ref">storerecvargs instruction</span></a>.</p>
+<p>In the second form,
+<code class="docutils literal notranslate"><span class="pre">P</span></code> is not only the owner of the function variable with the symbol <code class="docutils literal notranslate"><span class="pre">V</span></code>,
+but also the actual receiver passed to the function call.</p>
+<p>In either form,
+the elements of <code class="docutils literal notranslate"><span class="pre">VB</span></code> will be copied to
+the actual arguments passed to the function call.
+The actual arguments, which is a vec value, will be stored to <code class="docutils literal notranslate"><span class="pre">_Args</span></code>
+variable of the binding of the function call.
+See <a class="reference internal" href="eval.html#storerecvargs-insn"><span class="std std-ref">storerecvargs instruction</span></a>.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Owner</span> &lt;- <span class="n">new_val</span>(
+  <span class="s1">&#39;fun&#39;</span> {[<span class="nv">:Recv</span>](<span class="nv">:Args</span>.<span class="n">rest</span>)
+    <span class="s1">&#39;Recv={} Args={}&#39;</span>.<span class="n">format</span>(<span class="nv">Recv</span>.<span class="n">repr</span> <span class="nv">Args</span>.<span class="n">repr</span>)
+  }
+  <span class="s1">&#39;repr&#39;</span> { <span class="s1">&#39;(Owner)&#39;</span> }
+)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Owner</span>.<span class="n">fun</span>[<span class="s1">&#39;recv&#39;</span>](<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)) <span class="c1"># =&gt; Recv=&quot;recv&quot; Args=[1 2 3]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Owner</span>.<span class="n">fun</span>(<span class="m">4</span> <span class="m">5</span> <span class="m">6</span>)) <span class="c1"># =&gt; Recv=(Owner) Args=[4 5 6]</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="syntax.html"><span class="section-number">3.1. </span>Syntax</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="eval.html"><span class="section-number">3.3. </span>Evaluation</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

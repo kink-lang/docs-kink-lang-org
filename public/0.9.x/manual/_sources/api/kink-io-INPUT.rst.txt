@@ -1,0 +1,218 @@
+===============
+kink\/io\/INPUT
+===============
+
+Companion mod for input vals\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-0edb5d0790c366443607931bec431fe4:
+
+type input
+==========
+
+\`input\` is an input port of bytes from the underlying source such as files\.
+
+An \`input\` provides sequential forward access to the underlying source\. It does not provide random access operations such as seek\.
+
+.. _api-e8341e8b849b1926919895693dc3c07e:
+
+Input\.read\(Max\_size \.\.\.\[\$config\=\{\}\]\)
+-------------------------------------------------
+
+\`read\` reads bytes from the stream\. \`read\` blocks until one or more bytes are read\, the end\-of\-file is detected\, or an IO error occurs\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_eof\(\$eof\)\: default \= fun which raises an exception
+
+\• C\.on\_error\(\$error\)\: default \= fun which raises an exception
+
+If one or more bytes are read\, \`read\` tail\-calls \$success with a \`bin\` val of the bytes\. The size of the \`bin\` val does not exceed \`Max\_size\`\.
+
+If the end\-of\-file is detected\, \`read\` tail\-calls \$eof with no arg\.
+
+If an IO error occurs\, \`read\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Max\_size\` must be an int \`num\` which is bigger than or equal to 1\.
+
+\$success must be a fun which takes a \`bin\`\.
+
+\$eof must be a fun which takes no arg\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :BIN_INPUT.require_from('kink/io/')
+        
+    :In <- BIN_INPUT.new(BIN.of(1 2 3))
+    :loop <- {(:Vec)
+      In.read(2){(:C)
+        C.on_success{(:Bin) loop(Vec + [Bin]) }
+        C.on_eof{ Vec }
+      }
+    }
+    :Result <- loop([])
+    stdout.print_line(Result.repr)  # => [(bin 0x01 0x02) (bin 0x03)]
+
+.. rubric:: Example\: IO error
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+    :CONTROL.require_from('kink/')
+        
+    :In <- FILE.open_to_read('/etc/passwd')
+    In.close
+    In.read(10){(:C)
+      C.on_error{(:Exc)
+        stderr.print_line(Exc.message)
+      }
+    }
+    # => already closed
+        
+    In.read(10)
+    # Output:
+    #   -- main exception
+    #   [..root..]
+    #   {..call by host..}
+    #   ,,,
+    #   {builtin:kink-mods/kink/EXCEPTION.kn L117 C13 current_traces} { TRACE.-->current_traces }
+    #   already closed
+
+.. _api-552f89408e13a7762490240f149a03c9:
+
+Input\.read\_all\(\.\.\.\[\$config\=\{\}\]\)
+--------------------------------------------
+
+\`read\_all\` reads bytes until it reaches the end\-of\-file\, or an IO error occurs\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If one or more bytes are read with no IO error\, \`read\_all\` tail\-calls \$success with a \`bin\` of the bytes\.
+
+If no byte is read\, \`read\_all\` tail\-calls \$success with an empty \`bin\`\.
+
+If an IO error occurs\, \`read\_all\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Precondition
+
+\$success must be a fun which takes a \`bin\`
+
+\$error must be a fun which takes an \`exception\`
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :BIN_INPUT.require_from('kink/io/')
+    :INPUT.require_from('kink/io/')
+        
+    :In <- BIN_INPUT.new(BIN.of(1 2 3))
+    stdout.print_line(In.read_all.repr)  # => (bin 0x01 0x02 0x03)
+    stdout.print_line(In.read_all.repr)  # => (bin)
+    stdout.print_line(In.read_all.repr)  # => (bin)
+
+.. rubric:: See also
+
+INPUT\.mixin\: it provides a generic implementation of \`read\_all\`\.
+
+.. _api-f850ccaacee17b4202dd82bada9bca0c:
+
+Input\.close\(\.\.\.\[\$config\=\{\}\]\)
+----------------------------------------
+
+\`close\` closes the resource of the underlying source of bytes\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the resource is closed with no error\, \`close\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`close\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a fun which takes no arg
+
+\$error must be a fun which takes an \`exception\`
+
+.. _api-161c98da8425416c2a48d966f1993a38:
+
+INPUT\.is\?\(Val\)
+==================
+
+\`is\?\` returns whether \`Val\` is an \`input\`\.
+
+.. _api-701d0017014c8634ab5f96fdf34d53f1:
+
+INPUT\.mixin
+============
+
+\`\`mixin\`\` returns a mixin trait which provides an implementation of Input\.read\_all\. \`read\_all\` will be implemented using \`read\` method\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+    :INPUT.require_from('kink/io/')
+    :FILE.require_from('kink/io/')
+        
+    :Trait <- [
+      ... INPUT.mixin
+        
+      'read' {[:In](:Args.rest)
+        stderr.print_line('Called: read')
+        In.Wrapped.read(... Args)
+      }
+        
+      'close' {[:In](:Args.rest)
+        stderr.print_line('Called: close')
+        In.Wrapped.close(... Args)
+      }
+    ]
+        
+    :new_logging_input <- {(:Wrapped)
+      new_val(
+        ... Trait
+        'Wrapped' Wrapped
+      )
+    }
+        
+    :main <- {
+      :Bin = CONTROL.with_finally{(:finally)
+        :In = new_logging_input(FILE.open_to_read('/etc/passwd'))
+        finally{ In.close }
+        In.read_all
+      }
+      stdout.write(Bin)
+    }
+    # Output:
+    #   Called: read
+    #   Called: read
+    #   Called: close
+    #   root:x:0:0:root:/root:/bin/bash
+    #   daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+    #   bin:x:2:2:bin:/bin:/usr/sbin/nologin
+    #   sys:x:3:3:sys:/dev:/usr/sbin/nologin
+    #   ,,,
+

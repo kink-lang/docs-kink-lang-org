@@ -1,0 +1,174 @@
+=============================
+kink\/container\/ORDERED\_SET
+=============================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-668819c2b69c05fb5654d4939a1105e7:
+
+type ordered\_set
+=================
+
+\`ordered\_set\` is a subtype of \`set\` type in which the elements are ordered in the toal order\. The equivalence relation of elements is derived from the total order relation\.
+
+The following methods inherited from \`set\` guarantee that elements appear as they are ordered\.
+
+\• each
+
+\• all\?
+
+\• any\?
+
+\• count
+
+\• fold
+
+\• reduce
+
+\• have\_all\?
+
+\• have\_any\?
+
+.. _api-2fd2b7ab6519594389ea7aec9583603d:
+
+Set\.iter\(\.\.\.\[Min\]\)
+--------------------------
+
+\`iter\` method returns an \`iter\` of elements of \`Set\` in the order of \`Set\`\.
+
+If \`Min\` is given\, the result \`iter\` will have elements bigger than or equivalent to \`Min\`\. If \`Min\` is not given\, the result \`iter\` will have all the elements of \`Set\`\.
+
+This method is an extension of \`iter\` method of type \`set\`\.
+
+.. rubric:: Precondition
+
+\`Min\` must be in the domain of the total order of elements\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :Set <- TREE_SET.of('foo' 'bar' 'baz' 'qux')
+        
+    Set.iter.each{(:E) stdout.print_line(E.repr) }
+    # Output:
+    #   "bar"
+    #   "baz"
+    #   "foo"
+    #   "qux"
+        
+    Set.iter('baz').each{(:E) stdout.print_line(E.repr) }
+    # Output:
+    #   "baz"
+    #   "foo"
+    #   "qux"
+        
+    Set.iter('bazzz').each{(:E) stdout.print_line(E.repr) }
+    # Output:
+    #   "foo"
+    #   "qux"
+        
+    Set.iter('foo').each{(:E) stdout.print_line(E.repr) }
+    # Output:
+    #   "foo"
+    #   "qux"
+        
+    Set.iter('foooo').each{(:E) stdout.print_line(E.repr) }
+    # Output:
+    #   "qux"
+
+.. _api-eb09b63f8335ade2deaf65705154c4c0:
+
+Set\.front
+----------
+
+\`front\` returns the element which comes first in the order of \`Set\`\.
+
+.. rubric:: Precondition
+
+\`Set\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :Set <- TREE_SET.of('foo' 'bar' 'baz')
+    stdout.print_line(Set.front.repr) # => "bar"
+
+.. _api-a0bd6260be86c5f4dd202d5e5c78fb31:
+
+Set\.back
+---------
+
+\`back\` returns the element which comes last in the order of \`Set\`\.
+
+.. rubric:: Precondition
+
+\`Set\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :Set <- TREE_SET.of('foo' 'bar' 'baz')
+    stdout.print_line(Set.back.repr) # => "foo"
+
+.. _api-d45f2c04b1f98e8df43a9513775ce11e:
+
+Set\.pop\_front
+---------------
+
+\`pop\_front\` pops the element which comes first in the order of \`Set\`\.
+
+.. rubric:: Precondition
+
+\`Set\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of('foo' 'bar' 'baz')
+    :Front <- Set.pop_front
+    stdout.print_line(Front.repr) # => "bar"
+    stdout.print_line(Set.repr)   # => Flat_set("baz" "foo")
+
+.. _api-b74c028adff7674a0e9a934e49884c31:
+
+Set\.pop\_back
+--------------
+
+\`pop\_back\` pops the element which comes last in the order of \`Set\`\.
+
+.. rubric:: Precondition
+
+\`Set\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of('foo' 'bar' 'baz')
+    :Back <- Set.pop_back
+    stdout.print_line(Back.repr)  # => "foo"
+    stdout.print_line(Set.repr)   # => Flat_set("bar" "baz")
+
+.. _api-1aff98ca1aad95dc9325f81b624eb1fc:
+
+ORDERED\_SET\.is\?\(Val\)
+=========================
+
+\`is\?\` returns whether \`Val\` is an \`ordered\_set\`\.
+

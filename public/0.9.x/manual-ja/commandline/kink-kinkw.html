@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>10.1. kink and kinkw commands &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="10.2. REPL" href="repl.html" />
+    <link rel="prev" title="10. Commandline" href="index.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>10.1. kink and kinkw commands</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html"><span class="section-number">10. </span>Commandline</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="repl.html"><span class="section-number">10.2. </span>REPL</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-and-kinkw-commands">
+<h1><span class="section-number">10.1. </span>kink and kinkw commands<a class="headerlink" href="#kink-and-kinkw-commands" title="Link to this heading">¶</a></h1>
+<p>kink and kinkw commands run a Kink runtime.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#executable-files" id="id2">Executable files</a></p></li>
+<li><p><a class="reference internal" href="#commandline-format" id="id3">Commandline format</a></p>
+<ul>
+<li><p><a class="reference internal" href="#launch-options" id="id4">Launch options</a></p></li>
+<li><p><a class="reference internal" href="#standard-options" id="id5">Standard options</a></p></li>
+<li><p><a class="reference internal" href="#double-hyphens" id="id6">Double hyphens: --</a></p></li>
+<li><p><a class="reference internal" href="#spec-and-argv" id="id7">Spec-and-argv</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#environment-variables" id="id8">Environment variables</a></p></li>
+<li><p><a class="reference internal" href="#exit-status" id="id9">Exit status</a></p></li>
+</ul>
+</nav>
+<section id="executable-files">
+<h2><span class="section-number">10.1.1. </span>Executable files<a class="headerlink" href="#executable-files" title="Link to this heading">¶</a></h2>
+<p>The following executable files are placed under <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory in the distributed archive.</p>
+<dl class="simple">
+<dt>kink</dt><dd><p>Bash shell script to launch the runtime.</p>
+</dd>
+<dt>kink.exe</dt><dd><p>32bit Windows executable file to launch the runtime in CUI mode.</p>
+</dd>
+<dt>kinkw.exe</dt><dd><p>32bit Windows executable file to launch the runtime in GUI mode.</p>
+</dd>
+</dl>
+<p>In this page, <code class="docutils literal notranslate"><span class="pre">kink</span></code> shell script is assumed to be used to launch the runtime.</p>
+</section>
+<section id="commandline-format">
+<span id="commandline-kink-kinkw-format"></span><h2><span class="section-number">10.1.2. </span>Commandline format<a class="headerlink" href="#commandline-format" title="Link to this heading">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kink [Launch_options]... [Standard_options]... [--] [Spec_and_argv]...
+</pre></div>
+</div>
+<section id="launch-options">
+<h3><span class="section-number">10.1.2.1. </span>Launch options<a class="headerlink" href="#launch-options" title="Link to this heading">¶</a></h3>
+<p>Launch options must be placed before standard options and spec-and-argv.
+Launch options are used to configure the JVM of the host environment.</p>
+<p class="rubric">-J{javaopt} / -J {javaopt}</p>
+<p>Specifies a commandline option given to the JVM.</p>
+<p>If you want to pass multiple options to the JVM,
+specify -J option multiple times.</p>
+<p>For example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink -J-Xms64M -J-Xmx128M app.kn
+</pre></div>
+</div>
+<p class="rubric">-E{javaexecutable} / -E {javaexecutable}</p>
+<p>Specifies the executable file of the JVM.
+This option has a priority over the environment variable <code class="docutils literal notranslate"><span class="pre">JAVA_HOME</span></code>.
+For example, this option is useful to run jdb to debug the interpreter (ex. -E jdb).</p>
+</section>
+<section id="standard-options">
+<h3><span class="section-number">10.1.2.2. </span>Standard options<a class="headerlink" href="#standard-options" title="Link to this heading">¶</a></h3>
+<p>Standard options are placed after launch options,
+and before spec-and-argv.
+Standard options are consumed by the runtime.</p>
+<p>Standard options are interpreted in a way same as glibc getopt_long function.
+For example, <code class="docutils literal notranslate"><span class="pre">--pa=dir/</span></code> is interpreted same as <code class="docutils literal notranslate"><span class="pre">--path</span> <span class="pre">dir/</span></code>.</p>
+<p class="rubric" id="pathoption">-p {Mod_path} / --path {Mod_path}</p>
+<p>Appends <code class="docutils literal notranslate"><span class="pre">Mod_path</span></code> to <a class="reference internal" href="../glossary.html#term-module-base-paths"><span class="xref std std-term">module base paths</span></a>.</p>
+<p>To append multiple paths, specify --path option multiple times.</p>
+<p>For example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink --path mod/dir/first --path mod/dir/second app.kn
+</pre></div>
+</div>
+<p class="rubric">-h / --help</p>
+<p>Prints out the help text to the standard output, and exits with the exit status 0.</p>
+<p class="rubric">-v / --version</p>
+<p>Prints out the version to the standard output, and exits with the exit status 0.</p>
+</section>
+<section id="double-hyphens">
+<h3><span class="section-number">10.1.2.3. </span>Double hyphens: --<a class="headerlink" href="#double-hyphens" title="Link to this heading">¶</a></h3>
+<p>Standard options and spec-and-argv can optionally be separated by double hyphens.</p>
+<p>Example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink --path mod/dir/first --path mod/dir/second -- app.kn
+</pre></div>
+</div>
+</section>
+<section id="spec-and-argv">
+<h3><span class="section-number">10.1.2.4. </span>Spec-and-argv<a class="headerlink" href="#spec-and-argv" title="Link to this heading">¶</a></h3>
+<p>Spec-and-argv is placed after launch options and standard options.</p>
+<p>If spec-and-argv is empty, the command launches <a class="reference internal" href="repl.html"><span class="doc">REPL</span></a>.</p>
+<p>If spec-and-argv consists of one or more elements,
+it is analyzed as follows:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{Spec} [Argv]...
+</pre></div>
+</div>
+<p>Argv is the list of args given to the launched program.</p>
+<p>Spec determines the way to launch the program,
+and must fall under one of the following formats.</p>
+<p class="rubric">mod:{Mod_name}</p>
+<p>Launches <code class="docutils literal notranslate"><span class="pre">main</span></code> fun of the mod specified by <code class="docutils literal notranslate"><span class="pre">Mod_name</span></code>.</p>
+<p>The mod must contain a fun named <code class="docutils literal notranslate"><span class="pre">main</span></code>.
+<code class="docutils literal notranslate"><span class="pre">main</span></code> is called with a vec of Argv.</p>
+<p>For example, the following command invokes <code class="docutils literal notranslate"><span class="pre">main</span></code> fun of kink/test/TEST_TOOL mod,
+with <code class="docutils literal notranslate"><span class="pre">['src/test/unit'</span> <span class="pre">'src/test/system']</span></code> as Argv.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink mod:kink/test/TEST_TOOL src/test/unit src/test/system
+</pre></div>
+</div>
+<p class="rubric">script:{Program_text}</p>
+<p>Compiles <code class="docutils literal notranslate"><span class="pre">Program_text</span></code> as a program text, and runs it with a new <a class="reference internal" href="../api/kink-BINDING.html"><span class="doc">binding</span></a>
+as the top level binding (see <a class="reference internal" href="../api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">Program.compile</span></a>).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">main</span></code> variable is set in the top level binding,
+it is called with a vec of Argv.</p>
+<p>Examples:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink &#39;script: stdout.print_line(&quot;foobar&quot;)&#39;
+foobar
+
+$ kink &#39;script: :main &lt;- {(:Argv) Argv.each{(:A) stdout.print_line(A) } }&#39; foo bar baz
+foo
+bar
+baz
+</pre></div>
+</div>
+<p class="rubric">Single hyphen: -</p>
+<p>Reads bytes from the standard input, decodes it as UTF-8,
+compiles it as a program, and runs it with a new <a class="reference internal" href="../api/kink-BINDING.html"><span class="doc">binding</span></a>
+as the top level binding (see <a class="reference internal" href="../api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">Program.compile</span></a>).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">main</span></code> variable is set in the top level binding,
+it is called with a vec of Argv.</p>
+<p>Examples:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ echo &#39;stdout.print_line(&quot;foobar&quot;)&#39; | kink -
+foobar
+
+$ echo &#39;:main &lt;- {(:Argv) Argv.each{(:A) stdout.print_line(A) } }&#39; | kink - foo bar baz
+foo
+bar
+baz
+</pre></div>
+</div>
+<p class="rubric">{File_path}</p>
+<p>If no other formats can be applied, <code class="docutils literal notranslate"><span class="pre">Spec</span></code> is analyzed as <code class="docutils literal notranslate"><span class="pre">File_path</span></code>.</p>
+<p>In this case, the command reads bytes from the file specified by <code class="docutils literal notranslate"><span class="pre">File_path</span></code>,
+decodes it as UTF-8,
+compiles it as a program, and runs it with a new <a class="reference internal" href="../api/kink-BINDING.html"><span class="doc">binding</span></a>
+as the top level binding (see <a class="reference internal" href="../api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">Program.compile</span></a>).</p>
+<p>Examples:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ echo &#39;stdout.print_line(&quot;foobar&quot;)&#39; &gt; a.kn
+$ kink a.kn
+foobar
+
+$ echo &#39;:main &lt;- {(:Argv) Argv.each{(:A) stdout.print_line(A) } }&#39; &gt; b.kn
+$ kink b.kn foo bar baz
+foo
+bar
+baz
+</pre></div>
+</div>
+</section>
+</section>
+<section id="environment-variables">
+<h2><span class="section-number">10.1.3. </span>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h2>
+<p>The following environment variables affect the execution of the command.</p>
+<dl class="simple">
+<dt>KINK_HOME</dt><dd><p>Path of the directory where the system is installed (ex. /opt/kink).
+If the environment variable is not set, the command determines the directory
+based on the path of the executable file.</p>
+</dd>
+<dt>JAVA_HOME</dt><dd><p>Path of the directory of the JVM which is used to launch the interpreter (ex. /opt/jdk).
+This value is not used if the launch option <code class="docutils literal notranslate"><span class="pre">-E</span></code> is specified.
+If the environment variable is not set and <code class="docutils literal notranslate"><span class="pre">-E</span></code> is not specified,
+the command just uses <code class="docutils literal notranslate"><span class="pre">java</span></code> or <code class="docutils literal notranslate"><span class="pre">javaw</span></code> command.</p>
+</dd>
+</dl>
+</section>
+<section id="exit-status">
+<h2><span class="section-number">10.1.4. </span>Exit status<a class="headerlink" href="#exit-status" title="Link to this heading">¶</a></h2>
+<p>The following exit values are returned.</p>
+<dl class="simple">
+<dt>0</dt><dd><p>When the program terminates without raising an exception,
+or <code class="docutils literal notranslate"><span class="pre">--help</span></code> or <code class="docutils literal notranslate"><span class="pre">--version</span></code> options are specified.</p>
+</dd>
+<dt>Not 0</dt><dd><p>When the program terminate raising an exception,
+or the command fails because of such as unknown options, wrong file names and so on.</p>
+</dd>
+</dl>
+<p>The command can also be terminated by PROCESS.exit with an arbitrary exit status.
+See <a class="reference internal" href="../api/kink-PROCESS.html"><span class="doc">kink/PROCESS</span></a>.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html"><span class="section-number">10. </span>Commandline</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="repl.html"><span class="section-number">10.2. </span>REPL</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

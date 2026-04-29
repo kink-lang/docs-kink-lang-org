@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.10. kink/DYN &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.11. kink/ENUM_GROUP" href="kink-ENUM_GROUP.html" />
+    <link rel="prev" title="6.9. kink/CONTROL" href="kink-CONTROL.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.10. kink/DYN</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-CONTROL.html"><span class="section-number">6.9. </span>kink/CONTROL</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-ENUM_GROUP.html"><span class="section-number">6.11. </span>kink/ENUM_GROUP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-dyn">
+<h1><span class="section-number">6.10. </span>kink/DYN<a class="headerlink" href="#kink-dyn" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-dyn" id="id1">type dyn</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dyn-with-val-thunk" id="id2">Dyn.with(Val $thunk)</a></p></li>
+<li><p><a class="reference internal" href="#dyn-all" id="id3">Dyn.all</a></p></li>
+<li><p><a class="reference internal" href="#dyn-top" id="id4">Dyn.top</a></p></li>
+<li><p><a class="reference internal" href="#dyn-any" id="id5">Dyn.any?</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dyn-new" id="id6">DYN.new</a></p></li>
+<li><p><a class="reference internal" href="#dyn-is-val" id="id7">DYN.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-dyn">
+<span id="api-08ef172995301f2f7d7b31cf767db64d"></span><h2><span class="section-number">6.10.1. </span>type dyn<a class="headerlink" href="#type-dyn" title="Link to this heading">¶</a></h2>
+<p>A `dyn` is a tag of values which are pushed and popped on the call stack.</p>
+<p>The name `dyn` comes from “dynamic scope”, as it acts like dynamically scoped variables of some dialects of Lisp.</p>
+<p>A `dyn` can be used to carry runtime context, such as transactions. See the following example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DYN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Tx_dyn</span> &lt;- <span class="nv">DYN</span>.<span class="n">new</span>
+
+<span class="nv">:do_transaction</span> &lt;- {(<span class="nv">:Tx_name</span> <span class="nv">:thunk</span>)
+  <span class="nv">Tx_dyn</span>.<span class="n">with</span>(<span class="nv">Tx_name</span>){
+    <span class="n">thunk</span>
+  }
+}
+
+<span class="nv">:commit</span> &lt;- {()
+  <span class="nv">:Current_tx</span> = <span class="nv">Tx_dyn</span>.<span class="n">top</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;commit {}&#39;</span>.<span class="n">format</span>(<span class="nv">Current_tx</span>))
+}
+
+<span class="n">do_transaction</span>(<span class="s1">&#39;Outer&#39;</span>){
+  <span class="n">commit</span> <span class="c1"># =&gt; commit Outer</span>
+  <span class="n">do_transaction</span>(<span class="s1">&#39;Inner&#39;</span>){
+    <span class="n">commit</span> <span class="c1"># =&gt; commit Inner</span>
+  }
+  <span class="n">commit</span> <span class="c1"># =&gt; commit Outer</span>
+}
+</pre></div>
+</div>
+<section id="dyn-with-val-thunk">
+<span id="api-2c27f8f74ce3dab7f33b5d9ca1950786"></span><h3><span class="section-number">6.10.1.1. </span>Dyn.with(Val $thunk)<a class="headerlink" href="#dyn-with-val-thunk" title="Link to this heading">¶</a></h3>
+<p>`with` pushes `Val`, associating it with `Dyn`, on the call stack, and calls $thunk with no arg. When the invocation of $thunk exits, `Val` is popped from the call stack.</p>
+<p class="rubric">Precondition</p>
+<p>$thunk must be a thunk.</p>
+</section>
+<section id="dyn-all">
+<span id="api-135c4d320d91a28be33edf3e8ccfe4a9"></span><h3><span class="section-number">6.10.1.2. </span>Dyn.all<a class="headerlink" href="#dyn-all" title="Link to this heading">¶</a></h3>
+<p>`all` returns a vec of values associated with `Dyn`, in the order from the bottom of the call stack to the top of the call stack.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DYN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Dyn</span> &lt;- <span class="nv">DYN</span>.<span class="n">new</span>
+
+<span class="nv">Dyn</span>.<span class="n">with</span>(<span class="s1">&#39;foo&#39;</span>){
+  <span class="nv">Dyn</span>.<span class="n">with</span>(<span class="s1">&#39;bar&#39;</span>){
+    <span class="nv">Dyn</span>.<span class="n">with</span>(<span class="s1">&#39;baz&#39;</span>){
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dyn</span>.<span class="n">all</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot;]</span>
+    }
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dyn</span>.<span class="n">all</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot;]</span>
+  }
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dyn</span>.<span class="n">all</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot;]</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dyn</span>.<span class="n">all</span>.<span class="n">repr</span>) <span class="c1"># =&gt; []</span>
+</pre></div>
+</div>
+</section>
+<section id="dyn-top">
+<span id="api-273361543cd275c0692117dde2ea82ff"></span><h3><span class="section-number">6.10.1.3. </span>Dyn.top<a class="headerlink" href="#dyn-top" title="Link to this heading">¶</a></h3>
+<p>`top` returns the value associated with `Dyn` which is closest to the top of the call stack.</p>
+<p class="rubric">Precondition</p>
+<p>At least one value must be associated with `Dyn` in the call stack.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DYN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Dyn</span> &lt;- <span class="nv">DYN</span>.<span class="n">new</span>
+
+<span class="nv">Dyn</span>.<span class="n">with</span>(<span class="s1">&#39;foo&#39;</span>){
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dyn</span>.<span class="n">top</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo&quot;</span>
+}
+<span class="nv">Dyn</span>.<span class="n">top</span> <span class="c1"># =&gt; raises an exception</span>
+</pre></div>
+</div>
+</section>
+<section id="dyn-any">
+<span id="api-68457ea90ac062e2c2b824aae11911a8"></span><h3><span class="section-number">6.10.1.4. </span>Dyn.any?<a class="headerlink" href="#dyn-any" title="Link to this heading">¶</a></h3>
+<p>`any?` returns whether any value is associated with `Dyn` in the call stack.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DYN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Dyn</span> &lt;- <span class="nv">DYN</span>.<span class="n">new</span>
+
+<span class="nv">Dyn</span>.<span class="n">with</span>(<span class="s1">&#39;foo&#39;</span>){
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dyn</span>.<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dyn</span>.<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="dyn-new">
+<span id="api-ad397f21080e64cc50f0d1baa0f6f764"></span><h2><span class="section-number">6.10.2. </span>DYN.new<a class="headerlink" href="#dyn-new" title="Link to this heading">¶</a></h2>
+<p>`new` makes a new `dyn`.</p>
+</section>
+<section id="dyn-is-val">
+<span id="api-624a4955f41017521c4be265fd5785e8"></span><h2><span class="section-number">6.10.3. </span>DYN.is?(Val)<a class="headerlink" href="#dyn-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `dyn`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-CONTROL.html"><span class="section-number">6.9. </span>kink/CONTROL</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-ENUM_GROUP.html"><span class="section-number">6.11. </span>kink/ENUM_GROUP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

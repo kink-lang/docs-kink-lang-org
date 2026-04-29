@@ -1,0 +1,157 @@
+========================
+kink\/datetime\/DATETIME
+========================
+
+Provides \`datetime\` type\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-a4fb003f4fec9a480651a5336772b420:
+
+type datetime
+=============
+
+A \`datetime\` val represents date and time without timezone or UTC offset\, in the ISO 8601 calendar system without inserting leap seconds\.
+
+A \`datetime\` val is represented to nanosecond precision\. The subsecond part is represented within “second” attribute\, together with integral second part\.
+
+The range of \`datetime\` is \[0001\-00\-00T00\:00\:00\.000000000\, 9999\-12\-31T23\:59\:59\.999999999\]\.
+
+Example\:
+
+.. code:: kink
+
+    :DATETIME.require_from('kink/datetime/')
+        
+    :Dt <- DATETIME.new(2020 1 10 23 14 25.123456789)
+    stdout.print_line(Dt.year.repr)   # => 2020
+    stdout.print_line(Dt.month.repr)  # => 1
+    stdout.print_line(Dt.day.repr)    # => 10
+    stdout.print_line(Dt.hour.repr)   # => 23
+    stdout.print_line(Dt.minute.repr) # => 13
+    stdout.print_line(Dt.second.repr) # => 25.123456789
+    stdout.print_line(Dt.day_of_week.repr)  # => DAY_OF_WEEK.friday
+
+.. _api-80caf4ee055f5b10228497d47b45339e:
+
+Dt\.year
+--------
+
+“year” method returns the year part of Dt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[1\, 9999\]\.
+
+.. _api-142289462584f3d99316259071f72cbd:
+
+Dt\.month
+---------
+
+“month” method returns the month part of Dt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[1\, 12\]\.
+
+.. _api-1658d9b3ddd9aaeeca830067deb9f756:
+
+Dt\.day
+-------
+
+“day” method returns the day part of Dt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[1\, 31\]\.
+
+.. _api-f3b7941fe3578621e0e485432705e4b1:
+
+Dt\.hour
+--------
+
+“hour” method returns the hour part of Dt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[0\, 23\]\.
+
+.. _api-3addd5ab4c625e9bcce36beda99b1204:
+
+Dt\.minute
+----------
+
+“minute” method returns the minute part of Dt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[0\, 59\]\.
+
+.. _api-459bbfe7ced4e64b2d586879e03db845:
+
+Dt\.second
+----------
+
+“second” method returns the second part of Dt\.
+
+Postcondition\:
+
+\• The result is a num with scale\=9\, in the range \[0\.000000000\, 59\.999999999\]\.
+
+.. _api-648dce57045490742b6cb02a4b52a900:
+
+Dt\.day\_of\_week
+-----------------
+
+“day\_of\_week” method returns the day of week corresponding to the date of Dt\.
+
+Postcondition\:
+
+\• The result is a day\_of\_week\. See kink\/datetime\/DAY\_OF\_WEEK\.
+
+.. _api-d968835637cf49a174dedad8f2e32b5c:
+
+Dt1 \< Dt2\, Dt1 \<\= Dt2\, Dt1 \!\= Dt2\, Dt1 \=\= Dt2\, Dt1 \>\= Dt2\, Dt1 \> Dt2
+-----------------------------------------------------------------------------------
+
+\`datetime\` values can be compared each other by comparison operators\.
+
+When a \`datetime\` X represents civil time which precedes the civil time represented by the other \`datetime\` Y\, X is considered less than Y\.
+
+.. _api-ed79ac3684bed5aa2626a8ca18677c9b:
+
+Dt\.repr
+--------
+
+“repr” returns a str representation of Dt\, such as \"Date\_time\(2020\-01\-10T23\:07\:04\.123456789\)\"\.
+
+.. _api-92d159c28c0e8ff5f955f815d8a1101b:
+
+DATETIME\.new\(Year Month Day Hour Minute Second\)
+==================================================
+
+\`new\` fun makes a \`datetime\` val\, with the speicifed attributes\.
+
+\• Year must be an int num in the range \[1\, 9999\]\.
+
+\• Month must be an int num in the range \[1\, 12\]\.
+
+\• Day must be an int num\.
+
+\• The combination of Year\, Month and Day must be a valid date in ISO 8601 calendar system\.
+
+\• Hour must be an int num in the range \[0\, 23\]\.
+
+\• Minute must be an int num in the range \[0\, 59\]\.
+
+\• Second must be a num with scale\<\=9 in the range \[0\.000000000\, 59\.999999999\]\.
+
+.. _api-572109b98637a33437dfe3dea5d69c2e:
+
+DATETIME\.is\?\(Val\)
+=====================
+
+DATETIME\.is\? returns whether Val is a \`datetime\` val\.
+

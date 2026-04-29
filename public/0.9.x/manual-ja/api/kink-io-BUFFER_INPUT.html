@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.52. kink/io/BUFFER_INPUT &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.53. kink/io/BUFFER_OUTPUT" href="kink-io-BUFFER_OUTPUT.html" />
+    <link rel="prev" title="6.51. kink/io/BIN_OUTPUT" href="kink-io-BIN_OUTPUT.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.52. kink/io/BUFFER_INPUT</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-BIN_OUTPUT.html"><span class="section-number">6.51. </span>kink/io/BIN_OUTPUT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-BUFFER_OUTPUT.html"><span class="section-number">6.53. </span>kink/io/BUFFER_OUTPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-io-buffer-input">
+<h1><span class="section-number">6.52. </span>kink/io/BUFFER_INPUT<a class="headerlink" href="#kink-io-buffer-input" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#buffer-input-new-wrapped-input-max-buf-size" id="id2">BUFFER_INPUT.new(Wrapped_input ...[Max_buf_size])</a></p></li>
+</ul>
+</nav>
+<section id="buffer-input-new-wrapped-input-max-buf-size">
+<span id="api-a528d5ee6cbcd641615ba653008dd0ac"></span><h2><span class="section-number">6.52.1. </span>BUFFER_INPUT.new(Wrapped_input ...[Max_buf_size])<a class="headerlink" href="#buffer-input-new-wrapped-input-max-buf-size" title="Link to this heading">¶</a></h2>
+<p>new は下層にある Wrapped_input の手前でユーザ空間バッファリングを行う input を戻す。</p>
+<p>Wrapped_input から読まれたバイト列は呼び出し元に提供される前にバッファされる。</p>
+<p>Max_buf_size は望ましいバッファサイズとして使われる。実際のバッファサイズが、 Max_buf_size を超えることはない。指定されない場合には、デフォルトのサイズが使われる。</p>
+<p class="rubric">事前条件</p>
+<p>Wrapped_input は input でなければならない。</p>
+<p>Max_buf_size は正の整数の num でなければならない。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-BIN_OUTPUT.html"><span class="section-number">6.51. </span>kink/io/BIN_OUTPUT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-BUFFER_OUTPUT.html"><span class="section-number">6.53. </span>kink/io/BUFFER_OUTPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

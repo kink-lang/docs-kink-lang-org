@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.93. kink/socket/TCP &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.94. kink/socket/TCP_SERVER" href="kink-socket-TCP_SERVER.html" />
+    <link rel="prev" title="6.92. kink/socket/SOCKET_ADDRESS" href="kink-socket-SOCKET_ADDRESS.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.93. kink/socket/TCP</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-SOCKET_ADDRESS.html"><span class="section-number">6.92. </span>kink/socket/SOCKET_ADDRESS</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-TCP_SERVER.html"><span class="section-number">6.94. </span>kink/socket/TCP_SERVER</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-socket-tcp">
+<h1><span class="section-number">6.93. </span>kink/socket/TCP<a class="headerlink" href="#kink-socket-tcp" title="Link to this heading">¶</a></h1>
+<p>ストリームベースのコネクティングソケットを提供する。</p>
+<p class="rubric">例</p>
+<p>次のプログラムは、TCP/IPのサーバとクライアントを立ち上げる。クライアントはTCP_NODELAY, SO_SNDBUF, SO_LINGERのソケットオプションを設定し、バイト列 [1, 2, 3] をサーバに送る。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TCP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:TCP_SERVER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:IP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:IP_PORT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:THREAD</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+<span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:spawn_client</span> &lt;- {(<span class="nv">:Server_addr</span>)
+  <span class="nv">THREAD</span>.<span class="n">spawn_io</span>{
+    <span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+      <span class="nv">:Tcp</span> = <span class="nv">TCP</span>.<span class="n">open</span>
+      <span class="n">finally</span>{ <span class="nv">Tcp</span>.<span class="n">close</span> }
+
+      <span class="c1"># initial socket options</span>
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Tcp</span>.<span class="n">tcp_nodelay</span>.<span class="n">load</span>.<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Tcp</span>.<span class="n">so_sndbuf</span>.<span class="n">load</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 8192 (initial values vary for systems)</span>
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Tcp</span>.<span class="n">so_linger</span>.<span class="n">load</span>.<span class="n">repr</span>) <span class="c1"># =&gt; []</span>
+
+      <span class="c1"># set socket options</span>
+      <span class="nv">Tcp</span>.<span class="n">tcp_nodelay</span> &lt;- <span class="n">true</span>
+      <span class="nv">Tcp</span>.<span class="n">so_sndbuf</span> &lt;- <span class="m">1024</span>
+      <span class="nv">Tcp</span>.<span class="n">so_linger</span> &lt;- [<span class="m">10</span>]
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Tcp</span>.<span class="n">tcp_nodelay</span>.<span class="n">load</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Tcp</span>.<span class="n">so_sndbuf</span>.<span class="n">load</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 2304 (the value was adjusted)</span>
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Tcp</span>.<span class="n">so_linger</span>.<span class="n">load</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [10]</span>
+
+      <span class="nv">Tcp</span>.<span class="n">connect</span>(<span class="nv">Server_addr</span>)
+      <span class="nv">:Out</span> = <span class="nv">Tcp</span>.<span class="n">output</span>
+      <span class="n">finally</span>{ <span class="nv">Out</span>.<span class="n">close</span> }
+
+      <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span>))
+      <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">2</span>))
+      <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">3</span>))
+    }
+  }
+}
+
+<span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="nv">:Server</span> = <span class="nv">TCP_SERVER</span>.<span class="n">open</span>
+  <span class="n">finally</span>{ <span class="nv">Server</span>.<span class="n">close</span> }
+
+  <span class="nv">Server</span>.<span class="n">bind_listen</span>(<span class="nv">IP_PORT</span>.<span class="n">new</span>(<span class="nv">IP</span>.<span class="n">for_hostname</span>(<span class="s1">&#39;::1&#39;</span>) <span class="m">0</span>))
+  <span class="nv">:Server_addr</span> = <span class="nv">Server</span>.<span class="n">local_address</span>
+  <span class="n">spawn_client</span>(<span class="nv">Server_addr</span>)
+
+  <span class="nv">:Tcp</span> = <span class="nv">Server</span>.<span class="n">accept</span>
+  <span class="n">finally</span>{ <span class="nv">Tcp</span>.<span class="n">close</span> }
+  <span class="nv">:In</span> = <span class="nv">Tcp</span>.<span class="n">input</span>
+  <span class="n">finally</span>{ <span class="nv">In</span>.<span class="n">close</span> }
+
+  <span class="nv">:Bin</span> = <span class="nv">In</span>.<span class="n">read_all</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Bin</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x01 0x02 0x03)</span>
+}
+</pre></div>
+</div>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-tcp" id="id2">tcp型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#tcp-connect-remote-config" id="id3">Tcp.connect(Remote ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-bind-local-config" id="id4">Tcp.bind(Local ...[$config])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-close-config" id="id5">Tcp.close(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-close-unless-connected-config" id="id6">Tcp.close_unless_connected(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-input-config" id="id7">Tcp.input(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-output-config" id="id8">Tcp.output(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-local-address-config" id="id9">Tcp.local_address(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-remote-address-config" id="id10">Tcp.remote_address(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-tcp-nodelay" id="id11">Tcp.tcp_nodelay</a></p></li>
+<li><p><a class="reference internal" href="#tcp-so-keepalive" id="id12">Tcp.so_keepalive</a></p></li>
+<li><p><a class="reference internal" href="#tcp-so-reuseaddr" id="id13">Tcp.so_reuseaddr</a></p></li>
+<li><p><a class="reference internal" href="#tcp-so-linger" id="id14">Tcp.so_linger</a></p></li>
+<li><p><a class="reference internal" href="#tcp-so-sndbuf" id="id15">Tcp.so_sndbuf</a></p></li>
+<li><p><a class="reference internal" href="#tcp-so-rcvbuf" id="id16">Tcp.so_rcvbuf</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tcp-open-protocol-family-protocol-family-ipv6-config" id="id17">TCP.open(...[Protocol_family=PROTOCOL_FAMILY.ipv6 $config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-is-val" id="id18">TCP.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-tcp">
+<span id="api-cebbf4b74b78e41bafcb8f39df72197d"></span><h2><span class="section-number">6.93.1. </span>tcp型<a class="headerlink" href="#type-tcp" title="Link to this heading">¶</a></h2>
+<p>tcpはストリームベースのコネクティングソケットである。プロトコルは、TCP/IPか、ストリームベースのUnixドメインソケットのどちらかである。</p>
+<section id="tcp-connect-remote-config">
+<span id="api-169281f7a502b89a6fdce4a7b89a81fc"></span><h3><span class="section-number">6.93.1.1. </span>Tcp.connect(Remote ...[$config={}])<a class="headerlink" href="#tcp-connect-remote-config" title="Link to this heading">¶</a></h3>
+<p>connectはソケットを、Remoteで指定されたリモートアドレスに接続する。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>• C.on_closed($closed): default = $errorを末尾呼び出しするサンク</p>
+<p>connectは、接続が確立するか、ソケットが閉じられるか、IOエラーが発生するまで待つ。</p>
+<p>接続が確立した場合、connectは$successを引数なしで末尾呼び出しする。クライアントはソケットからデータを読んだり、ソケットにデータを書いたりできる。</p>
+<p>connectの呼び出しの前、または呼び出し中に、コネクティングソケットが閉じられた場合、connectは$closedを引数なしで末尾呼び出しする。</p>
+<p>IOエラーが起きた場合、connectはコネクティングソケットを閉じて、exceptionを引数として$errorを末尾呼び出しする。</p>
+<p class="rubric">タイムアウト</p>
+<p>接続タイムアウトは、C.on_closedとTcp.close_unless_connectedで実装できる。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TCP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:IP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:IP_PORT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:THREAD</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:PROCESS</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="nv">:Tcp</span> = <span class="nv">TCP</span>.<span class="n">open</span>
+  <span class="n">finally</span>{ <span class="nv">Tcp</span>.<span class="n">close</span> }
+
+  <span class="c1"># a blackhole address. see RFC 6666</span>
+  <span class="nv">:Blackhole</span> = <span class="nv">IP_PORT</span>.<span class="n">new</span>(<span class="nv">IP</span>.<span class="n">for_hostname</span>(<span class="s1">&#39;0100::1234&#39;</span>) <span class="m">8080</span>)
+
+  <span class="c1"># times out connection after 10 seconds</span>
+  <span class="nv">THREAD</span>.<span class="n">spawn_io</span>{
+    <span class="nv">THREAD</span>.<span class="n">sleep</span>(<span class="m">10</span>)
+    <span class="nv">Tcp</span>.<span class="n">close_unless_connected</span>
+  }
+
+  <span class="c1"># exits the process when connection times out</span>
+  <span class="nv">Tcp</span>.<span class="n">connect</span>(<span class="nv">Blackhole</span>){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_closed</span>{
+      <span class="n">stderr</span>.<span class="n">print_line</span>(<span class="s1">&#39;connection time out&#39;</span>)
+      <span class="nv">PROCESS</span>.<span class="n">exit</span>(<span class="m">76</span>)
+    }
+  }
+}
+<span class="c1"># =&gt; connection time out</span>
+</pre></div>
+</div>
+<p>ランタイムやオペレーティングシステムも、それぞれ接続のタイムアウトを行うかもしれない。この場合、$closedが末尾呼び出しされる代わりに、IOエラーが起きるかもしれない。</p>
+<p class="rubric">事前条件</p>
+<p>Remoteはsocket_addressであり、ソケットのプロトコルファミリと合致しなければならない。</p>
+<p>$successはサンクでなければならない。</p>
+<p>$errorはexceptionを引数に取る関数でなければならない。</p>
+<p>$closedはサンクでなければならない。</p>
+</section>
+<section id="tcp-bind-local-config">
+<span id="api-21bbd4a079d2102435f13dc36b7a15ef"></span><h3><span class="section-number">6.93.1.2. </span>Tcp.bind(Local ...[$config])<a class="headerlink" href="#tcp-bind-local-config" title="Link to this heading">¶</a></h3>
+<p>bindは、Localで指定されたローカルアドレスをソケットに束縛する。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>アドレスが成功裏に束縛された場合、bindは引数なしで$successを末尾呼び出しする。</p>
+<p>IOエラーが起きた場合、bindはexceptionを渡して$errorを末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>Localはsocket_addressであり、ソケットのプロトコルファミリと合致しなければならない。</p>
+<p>$successはサンクでなければならない。</p>
+<p>$errorはexceptionを引数に取る関数でなければならない。</p>
+</section>
+<section id="tcp-close-config">
+<span id="api-b232dfea6356804f2de3413377fb4ac7"></span><h3><span class="section-number">6.93.1.3. </span>Tcp.close(...[$config={}])<a class="headerlink" href="#tcp-close-config" title="Link to this heading">¶</a></h3>
+<p>closeはコネクティングソケットを閉じる。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>ソケットが成功裏に閉じられた場合、closeは$successを引数なしで末尾呼び出しする。</p>
+<p>IOエラーが起きた場合、closeは、exceptionを引数として$errorを末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>$successはサンクでなければならない。</p>
+<p>$errorはexceptionを引数に取る関数でなければならない。</p>
+</section>
+<section id="tcp-close-unless-connected-config">
+<span id="api-8c98880928c126a3d40debb61fb8ad06"></span><h3><span class="section-number">6.93.1.4. </span>Tcp.close_unless_connected(...[$config={}])<a class="headerlink" href="#tcp-close-unless-connected-config" title="Link to this heading">¶</a></h3>
+<p>close_unless_connectedは、ソケットが接続されていない場合に限って、コネクティングソケットを閉じる。ソケットが接続されている場合、またはすでに閉じられている場合、close_unless_connectedは何もしない。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>ソケットが接続されている場合、またはすでに閉じられている場合、close_unless_connectedは引数なしで$successを末尾呼び出しする。</p>
+<p>ソケットが接続されていない場合、close_unless_connectedはソケットを閉じる。成功した場合、close_unless_connectedは引数なしで$successを末尾呼び出しする。IOエラーが起きた場合、close_unless_connectedは、exceptionを引数として$errorを末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>$successはサンクでなければならない。</p>
+<p>$errorはexceptionを引数に取る関数でなければならない。</p>
+</section>
+<section id="tcp-input-config">
+<span id="api-68766f039f7c19637a23ace23fb91f13"></span><h3><span class="section-number">6.93.1.5. </span>Tcp.input(...[$config={}])<a class="headerlink" href="#tcp-input-config" title="Link to this heading">¶</a></h3>
+<p>inputメソッドはコネクティングソケットからinputを作る。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.buffer(...[Max_buf_size])</p>
+<p>C.bufferが呼ばれた場合、結果のinputはユーザ空間でのバッファリングを行う。Max_buf_sizeが渡された場合、バッファサイズはMax_buf_sizeを超えない。C.bufferが呼ばれなければ、inputはユーザ空間でのバッファリングを行わない。</p>
+<p>inputを閉じると、ソケットの入力ストリームが遮断される。</p>
+<p class="rubric">事前条件</p>
+<p>Max_buf_sizeは正の整数のnum値でなければならない。</p>
+</section>
+<section id="tcp-output-config">
+<span id="api-ae45015f3f0129c7d60cdd8fa71e61fa"></span><h3><span class="section-number">6.93.1.6. </span>Tcp.output(...[$config={}])<a class="headerlink" href="#tcp-output-config" title="Link to this heading">¶</a></h3>
+<p>outputメソッドはコネクティングソケットからoutputを作る。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.buffer(...[Max_buf_size])</p>
+<p>C.bufferが呼ばれた場合、結果のoutputはユーザ空間でのバッファリングを行う。Max_buf_sizeが渡された場合、バッファサイズはMax_buf_sizeを超えない。C.bufferが呼ばれなければ、outputはユーザ空間でのバッファリングを行わない。</p>
+<p>outputを閉じると、ソケットの出力ストリームが遮断される。</p>
+<p class="rubric">事前条件</p>
+<p>Max_buf_sizeは正の整数のnum値でなければならない。</p>
+</section>
+<section id="tcp-local-address-config">
+<span id="api-eefb25efa155d522a609eca1910f65b7"></span><h3><span class="section-number">6.93.1.7. </span>Tcp.local_address(...[$config={}])<a class="headerlink" href="#tcp-local-address-config" title="Link to this heading">¶</a></h3>
+<p>local_addressは、コネクティングソケットのローカルアドレスのsocket_addressを取得する。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>ローカルアドレスがある場合、local_addressは、socket_addressを引数として$successを末尾呼び出しする。</p>
+<p>IOエラーが起きた場合、local_addressは、exceptionを引数として$errorを末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>$successは、socket_addressを引数に取る関数でなければならない。</p>
+<p>$errorはexceptionを引数に取る関数でなければならない。</p>
+</section>
+<section id="tcp-remote-address-config">
+<span id="api-071d2849db6e7c1d4b138b1b9dd5a8a4"></span><h3><span class="section-number">6.93.1.8. </span>Tcp.remote_address(...[$config={}])<a class="headerlink" href="#tcp-remote-address-config" title="Link to this heading">¶</a></h3>
+<p>remote_addressは、コネクティングソケットのリモートアドレスのsocket_addressを取得する。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>リモートアドレスがある場合、remote_addressは、socket_addressを引数として$successを末尾呼び出しする。</p>
+<p>IOエラーが起きた場合、remote_addressは、exceptionを引数として$errorを末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>$successは、socket_addressを引数に取る関数でなければならない。</p>
+<p>$errorはexceptionを引数に取る関数でなければならない。</p>
+</section>
+<section id="tcp-tcp-nodelay">
+<span id="api-ef70d6f9a0acc6c56641c1359f1b6951"></span><h3><span class="section-number">6.93.1.9. </span>Tcp.tcp_nodelay<a class="headerlink" href="#tcp-tcp-nodelay" title="Link to this heading">¶</a></h3>
+<p>tcp_nodelayは、TCP_NODELAYオプションのbool値のrefを戻す。</p>
+<p>ソケットオプションの使い方については、このモジュールの先頭の例示のプログラムを見よう。</p>
+<p class="rubric">事前条件</p>
+<p>プロトコルファミリはipv4かipv6でなければならない。</p>
+</section>
+<section id="tcp-so-keepalive">
+<span id="api-8819f44d54d0f02db504b5cb42f930ec"></span><h3><span class="section-number">6.93.1.10. </span>Tcp.so_keepalive<a class="headerlink" href="#tcp-so-keepalive" title="Link to this heading">¶</a></h3>
+<p>so_keepaliveは、SO_KEEPALIVEオプションのbool値のrefを戻す。</p>
+<p>ソケットオプションの使い方については、このモジュールの先頭の例示のプログラムを見よう。</p>
+<p class="rubric">事前条件</p>
+<p>プロトコルファミリはipv4かipv6でなければならない。</p>
+</section>
+<section id="tcp-so-reuseaddr">
+<span id="api-ee5d1813d01cefa7176bf1b02c06e8c7"></span><h3><span class="section-number">6.93.1.11. </span>Tcp.so_reuseaddr<a class="headerlink" href="#tcp-so-reuseaddr" title="Link to this heading">¶</a></h3>
+<p>so_reuseaddrは、SO_REUSEADDRオプションのbool値のrefを戻す。</p>
+<p>ソケットオプションの使い方については、このモジュールの先頭の例示のプログラムを見よう。</p>
+<p class="rubric">事前条件</p>
+<p>プロトコルファミリはipv4かipv6でなければならない。</p>
+</section>
+<section id="tcp-so-linger">
+<span id="api-5c13e28de94a8c5ace6d49d81793a526"></span><h3><span class="section-number">6.93.1.12. </span>Tcp.so_linger<a class="headerlink" href="#tcp-so-linger" title="Link to this heading">¶</a></h3>
+<p>so_lingerは、SO_LINGERオプションを表す、オプショナルな非負な整数のnum値のrefを戻す。</p>
+<p>refの値は、空のvecか、 一要素のvec [l_linger] のいずれかである。ここでl_lingerは、非負の整数のnumである。値が空のvecのとき、SO_LINGERオプションは無効にされる。値が一要素のvecのとき、SO_LINGERは有効になり、l_lingerがタイムアウト秒数になる。</p>
+<p>ソケットオプションの使い方については、このモジュールの先頭の例示のプログラムを見よう。</p>
+<p class="rubric">事前条件</p>
+<p>プロトコルファミリはipv4かipv6でなければならない。</p>
+</section>
+<section id="tcp-so-sndbuf">
+<span id="api-d47a13c1104d18f0d47dced54f330a22"></span><h3><span class="section-number">6.93.1.13. </span>Tcp.so_sndbuf<a class="headerlink" href="#tcp-so-sndbuf" title="Link to this heading">¶</a></h3>
+<p>so_sndbufは、SO_SNDBUFオプションの、非負な整数のnum値のrefを戻す。</p>
+<p>ソケットオプションの使い方については、このモジュールの先頭の例示のプログラムを見よう。</p>
+</section>
+<section id="tcp-so-rcvbuf">
+<span id="api-da26214f32b315a73a9422044ca9946e"></span><h3><span class="section-number">6.93.1.14. </span>Tcp.so_rcvbuf<a class="headerlink" href="#tcp-so-rcvbuf" title="Link to this heading">¶</a></h3>
+<p>so_rcvbufは、SO_RCVBUFオプションの、非負な整数のnum値のrefを戻す。</p>
+<p>ソケットオプションの使い方については、このモジュールの先頭の例示のプログラムを見よう。</p>
+</section>
+</section>
+<section id="tcp-open-protocol-family-protocol-family-ipv6-config">
+<span id="api-f955840172148033bc5d125387d4413f"></span><h2><span class="section-number">6.93.2. </span>TCP.open(...[Protocol_family=PROTOCOL_FAMILY.ipv6 $config={}])<a class="headerlink" href="#tcp-open-protocol-family-protocol-family-ipv6-config" title="Link to this heading">¶</a></h2>
+<p>openは、新しいコネクティングソケットを作る。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>• C.on_unsupported($unsupported): default = $erroを末尾呼び出しする関数</p>
+<p>ソケットが作られた場合、openは、tcpを引数として$successを末尾呼び出しする。</p>
+<p>指定されたプロトコルファミリをランタイムがサポートしない場合、openは引数なしで$unsupportedを末尾呼び出しする。</p>
+<p>IOエラーが起きた場合、openは、exceptionを引数として$errorを末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>Protocol_familyはprotocol_familyでなければならない。</p>
+<p>$successは、tcpを取る関数でなければならない。</p>
+<p>$errorはexceptionを引数に取る関数でなければならない。</p>
+<p>$unsupportedはサンクでなければならない。</p>
+</section>
+<section id="tcp-is-val">
+<span id="api-552da96bc44d88753699d67910890456"></span><h2><span class="section-number">6.93.3. </span>TCP.is?(Val)<a class="headerlink" href="#tcp-is-val" title="Link to this heading">¶</a></h2>
+<p>is?は、Valがtcp値であるかどうかを戻す。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-SOCKET_ADDRESS.html"><span class="section-number">6.92. </span>kink/socket/SOCKET_ADDRESS</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-TCP_SERVER.html"><span class="section-number">6.94. </span>kink/socket/TCP_SERVER</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

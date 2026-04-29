@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.80. kink/program/PROGRAM &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.81. kink/random/CSRNG" href="kink-random-CSRNG.html" />
+    <link rel="prev" title="6.79. kink/program/LOCATION" href="kink-program-LOCATION.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.80. kink/program/PROGRAM</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-program-LOCATION.html"><span class="section-number">6.79. </span>kink/program/LOCATION</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-random-CSRNG.html"><span class="section-number">6.81. </span>kink/random/CSRNG</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-program-program">
+<h1><span class="section-number">6.80. </span>kink/program/PROGRAM<a class="headerlink" href="#kink-program-program" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-program" id="id2">program型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#p-name" id="id3">P.name</a></p></li>
+<li><p><a class="reference internal" href="#p-text" id="id4">P.text</a></p></li>
+<li><p><a class="reference internal" href="#p-compile-config" id="id5">P.compile(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#p1-p2" id="id6">P1 == P2</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#program-new-name-text" id="id7">PROGRAM.new(Name Text)</a></p></li>
+<li><p><a class="reference internal" href="#program-is-val" id="id8">PROGRAM.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-program">
+<span id="api-b5fb44e96da396ab4b14ecad497a3748"></span><h2><span class="section-number">6.80.1. </span>program型<a class="headerlink" href="#type-program" title="Link to this heading">¶</a></h2>
+<p>programは、プログラム名とプログラムテキストの対である。</p>
+<section id="p-name">
+<span id="api-8f848dfaf90c2e797c71fd666c14cbf4"></span><h3><span class="section-number">6.80.1.1. </span>P.name<a class="headerlink" href="#p-name" title="Link to this heading">¶</a></h3>
+<p>nameは、プログラム名をstrとして戻す。</p>
+</section>
+<section id="p-text">
+<span id="api-45f6d2c611eccd488db0e507ebe36cc3"></span><h3><span class="section-number">6.80.1.2. </span>P.text<a class="headerlink" href="#p-text" title="Link to this heading">¶</a></h3>
+<p>textは、プログラムテキストをstrとして戻す。</p>
+</section>
+<section id="p-compile-config">
+<span id="api-eb38c6c06f06250d57f7c828992a2147"></span><h3><span class="section-number">6.80.1.3. </span>P.compile(...[$config={}])<a class="headerlink" href="#p-compile-config" title="Link to this heading">¶</a></h3>
+<p>compileは、Pを関数にコンパイルする。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.binding(Binding): default = BINDING.new</p>
+<p>• C.locale(Locale): default = LOCALE.root</p>
+<p>• C.on_success($success): default = VAL$identity</p>
+<p>• C.on_error($error): default = 例外を投げる関数</p>
+<p>プログラムが関数にコンパイルされた場合、compileは、その関数を渡して$successを末尾呼び出しする。</p>
+<p>コンパイルエラーが起きた場合、compileは、compile_errorを渡して$errorを末尾呼び出しする。compile_errorの持つlocation値のProgram属性はPに等しくなる。</p>
+<p class="rubric">コンパイル</p>
+<p>プログラムテキストは、マニュアルの「言語仕様」の章に規定されているとおり、抽象命令の列に変換される。</p>
+<p>ついで、列の中のすべての (binding) 命令は、 (val Binding) に置き換えられる。この置換は、一番外側の列に対してのみ行われ、ネストされた列に対しては行われない。</p>
+<p>結果の関数は、置換を経た抽象命令の列を持つ。</p>
+<p class="rubric">事前条件</p>
+<p>Bindingはbindingでなければならない。</p>
+<p>Localeはlocaleでなければならない。</p>
+<p>$successは、関数を取る関数でなければならない。</p>
+<p>$errorは、compile_errorを取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BINDING</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:P</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;add.kn&#39;</span> <span class="s1">&#39;10 + 20&#39;</span>)
+<span class="nv">:fun</span> &lt;- <span class="nv">P</span>.<span class="n">compile</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;ja-JP&#39;</span>))
+  <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Err</span>)
+    <span class="n">raise</span>(<span class="s1">&#39;unexpected compile error: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Err</span>.<span class="n">desc</span>))
+  }
+}
+<span class="nv">:R</span> &lt;- <span class="n">fun</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">R</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 30</span>
+</pre></div>
+</div>
+</section>
+<section id="p1-p2">
+<span id="api-15ff0713b5e0bca44395bcdf5a5aa024"></span><h3><span class="section-number">6.80.1.4. </span>P1 == P2<a class="headerlink" href="#p1-p2" title="Link to this heading">¶</a></h3>
+<p>== 演算子、つまりop_eqメソッドは、P1とP2が同値のプログラム名とプログラムテキストを持っているかどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>P2はprogramでなければならない。</p>
+</section>
+</section>
+<section id="program-new-name-text">
+<span id="api-a0d6b247e440f89ec6c1aacd191ae3b7"></span><h2><span class="section-number">6.80.2. </span>PROGRAM.new(Name Text)<a class="headerlink" href="#program-new-name-text" title="Link to this heading">¶</a></h2>
+<p>newは、Nameをプログラム名として、Textをプログラムテキストとして、新しいprogramを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Nameはstrでなければならない。</p>
+<p>Textはstrでなければならない。</p>
+</section>
+<section id="program-is-val">
+<span id="api-1537de127b01900a9c05c4e38a95b69e"></span><h2><span class="section-number">6.80.3. </span>PROGRAM.is?(Val)<a class="headerlink" href="#program-is-val" title="Link to this heading">¶</a></h2>
+<p>is?は、Valがprogramであるかどうかを戻す。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-program-LOCATION.html"><span class="section-number">6.79. </span>kink/program/LOCATION</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-random-CSRNG.html"><span class="section-number">6.81. </span>kink/random/CSRNG</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

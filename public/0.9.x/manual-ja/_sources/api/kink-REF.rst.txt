@@ -1,0 +1,42 @@
+=========
+kink\/REF
+=========
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-a7bb87ccff07365043328fc9f076ecc9:
+
+type ref
+========
+
+\`ref\` is an abstract type which can store and load a value\.
+
+.. _api-0679eafb6f73238b84fe08d6d6d75899:
+
+Ref\.load
+---------
+
+\`load\` returns the current value which \`Ref\` contains\.
+
+\`load\` must not raise an exception\.
+
+.. _api-367b6a5470bfc2f72aba391c62285b6e:
+
+Ref \<\- New\_val
+-----------------
+
+\`\<\-\` operator\, or \`op\_store\` method\, sets \`New\_val\` as the new value of \`Ref\`\.
+
+\`\<\-\` operator may raise an exception when preconditions for \`Ref\` and \`New\_val\` are not met\. For example\, if \`Ref\` accepts only \`str\` values\, but \`New\_val\` is an \`num\`\, \`\<\-\` operator may raise an exception\.
+
+\`\<\-\` operator may adjust \`New\_val\` to an acceptable value\. For example\, if \`New\_val\` is a \`num\` value 1000\, but \`Ref\` accepts \`num\` values from 0 to 99\, \`\<\-\` operator may set 99 as the new value\.
+
+.. _api-f06a454a092d01364fbc8de24c65b388:
+
+REF\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a \`ref\` value\.
+

@@ -1,0 +1,207 @@
+=============================
+kink\/datetime\/DAY\_OF\_WEEK
+=============================
+
+Provides day\_of\_week type\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-c313176e591b4a7974436c0c0a0f69f0:
+
+type day\_of\_week
+==================
+
+A day\_of\_week is one of\:
+
+\• Monday \(DAY\_OF\_WEEK\.monday\)
+
+\• Tuesday \(DAY\_OF\_WEEK\.tuesday\)
+
+\• Wednesday \(DAY\_OF\_WEEK\.wednesday\)
+
+\• Thursday \(DAY\_OF\_WEEK\.thursday\)
+
+\• Friday \(DAY\_OF\_WEEK\.friday\)
+
+\• Saturday \(DAY\_OF\_WEEK\.saturday\)
+
+\• Sunday \(DAY\_OF\_WEEK\.sunday\)
+
+.. _api-7a18b3f83a56c046223a7ca3b77d204a:
+
+D\.name
+-------
+
+“name” method returns the name of the day\_of\_week\, such as \"monday\"\, \"tuesday\" and \"wednesday\"\.
+
+Postcondition\:
+
+\• The result is a str which consists of ASCII lowercase letters\.
+
+Example\:
+
+.. code:: kink
+
+    :DAY_OF_WEEK.require_from('kink/datetime/')
+        
+    stdout.print_line(DAY_OF_WEEK.friday.name.repr) # => "friday"
+
+.. _api-21df9c8c4869e8b0ae4c96b00d51f080:
+
+D\.num
+------
+
+“num” method returns the int num of the day of week\, with 1 being Monday\, and 7 being Sunday\.
+
+Example\:
+
+.. code:: kink
+
+    :DAY_OF_WEEK.require_from('kink/datetime/')
+        
+    stdout.print_line(DAY_OF_WEEK.friday.num.repr)  # => 5
+
+.. _api-f33991589c789d4aac49cbc28b87d4fe:
+
+D\.repr
+-------
+
+“repr” method returns the str representation of the day of the week\, such as \"DAY\_OF\_WEEK\.monday\"\.
+
+.. _api-e7026aa352bf469e2cf3d7a6dd5d20fb:
+
+D1 \< D2\, D1 \<\= D2\, D1 \!\= D2\, D1 \=\= D2\, D1 \>\= D2\, D1 \> D2
+-----------------------------------------------------------------------
+
+day\_of\_week values can be compared in the following total order\.
+
+\• monday
+
+\• tuesday
+
+\• wednesday
+
+\• thursday
+
+\• friday
+
+\• saturday
+
+\• sunday
+
+Example\:
+
+.. code:: kink
+
+    :DAY_OF_WEEK.require_from('kink/datetime/')
+        
+    stdout.print_line((DAY_OF_WEEK.wednesday < DAY_OF_WEEK.thursday).repr)  # => true
+    stdout.print_line((DAY_OF_WEEK.thursday == DAY_OF_WEEK.thursday).repr)  # => true
+    stdout.print_line((DAY_OF_WEEK.friday > DAY_OF_WEEK.thursday).repr)     # => true
+
+.. _api-afcb3eab3f5f825fc9cf403594bff724:
+
+DAY\_OF\_WEEK\.monday
+=====================
+
+“monday” fun returns a day\_of\_week val with the following attributes\:
+
+\• name\: \"monday\"
+
+\• num\: 1
+
+.. _api-e8240bb84bfd144321ddc87017b726a1:
+
+DAY\_OF\_WEEK\.tuesday
+======================
+
+“tuesday” fun returns a day\_of\_week val with the following attributes\:
+
+\• name\: \"tuesday\"
+
+\• num\: 2
+
+.. _api-a670f8b38d1efde308cdf51372d78a6e:
+
+DAY\_OF\_WEEK\.wednesday
+========================
+
+“wednesday” fun returns a day\_of\_week val with the following attributes\:
+
+\• name\: \"wednesday\"
+
+\• num\: 3
+
+.. _api-4589e4e177cd3b6f240b103ec0e7b10e:
+
+DAY\_OF\_WEEK\.thursday
+=======================
+
+“thursday” fun returns a day\_of\_week val with the following attributes\:
+
+\• name\: \"thursday\"
+
+\• num\: 4
+
+.. _api-21183783ee85f44fb5793c1d8d2417e3:
+
+DAY\_OF\_WEEK\.friday
+=====================
+
+“friday” fun returns a day\_of\_week val with the following attributes\:
+
+\• name\: \"friday\"
+
+\• num\: 5
+
+.. _api-e1059f592381f98335e6115eff5c6be5:
+
+DAY\_OF\_WEEK\.saturday
+=======================
+
+“saturday” fun returns a day\_of\_week val with the following attributes\:
+
+\• name\: \"saturday\"
+
+\• num\: 6
+
+.. _api-a9c111be6bc03b5798ca4f6eae381f28:
+
+DAY\_OF\_WEEK\.sunday
+=====================
+
+“sunday” fun returns a day\_of\_week val with the following attributes\:
+
+\• name\: \"sunday\"
+
+\• num\: 7
+
+.. _api-ba10c027e9252229dcc50aa81b30c01b:
+
+DAY\_OF\_WEEK\.is\?\(Val\)
+==========================
+
+DAY\_OF\_WEEK\.is\? fun returns whether Val is a day\_of\_week val\.
+
+.. _api-32e9a795c45535e4221092bc8f269cc0:
+
+DAY\_OF\_WEEK\.from\_num\(Num\)
+===============================
+
+\`from\_num\` returns a \`day\_of\_week\` val \`num\` attribute of which is equal to \`Num\`\.
+
+Precondition\:
+
+\• \`Num\` must be an int num in the range \[1\, 7\]
+
+Example\:
+
+.. code:: kink
+
+    :DAY_OF_WEEK.require_from('kink/datetime/')
+        
+    stdout.print_line(DAY_OF_WEEK.from_num(1).repr) # => DAY_OF_WEEK.monday
+    stdout.print_line(DAY_OF_WEEK.from_num(7).repr) # => DAY_OF_WEEK.sunday
+

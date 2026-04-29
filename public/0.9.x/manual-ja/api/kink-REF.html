@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.20. kink/REF &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.21. kink/RUNTIME" href="kink-RUNTIME.html" />
+    <link rel="prev" title="6.19. kink/PROCESS" href="kink-PROCESS.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.20. kink/REF</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-PROCESS.html"><span class="section-number">6.19. </span>kink/PROCESS</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-RUNTIME.html"><span class="section-number">6.21. </span>kink/RUNTIME</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-ref">
+<h1><span class="section-number">6.20. </span>kink/REF<a class="headerlink" href="#kink-ref" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-ref" id="id2">ref型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ref-load" id="id3">Ref.load</a></p></li>
+<li><p><a class="reference internal" href="#ref-new-val" id="id4">Ref &lt;- New_val</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ref-is-val" id="id5">REF.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-ref">
+<span id="api-a7bb87ccff07365043328fc9f076ecc9"></span><h2><span class="section-number">6.20.1. </span>ref型<a class="headerlink" href="#type-ref" title="Link to this heading">¶</a></h2>
+<p>refは値を書き込み、読み込みできる抽象型である。</p>
+<section id="ref-load">
+<span id="api-0679eafb6f73238b84fe08d6d6d75899"></span><h3><span class="section-number">6.20.1.1. </span>Ref.load<a class="headerlink" href="#ref-load" title="Link to this heading">¶</a></h3>
+<p>loadはRefが持つ現在の値を戻す。</p>
+<p>loadは例外を投げてはならない。</p>
+</section>
+<section id="ref-new-val">
+<span id="api-367b6a5470bfc2f72aba391c62285b6e"></span><h3><span class="section-number">6.20.1.2. </span>Ref &lt;- New_val<a class="headerlink" href="#ref-new-val" title="Link to this heading">¶</a></h3>
+<p>&lt;- 演算子、つまりop_storeメソッドは、Refの新しい値としてNew_valを書き込む。</p>
+<p>&lt;- 演算子は、RefとNew_valに対する事前条件が満たされない場合、例外を投げるかもしれない。たとえば、Refがstr値だけを受け入れるが、New_valがnum値だった場合、 &lt;- 演算子は例外を投げるかもしれない。</p>
+<p>&lt;- 演算子は、New_valを許容される値に調整するかもしれない。たとえば、New_valがnum値1000だが、Refが0から99のnum値だけを受け付ける場合、 &lt;- は新しい値として99を書き込むかもしれない。</p>
+</section>
+</section>
+<section id="ref-is-val">
+<span id="api-f06a454a092d01364fbc8de24c65b388"></span><h2><span class="section-number">6.20.2. </span>REF.is?(Val)<a class="headerlink" href="#ref-is-val" title="Link to this heading">¶</a></h2>
+<p>is?はValがref値かどうかを戻す。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-PROCESS.html"><span class="section-number">6.19. </span>kink/PROCESS</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-RUNTIME.html"><span class="section-number">6.21. </span>kink/RUNTIME</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

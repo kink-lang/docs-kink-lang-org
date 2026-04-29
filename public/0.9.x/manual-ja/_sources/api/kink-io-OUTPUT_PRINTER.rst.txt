@@ -1,0 +1,54 @@
+=========================
+kink\/io\/OUTPUT\_PRINTER
+=========================
+
+Provides a \`printer\` implementation which wraps \`output\`\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-131422b6152f275cd7438990f6351988:
+
+OUTPUT\_PRINTER\.new\(Output Charset Newline \.\.\.\[\$config\=\{\}\]\)
+=======================================================================
+
+\`new\` makes a val which supports both \`printer\` and \`output\` types\, which encodes strings using \`Charset\`\, and writes bytes to \`Output\`\.
+
+Config methods\:
+
+\• C\.flush\_on\_print
+
+\• C\.replace\_conversion\_error
+
+\• C\.synchronize
+
+If C\.flush\_on\_print is called\, the buffer of \`Output\` is flushed every time after \`print\` or \`print\_line\` is called\.
+
+print\_xxx methods converts strings into bytes using \`Charset\`\. When a string cannot be encoded\, by default\, print\_xxx methods tail\-call \$error with an \`exception\`\. If C\.replace\_conversion\_error is called\, print\_xxx methods write replacement byte sequence at the place of the conversion error\.
+
+If C\.synchronize is called\, access to \`Output\`\, and conversion from str to bin\, are serialized by a single mutex\. The option is useful when parallel write\/print operations are not avoidable\, like in the case of stderr\.
+
+.. rubric:: Preconditions
+
+\`Output\` must be an \`output\`\.
+
+\`Charset\` must be a \`charset\`\.
+
+\`Newline\` must be a \`str\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN_OUTPUT.require_from('kink/io/')
+    :OUTPUT_PRINTER.require_from('kink/io/')
+    :CHARSET.require_from('kink/')
+        
+    :Out <- BIN_OUTPUT.new
+    :P <- OUTPUT_PRINTER.new(Out CHARSET.utf8 "\r\n"){(:W)
+      W.flush_on_print
+    }
+    P.print_line('foo')
+    stdout.print_line(Out.bin.repr) # => (bin 0x66 0x6f 0x6f 0x0d 0x0a)
+

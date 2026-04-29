@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>7.8. Code style &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="8. Kinkdoc: API Documentation system" href="../kinkdoc.html" />
+    <link rel="prev" title="7.7. Naming conventions" href="naming.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>7.8. Code style</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="naming.html"><span class="section-number">7.7. </span>Naming conventions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="../kinkdoc.html"><span class="section-number">8. </span>Kinkdoc: API Documentation system</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="code-style">
+<h1><span class="section-number">7.8. </span>Code style<a class="headerlink" href="#code-style" title="Link to this heading">¶</a></h1>
+<p>This chapter is a style guide of multiple-line structures.
+For expressions which fit in a single line, you can choose any style.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#indentation" id="id1">Indentation</a></p></li>
+<li><p><a class="reference internal" href="#parentheses-braces-and-brackets" id="id2">Parentheses, braces and brackets</a></p></li>
+</ul>
+</nav>
+<section id="indentation">
+<h2><span class="section-number">7.8.1. </span>Indentation<a class="headerlink" href="#indentation" title="Link to this heading">¶</a></h2>
+<p>Indentation is done with 2 whitespaces for each level.</p>
+<p>The indentation level of is calculated by the following rule:
+The indentation level is the number of pairs of parentheses, braces,
+and brackets which enclose the first token of the line.</p>
+<p>See the example below.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:foo</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)  <span class="c1"># (a)</span>
+  <span class="n">bar</span>(  <span class="c1"># (b)</span>
+    <span class="m">42</span>
+    []
+    { <span class="n">xxx</span>
+      <span class="n">yyy</span>
+      <span class="n">zzz</span>
+    } <span class="c1"># (c)</span>
+  )
+}
+</pre></div>
+</div>
+<p>The first token of the line (a), <code class="docutils literal notranslate"><span class="pre">:</span></code>, is not enclosed
+by any parentheses, braces, or brackets.
+So the indentation level is 0.</p>
+<p>The first token of the line (b), <code class="docutils literal notranslate"><span class="pre">bar</span></code>, is enclosed
+by the pair of parentheses opened at (a).
+So the indentation level is 1.</p>
+<p>The line (c) consists of only a closing brace.
+It is enclosed by a pair of brace opened at (a),
+and a pair of parentheses opened at (b).
+So the indentation level is 2.</p>
+</section>
+<section id="parentheses-braces-and-brackets">
+<h2><span class="section-number">7.8.2. </span>Parentheses, braces and brackets<a class="headerlink" href="#parentheses-braces-and-brackets" title="Link to this heading">¶</a></h2>
+<p>If a pair of parentheses, braces, or brackets spans multiple lines,</p>
+<ul class="simple">
+<li><p>the opening parenthesis, brace, or bracket
+should not be the only token of a line, and</p></li>
+</ul>
+<p>See the example again.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:foo</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)  <span class="c1"># (d)</span>
+  <span class="n">bar</span>(  <span class="c1"># (e)</span>
+    <span class="m">42</span>
+    []
+    { <span class="n">xxx</span> <span class="c1"># (f)</span>
+      <span class="n">yyy</span>
+      <span class="n">zzz</span>
+    }
+  )
+}
+</pre></div>
+</div>
+<p>The opening brace of (d) and the opening parenthesis (e) follow other tokens,
+so it follows the rule.</p>
+<p>The opening brace of (f) is the first token of the line.
+In order not make it the only token of the line,
+the first expression <code class="docutils literal notranslate"><span class="pre">xxx</span></code> follows the opening brace.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="naming.html"><span class="section-number">7.7. </span>Naming conventions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="../kinkdoc.html"><span class="section-number">8. </span>Kinkdoc: API Documentation system</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

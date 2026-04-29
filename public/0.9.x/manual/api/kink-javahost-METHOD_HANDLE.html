@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.72. kink/javahost/METHOD_HANDLE &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.73. kink/json/JSON" href="kink-json-JSON.html" />
+    <link rel="prev" title="6.71. kink/javahost/JAVA_THROW" href="kink-javahost-JAVA_THROW.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.72. kink/javahost/METHOD_HANDLE</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-javahost-JAVA_THROW.html"><span class="section-number">6.71. </span>kink/javahost/JAVA_THROW</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-json-JSON.html"><span class="section-number">6.73. </span>kink/json/JSON</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-javahost-method-handle">
+<h1><span class="section-number">6.72. </span>kink/javahost/METHOD_HANDLE<a class="headerlink" href="#kink-javahost-method-handle" title="Link to this heading">¶</a></h1>
+<p>Provides utility functions to manipulate java.lang.MethodHandle.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#method-handle-invoke-mh-args-config" id="id1">METHOD_HANDLE.invoke(Mh Args ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#method-handle-instance-method-owner-class-method-name-param-classes-ret-class-config" id="id2">METHOD_HANDLE.instance_method(Owner_class Method_name Param_classes Ret_class ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#method-handle-static-method-owner-class-method-name-param-classes-ret-class-config" id="id3">METHOD_HANDLE.static_method(Owner_class Method_name Param_classes Ret_class ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#method-handle-constructor-owner-class-param-classes-config" id="id4">METHOD_HANDLE.constructor(Owner_class Param_classes ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#method-handle-proxy-param-classes-ret-class-handler" id="id5">METHOD_HANDLE.proxy(Param_classes Ret_class $handler)</a></p></li>
+</ul>
+</nav>
+<section id="method-handle-invoke-mh-args-config">
+<span id="api-da049b659d2c72c5322320a8dd5f038b"></span><h2><span class="section-number">6.72.1. </span>METHOD_HANDLE.invoke(Mh Args ...[$config={}])<a class="headerlink" href="#method-handle-invoke-mh-args-config" title="Link to this heading">¶</a></h2>
+<p>`invoke` invokes the method handle `Mh` by MethodHandle.invokeWithArguments. `Args` is passed as the arguments.</p>
+<p>Unlike Java.call_method, .call_static, and .new, `type` attributes of the elements of `Args` don't need to specify the parameter types. For example, they all can be java.lang.Object. It is because the type information is stored in the method handle itself.</p>
+<p>A `java_call_config` value is passed to $config. See kink/javahost/JAVA for `java_call_config` type.</p>
+<p class="rubric">Result</p>
+<p>1)  If the return type of the method handle is a reference type `rt`,     and the invocation returns `resultObj`,     `invoke` tail-calls the success continuation with a `java` value (resultObj, rt).</p>
+<p>2)  If the return type `pt` of the method handle is     char, boolean, byte, short, int, long, float or double,     and the invocation returns a value,     `invoke` tail-calls the success continuation with a `java` value     (box, pt), where `box` is a wrapper instance of the returned value.</p>
+<p>3)  If the return type of the method handle is void,     and the invocation returns,     `invoke` tail-calls the success continuation with no arg.</p>
+<p>4)  If the invocation terminates throwing a Java exception `exceptionObj`,     and the exception is an instance of one or more exception types specified     by invocations of C.catch,     `invoke` tail-calls the error continuation corresponding     to the most specific exception type `et` with a `java` value (exceptionObj, et).</p>
+<p>5)  If the invocation terminates throwing a Java exception,     and no exception type passed to C.catch matches the thrown exception,     `invoke` raises a Kink exception.</p>
+<p class="rubric">Preconditions</p>
+<p>`Mh` must be an `java` value of (mh, *), where `mh` is an instance of MethodHandle.</p>
+<p>`Args` must be a `vec` of `java` values. `objectReference` attributes of the elements must be typable-as the corresponding parameter types of `mh`.</p>
+<p>$config must be a function which takes a `java_call_config`.</p>
+</section>
+<section id="method-handle-instance-method-owner-class-method-name-param-classes-ret-class-config">
+<span id="api-e03a5352f457fb0a7b58cb79fc751f2b"></span><h2><span class="section-number">6.72.2. </span>METHOD_HANDLE.instance_method(Owner_class Method_name Param_classes Ret_class ...[$config={}])<a class="headerlink" href="#method-handle-instance-method-owner-class-method-name-param-classes-ret-class-config" title="Link to this heading">¶</a></h2>
+<p>`instance_method` looks up a method handle of a public instance method.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_no_such_method($no_such_method): default = a function which raises an exception</p>
+<p>• C.on_illegal_access($illegal_access): default = a function which raises an exception</p>
+<p>`instance_method` looks up a method using MethodHandles.publicLookup().findVirtual, where `Owner_class` is the class which owns the method, `Method_name` is the name of the method, `Param_classes` is the parameter types, and `Ret_class` is the type of the returned value.</p>
+<p class="rubric">Result</p>
+<p>If the specified public method is found, `instance_method` tail-calls $success with a `java` value (mh, MethodHandle), where `mh` is the method handle of the method. The parameter types of the method handle will be `[Owner_class] + Param_classes`, and the return type will be `Ret_class`.</p>
+<p>If an exception `nsme` of NoSuchMethodException is thrown, `instance_method` tail-calls $no_such_method with a `java` value (nsme, NoSuchMethodException).</p>
+<p>If an exception `iae` of IllegalAccessException is thrown, `instance_method` tail-calls $illegal_access with a `java` value (iae, IllegalAccessException).</p>
+<p class="rubric">Preconditions</p>
+<p>`Owner_class` must be a `java` value (oc, *), where `oc` is an instance of java.lang.Class.</p>
+<p>`Method_name` must be a `str`.</p>
+<p>`Param_classes` must be a `vec` of `java` values (pc, *), where `pc` is an instance of java.lang.Class</p>
+<p>`Ret_class` must be a `java` val (rc, *), where `rc` is an instance of java.lang.Class.</p>
+</section>
+<section id="method-handle-static-method-owner-class-method-name-param-classes-ret-class-config">
+<span id="api-8be8501d3a7591111e17b9be5062c871"></span><h2><span class="section-number">6.72.3. </span>METHOD_HANDLE.static_method(Owner_class Method_name Param_classes Ret_class ...[$config={}])<a class="headerlink" href="#method-handle-static-method-owner-class-method-name-param-classes-ret-class-config" title="Link to this heading">¶</a></h2>
+<p>`static_method` looks up a method handle of a public static method.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_no_such_method($no_such_method): default = a function which raises an exception</p>
+<p>• C.on_illegal_access($illegal_access): default = a function which raises an exception</p>
+<p>`static_method` looks up a method using MethodHandles.publicLookup().findStatic, where `Owner_class` is the class which owns the method, `Method_name` is the name of the method, `Param_classes` is the parameter types, and `Ret_class` is the type of the returned value.</p>
+<p class="rubric">Result</p>
+<p>If the specified method is found, `static_method` tail-calls $success with a `java` value (mh, MethodHandle), where `mh` is the method handle of the method. The parameter types of the method handle will be `Param_classes`, and the return type will be `Ret_class`.</p>
+<p>If an exception `nsme` of NoSuchMethodException is thrown, `instance_method` tail-calls $no_such_method with a `java` value (nsme, NoSuchMethodException).</p>
+<p>If an exception `iae` of IllegalAccessException is thrown, `instance_method` tail-calls $illegal_access with a `java` value (iae, IllegalAccessException).</p>
+<p class="rubric">Preconditions</p>
+<p>`Owner_class` must be a `java` value (oc, *), where `oc` is an instance of java.lang.Class.</p>
+<p>`Method_name` must be a `str`.</p>
+<p>`Param_classes` must be a `vec` of `java` values (pc, *), where `pc` is an instance of java.lang.Class</p>
+<p>`Ret_class` must be a `java` val (rc, *), where `rc` is an instance of java.lang.Class.</p>
+</section>
+<section id="method-handle-constructor-owner-class-param-classes-config">
+<span id="api-2ee05d9149217fe22727d6b276608eac"></span><h2><span class="section-number">6.72.4. </span>METHOD_HANDLE.constructor(Owner_class Param_classes ...[$config={}])<a class="headerlink" href="#method-handle-constructor-owner-class-param-classes-config" title="Link to this heading">¶</a></h2>
+<p>`constructor` looks up a method handle of a public constructor.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_no_such_method($no_such_method): default = a function which raises an exception</p>
+<p>• C.on_illegal_access($illegal_access): default = a function which raises an exception</p>
+<p>`constructor` looks up a constructor using MethodHandles.publicLookup().findConstructor, by `Owner_class` as the owner of the consturctor, and `Param_classes` as the parameter types.</p>
+<p class="rubric">Result</p>
+<p>If the specified constructor is found, `constructor` tail-calls $success with a `java` value (mh, MethodHandle), where `mh` is the method handle of the constructor. The parameter types of the method handle will be `Param_classes`, and the return type will be `Owner_class`.</p>
+<p>If an exception `nsme` of NoSuchMethodException is thrown, `constructor` tail-calls $no_such_method with a `java` value (nsme, NoSuchMethodException).</p>
+<p>If an exception `iae` of IllegalAccessException is thrown, `constructor` tail-calls $illegal_access with a `java` value (iae, IllegalAccessException).</p>
+<p class="rubric">Preconditions</p>
+<p>`Owner_class` must be a `java` value (oc, *), where `oc` is an instance of java.lang.Class.</p>
+<p>`Param_classes` must be a `vec` of `java` values (pc, *), where `pc` is an instance of java.lang.Class</p>
+<p>$success, $no_such_method, and $illegal_access must be functions which take a `java` value.</p>
+</section>
+<section id="method-handle-proxy-param-classes-ret-class-handler">
+<span id="api-2d21ac41d5bf17b211c947ba5962eca4"></span><h2><span class="section-number">6.72.5. </span>METHOD_HANDLE.proxy(Param_classes Ret_class $handler)<a class="headerlink" href="#method-handle-proxy-param-classes-ret-class-handler" title="Link to this heading">¶</a></h2>
+<p>`proxy` returns a method handle which delegates the procedure to a Kink function $handler.</p>
+<p>The result is a `java` value (mh, MethodHandle), where `mh` is a method handle which delegates the procedure to $handler. The parameter types of the method handle will be `Param_classes`, and the return type will be `Ret_class`.</p>
+<p class="rubric">Invocation of the method handle</p>
+<p>When the method handle is invoked, a new abstract stack machine is created, and $handler is called in the abstract stack machine.</p>
+<p>The arguments of the invocation are passed as the arguments of $handler. The arguments are passed as `java` values (arg, argType). Here, `argType` is the corresponding parameter type of the method handle. If `argType` is a reference type, `arg` is the passed argument itself. If `argType` is a primitive type, `arg` is a wrapper instance which wraps the argument.</p>
+<p class="rubric">To return from the invocation</p>
+<p>If the return type of the method handle is a reference type, to order that the invocation return a value `ref` of the reference type, $handler must return a `java` value (ref, *).</p>
+<p>If the return type of the method handle is char, boolean, byte, short, int, long, float, or double, to order that the invocation return a value `primitive`, $handler must return a `java` value (wrapper, *), where `wrapper` is a wrapper instance object which wraps `primitive`.</p>
+<p>If the return type of the method handle is void, to order that the invocation return, $handler must return any value other than `java_throw`.</p>
+<p class="rubric">To throw a Java Throwable from the invocation</p>
+<p>To order that the invocation throw a Java Throwable, $handler must return a `java_throw`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Param_classes` must be a `vec` of `java` values (pc, *), where `pc` is an instance of java.lang.Class</p>
+<p>`Ret_class` must be a `java` val (rc, *), where `rc` is an instance of java.lang.Class.</p>
+<p class="rubric">Example: return an int</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:METHOD_HANDLE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Mh</span> &lt;- <span class="nv">METHOD_HANDLE</span>.<span class="n">proxy</span>([<span class="nv">JAVA</span>.<span class="n">int_class</span> <span class="nv">JAVA</span>.<span class="n">int_class</span>] <span class="nv">JAVA</span>.<span class="n">int_class</span>){(<span class="nv">:X</span> <span class="nv">:Y</span>)
+  <span class="nv">:Sum</span> = <span class="nv">X</span>.<span class="n">to_kink_num</span> + <span class="nv">Y</span>.<span class="n">to_kink_num</span>
+  <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="nv">Sum</span>)
+}
+
+<span class="nv">:R</span> &lt;- <span class="nv">METHOD_HANDLE</span>.<span class="n">invoke</span>(<span class="nv">Mh</span> [<span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">10</span>) <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">20</span>)])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">R</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (java &quot;30&quot; as int)</span>
+</pre></div>
+</div>
+<p class="rubric">Example: throw an exception</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:JAVA_THROW</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:METHOD_HANDLE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:RuntimeException_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.RuntimeException&#39;</span>)
+
+<span class="nv">:Mh</span> &lt;- <span class="nv">METHOD_HANDLE</span>.<span class="n">proxy</span>([] <span class="nv">JAVA</span>.<span class="n">void_class</span>){
+  <span class="nv">JAVA_THROW</span>.<span class="n">new</span>(<span class="nv">RuntimeException_class</span>.<span class="n">new</span>(<span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;bang!&#39;</span>)))
+}
+
+<span class="nv">METHOD_HANDLE</span>.<span class="n">invoke</span>(<span class="nv">Mh</span> []){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">catch</span>(<span class="nv">RuntimeException_class</span>){(<span class="nv">:Rte</span>)
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;thrown: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Rte</span>.<span class="n">repr</span>))
+  }
+}
+<span class="c1"># =&gt; thrown: (java &quot;java.lang.RuntimeException: bang!&quot; as java.lang.RuntimeException)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-javahost-JAVA_THROW.html"><span class="section-number">6.71. </span>kink/javahost/JAVA_THROW</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-json-JSON.html"><span class="section-number">6.73. </span>kink/json/JSON</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

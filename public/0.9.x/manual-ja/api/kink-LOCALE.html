@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.15. kink/LOCALE &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.16. kink/MOD" href="kink-MOD.html" />
+    <link rel="prev" title="6.14. kink/KONT_TAG" href="kink-KONT_TAG.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.15. kink/LOCALE</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-KONT_TAG.html"><span class="section-number">6.14. </span>kink/KONT_TAG</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-MOD.html"><span class="section-number">6.16. </span>kink/MOD</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-locale">
+<h1><span class="section-number">6.15. </span>kink/LOCALE<a class="headerlink" href="#kink-locale" title="Link to this heading">¶</a></h1>
+<p>Provides locale specific data.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#locale-for-lang-tag" id="id2">LOCALE.for(Lang_tag)</a></p></li>
+<li><p><a class="reference internal" href="#type-locale" id="id3">type locale</a></p>
+<ul>
+<li><p><a class="reference internal" href="#locale-lang-tag" id="id4">Locale.lang_tag</a></p></li>
+<li><p><a class="reference internal" href="#locale-group-sep" id="id5">Locale.group_sep</a></p></li>
+<li><p><a class="reference internal" href="#locale-decimal-sep" id="id6">Locale.decimal_sep</a></p></li>
+<li><p><a class="reference internal" href="#x-y" id="id7">X == Y</a></p></li>
+<li><p><a class="reference internal" href="#locale-repr" id="id8">Locale.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#locale-is-val" id="id9">LOCALE.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#locale-root" id="id10">LOCALE.root</a></p></li>
+<li><p><a class="reference internal" href="#locale-default" id="id11">LOCALE.default</a></p></li>
+</ul>
+</nav>
+<section id="locale-for-lang-tag">
+<span id="api-b62f7c0dcc02851f8a2c3df8a0d5d101"></span><h2><span class="section-number">6.15.1. </span>LOCALE.for(Lang_tag)<a class="headerlink" href="#locale-for-lang-tag" title="Link to this heading">¶</a></h2>
+<p>LOCALE.for returns a locale val which matches the language tag best.</p>
+<p>It is not guaranteed that “lang_tag” method of the result returns the same str as Lang_tag.</p>
+</section>
+<section id="type-locale">
+<span id="api-668468443c02606ede61892045a1c7de"></span><h2><span class="section-number">6.15.2. </span>type locale<a class="headerlink" href="#type-locale" title="Link to this heading">¶</a></h2>
+<p>A locale is a set of parameters used for software internationalization specific to a combination of language, region and other variants.</p>
+<section id="locale-lang-tag">
+<span id="api-a369b4ca326325eb726ec09caed16768"></span><h3><span class="section-number">6.15.2.1. </span>Locale.lang_tag<a class="headerlink" href="#locale-lang-tag" title="Link to this heading">¶</a></h3>
+<p>“lang_tag” method returns thes str of the language tag of the locale.</p>
+<p>The result is a syntactically well-formed IETF BCP47 language tag. It is not guaranteed that subtags are registered in IANA Language Subtag Registry.</p>
+</section>
+<section id="locale-group-sep">
+<span id="api-6550bf2debc330d94f5de67a7e1d3a56"></span><h3><span class="section-number">6.15.2.2. </span>Locale.group_sep<a class="headerlink" href="#locale-group-sep" title="Link to this heading">¶</a></h3>
+<p>“group_sep” method returns a str which separates groups in the integral part in the locale.</p>
+</section>
+<section id="locale-decimal-sep">
+<span id="api-538083cade70126478498aa97f977062"></span><h3><span class="section-number">6.15.2.3. </span>Locale.decimal_sep<a class="headerlink" href="#locale-decimal-sep" title="Link to this heading">¶</a></h3>
+<p>“decimal_sep” method returns a str which separates the integral part and the fractional part in the locale.</p>
+</section>
+<section id="x-y">
+<span id="api-22f1392dff60221d9dec0a9347c787bd"></span><h3><span class="section-number">6.15.2.4. </span>X == Y<a class="headerlink" href="#x-y" title="Link to this heading">¶</a></h3>
+<p>Two locales are equal when the language tags of them are equal.</p>
+</section>
+<section id="locale-repr">
+<span id="api-189e4abdd3673713f89f17f654f2e4dd"></span><h3><span class="section-number">6.15.2.5. </span>Locale.repr<a class="headerlink" href="#locale-repr" title="Link to this heading">¶</a></h3>
+<p>`repr` returns a str such as &quot;(locale ja-JP)&quot;.</p>
+</section>
+</section>
+<section id="locale-is-val">
+<span id="api-04c22627cd06858f9c7782f39029ce59"></span><h2><span class="section-number">6.15.3. </span>LOCALE.is?(Val)<a class="headerlink" href="#locale-is-val" title="Link to this heading">¶</a></h2>
+<p>LOCALE.is? returns whether Val is a locale val.</p>
+</section>
+<section id="locale-root">
+<span id="api-e7a7d5a06abb5d89b27c5e327102744c"></span><h2><span class="section-number">6.15.4. </span>LOCALE.root<a class="headerlink" href="#locale-root" title="Link to this heading">¶</a></h2>
+<p>LOCALE.root returns the empty locale which is neutral to any language or region.</p>
+</section>
+<section id="locale-default">
+<span id="api-88c19c9b9c54186143e27f84416444c1"></span><h2><span class="section-number">6.15.5. </span>LOCALE.default<a class="headerlink" href="#locale-default" title="Link to this heading">¶</a></h2>
+<p>LOCALE.default returns the locale which is default for the runtime.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-KONT_TAG.html"><span class="section-number">6.14. </span>kink/KONT_TAG</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-MOD.html"><span class="section-number">6.16. </span>kink/MOD</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

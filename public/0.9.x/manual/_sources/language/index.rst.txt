@@ -1,0 +1,27 @@
+======================
+Language specification
+======================
+
+A program text is compiled into a :term:`function`
+by :ref:`Program.compile <api-eb38c6c06f06250d57f7c828992a2147>`
+This chapter specifies how compilation is done.
+
+First, a program text is analyzed as a sequence of tokens,
+and then parsed as an abstract syntax tree,
+as specified in :doc:`syntax`.
+
+The abstract syntax tree is transformed into a sequence of abstract instructions
+as specified in :doc:`semantics`.
+The function compiled by :ref:`Program.compile <api-eb38c6c06f06250d57f7c828992a2147>`
+behaves as if it contains the sequence of abstract instructions.
+
+Evaluation of abstract instructions is specified in :doc:`eval`.
+
+.. toctree::
+  :maxdepth: 2
+
+  syntax
+  semantics
+  eval
+
+.. vim: et sw=2 sts=2 et

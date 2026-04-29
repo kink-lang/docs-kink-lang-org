@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.64. kink/iter/ITER &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.65. kink/javahost/JAVA" href="kink-javahost-JAVA.html" />
+    <link rel="prev" title="6.63. kink/iter/IFUN" href="kink-iter-IFUN.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.64. kink/iter/ITER</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-iter-IFUN.html"><span class="section-number">6.63. </span>kink/iter/IFUN</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-JAVA.html"><span class="section-number">6.65. </span>kink/javahost/JAVA</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-iter-iter">
+<h1><span class="section-number">6.64. </span>kink/iter/ITER<a class="headerlink" href="#kink-iter-iter" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-iter" id="id2">iter型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#iter-ifun" id="id3">Iter.ifun</a></p></li>
+<li><p><a class="reference internal" href="#iter-each-consume" id="id4">Iter.each($consume)</a></p></li>
+<li><p><a class="reference internal" href="#iter-map-transform" id="id5">Iter.map($transform)</a></p></li>
+<li><p><a class="reference internal" href="#iter-concat-map-to-iter" id="id6">Iter.concat_map($to_iter)</a></p></li>
+<li><p><a class="reference internal" href="#iter-filter-include" id="id7">Iter.filter($include?)</a></p></li>
+<li><p><a class="reference internal" href="#iter-count-counted" id="id8">Iter.count($counted?)</a></p></li>
+<li><p><a class="reference internal" href="#iter-fold-init-combine" id="id9">Iter.fold(Init $combine)</a></p></li>
+<li><p><a class="reference internal" href="#iter-reduce-combine-empty-fallback" id="id10">Iter.reduce($combine ...[$empty_fallback])</a></p></li>
+<li><p><a class="reference internal" href="#iter-take-front-n" id="id11">Iter.take_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#iter-drop-front-n" id="id12">Iter.drop_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#iter-take-while-include" id="id13">Iter.take_while($include?)</a></p></li>
+<li><p><a class="reference internal" href="#iter-drop-while-exclude" id="id14">Iter.drop_while($exclude?)</a></p></li>
+<li><p><a class="reference internal" href="#iter-all-match" id="id15">Iter.all?($match?)</a></p></li>
+<li><p><a class="reference internal" href="#iter-any-match-true" id="id16">Iter.any?(...[$match?={ true }])</a></p></li>
+<li><p><a class="reference internal" href="#iter-concat" id="id17">Iter.concat</a></p></li>
+<li><p><a class="reference internal" href="#iter-unconcat-chunk-size" id="id18">Iter.unconcat(Chunk_size)</a></p></li>
+<li><p><a class="reference internal" href="#iter-cycle" id="id19">Iter.cycle</a></p></li>
+<li><p><a class="reference internal" href="#front-back" id="id20">Front + Back</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#iter-new-ifun" id="id21">ITER.new($ifun)</a></p></li>
+<li><p><a class="reference internal" href="#iter-is-val" id="id22">ITER.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#iter-of-elems" id="id23">ITER.of(...Elems)</a></p></li>
+<li><p><a class="reference internal" href="#iter-zip-first-iter-other-iters" id="id24">ITER.zip(First_iter ...Other_iters)</a></p></li>
+<li><p><a class="reference internal" href="#iter-lazy-make-iter" id="id25">ITER.lazy($make_iter)</a></p></li>
+<li><p><a class="reference internal" href="#iter-from-generator-generator" id="id26">ITER.from_generator($generator)</a></p></li>
+<li><p><a class="reference internal" href="#iter-from-each-eacher" id="id27">ITER.from_each(Eacher)</a></p></li>
+</ul>
+</nav>
+<section id="type-iter">
+<span id="api-9abfd993fe72b66de6733a6b4358a25e"></span><h2><span class="section-number">6.64.1. </span>iter型<a class="headerlink" href="#type-iter" title="Link to this heading">¶</a></h2>
+<p>“iter”は“iterator”の略語である。iterは有限長、または無限長の値のストリームである。</p>
+<p>iterはifunのラッパである。ifunについてはkink/iter/IFUNを見よ。</p>
+<section id="iter-ifun">
+<span id="api-44ca02d34d982234fa48658bbea8b4be"></span><h3><span class="section-number">6.64.1.1. </span>Iter.ifun<a class="headerlink" href="#iter-ifun" title="Link to this heading">¶</a></h3>
+<p>ifunメソッドは、Iterがラップしているifunを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Num_iter</span> &lt;- <span class="m">5</span>.<span class="n">times</span>
+
+<span class="nv">Num_iter</span>.<span class="n">each</span>{(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
+<span class="c1"># =&gt; 0 1 2 3 4</span>
+
+<span class="nv">:nums</span> &lt;- <span class="nv">Num_iter</span>.<span class="n">ifun</span>
+<span class="nv">IFUN</span>.<span class="n">each</span>(<span class="nv">$nums</span>){(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
+<span class="c1"># =&gt; 0 1 2 3 4</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-each-consume">
+<span id="api-5ca6b279a4095243180a754558cda613"></span><h3><span class="section-number">6.64.1.2. </span>Iter.each($consume)<a class="headerlink" href="#iter-each-consume" title="Link to this heading">¶</a></h3>
+<p>eachはIterの各要素について$consumeを呼び出し、最後の$consumeの戻り値を戻す。</p>
+<p>もしIterが要素を持たない場合、eachはnadaを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$consumeはひとつの引数を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">3</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:E</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   0</span>
+<span class="c1">#   1</span>
+<span class="c1">#   2</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-map-transform">
+<span id="api-cf1f5bd88c8cdc6d6b9ead27503cc7bc"></span><h3><span class="section-number">6.64.1.3. </span>Iter.map($transform)<a class="headerlink" href="#iter-map-transform" title="Link to this heading">¶</a></h3>
+<p>mapは、N番目の要素がtransform(IterのN番目の要素)であるようなiterを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$transformはひとつの引数を取らなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>)
+<span class="nv">:Doubles</span> &lt;- <span class="nv">Ns</span>.<span class="n">map</span>{(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">2</span> }
+<span class="nv">Doubles</span>.<span class="n">each</span>{(<span class="nv">:D</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">D</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   2</span>
+<span class="c1">#   4</span>
+<span class="c1">#   6</span>
+<span class="c1">#   8</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-concat-map-to-iter">
+<span id="api-2357c11b5c9a00ae2a5fd3b348ab7982"></span><h3><span class="section-number">6.64.1.4. </span>Iter.concat_map($to_iter)<a class="headerlink" href="#iter-concat-map-to-iter" title="Link to this heading">¶</a></h3>
+<p>concat_mapは、to_iter(Iterの要素)の戻り値のiterを結合したiterを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$to_iterは引数をひとつ取り、iterを戻さなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>)
+<span class="nv">:Mapped</span> &lt;- <span class="nv">Ns</span>.<span class="n">concat_map</span>{(<span class="nv">:N</span>)
+  <span class="nv">N</span>.<span class="n">times</span>
+}
+<span class="nv">Mapped</span>.<span class="n">each</span>{(<span class="nv">:M</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">M</span>.<span class="n">repr</span>) }
+<span class="c1"># =&gt; 0 0 1 0 1 2 0 1 2 3</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-filter-include">
+<span id="api-22a957d51df6fc7b9a98a7a39eb022db"></span><h3><span class="section-number">6.64.1.5. </span>Iter.filter($include?)<a class="headerlink" href="#iter-filter-include" title="Link to this heading">¶</a></h3>
+<p>filterはIterの要素のうち$include?を満たすものを、iterとして戻す。要素の順序は変わらない。</p>
+<p class="rubric">事前条件</p>
+<p>$include?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Orig</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span>)
+<span class="nv">:Evens</span> &lt;- <span class="nv">Orig</span>.<span class="n">filter</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
+<span class="nv">Evens</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   2</span>
+<span class="c1">#   4</span>
+<span class="c1">#   6</span>
+<span class="c1">#   8</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-count-counted">
+<span id="api-ebce81e09608ea510108606ee45bdaea"></span><h3><span class="section-number">6.64.1.6. </span>Iter.count($counted?)<a class="headerlink" href="#iter-count-counted" title="Link to this heading">¶</a></h3>
+<p>countは、Iterの要素のうち、$counted?を満たすものの数を戻す。</p>
+<p>結果は整数のnum値である。</p>
+<p class="rubric">事前条件</p>
+<p>$counted?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Nums</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span>)
+<span class="nv">:Count</span> &lt;- <span class="nv">Nums</span>.<span class="n">count</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Count</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 4</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-fold-init-combine">
+<span id="api-bc375652e17b94c11dc57ff94cd1e1b3"></span><h3><span class="section-number">6.64.1.7. </span>Iter.fold(Init $combine)<a class="headerlink" href="#iter-fold-init-combine" title="Link to this heading">¶</a></h3>
+<p>foldは、Initを種としてIterの要素を畳み込む。</p>
+<p>Iterの要素がE1, E2, ,,, En_1, Enのとき、foldはcombine(combine(,,,combine(combine(Init E1) E2),,, En_1) En)を戻す。</p>
+<p>Iterが空の場合、foldはInitを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$combineはふたつの引数を取らなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">fold</span>(<span class="m">100</span>){(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; 115</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-reduce-combine-empty-fallback">
+<span id="api-c526cd87bc4f759440d84519e4eab1b6"></span><h3><span class="section-number">6.64.1.8. </span>Iter.reduce($combine ...[$empty_fallback])<a class="headerlink" href="#iter-reduce-combine-empty-fallback" title="Link to this heading">¶</a></h3>
+<p>reduceは、Iterの要素を相互に畳み込む。</p>
+<p>Iterの要素がE1, E2, E3, ,,, En_1, Enのとき、reduceはcombine(combine(,,,combine(combine(E1 E2) E3),,, En_1) En)を戻す。</p>
+<p>Iterの要素がEひとつのとき、reduceはEを戻す。</p>
+<p>Iterが要素を持たず、$empty_fallbackが与えられているとき、reduceは$empty_fallbackを引数なしで末尾呼び出しする。</p>
+<p>Iterが要素を持たず、$empty_fallbackが与えられていないとき、reduceは例外を投げる。</p>
+<p class="rubric">事前条件</p>
+<p>$combineはふたつの引数を取らなければならない。</p>
+<p>$empty_fallbackはサンクでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">reduce</span>{(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; 15</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-take-front-n">
+<span id="api-b1563edccd37cdc15b3c7380dbf26918"></span><h3><span class="section-number">6.64.1.9. </span>Iter.take_front(N)<a class="headerlink" href="#iter-take-front-n" title="Link to this heading">¶</a></h3>
+<p>take_frontは、Iterの最初のN個の要素をiterとして戻す。Iterの要素がN個より少ない場合、take_frontはIterの要素をすべて持つiterを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Nは整数のnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="m">1</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># =&gt; 1 2 3 4 5</span>
+
+<span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>).<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># =&gt; 1 2 3</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-drop-front-n">
+<span id="api-9bd8ea3024d6d0c967a77b90ad08af22"></span><h3><span class="section-number">6.64.1.10. </span>Iter.drop_front(N)<a class="headerlink" href="#iter-drop-front-n" title="Link to this heading">¶</a></h3>
+<p>drop_frontは、Iterの要素から最初のN個を除いて、iterとして戻す。Iterの要素がN個より少ない場合、drop_frontは空のiterを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Nは整数のnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="m">10</span>.<span class="n">times</span>.<span class="n">drop_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># =&gt; 5 6 7 8 9</span>
+
+<span class="m">10</span>.<span class="n">times</span>.<span class="n">drop_front</span>(<span class="m">20</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output: nothing</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-take-while-include">
+<span id="api-b493d9f845fa83eb64817f5ccbd89ef7"></span><h3><span class="section-number">6.64.1.11. </span>Iter.take_while($include?)<a class="headerlink" href="#iter-take-while-include" title="Link to this heading">¶</a></h3>
+<p>take_whileは、すべての要素が$include?を満たすような、Iterの最長の先頭部分を、iterとして戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$include?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1000</span> <span class="m">500</span> <span class="m">250</span> <span class="m">125</span> <span class="m">62</span> <span class="m">31</span> <span class="m">15</span> <span class="m">7</span> <span class="m">3</span> <span class="m">1</span> <span class="m">0</span>)
+<span class="nv">:Front</span> &lt;- <span class="nv">Ns</span>.<span class="n">take_while</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
+<span class="nv">Front</span>.<span class="n">each</span>{(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
+<span class="c1"># =&gt; 1000 500 250</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-drop-while-exclude">
+<span id="api-63fed9fb4e94d7836fcadae879903925"></span><h3><span class="section-number">6.64.1.12. </span>Iter.drop_while($exclude?)<a class="headerlink" href="#iter-drop-while-exclude" title="Link to this heading">¶</a></h3>
+<p>drop_whileは、すべての要素が$exclude?を満たすような、Iterの最長の先頭部分を取り除き、残りをiterとして戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$exclude?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1000</span> <span class="m">500</span> <span class="m">250</span> <span class="m">125</span> <span class="m">62</span> <span class="m">31</span> <span class="m">15</span> <span class="m">7</span> <span class="m">3</span> <span class="m">1</span> <span class="m">0</span>)
+<span class="nv">:Back</span> &lt;- <span class="nv">Ns</span>.<span class="n">drop_while</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
+<span class="nv">Back</span>.<span class="n">each</span>{(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
+<span class="c1"># =&gt; 125 62 31 15 7 3 1 0</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-all-match">
+<span id="api-a6526a6ff8ceb0cd8eb239893498391e"></span><h3><span class="section-number">6.64.1.13. </span>Iter.all?($match?)<a class="headerlink" href="#iter-all-match" title="Link to this heading">¶</a></h3>
+<p>all?は、Iterのすべての要素が$match?を満たすときにtrueを、そうでないときにfalseを戻す。</p>
+<p>Iterが無限長のとき、all?は戻ることが保証されない。</p>
+<p class="rubric">事前条件</p>
+<p>$match?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">all?</span>{(<span class="nv">:N</span>) <span class="nv">N</span> &lt; <span class="m">10</span> }.<span class="n">repr</span>)      <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">all?</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-any-match-true">
+<span id="api-fe630704531294ad4f5249c4176fa990"></span><h3><span class="section-number">6.64.1.14. </span>Iter.any?(...[$match?={ true }])<a class="headerlink" href="#iter-any-match-true" title="Link to this heading">¶</a></h3>
+<p>any?は、Iterのひとつ以上の要素が$match?を満たすときにtrueを、そうでないときにfalseを戻す。</p>
+<p>Iterが無限長のとき、any?は戻ることが保証されない。</p>
+<p>$match?のデフォルト値は{ true }である。したがって、$match?が渡されない場合、any?はIterが空でないかどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$match?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">any?</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">any?</span>{(<span class="nv">:N</span>) <span class="nv">N</span> &gt; <span class="m">10</span> }.<span class="n">repr</span>)      <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">ITER</span>.<span class="n">of</span>().<span class="n">any?</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span>).<span class="n">any?</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span>).<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-concat">
+<span id="api-ad67ea4f07bdd8c22100af4b7b4ff72d"></span><h3><span class="section-number">6.64.1.15. </span>Iter.concat<a class="headerlink" href="#iter-concat" title="Link to this heading">¶</a></h3>
+<p>concatは、Iterの要素であるiterをつなげたiterを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Iterは、iterを要素に持つiterでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Nums</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)
+<span class="nv">:Strs</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>)
+<span class="nv">:Bools</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="n">true</span> <span class="n">false</span>)
+<span class="nv">ITER</span>.<span class="n">of</span>(<span class="nv">Nums</span> <span class="nv">Strs</span> <span class="nv">Bools</span>).<span class="n">concat</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># =&gt; 1 2 3 &quot;foo&quot; &quot;bar&quot; true false</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-unconcat-chunk-size">
+<span id="api-41349a38ad9d63c669bd8df6ff4dcb15"></span><h3><span class="section-number">6.64.1.16. </span>Iter.unconcat(Chunk_size)<a class="headerlink" href="#iter-unconcat-chunk-size" title="Link to this heading">¶</a></h3>
+<p>unconcatは、Iterを、長さがChunk_sizeであるベクタに分割して、そのベクタのiterを戻す。</p>
+<p>Iterの長さが有限値のChunk_size * N + R, ただしNとRは非負の整数, であるとき、Iterの最後のR個の要素は捨てられる。</p>
+<p class="rubric">事前条件</p>
+<p>Chunk_sizeは正の整数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span>)
+<span class="nv">:Chunks</span> &lt;- <span class="nv">Ns</span>.<span class="n">unconcat</span>(<span class="m">2</span>)
+<span class="nv">Chunks</span>.<span class="n">each</span>{(<span class="nv">:Chunk</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Chunk</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   [1 2]</span>
+<span class="c1">#   [3 4]</span>
+<span class="c1">#   [5 6]</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-cycle">
+<span id="api-d615ac9b98458a6f872ab3b3a232b69e"></span><h3><span class="section-number">6.64.1.17. </span>Iter.cycle<a class="headerlink" href="#iter-cycle" title="Link to this heading">¶</a></h3>
+<p>cycleはIterの要素を無限に繰り返したiterを戻す。</p>
+<p>Iterが空の場合、結果のiterも空である。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="m">3</span>.<span class="n">times</span>.<span class="n">cycle</span>.<span class="n">take_front</span>(<span class="m">10</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># =&gt; 0 1 2 0 1 2 0 1 2 0</span>
+
+<span class="nv">ITER</span>.<span class="n">of</span>().<span class="n">cycle</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output: nothing</span>
+</pre></div>
+</div>
+</section>
+<section id="front-back">
+<span id="api-3ab44720e374a52836fdd24ac39db2d1"></span><h3><span class="section-number">6.64.1.18. </span>Front + Back<a class="headerlink" href="#front-back" title="Link to this heading">¶</a></h3>
+<p>+演算子、つまりop_addメソッドは、ふたつのiterであるFrontとBackを、ひとつのiterにつなげる。</p>
+<p class="rubric">事前条件</p>
+<p>FrontとBackはiter値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Iter</span> &lt;- <span class="m">1</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">3</span>) + <span class="m">11</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">3</span>)
+<span class="nv">Iter</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># =&gt; 1 2 3 11 12 13</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="iter-new-ifun">
+<span id="api-d066e06acb9a4ab66dd1fd2be7d0acac"></span><h2><span class="section-number">6.64.2. </span>ITER.new($ifun)<a class="headerlink" href="#iter-new-ifun" title="Link to this heading">¶</a></h2>
+<p>newは$ifunをラップするiterを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$ifunはifunでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:make_vec_ifun</span> &lt;- {(<span class="nv">:Vec</span>)
+  {(<span class="nv">:proc</span> <span class="nv">:fin</span>)
+    <span class="n">if</span>(<span class="nv">Vec</span>.<span class="n">any?</span>
+      { <span class="nv">:Head</span> = <span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">0</span>)
+        <span class="nv">:tail</span> = <span class="n">make_vec_ifun</span>(<span class="nv">Vec</span>.<span class="n">drop_front</span>(<span class="m">1</span>))
+        <span class="n">proc</span>(<span class="nv">Head</span> <span class="nv">$tail</span>)
+      }
+      { <span class="n">fin</span> }
+    )
+  }
+}
+<span class="nv">:Iter</span> &lt;- <span class="nv">ITER</span>.<span class="n">new</span>(<span class="n">make_vec_ifun</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]))
+<span class="nv">Iter</span>.<span class="n">each</span>{(<span class="nv">:S</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   foo</span>
+<span class="c1">#   bar</span>
+<span class="c1">#   baz</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-is-val">
+<span id="api-8c1a46c592a1d9c1f7ace086f70ab264"></span><h2><span class="section-number">6.64.3. </span>ITER.is?(Val)<a class="headerlink" href="#iter-is-val" title="Link to this heading">¶</a></h2>
+<p>is?はValがiterであるかどうかを戻す。</p>
+</section>
+<section id="iter-of-elems">
+<span id="api-119705136739da62d44434cd2e92f10f"></span><h2><span class="section-number">6.64.4. </span>ITER.of(...Elems)<a class="headerlink" href="#iter-of-elems" title="Link to this heading">¶</a></h2>
+<p>ofはElemsの要素を含むiterを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Iter</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="nv">Iter</span>.<span class="n">each</span>{(<span class="nv">:S</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   foo</span>
+<span class="c1">#   bar</span>
+<span class="c1">#   baz</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-zip-first-iter-other-iters">
+<span id="api-f5462f020e129f9b0c0ffcc5c58d7f7a"></span><h2><span class="section-number">6.64.5. </span>ITER.zip(First_iter ...Other_iters)<a class="headerlink" href="#iter-zip-first-iter-other-iters" title="Link to this heading">¶</a></h2>
+<p>zipは、N個のiterが渡された場合、最短のiterと同じ長さのiterを戻す。結果のiterの要素は、長さNのベクタであり、ベクタの要素は対応する位置の引数のiterの要素からななる。</p>
+<p>たとえば、iter Xが要素X1, X2, X3, ,,, からなり、YがY1, Y2, Y3, ,,, からなり、ZがZ1, Z2, Z3, ,,,, からなるとき、zip(X Y Z)は[X1 Y1 Z1], [X2 Y2 Z2], [X3 Y3 Z3], ,,, を要素とするiterを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Other_itersの要素はiterでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Zipped</span> &lt;- <span class="nv">ITER</span>.<span class="n">zip</span>(
+  <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+  <span class="nv">ITER</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+  <span class="nv">ITER</span>.<span class="n">of</span>(<span class="n">true</span> <span class="n">false</span> <span class="n">true</span>)
+)
+<span class="nv">Zipped</span>.<span class="n">each</span>{(<span class="nv">:Triple</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Triple</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   [1 &quot;foo&quot; true]</span>
+<span class="c1">#   [2 &quot;bar&quot; false]</span>
+<span class="c1">#   [3 &quot;baz&quot; true]</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-lazy-make-iter">
+<span id="api-1df041f9a86a08a6505e194659fc56dc"></span><h2><span class="section-number">6.64.6. </span>ITER.lazy($make_iter)<a class="headerlink" href="#iter-lazy-make-iter" title="Link to this heading">¶</a></h2>
+<p>lazyは、$make_iterが戻したiterに要素の生成を委譲するようなiterを戻す。</p>
+<p>サンク$make_iterは、結果のiterの内容が必要となった際に呼ばれる。</p>
+<p class="rubric">事前条件</p>
+<p>$make_iterはiterを戻すサンクでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:count_down</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="n">if</span>(<span class="nv">N</span> &lt; <span class="m">0</span>
+    { <span class="nv">ITER</span>.<span class="n">of</span>() }
+    { <span class="nv">ITER</span>.<span class="n">of</span>(<span class="nv">N</span>) + <span class="nv">ITER</span>.<span class="n">lazy</span>{ <span class="n">count_down</span>(<span class="nv">N</span> - <span class="m">1</span>) } }
+  )
+}
+<span class="n">count_down</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># =&gt; 5 4 3 2 1 0</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-from-generator-generator">
+<span id="api-6d0602cb3762becfd16f81f49dc8de8a"></span><h2><span class="section-number">6.64.7. </span>ITER.from_generator($generator)<a class="headerlink" href="#iter-from-generator-generator" title="Link to this heading">¶</a></h2>
+<p>from_generatorは、$generatorの中で算出された要素を含むiterを戻す。</p>
+<p>$generatorは、引数ひとつの関数$yieldを引数に取らなければならない。$generatorの呼び出しの中で$yieldが引数とともに呼ばれると、その引数が結果のiterの要素になる。$generatorの呼び出しが終わると、そこがiterの末尾になる。</p>
+<p>$generatorは、結果のiterの内容が必要になったときに呼び出される。$generatorの呼び出しは、$yieldが呼ばれたときに中断される。呼び出しは、後続するiterの内容が必要になったときに再開される。</p>
+<p class="rubric">例: 有限長のiterを作る</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Iter</span> &lt;- <span class="nv">ITER</span>.<span class="n">from_generator</span>{(<span class="nv">:yield</span>)
+  <span class="n">yield</span>(<span class="s1">&#39;foo&#39;</span>)
+  <span class="n">yield</span>(<span class="s1">&#39;bar&#39;</span>)
+  <span class="n">yield</span>(<span class="s1">&#39;baz&#39;</span>)
+}
+<span class="nv">Iter</span>.<span class="n">each</span>{(<span class="nv">:Str</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   foo</span>
+<span class="c1">#   bar</span>
+<span class="c1">#   baz</span>
+</pre></div>
+</div>
+<p class="rubric">例: 無限長のiterを作る</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Iter</span> &lt;- <span class="nv">ITER</span>.<span class="n">from_generator</span>{(<span class="nv">:yield</span>)
+  <span class="nv">:loop</span> &lt;- {(<span class="nv">:N</span>)
+    <span class="n">yield</span>(<span class="nv">N</span>)
+    <span class="n">loop</span>(<span class="nv">N</span> + <span class="m">1</span>)
+  }
+  <span class="n">loop</span>(<span class="m">1</span>)
+}
+<span class="nv">Iter</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   1</span>
+<span class="c1">#   2</span>
+<span class="c1">#   3</span>
+<span class="c1">#   4</span>
+<span class="c1">#   5</span>
+</pre></div>
+</div>
+</section>
+<section id="iter-from-each-eacher">
+<span id="api-060f01bac524d4d22a6955298623867d"></span><h2><span class="section-number">6.64.8. </span>ITER.from_each(Eacher)<a class="headerlink" href="#iter-from-each-eacher" title="Link to this heading">¶</a></h2>
+<p>from_eachは、Eacher.eachで列挙される値を要素とするiterを戻す。</p>
+<p>eachの呼び出しは、iterの要素が評価されるごとに中断、再開される。</p>
+<p class="rubric">事前条件</p>
+<p>Eacherはeach($consume)メソッドをサポートしなければならない。eachはEacherの要素を列挙するために呼ばれる。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+
+<span class="nv">:Take_five</span> &lt;- <span class="nv">ITER</span>.<span class="n">from_each</span>([<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>])
+<span class="nv">Take_five</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># =&gt; 1 2 3 4 5</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-iter-IFUN.html"><span class="section-number">6.63. </span>kink/iter/IFUN</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-JAVA.html"><span class="section-number">6.65. </span>kink/javahost/JAVA</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+=========================
+kink\/param\/PLAIN\_PARAM
+=========================
+
+Provides plain\_param data type\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-cf90425c39961059421d15c46785b6fb:
+
+type plain\_param
+=================
+
+A plain\_param is a param which takes a single argument\.
+
+See Vec\.op\_store for handling of params\.
+
+Varref and vec are typical plain\_param types\.
+
+.. _api-261d35c0154691e159207dc99dff299c:
+
+Plain\_param\.op\_store\(Arg\)
+------------------------------
+
+Plain\_param\.op\_store consumes Arg as a single argument\.
+
+.. _api-2cdd7d44430c748771fb4ca688de9a4f:
+
+PLAIN\_PARAM\.is\?\(Val\)
+=========================
+
+PLAIN\_PARAM\.is\? returns whether Val is a plain\_param\.
+

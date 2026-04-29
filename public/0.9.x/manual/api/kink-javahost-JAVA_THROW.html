@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.71. kink/javahost/JAVA_THROW &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.72. kink/javahost/METHOD_HANDLE" href="kink-javahost-METHOD_HANDLE.html" />
+    <link rel="prev" title="6.70. kink/javahost/JAVA_STREAM_OUTPUT" href="kink-javahost-JAVA_STREAM_OUTPUT.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.71. kink/javahost/JAVA_THROW</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-javahost-JAVA_STREAM_OUTPUT.html"><span class="section-number">6.70. </span>kink/javahost/JAVA_STREAM_OUTPUT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-METHOD_HANDLE.html"><span class="section-number">6.72. </span>kink/javahost/METHOD_HANDLE</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-javahost-java-throw">
+<h1><span class="section-number">6.71. </span>kink/javahost/JAVA_THROW<a class="headerlink" href="#kink-javahost-java-throw" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-java-throw" id="id1">type java_throw</a></p>
+<ul>
+<li><p><a class="reference internal" href="#java-throw-throwable" id="id2">Java_throw.throwable</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#java-throw-new-throwable" id="id3">JAVA_THROW.new(Throwable)</a></p></li>
+<li><p><a class="reference internal" href="#java-throw-is-val" id="id4">JAVA_THROW.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-java-throw">
+<span id="api-831d0674b0a94021b344933b60eddc8c"></span><h2><span class="section-number">6.71.1. </span>type java_throw<a class="headerlink" href="#type-java-throw" title="Link to this heading">¶</a></h2>
+<p>`java_throw` is a wrapper of a java.lang.Throwable.</p>
+<p>A `java_throw` value is returned from a handler of a Java proxy to order that the Java procedure throw the throwable.</p>
+<section id="java-throw-throwable">
+<span id="api-84973c81a5112a0af9a1dc4f3ceb2b28"></span><h3><span class="section-number">6.71.1.1. </span>Java_throw.throwable<a class="headerlink" href="#java-throw-throwable" title="Link to this heading">¶</a></h3>
+<p>`throwable` returns the wrapped instance of java.lang.Throwable.</p>
+<p>The result of will be a `java` value (th, java.lang.Throwable), where `th` is an instance of java.lang.Throwable.</p>
+</section>
+</section>
+<section id="java-throw-new-throwable">
+<span id="api-e64b901a5655eaad541d5782f3b15a1d"></span><h2><span class="section-number">6.71.2. </span>JAVA_THROW.new(Throwable)<a class="headerlink" href="#java-throw-new-throwable" title="Link to this heading">¶</a></h2>
+<p>`new` returns a `java_throw` value which wraps `Throwable`.</p>
+<p class="rubric">Precondition</p>
+<p>`Throwable` must be a `java` value (th, *), where `th` is an instance of java.lang.Throwable.</p>
+</section>
+<section id="java-throw-is-val">
+<span id="api-086ead148cfbfac1dc36590ae4d085f0"></span><h2><span class="section-number">6.71.3. </span>JAVA_THROW.is?(Val)<a class="headerlink" href="#java-throw-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `java_throw`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-javahost-JAVA_STREAM_OUTPUT.html"><span class="section-number">6.70. </span>kink/javahost/JAVA_STREAM_OUTPUT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-METHOD_HANDLE.html"><span class="section-number">6.72. </span>kink/javahost/METHOD_HANDLE</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

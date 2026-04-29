@@ -1,0 +1,66 @@
+======================
+kink\/socket\/DATAGRAM
+======================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-335fd818b28700837e196390159d03c9:
+
+type datagram
+=============
+
+\`datagram\` is a unit of message transfer of datagram oriented protocols like UDP\.
+
+A \`datagram\` value consists of two attributes\:
+
+\• remote\: The remote socket address as a \`socket\_address\` value\.
+
+\• bin\: The content of the message as a \`bin\` value\.
+
+.. _api-e24fae3963daa72104fbc66ca9a9f0c2:
+
+D\.remote
+---------
+
+\`remote\` returns the \`socket\_address\` value of the remote socket address\.
+
+.. _api-b53ec246da37fad40b7bb681a4e26a6c:
+
+D\.bin
+------
+
+\`bin\` returns the \`bin\` value of the content of the message\.
+
+.. _api-19993b7b58e4933bc3c0b314bedb4b0c:
+
+X \=\= Y
+--------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether the remote socket addresses of \`X\` and \`Y\` are equal\, and the \`bin\` values of \`X\` and \`Y\` are equal\.
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`datagram\`\.
+
+.. _api-7d367463fd6ee6a11d61fc6fa03170ca:
+
+DATAGRAM\.new\(Remote Bin\)
+===========================
+
+\`new\` returns a \`datagram\` value\.
+
+.. rubric:: Preconditions
+
+\`Remote\` must be a \`socket\_address\`\.
+
+\`Bin\` must be a \`bin\`\.
+
+.. _api-0e2526e3086c555f644f68b5418562f8:
+
+DATAGRAM\.is\?\(Val\)
+=====================
+
+\`is\?\` returns whether \`Val\` is a \`datagram\` value\.
+

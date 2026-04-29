@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.17. kink/NUM &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.18. kink/NUM_DIV" href="kink-NUM_DIV.html" />
+    <link rel="prev" title="6.16. kink/MOD" href="kink-MOD.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.17. kink/NUM</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-MOD.html"><span class="section-number">6.16. </span>kink/MOD</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-NUM_DIV.html"><span class="section-number">6.18. </span>kink/NUM_DIV</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-num">
+<h1><span class="section-number">6.17. </span>kink/NUM<a class="headerlink" href="#kink-num" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-num" id="id13">num型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#num-mantissa" id="id14">Num.mantissa</a></p></li>
+<li><p><a class="reference internal" href="#num-scale" id="id15">Num.scale</a></p></li>
+<li><p><a class="reference internal" href="#num-int" id="id16">Num.int?</a></p></li>
+<li><p><a class="reference internal" href="#x-y" id="id17">X + Y</a></p></li>
+<li><p><a class="reference internal" href="#api-f667eb318caba4a5d8a039983c22f0ed" id="id18">X - Y</a></p></li>
+<li><p><a class="reference internal" href="#x" id="id19">- X</a></p></li>
+<li><p><a class="reference internal" href="#api-30d402ff3f8dab7b42383d10b1eeec6a" id="id20">X * Y</a></p></li>
+<li><p><a class="reference internal" href="#api-c49b38f653c2f557b5467273cdecc802" id="id21">X / Y</a></p></li>
+<li><p><a class="reference internal" href="#api-780786ae17df2b32e5239328dd963d63" id="id22">X // Y</a></p></li>
+<li><p><a class="reference internal" href="#api-0131f4bf3e7485b8b28131b0316c2617" id="id23">X % Y</a></p></li>
+<li><p><a class="reference internal" href="#api-cac6a7bcc8bdf1592de14001f749d29b" id="id24">X | Y</a></p></li>
+<li><p><a class="reference internal" href="#api-b45386f45e99478863797b5a1d2d1972" id="id25">X ^ Y</a></p></li>
+<li><p><a class="reference internal" href="#api-3d5d87cea0ec792f10058af8fc814e85" id="id26">X &amp; Y</a></p></li>
+<li><p><a class="reference internal" href="#num" id="id27">~ Num</a></p></li>
+<li><p><a class="reference internal" href="#num-bit-count" id="id28">Num &lt;&lt; Bit_count</a></p></li>
+<li><p><a class="reference internal" href="#api-0cb9f66cdd32cf542f3764d784da24f0" id="id29">Num &gt;&gt; Bit_count</a></p></li>
+<li><p><a class="reference internal" href="#api-39c3e426ef7d48032623045f7e0086ae" id="id30">X == Y</a></p></li>
+<li><p><a class="reference internal" href="#api-c63f0bac28dc7889794056e0ed205a33" id="id31">X &lt;= Y</a></p></li>
+<li><p><a class="reference internal" href="#num-round" id="id32">Num.round</a></p></li>
+<li><p><a class="reference internal" href="#num-abs" id="id33">Num.abs</a></p></li>
+<li><p><a class="reference internal" href="#num-times" id="id34">Num.times</a></p></li>
+<li><p><a class="reference internal" href="#num-up" id="id35">Num.up</a></p></li>
+<li><p><a class="reference internal" href="#num-down" id="id36">Num.down</a></p></li>
+<li><p><a class="reference internal" href="#num-show-show-config" id="id37">Num.show(...[$show_config={}])</a></p></li>
+<li><p><a class="reference internal" href="#num-repr" id="id38">Num.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#num-is-val" id="id39">NUM.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#num-new-mantissa-scale" id="id40">NUM.new(Mantissa Scale)</a></p></li>
+<li><p><a class="reference internal" href="#num-parse-int-str-config" id="id41">NUM.parse_int(Str ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#num-parse-decimal-str-config" id="id42">NUM.parse_decimal(Str ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#type-num-show-config" id="id43">num_show_config型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#c-locale-locale" id="id44">C.locale(Locale)</a></p></li>
+<li><p><a class="reference internal" href="#c-spec-spec" id="id45">C.spec(Spec)</a></p></li>
+<li><p><a class="reference internal" href="#c-plus-sign-plus-sign" id="id46">C.plus_sign(Plus_sign)</a></p></li>
+<li><p><a class="reference internal" href="#c-minus-sign-minus-sign" id="id47">C.minus_sign(Minus_sign)</a></p></li>
+<li><p><a class="reference internal" href="#c-group-sep-group-sep" id="id48">C.group_sep(Group_sep)</a></p></li>
+<li><p><a class="reference internal" href="#c-group-len-group-len" id="id49">C.group_len(Group_len)</a></p></li>
+<li><p><a class="reference internal" href="#c-decimal-sep-decimal-sep" id="id50">C.decimal_sep(Decimal_sep)</a></p></li>
+<li><p><a class="reference internal" href="#c-pad-zero-min-int-digits" id="id51">C.pad_zero(Min_int_digits)</a></p></li>
+<li><p><a class="reference internal" href="#c-radix-radix" id="id52">C.radix(Radix)</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="type-num">
+<span id="api-94ecaace8aa3cab97d09f89a70b9228e"></span><h2><span class="section-number">6.17.1. </span>num型<a class="headerlink" href="#type-num" title="Link to this heading">¶</a></h2>
+<p>numは十進の浮動小数点数である。</p>
+<p>num値は(Mantissa, Scale)から構成される。このnum値は、Mantissa * (10 ** (-Scale))という数値を表現する。</p>
+<p>ランタイムは最低でも、Mantissaについては[-(2**95), (2**95) - 1]の範囲を、Scaleについては[-(2**7), (2**7) - 1]の範囲をサポートしなければならない。これらの制限を超えると、オーバーフロー、またはアンダーフローが起きる可能性がある。</p>
+<p>注釈: JVM上のKinkランタイムは、Mantissaについて[-(2**2048 - 1), 2**2048 - 1]を、Scaleについて[-(2**15), (2**15)-1]をサポートする。</p>
+<p>無限大、NaN, 符号付きゼロはサポートされない。</p>
+<p class="rubric">同値性</p>
+<p>ひとつの数値について複数の表現があり得る。たとえば、420は(Mantissa=420, Scale=0), (Mantissa=42000, Scale=2), (Mantissa=42, Scale=-1)などのように表現される。これらの値は、==演算子（op_eqメソッド）で同値として扱われる:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">420</span> == <span class="m">420.00</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">420</span> == <span class="nv">NUM</span>.<span class="n">new</span>(<span class="m">42</span> (-<span class="m">1</span>))).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+<p class="rubric">ビット操作</p>
+<p>ビット操作は整数のnum値だけをオペランドとして取る。非負のnum値は、0のビットが無限に先行しているように扱われる。負のnum値は、1のビットが無限に先行する、2の補数表現として扱われる。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((~ <span class="m">0b_1010</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-11)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%b}&#39;</span>.<span class="n">format</span>(~ <span class="m">0b_1010</span>)) <span class="c1"># =&gt; -1011</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%b}&#39;</span>.<span class="n">format</span>(~ <span class="m">0b_1010</span> &amp; <span class="m">0b_1111_1111</span>)) <span class="c1"># =&gt; 11110101</span>
+</pre></div>
+</div>
+<section id="num-mantissa">
+<span id="api-4f2291b6fef27f68bc285a4cdfffd56e"></span><h3><span class="section-number">6.17.1.1. </span>Num.mantissa<a class="headerlink" href="#num-mantissa" title="Link to this heading">¶</a></h3>
+<p>mantissaはNumのMantissaを戻す。</p>
+<p>結果は整数のnum値である。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">123.45</span>.<span class="n">mantissa</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 12345</span>
+</pre></div>
+</div>
+</section>
+<section id="num-scale">
+<span id="api-019c0663170cced591f401cc65bcf76d"></span><h3><span class="section-number">6.17.1.2. </span>Num.scale<a class="headerlink" href="#num-scale" title="Link to this heading">¶</a></h3>
+<p>scaleはNumのScaleを戻す。</p>
+<p>結果は整数のnum値である。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">123.45</span>.<span class="n">scale</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 2</span>
+</pre></div>
+</div>
+</section>
+<section id="num-int">
+<span id="api-1ddd856bddd9dd7f00af7c30f72b73c5"></span><h3><span class="section-number">6.17.1.3. </span>Num.int?<a class="headerlink" href="#num-int" title="Link to this heading">¶</a></h3>
+<p>int?はNumが整数かどうかを戻す。</p>
+<p>num値が整数であるのは、Scaleが0であるときである。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">120</span>.<span class="n">int?</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">120.0</span>.<span class="n">int?</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">3.14</span>.<span class="n">int?</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="x-y">
+<span id="api-eeaedd434833de15b7c174516cc69425"></span><h3><span class="section-number">6.17.1.4. </span>X + Y<a class="headerlink" href="#x-y" title="Link to this heading">¶</a></h3>
+<p>+演算子、またはop_addメソッドは、XとYの和を戻す。</p>
+<p>結果のScaleはmax(X.scale, Y.scale)である。</p>
+<p class="rubric">事前条件</p>
+<p>Yはnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Sum</span> &lt;- <span class="m">1.234</span> + <span class="m">0.12</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; 1.354</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">scale</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 3</span>
+</pre></div>
+</div>
+</section>
+<section id="api-f667eb318caba4a5d8a039983c22f0ed">
+<span id="id2"></span><h3><span class="section-number">6.17.1.5. </span>X - Y<a class="headerlink" href="#api-f667eb318caba4a5d8a039983c22f0ed" title="Link to this heading">¶</a></h3>
+<p>二項の - 演算子、またはop_subメソッドは、XとYの差を戻す。</p>
+<p>結果のScaleはmax(X.scale, Y.scale)である。</p>
+<p class="rubric">事前条件</p>
+<p>Yはnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Diff</span> &lt;- <span class="m">1.234</span> - <span class="m">0.12</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Diff</span>.<span class="n">repr</span>)        <span class="c1"># =&gt; 1.114</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Diff</span>.<span class="n">scale</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 3</span>
+</pre></div>
+</div>
+</section>
+<section id="x">
+<span id="api-bd9d2fee7c2996acc458a8ddd79ccd88"></span><h3><span class="section-number">6.17.1.6. </span>- X<a class="headerlink" href="#x" title="Link to this heading">¶</a></h3>
+<p>単項の - 演算子、またはop_minusメソッドは、Xの符号を反転する。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">42</span>).<span class="n">repr</span>)     <span class="c1"># =&gt; (-42)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-(-<span class="m">42</span>)).<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0</span>).<span class="n">repr</span>)      <span class="c1"># =&gt; 0</span>
+</pre></div>
+</div>
+</section>
+<section id="api-30d402ff3f8dab7b42383d10b1eeec6a">
+<span id="id3"></span><h3><span class="section-number">6.17.1.7. </span>X * Y<a class="headerlink" href="#api-30d402ff3f8dab7b42383d10b1eeec6a" title="Link to this heading">¶</a></h3>
+<p>*演算子、またはop_mulメソッドは、XとYの積を戻す。</p>
+<p>結果のScaleは X.scale + Y.scale である。</p>
+<p class="rubric">事前条件</p>
+<p>Yはnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Prod</span> &lt;- <span class="m">1.2</span> * <span class="m">3.45</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Prod</span>.<span class="n">repr</span>)        <span class="c1"># =&gt; 4.140</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Prod</span>.<span class="n">scale</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 3</span>
+</pre></div>
+</div>
+</section>
+<section id="api-c49b38f653c2f557b5467273cdecc802">
+<span id="id4"></span><h3><span class="section-number">6.17.1.8. </span>X / Y<a class="headerlink" href="#api-c49b38f653c2f557b5467273cdecc802" title="Link to this heading">¶</a></h3>
+<p>/演算子、またはop_divメソッドは、(Dividend=X, Divisor=Y)からなるnum_div値を戻す。</p>
+<p>num_div値からどのように値を取り出すかについては、kink/num_DIVを見よ。</p>
+<p class="rubric">事前条件</p>
+<p>Yはnum値でなければならない。</p>
+<p>Yは0と等しくてはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">10</span> / <span class="m">3</span>).<span class="n">floor</span>(<span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 3.333</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">10</span> / <span class="m">3</span>).<span class="n">ceil</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 3.334</span>
+</pre></div>
+</div>
+</section>
+<section id="api-780786ae17df2b32e5239328dd963d63">
+<span id="id5"></span><h3><span class="section-number">6.17.1.9. </span>X // Y<a class="headerlink" href="#api-780786ae17df2b32e5239328dd963d63" title="Link to this heading">¶</a></h3>
+<p>//演算子、またはop_intdivメソッドは、整数除算をおこなって、商を戻す。</p>
+<p>Q = X // Y と  R = X % Y は、次の条件を満たす。</p>
+<p>• Q * Y + R = X</p>
+<p>• 0 &lt;= R &lt; Y.abs</p>
+<p>• Q.scale = 0</p>
+<p>• R.scale = X.scale</p>
+<p>上記の規則はR6Rs SchemeのDIVとMODと同等だ。参照:</p>
+<p>http://www.r6rs.org/final/html/r6rs/r6rs-Z-H-14.html#node_sec_11.7.3.1</p>
+<p class="rubric">事前条件</p>
+<p>Yはnum値でなければならない。</p>
+<p>Yは0と等しくてはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:attempt_intdiv</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)
+  <span class="nv">:Q</span> = <span class="nv">X</span> // <span class="nv">Y</span>
+  <span class="nv">:R</span> = <span class="nv">X</span> % <span class="nv">Y</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{} // {} = {}, remainder: {}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Q</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+}
+
+<span class="n">attempt_intdiv</span>(<span class="m">10</span> <span class="m">3</span>)
+<span class="c1"># =&gt; 10 // 3 = 3, remainder: 1</span>
+
+<span class="n">attempt_intdiv</span>(<span class="m">10</span> (-<span class="m">3</span>))
+<span class="c1"># =&gt; 10 // (-3) = (-3), remainder: 1</span>
+
+<span class="n">attempt_intdiv</span>((-<span class="m">10</span>) <span class="m">3</span>)
+<span class="c1"># =&gt; (-10) // 3 = (-4), remainder: 2</span>
+
+<span class="n">attempt_intdiv</span>((-<span class="m">10</span>) (-<span class="m">3</span>))
+<span class="c1"># =&gt; (-10) // (-3) = 4, remainder: 2</span>
+
+<span class="n">attempt_intdiv</span>(<span class="m">10</span> <span class="m">1.5</span>)
+<span class="c1"># =&gt; 10 // 1.5 = 6, remainder: 1.0</span>
+
+<span class="n">attempt_intdiv</span>(<span class="m">5.5</span> <span class="m">3</span>)
+<span class="c1"># =&gt; 5.5 // 3 = 1, remainder: 2.5</span>
+
+<span class="n">attempt_intdiv</span>(<span class="m">5.5</span> <span class="m">1.5</span>)
+<span class="c1"># =&gt; 5.5 // 1.5 = 3, remainder: 1.0</span>
+</pre></div>
+</div>
+</section>
+<section id="api-0131f4bf3e7485b8b28131b0316c2617">
+<span id="id6"></span><h3><span class="section-number">6.17.1.10. </span>X % Y<a class="headerlink" href="#api-0131f4bf3e7485b8b28131b0316c2617" title="Link to this heading">¶</a></h3>
+<p>%演算子、またはop_remメソッドは、整数除算をおこなって、剰余を戻す。</p>
+<p>詳細は X // Y を見よ。</p>
+<p class="rubric">事前条件</p>
+<p>Yはnum値でなければならない。</p>
+<p>Yは0と等しくてはならない。</p>
+</section>
+<section id="api-cac6a7bcc8bdf1592de14001f749d29b">
+<span id="id7"></span><h3><span class="section-number">6.17.1.11. </span>X | Y<a class="headerlink" href="#api-cac6a7bcc8bdf1592de14001f749d29b" title="Link to this heading">¶</a></h3>
+<p>| 演算子、またはop_orメソッドは、XとYに対してビットOR演算をおこなう。</p>
+<p>結果は整数のnum値である。</p>
+<p class="rubric">事前条件</p>
+<p>Xは整数のnum値でなければならない。</p>
+<p>Yは整数のnum値でなければならない。</p>
+</section>
+<section id="api-b45386f45e99478863797b5a1d2d1972">
+<span id="id8"></span><h3><span class="section-number">6.17.1.12. </span>X ^ Y<a class="headerlink" href="#api-b45386f45e99478863797b5a1d2d1972" title="Link to this heading">¶</a></h3>
+<p>^ 演算子、またはop_xorメソッドは、XとYに対してビットXOR演算をおこなう。</p>
+<p>結果は整数のnum値である。</p>
+<p class="rubric">事前条件</p>
+<p>Xは整数のnum値でなければならない。</p>
+<p>Yは整数のnum値でなければならない。</p>
+</section>
+<section id="api-3d5d87cea0ec792f10058af8fc814e85">
+<span id="id9"></span><h3><span class="section-number">6.17.1.13. </span>X &amp; Y<a class="headerlink" href="#api-3d5d87cea0ec792f10058af8fc814e85" title="Link to this heading">¶</a></h3>
+<p>&amp; 演算子、またはop_andメソッドは、XとYに対してビットAND演算をおこなう。</p>
+<p>結果は整数のnum値である。</p>
+<p class="rubric">事前条件</p>
+<p>Xは整数のnum値でなければならない。</p>
+<p>Yは整数のnum値でなければならない。</p>
+</section>
+<section id="num">
+<span id="api-99d6664e9e0978702bf1b8ca418ccdb4"></span><h3><span class="section-number">6.17.1.14. </span>~ Num<a class="headerlink" href="#num" title="Link to this heading">¶</a></h3>
+<p>~ 演算子、またはop_notメソッドは、Numに対してビットNOT演算をおこなう。</p>
+<p class="rubric">事前条件</p>
+<p>Numは整数のnum値でなければならない。</p>
+</section>
+<section id="num-bit-count">
+<span id="api-c1ec2af0dcccbaba39903d6fddcb91a4"></span><h3><span class="section-number">6.17.1.15. </span>Num &lt;&lt; Bit_count<a class="headerlink" href="#num-bit-count" title="Link to this heading">¶</a></h3>
+<p>&lt;&lt; 演算子、またはop_shlメソッドは、Numに対してビット左シフト演算をおこなう。</p>
+<p>Bit_countが正のとき、NumはBit_countビットだけ左にシフトされる。</p>
+<p>Bit_countが負のとき、Numは(-Bit_count)ビットだけ右にシフトされる。下位(-Bit_count)ビットは捨てられる。</p>
+<p>Bit_countが0のときは、Numが戻る。</p>
+<p>結果は整数のnum値である。</p>
+<p class="rubric">事前条件</p>
+<p>Numは整数のnum値でなければならない。</p>
+<p>Bit_countは整数のnum値でなければならない。</p>
+</section>
+<section id="api-0cb9f66cdd32cf542f3764d784da24f0">
+<span id="id10"></span><h3><span class="section-number">6.17.1.16. </span>Num &gt;&gt; Bit_count<a class="headerlink" href="#api-0cb9f66cdd32cf542f3764d784da24f0" title="Link to this heading">¶</a></h3>
+<p>&gt;&gt; 演算子、またはop_shrメソッドは、Numに対してビット右シフト演算をおこなう。</p>
+<p>Bit_countが正のとき、NumはBit_countビットだけ右にシフトされる。下位Bit_countビットは捨てられる。</p>
+<p>Bit_countが負のとき、Numは(-Bit_count)ビットだけ左にシフトされる。</p>
+<p>Bit_countが0のときは、Numが戻る。</p>
+<p>結果は整数のnum値である。</p>
+<p class="rubric">事前条件</p>
+<p>Numは整数のnum値でなければならない。</p>
+<p>Bit_countは整数のnum値でなければならない。</p>
+</section>
+<section id="api-39c3e426ef7d48032623045f7e0086ae">
+<span id="id11"></span><h3><span class="section-number">6.17.1.17. </span>X == Y<a class="headerlink" href="#api-39c3e426ef7d48032623045f7e0086ae" title="Link to this heading">¶</a></h3>
+<p>== 演算子、またはop_eqメソッドは、ふたつの数値が、Scaleを無視して等しいかどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Yはnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">42</span> == <span class="m">42.000</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">42</span> != <span class="m">42.000</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">42</span> == <span class="m">24</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">42</span> != <span class="m">24</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="api-c63f0bac28dc7889794056e0ed205a33">
+<span id="id12"></span><h3><span class="section-number">6.17.1.18. </span>X &lt;= Y<a class="headerlink" href="#api-c63f0bac28dc7889794056e0ed205a33" title="Link to this heading">¶</a></h3>
+<p>&lt;= 演算子、またはop_leメソッドは、Xが数値的にY以下かどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Yはnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:compare</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Lt?={} Le?={} Gt?={} Ge?={}&#39;</span>.<span class="n">format</span>(
+      (<span class="nv">X</span> &lt; <span class="nv">Y</span>).<span class="n">repr</span>
+      (<span class="nv">X</span> &lt;= <span class="nv">Y</span>).<span class="n">repr</span>
+      (<span class="nv">X</span> &gt; <span class="nv">Y</span>).<span class="n">repr</span>
+      (<span class="nv">X</span> &gt;= <span class="nv">Y</span>).<span class="n">repr</span>))
+}
+
+<span class="n">compare</span>(<span class="m">42</span> <span class="m">42.000</span>)  <span class="c1"># =&gt; Lt?=false Le?=true Gt?=false Ge?=true</span>
+<span class="n">compare</span>(<span class="m">42</span> <span class="m">84</span>)      <span class="c1"># =&gt; Lt?=true Le?=true Gt?=false Ge?=false</span>
+<span class="n">compare</span>(<span class="m">42</span> <span class="m">21</span>)      <span class="c1"># =&gt; Lt?=false Le?=false Gt?=true Ge?=true</span>
+</pre></div>
+</div>
+</section>
+<section id="num-round">
+<span id="api-38f57e8b60f5c9ad8c075cfea6170c4a"></span><h3><span class="section-number">6.17.1.19. </span>Num.round<a class="headerlink" href="#num-round" title="Link to this heading">¶</a></h3>
+<p>roundは、(Dividend=Num, Divisor=1)からなるnum_div値を戻す。</p>
+<p>num_div値からどのように値を取り出すかについては、kink/num_DIVを見よ。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">1.2345</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 1.23</span>
+</pre></div>
+</div>
+</section>
+<section id="num-abs">
+<span id="api-3e1fa3f1554a2bee797b4ac45ac150f6"></span><h3><span class="section-number">6.17.1.20. </span>Num.abs<a class="headerlink" href="#num-abs" title="Link to this heading">¶</a></h3>
+<p>absはNumの絶対値を戻す。</p>
+<p>Numが非負の場合、absはNumを戻す。Numが負の場合、absは(-Num)を戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">42</span>.<span class="n">abs</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">42</span>).<span class="n">abs</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+</section>
+<section id="num-times">
+<span id="api-d987a4afd3b55ecf23fcab0f117756d7"></span><h3><span class="section-number">6.17.1.21. </span>Num.times<a class="headerlink" href="#num-times" title="Link to this heading">¶</a></h3>
+<p>timesは0から（包含的）、Numまで（排除的）へ、要素ごとに1ずつ増えるiterを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Numは整数のnum値でなければならない。</p>
+<p>Numは0以上でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">5</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   0</span>
+<span class="c1">#   1</span>
+<span class="c1">#   2</span>
+<span class="c1">#   3</span>
+<span class="c1">#   4</span>
+</pre></div>
+</div>
+</section>
+<section id="num-up">
+<span id="api-d02a57ed87d1e967f734982bfc2fd36d"></span><h3><span class="section-number">6.17.1.22. </span>Num.up<a class="headerlink" href="#num-up" title="Link to this heading">¶</a></h3>
+<p>upはNumから始まって、要素ごとに1ずつ増える無限長のiterを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">0.5</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   0.5</span>
+<span class="c1">#   1.5</span>
+<span class="c1">#   2.5</span>
+<span class="c1">#   3.5</span>
+<span class="c1">#   4.5</span>
+</pre></div>
+</div>
+</section>
+<section id="num-down">
+<span id="api-f1ce33216444c929e3f46b7d905c3b2c"></span><h3><span class="section-number">6.17.1.23. </span>Num.down<a class="headerlink" href="#num-down" title="Link to this heading">¶</a></h3>
+<p>downはNumから始まって、要素ごとに1ずつ減る無限長のiterを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">9.5</span>.<span class="n">down</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   9.5</span>
+<span class="c1">#   8.5</span>
+<span class="c1">#   7.5</span>
+<span class="c1">#   6.5</span>
+<span class="c1">#   5.5</span>
+</pre></div>
+</div>
+</section>
+<section id="num-show-show-config">
+<span id="api-74d910bad99c4bb9a039176ac1da3627"></span><h3><span class="section-number">6.17.1.24. </span>Num.show(...[$show_config={}])<a class="headerlink" href="#num-show-show-config" title="Link to this heading">¶</a></h3>
+<p>showはNumの文字列表現をstr値として戻す。結果はUIメッセージに使うことが意図される。</p>
+<p>省略可能パラメータ$show_configは、num_show_config型の値を取る関数を引数に取る。showはnum_show_config値を渡して$show_configを呼び出す。</p>
+<p>例:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">32767</span>.<span class="n">show</span>)  <span class="c1"># =&gt; 32767</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">32767</span>.<span class="n">show</span>{(<span class="nv">:S</span>) <span class="nv">S</span>.<span class="n">spec</span>(<span class="s1">&#39;x&#39;</span>) })    <span class="c1"># =&gt; 7fff</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">32767</span>.<span class="n">show</span>{(<span class="nv">:S</span>) <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">16</span>) })    <span class="c1"># =&gt; 7fff</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">32767</span>.<span class="n">show</span>{(<span class="nv">:S</span>) <span class="nv">S</span>.<span class="n">group_sep</span>(<span class="m">3</span>) }) <span class="c1"># =&gt; 32,767</span>
+</pre></div>
+</div>
+<p>showは通常Str.formatから呼ばれる。</p>
+<p>例:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{} {%04x}&#39;</span>.<span class="n">format</span>(<span class="m">42</span> <span class="m">255</span>))
+<span class="c1"># =&gt; 42 00ff</span>
+</pre></div>
+</div>
+<p>出力と設定の詳細についてはnum_show_config型を見よ。</p>
+</section>
+<section id="num-repr">
+<span id="api-afe9aba263647d33f4e34b1111148d61"></span><h3><span class="section-number">6.17.1.25. </span>Num.repr<a class="headerlink" href="#num-repr" title="Link to this heading">¶</a></h3>
+<p>reprは&quot;1.2500&quot;, &quot;(-42)&quot;, &quot;(num mantissa=1 scale=-10)&quot;のような文字列を戻す。</p>
+</section>
+</section>
+<section id="num-is-val">
+<span id="api-1f0e555dd60542529475491a9ff4491c"></span><h2><span class="section-number">6.17.2. </span>NUM.is?(Val)<a class="headerlink" href="#num-is-val" title="Link to this heading">¶</a></h2>
+<p>is?はValがnum値であるかどうかを戻す。</p>
+</section>
+<section id="num-new-mantissa-scale">
+<span id="api-982aee2d0e02427c1cd4f47fd5b5acc9"></span><h2><span class="section-number">6.17.3. </span>NUM.new(Mantissa Scale)<a class="headerlink" href="#num-new-mantissa-scale" title="Link to this heading">¶</a></h2>
+<p>newはMantissaとScaleから新しいnum値を作る</p>
+<p class="rubric">事前条件</p>
+<p>Mantissaは整数のnum値でなければならない。</p>
+<p>Scaleは整数のnum値でなければならない。</p>
+<p>MantissaとScaleはランタイムの制限を超えてはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">new</span>(<span class="m">12345</span> <span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 123.45</span>
+</pre></div>
+</div>
+</section>
+<section id="num-parse-int-str-config">
+<span id="api-8cd45d8a05be4d520333c05a5c5ad0df"></span><h2><span class="section-number">6.17.4. </span>NUM.parse_int(Str ...[$config={}])<a class="headerlink" href="#num-parse-int-str-config" title="Link to this heading">¶</a></h2>
+<p>parse_intはStrをパースして整数のnum値を戻す。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.radix(Radix): default = 10</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = 例外を投げる関数</p>
+<p>Strが文法に受け入れられる場合、parse_intはパースされた整数のnum値を渡して$successを末尾呼び出しする。</p>
+<p>Strが文法に受け入れられない場合、parse_intは$errorを引数なしで末尾呼び出しする。</p>
+<p class="rubric">文法</p>
+<p>文字列表現は次のふたつの部分からなる。</p>
+<p>• Sign: '-', '+', または空</p>
+<p>• Digits: 1桁以上のRadix進法の桁</p>
+<p>0から9の桁は、'0'から'9'までの文字で表される。</p>
+<p>10から35の桁は、'A'から'Z'、または'a'から'z'までの文字で表される。</p>
+<p class="rubric">事前条件</p>
+<p>Strはstr値でなければならない。</p>
+<p>Radixは[2, 36]の範囲の整数のnum値でなければならない。</p>
+<p>$successは整数のnum値を取らなければならない。</p>
+<p>$errorは引数を取らない関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;42&#39;</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;+42&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;-42&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-42)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;ff&#39;</span>){(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">radix</span>(<span class="m">16</span>) }.<span class="n">repr</span>)  <span class="c1"># =&gt; 255</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;fF&#39;</span>){(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">radix</span>(<span class="m">16</span>) }.<span class="n">repr</span>)  <span class="c1"># =&gt; 255</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;-ff&#39;</span>){(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">radix</span>(<span class="m">16</span>) }.<span class="n">repr</span>) <span class="c1"># =&gt; (-255)</span>
+</pre></div>
+</div>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;42&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
+  <span class="nv">C</span>.<span class="n">on_error</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;not valid&#39;</span>) }
+}
+<span class="c1"># =&gt; 42</span>
+
+<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;*invalid*&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
+  <span class="nv">C</span>.<span class="n">on_error</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;not valid&#39;</span>) }
+}
+<span class="c1"># =&gt; not valid</span>
+</pre></div>
+</div>
+</section>
+<section id="num-parse-decimal-str-config">
+<span id="api-5f79a184c60f413c3f03d9064c1a8bbd"></span><h2><span class="section-number">6.17.5. </span>NUM.parse_decimal(Str ...[$config={}])<a class="headerlink" href="#num-parse-decimal-str-config" title="Link to this heading">¶</a></h2>
+<p>parse_decimalはStrから十進数をパースする。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = 例外を投げる関数</p>
+<p>Strが文法に受け入れられる場合、parse_decimalはnum値を渡して$successを末尾呼び出しする。 `.` のあとの桁の個数が、結果のnum値のScaleになる。</p>
+<p>Strが文法に受け入れられない場合、parse_decimalは引数なしで$errorを末尾呼び出しする。</p>
+<p class="rubric">文法</p>
+<p>正規表現: [+-]?([0-9]+(\.[0-9]*)?|\.[0-9]+)</p>
+<p class="rubric">事前条件</p>
+<p>Strはstr値でなければならない。</p>
+<p>$successはnum値を取らなければならない。</p>
+<p>$errorは引数を取らない関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;1.2300&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 1.2300</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;.387&#39;</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 0.387</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;-42.&#39;</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; (-42)</span>
+</pre></div>
+</div>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;3.14&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
+  <span class="nv">C</span>.<span class="n">on_error</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;not valid&#39;</span>) }
+}
+<span class="c1"># =&gt; 3.14</span>
+
+<span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;*invalid*&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
+  <span class="nv">C</span>.<span class="n">on_error</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;not valid&#39;</span>) }
+}
+<span class="c1"># =&gt; not valid</span>
+</pre></div>
+</div>
+</section>
+<section id="type-num-show-config">
+<span id="api-ea2ba48d5d3cf06399551e3861d4a445"></span><h2><span class="section-number">6.17.6. </span>num_show_config型<a class="headerlink" href="#type-num-show-config" title="Link to this heading">¶</a></h2>
+<p>num_show_configはshow_configの部分型（kink/STRを見よ）である。Num.showの出力を設定するのに使われる。</p>
+<p>Num.showの結果はふたつのケースに分けられる。</p>
+<p>1) num値のScaleが0以下の場合</p>
+<p>この場合、出力は “{sign}{grouped_padded_integral_digits}” の形式になる。</p>
+<p>2) num値のScaleが0より大きい場合</p>
+<p>この場合、基数は10でなければならない。出力は “{sign}{grouped_padded_integral_digits}{decimal_sep}{fractional_digits}” の形式になる。</p>
+<p class="rubric">{sign} の部分</p>
+<p>num値が0より小さいとき、{sign}の部分はminus_signメソッドで指定された負の符号になる。</p>
+<p>num値が0以上のとき、{sign}の部分はplus_signメソッドで指定された非負の符号になる。</p>
+<p class="rubric">{grouped_padded_integral_digits} の部分</p>
+<p>まず、num値の整数部分がradixで指定された基数で、0-9, a-zの桁に変換される。</p>
+<p>つぎに、この部分の桁数が、pad_zeroメソッドで指定された最小値よりも少なくならないよう、桁の左側に0が埋められる。</p>
+<p>最後に、group_lenで指定されたグループ長によって、桁がグループ化される。グループそれぞれの間には、group_sepで指定された区切り記号が挿入される。</p>
+<p class="rubric">{decimal_sep} の部分</p>
+<p>decimal_sepメソッドで指定された記号。</p>
+<p class="rubric">{fractional_digits} の部分</p>
+<p>num値の小数部分の十進の桁。</p>
+<p>末尾の0は省略されない。したがって、この部分の長さは常にnum値のScaleと等しくなる。</p>
+<section id="c-locale-locale">
+<span id="api-b48654ac34c7a1c44b9c57debf51365c"></span><h3><span class="section-number">6.17.6.1. </span>C.locale(Locale)<a class="headerlink" href="#c-locale-locale" title="Link to this heading">¶</a></h3>
+<p>localeメソッドを呼ぶと、指定されたロケールの設定を読み込む。</p>
+<p>localeメソッドはdecimal_sepとgroup_sepを設定する。</p>
+<p>localeが呼ばれなければ、Num.showはどのロケールの情報も使わない。したがって、ランタイムのデフォルトのロケールを使いたい場合でも、明示的にlocaleメソッドを呼ぶ必要がある。</p>
+<p class="rubric">事前条件</p>
+<p>Localeはlocale型の値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Shown</span> &lt;- <span class="m">3776.24</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">default</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Shown</span>)
+<span class="c1"># Output varies by the runtime default locale</span>
+</pre></div>
+</div>
+</section>
+<section id="c-spec-spec">
+<span id="api-887529ef3342bcecb6214e991126c49b"></span><h3><span class="section-number">6.17.6.2. </span>C.spec(Spec)<a class="headerlink" href="#c-spec-spec" title="Link to this heading">¶</a></h3>
+<p>specはNum.showの出力を、Spec文字列で指定する。</p>
+<p class="rubric">事前条件</p>
+<p>Specはstr値でなければならない。</p>
+<p>Specは以下に述べるフィールドをつなげたものでなければならない。</p>
+<p class="rubric">正の符号のフィールド: &quot;+&quot;</p>
+<p>&quot;+&quot; を非負の符号として使う。</p>
+<p class="rubric">グルーピングフィールド: &quot;,&quot;</p>
+<p>グループ長として3を使う。</p>
+<p class="rubric">パディングフィールド: &quot;0{Min_int_digits}&quot;</p>
+<p>Min_int_digitsを整数部分の最低限の桁数として使う。</p>
+<p>{Min_int_digits}は1つ以上の十進の桁でなければならない。</p>
+<p class="rubric">二進フィールド: &quot;b&quot;</p>
+<p>基数として2を使う。</p>
+<p class="rubric">八進フィールド: &quot;o&quot;</p>
+<p>基数として8を使う。</p>
+<p class="rubric">十進フィールド: &quot;d&quot;</p>
+<p>基数として10を使う。</p>
+<p class="rubric">十六進フィールド: &quot;x&quot;</p>
+<p>基数として16を使う</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%+04f}&#39;</span>.<span class="n">format</span>(<span class="m">255</span>))
+<span class="c1"># =&gt; +00ff</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%,}&#39;</span>.<span class="n">format</span>(<span class="m">12345.6789</span>))
+<span class="c1"># =&gt; 12,345.6789</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%b}&#39;</span>.<span class="n">format</span>(<span class="m">42</span>))
+<span class="c1"># =&gt; 101010</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%o}&#39;</span>.<span class="n">format</span>(<span class="m">42</span>))
+<span class="c1"># =&gt; 52</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%d}&#39;</span>.<span class="n">format</span>(<span class="m">42</span>))
+<span class="c1"># =&gt; 42</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%x}&#39;</span>.<span class="n">format</span>(<span class="m">42</span>))
+<span class="c1"># =&gt; 2a</span>
+</pre></div>
+</div>
+</section>
+<section id="c-plus-sign-plus-sign">
+<span id="api-e4566256ec0799e6e86fac60251f424d"></span><h3><span class="section-number">6.17.6.3. </span>C.plus_sign(Plus_sign)<a class="headerlink" href="#c-plus-sign-plus-sign" title="Link to this heading">¶</a></h3>
+<p>plus_signはPlus_signを非負の数の符号として設定する。</p>
+<p>デフォルト値は空の文字列 &quot;&quot; である。</p>
+<p class="rubric">事前条件</p>
+<p>Plus_signはstr値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">42</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">plus_sign</span>(<span class="s1">&#39;+&#39;</span>)
+})
+<span class="c1"># =&gt; +42</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">plus_sign</span>(<span class="s1">&#39;+&#39;</span>)
+})
+<span class="c1"># =&gt; +0</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">10</span>).<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">plus_sign</span>(<span class="s1">&#39;+&#39;</span>)
+})
+<span class="c1"># =&gt; -10</span>
+</pre></div>
+</div>
+</section>
+<section id="c-minus-sign-minus-sign">
+<span id="api-8839fb8f30ceb5353fa0ea2fc7d9e552"></span><h3><span class="section-number">6.17.6.4. </span>C.minus_sign(Minus_sign)<a class="headerlink" href="#c-minus-sign-minus-sign" title="Link to this heading">¶</a></h3>
+<p>minus_signはMinus_signを負の数の符号として設定する。</p>
+<p>デフォルト値は &quot;-&quot; である。</p>
+<p class="rubric">事前条件</p>
+<p>Minus_signはstr値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">10</span>).<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">minus_sign</span>(<span class="s1">&#39;minus &#39;</span>)
+})
+<span class="c1"># =&gt; minus 10</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">42</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">minus_sign</span>(<span class="s1">&#39;minus &#39;</span>)
+})
+<span class="c1"># =&gt; 42</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">minus_sign</span>(<span class="s1">&#39;minus &#39;</span>)
+})
+<span class="c1"># =&gt; 0</span>
+</pre></div>
+</div>
+</section>
+<section id="c-group-sep-group-sep">
+<span id="api-330d0c519190d04f0c222ba72b3ac4e5"></span><h3><span class="section-number">6.17.6.5. </span>C.group_sep(Group_sep)<a class="headerlink" href="#c-group-sep-group-sep" title="Link to this heading">¶</a></h3>
+<p>group_sepはGroup_sepをグループ区切りとして設定する。</p>
+<p>デフォルト値は &quot;,&quot; である。</p>
+<p class="rubric">事前条件</p>
+<p>Group_sepはstr値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">group_sep</span>(<span class="s1">&#39;_&#39;</span>)
+  <span class="nv">S</span>.<span class="n">group_len</span>(<span class="m">3</span>)
+})
+<span class="c1"># =&gt; 12_345.6789</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">37767</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">group_sep</span>(<span class="s1">&#39;_&#39;</span>)
+  <span class="nv">S</span>.<span class="n">group_len</span>(<span class="m">2</span>)
+  <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">16</span>)
+})
+<span class="c1"># =&gt; 7f_ff</span>
+</pre></div>
+</div>
+</section>
+<section id="c-group-len-group-len">
+<span id="api-74f4dd3f0914acb30dbe497c144c34a2"></span><h3><span class="section-number">6.17.6.6. </span>C.group_len(Group_len)<a class="headerlink" href="#c-group-len-group-len" title="Link to this heading">¶</a></h3>
+<p>group_lenはGroup_lenを桁グループの長さとして設定する。</p>
+<p>デフォルト値は正の無限大である。つまり、デフォルトではグループ区切りは使われない。</p>
+<p class="rubric">事前条件</p>
+<p>Group_lenは1以上の整数のnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">group_len</span>(<span class="m">3</span>)
+})
+<span class="c1"># =&gt; 12,345.6789</span>
+</pre></div>
+</div>
+</section>
+<section id="c-decimal-sep-decimal-sep">
+<span id="api-f89e62145eb2d1a954d6a985a90ea35d"></span><h3><span class="section-number">6.17.6.7. </span>C.decimal_sep(Decimal_sep)<a class="headerlink" href="#c-decimal-sep-decimal-sep" title="Link to this heading">¶</a></h3>
+<p>decimal_sepはDecimal_sepを、整数部と小数部を区切る記号として設定する。</p>
+<p class="rubric">事前条件</p>
+<p>Decimal_sepはstr値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">decimal_sep</span>(<span class="s1">&#39; . &#39;</span>)
+})
+<span class="c1"># =&gt; 12345 . 6789</span>
+</pre></div>
+</div>
+</section>
+<section id="c-pad-zero-min-int-digits">
+<span id="api-02a41977ccf6554facd720574b092b70"></span><h3><span class="section-number">6.17.6.8. </span>C.pad_zero(Min_int_digits)<a class="headerlink" href="#c-pad-zero-min-int-digits" title="Link to this heading">¶</a></h3>
+<p>pad_zeroはMin_int_digitsを、出力される整数部分の桁数の最小値として設定する。</p>
+<p>デフォルト値は1である。</p>
+<p class="rubric">事前条件</p>
+<p>Min_int_digitsは1以上の整数のnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">pad_zero</span>(<span class="m">8</span>)
+})
+<span class="c1"># =&gt; 00012345.6789</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">42</span>).<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">pad_zero</span>(<span class="m">4</span>)
+})
+<span class="c1"># =&gt; -0042</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">255</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">pad_zero</span>(<span class="m">4</span>)
+  <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">16</span>)
+})
+<span class="c1"># =&gt; 00ff</span>
+</pre></div>
+</div>
+</section>
+<section id="c-radix-radix">
+<span id="api-bd0bf4cc8ffc34e9cecd2000f9d874dd"></span><h3><span class="section-number">6.17.6.9. </span>C.radix(Radix)<a class="headerlink" href="#c-radix-radix" title="Link to this heading">¶</a></h3>
+<p>radixはRadixをshowメソッドの結果の基数として設定する。</p>
+<p>デフォルト値は10である。</p>
+<p class="rubric">事前条件</p>
+<p>Radixは[2, 36]の範囲内の整数のnum値でなければならない。</p>
+<p>showメソッドを呼び出す対象のnum値が整数でないとき、Radixは10でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">255</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">2</span>)
+})
+<span class="c1"># =&gt; 11111111</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">255</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">16</span>)
+})
+<span class="c1"># =&gt; ff</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">255</span>).<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">16</span>)
+})
+<span class="c1"># =&gt; -ff</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-MOD.html"><span class="section-number">6.16. </span>kink/MOD</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-NUM_DIV.html"><span class="section-number">6.18. </span>kink/NUM_DIV</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.99. kink/test/TEST_TOOL &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.100. kink/thread/ATOMIC" href="kink-thread-ATOMIC.html" />
+    <link rel="prev" title="6.98. kink/test/TEST" href="kink-test-TEST.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.99. kink/test/TEST_TOOL</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-test-TEST.html"><span class="section-number">6.98. </span>kink/test/TEST</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-thread-ATOMIC.html"><span class="section-number">6.100. </span>kink/thread/ATOMIC</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-test-test-tool">
+<h1><span class="section-number">6.99. </span>kink/test/TEST_TOOL<a class="headerlink" href="#kink-test-test-tool" title="Link to this heading">¶</a></h1>
+<p>Launcheable mod for unit tests.</p>
+<p>Usage: kink [Kink_options]... mod:kink/test/TEST_TOOL [Mod_options]... Path...</p>
+<p>If `Path` is a path of a file, this is considered a test script, and tests in the file are collected.</p>
+<p>If `Path` is a path of a directory, all the files recursively matching *_test.kn are considered as test programs, and tests in the files are collected. The name pattern matching is done case-insensitively.</p>
+<p>Test program files are read by UTF-8 charset.</p>
+<p>Tests in a test program are grouped with the file path as the group name. For example, if a test program test/calc_test.kn includes a test named “answer is 42”, its address becomes “test/calc_test.kn; answer is 42”</p>
+<p class="rubric">Mod_options</p>
+<p>• --help / -h :: Print the help text and exit.</p>
+<p>• --label Label / -l Label :: Adds `Label` as a label to pass to test functions.</p>
+<p>• --verbose / -v :: Show progress verbosely.</p>
+<p class="rubric">Exit status</p>
+<p>If an IO error or a compile error happens, or an exception is raised during collecting phase, the program exits with non-zero.</p>
+<p>If one or more test results in an error, the program exists with non-zero.</p>
+<p>If no test results in an error, the program exists with zero.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#test-tool-main-argv" id="id1">TEST_TOOL.main(Argv)</a></p></li>
+</ul>
+</nav>
+<section id="test-tool-main-argv">
+<span id="api-4d53bbceea302d78fe633391c9d78b83"></span><h2><span class="section-number">6.99.1. </span>TEST_TOOL.main(Argv)<a class="headerlink" href="#test-tool-main-argv" title="Link to this heading">¶</a></h2>
+<p>Launcher of kink/test/TEST_TOOL mod.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-test-TEST.html"><span class="section-number">6.98. </span>kink/test/TEST</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-thread-ATOMIC.html"><span class="section-number">6.100. </span>kink/thread/ATOMIC</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

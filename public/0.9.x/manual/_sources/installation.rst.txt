@@ -1,0 +1,30 @@
+============
+Installation
+============
+
+Requirements
+============
+
+Install JDK 21 or a later version.
+
+Optionally, install `rlwrap <https://github.com/hanslub42/rlwrap>`_ on Unix like systems.
+It provides line editing for :doc:`REPL </commandline/repl>`. 
+
+Install Kink
+============
+
+Download a tar.gz file from https://sourceforge.net/projects/kink-lang/files/
+
+Extract ``kink-{version}`` directory from the tar.gz file:
+
+.. code:: none
+
+  $ tar xf kink-{version}.tar.gz
+
+Install kink.vim
+================
+
+If you use Vim to edit Kink programs,
+consider installing `kink.vim <https://sourceforge.net/p/kink-lang/kink.vim/ci/master/tree/>`_
+
+.. vim: et sw=2 sts=2

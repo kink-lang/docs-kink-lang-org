@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.16. kink/MOD &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.17. kink/NUM" href="kink-NUM.html" />
+    <link rel="prev" title="6.15. kink/LOCALE" href="kink-LOCALE.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.16. kink/MOD</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-LOCALE.html"><span class="section-number">6.15. </span>kink/LOCALE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-NUM.html"><span class="section-number">6.17. </span>kink/NUM</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-mod">
+<h1><span class="section-number">6.16. </span>kink/MOD<a class="headerlink" href="#kink-mod" title="Link to this heading">¶</a></h1>
+<p>モジュールシステムを操作する。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#mod-require-mod-name-config" id="id2">MOD.require(Mod_name ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#mod-add-path-path" id="id3">MOD.add_path(Path)</a></p></li>
+</ul>
+</nav>
+<section id="mod-require-mod-name-config">
+<span id="api-36236434317e1c52d15948d18e2c4bc2"></span><h2><span class="section-number">6.16.1. </span>MOD.require(Mod_name ...[$config={}])<a class="headerlink" href="#mod-require-mod-name-config" title="Link to this heading">¶</a></h2>
+<p>requireは、Mod_nameで指定されたモジュールをロードする。モジュールのロードの詳細については、マニュアルの「モジュールシステム」の章を見よう。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL$identity</p>
+<p>• C.on_not_found($not_found): default = 例外を投げる関数</p>
+<p>• C.on_compile_error($compile_error): default = 例外を投げる関数</p>
+<p>モジュールのロードがsuccessの状態で終わった場合、requireは、ロードされたモジュールを渡して$successを末尾呼び出しする。</p>
+<p>モジュールのロードがnot_foundの状態で終わった場合、requireは、引数なしで$not_foundを末尾呼び出しする。</p>
+<p>モジュールのロードがcompile_errorの状態で終わった場合、requireは、compile_error値を渡して$compile_errorを末尾呼び出しする。</p>
+<p>モジュールのロードが例外を投げた場合、その例外は呼び出し元に伝播される。</p>
+<p class="rubric">事前条件</p>
+<p>Mod_nameはstrでなければならない。</p>
+<p>$successはモジュールを取る関数でなければならない。</p>
+<p>$not_foundはサンクでなければならない。</p>
+<p>$compile_errorは、compile_error値を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:MOD</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:FLAT_SET</span> &lt;- <span class="nv">MOD</span>.<span class="n">require</span>(<span class="s1">&#39;kink/container/FLAT_SET&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (flat_set &quot;bar&quot; &quot;baz&quot; &quot;foo&quot;)</span>
+
+<span class="nv">MOD</span>.<span class="n">require</span>(<span class="s1">&#39;no/such/MOD&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_not_found</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;no such mod&#39;</span>) }
+} <span class="c1"># =&gt; no such mod</span>
+</pre></div>
+</div>
+</section>
+<section id="mod-add-path-path">
+<span id="api-82a542809dbc766c2795a2ac99f618be"></span><h2><span class="section-number">6.16.2. </span>MOD.add_path(Path)<a class="headerlink" href="#mod-add-path-path" title="Link to this heading">¶</a></h2>
+<p>`add_path` inserts `Path` to the mod base paths as the last path.</p>
+<p>Precondition:</p>
+<p>• `Path` must be a str</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-LOCALE.html"><span class="section-number">6.15. </span>kink/LOCALE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-NUM.html"><span class="section-number">6.17. </span>kink/NUM</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

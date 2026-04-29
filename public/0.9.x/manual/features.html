@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>1. Key design features &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. Installation" href="installation.html" />
+    <link rel="prev" title="Kink programming language manual" href="index.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>1. Key design features</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Kink programming language manual</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="installation.html"><span class="section-number">2. </span>Installation</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="key-design-features">
+<h1><span class="section-number">1. </span>Key design features<a class="headerlink" href="#key-design-features" title="Link to this heading">¶</a></h1>
+<p>The page describes key design features which characterize Kink language.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#principle-keep-it-simple" id="id1">Principle: keep it simple</a></p></li>
+<li><p><a class="reference internal" href="#function-is-a-value" id="id2">Function is a value</a></p></li>
+<li><p><a class="reference internal" href="#object-is-just-a-bunch-of-variables" id="id3">Object is just a bunch of variables</a></p></li>
+<li><p><a class="reference internal" href="#assignment-by-function-call" id="id4">Assignment by function call</a></p></li>
+<li><p><a class="reference internal" href="#local-control-by-function-call" id="id5">Local control by function call</a></p></li>
+<li><p><a class="reference internal" href="#non-local-control-by-delimited-continuation" id="id6">Non-local control by delimited continuation</a></p></li>
+</ul>
+</nav>
+<section id="principle-keep-it-simple">
+<h2><span class="section-number">1.1. </span>Principle: keep it simple<a class="headerlink" href="#principle-keep-it-simple" title="Link to this heading">¶</a></h2>
+<p>The language design principle of Kink is to keep things as <em>conceptually simple</em> as possible.
+This means having as few kinds of basic building blocks as possible.</p>
+<p>For example, exceptions, generators, and thread-local-stores (TLS) are not basic building blocks.
+Instead, <a class="reference internal" href="api/kink-EXCEPTION.html#api-08fee0648a753752ac74e092d8e9cbfd"><span class="std std-ref">exceptions</span></a>,
+<a class="reference internal" href="api/kink-iter-ITER.html#api-6d0602cb3762becfd16f81f49dc8de8a"><span class="std std-ref">generators</span></a>,
+and <a class="reference internal" href="api/kink-DYN.html#api-08ef172995301f2f7d7b31cf767db64d"><span class="std std-ref">TLS-like stores</span></a>
+are all built on <a class="reference internal" href="glossary.html#term-delimited-continuation"><span class="xref std std-term">delimited continuations</span></a>
+as basic building blocks.</p>
+</section>
+<section id="function-is-a-value">
+<h2><span class="section-number">1.2. </span>Function is a value<a class="headerlink" href="#function-is-a-value" title="Link to this heading">¶</a></h2>
+<p>A <a class="reference internal" href="glossary.html#term-function"><span class="xref std std-term">function</span></a> is a first class value.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:double</span> &lt;- {(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">2</span> }
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">double</span>(<span class="m">42</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 84</span>
+
+<span class="nv">:Doubled_vec</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>].<span class="n">map</span>(<span class="nv">$double</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Doubled_vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [2 4 6]</span>
+</pre></div>
+</div>
+<p>A <a class="reference internal" href="glossary.html#term-method"><span class="xref std std-term">method</span></a> is a function stored in a variable of a value.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new_dog</span> &lt;- {
+  <span class="n">new_val</span>(
+    <span class="s1">&#39;bark&#39;</span> { <span class="s1">&#39;Bow&#39;</span> }
+    <span class="s1">&#39;howl&#39;</span> { <span class="s1">&#39;Wow&#39;</span> }
+  )
+}
+
+<span class="nv">:Dog</span> &lt;- <span class="n">new_dog</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dog</span>.<span class="n">bark</span>) <span class="c1"># =&gt; Bow</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dog</span>.<span class="n">howl</span>) <span class="c1"># =&gt; Wow</span>
+</pre></div>
+</div>
+</section>
+<section id="object-is-just-a-bunch-of-variables">
+<h2><span class="section-number">1.3. </span>Object is just a bunch of variables<a class="headerlink" href="#object-is-just-a-bunch-of-variables" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="object.html"><span class="doc">object system</span></a> of Kink does not include
+class-instance relationship like class based languages,
+nor prototype-child relationship like prototype based languages.
+So, there is no inheritance nor delegation.
+An object, or a <a class="reference internal" href="glossary.html#term-value"><span class="xref std std-term">value</span></a>, is just a bunch of variables.</p>
+<p>This design is based on the observation that inheritance and delegation
+are just deduplication for optimization.
+If deduplication is done in the backend by the runtime,
+it does not need to appear in the language specification.</p>
+<p>You can just call <a class="reference internal" href="api/kink-BINDING.html#api-fbc90c7785322a766a80191e6e1ea8de"><span class="std std-ref">new_val</span></a> function to make a value
+with data and methods.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new_account</span> &lt;- {(<span class="nv">:Initial_balance</span>)
+  <span class="n">new_val</span>(
+    <span class="s1">&#39;balance&#39;</span> {[<span class="nv">:A</span>]() <span class="nv">A</span>.<span class="nv">Balance</span> }
+    <span class="s1">&#39;deposit&#39;</span> {[<span class="nv">:A</span>](<span class="nv">:Delta</span>) <span class="nv">A:Balance</span> &lt;- <span class="nv">A</span>.<span class="n">balance</span> + <span class="nv">Delta</span> }
+    <span class="s1">&#39;Balance&#39;</span> <span class="nv">Initial_balance</span>
+  )
+}
+
+<span class="nv">:X</span> &lt;- <span class="n">new_account</span>(<span class="m">100</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">balance</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 100</span>
+<span class="nv">X</span>.<span class="n">deposit</span>(<span class="m">20</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">balance</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 120</span>
+
+<span class="nv">:Y</span> &lt;- <span class="n">new_account</span>(<span class="m">300</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Y</span>.<span class="n">balance</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 300</span>
+</pre></div>
+</div>
+<p>Apparently, <code class="docutils literal notranslate"><span class="pre">balance</span></code> and <code class="docutils literal notranslate"><span class="pre">deposit</span></code> methods are the same for both <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">Y</span></code>.
+In class based languages, a class is used to share methods among objects.
+In Kink, methods can be stored as a <a class="reference internal" href="glossary.html#term-vector"><span class="xref std std-term">vector</span></a>
+and spreaded as arguments of <code class="docutils literal notranslate"><span class="pre">new_val</span></code>.
+Such a vector is called a <a class="reference internal" href="glossary.html#term-trait"><span class="xref std std-term">trait</span></a>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new_account</span> &lt;- {(<span class="nv">:Initial_balance</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Account_trait</span>
+    <span class="s1">&#39;Balance&#39;</span> <span class="nv">Initial_balance</span>
+  )
+}
+
+<span class="nv">:Account_trait</span> &lt;- [
+  <span class="s1">&#39;balance&#39;</span> {[<span class="nv">:A</span>]() <span class="nv">A</span>.<span class="nv">Balance</span> }
+  <span class="s1">&#39;deposit&#39;</span> {[<span class="nv">:A</span>](<span class="nv">:Delta</span>) <span class="nv">A:Balance</span> &lt;- <span class="nv">A</span>.<span class="n">balance</span> + <span class="nv">Delta</span> }
+]
+
+<span class="nv">:X</span> &lt;- <span class="n">new_account</span>(<span class="m">100</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">balance</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 100</span>
+</pre></div>
+</div>
+</section>
+<section id="assignment-by-function-call">
+<h2><span class="section-number">1.4. </span>Assignment by function call<a class="headerlink" href="#assignment-by-function-call" title="Link to this heading">¶</a></h2>
+<p>Assignment of a <a class="reference internal" href="glossary.html#term-variable"><span class="xref std std-term">variable</span></a> is done
+by an invocation of <a class="reference internal" href="api/kink-VARREF.html#api-8e1458a61e933a2fc7dcdcb3592f20c1"><span class="std std-ref">op_store</span></a> method
+of a <a class="reference internal" href="glossary.html#term-variable-reference"><span class="xref std std-term">variable reference</span></a> value.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span> &lt;- <span class="n">new_val</span>
+<span class="nv">V:Num</span> &lt;- <span class="m">42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="nv">Num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p>The program above is equivalent to the following:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span>.<span class="n">op_store</span>(<span class="n">new_val</span>)
+<span class="nv">V:Num</span>.<span class="n">op_store</span>(<span class="m">42</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="nv">Num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p>So, there is nothing like left-hand-side value in the syntax.</p>
+</section>
+<section id="local-control-by-function-call">
+<h2><span class="section-number">1.5. </span>Local control by function call<a class="headerlink" href="#local-control-by-function-call" title="Link to this heading">¶</a></h2>
+<p>Local control structures are implemented by functions.
+For example, if-then-else is provided
+by <a class="reference internal" href="api/kink-BINDING.html#api-b98148331ab9b2bb0ff826ae2a7d0c6d"><span class="std std-ref">if</span></a> preloaded function.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:abs</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="n">if</span>(<span class="nv">N</span> &gt;= <span class="m">0</span>
+    { <span class="nv">N</span> }
+    { -<span class="nv">N</span> }
+  )
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">abs</span>(<span class="m">42</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">abs</span>(-<span class="m">42</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p>Looping over elements of a <a class="reference internal" href="glossary.html#term-vector"><span class="xref std std-term">vector</span></a> can be done with methods
+such as <a class="reference internal" href="api/kink-VEC.html#api-f7a2d4cc94155596c0b63f9e7d2a847c"><span class="std std-ref">fold</span></a>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Sum</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span> <span class="m">10</span>].<span class="n">fold</span>(<span class="m">0</span>){(<span class="nv">:Accum</span> <span class="nv">:N</span>)
+  <span class="nv">Accum</span> + <span class="nv">N</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 55</span>
+</pre></div>
+</div>
+<p>In general, loops can be implemented by recursive <a class="reference internal" href="glossary.html#term-tail-call"><span class="xref std std-term">tail calls</span></a>.
+That is because consecutive tail calls are guaranteed not to cause stack overflow.
+See <a class="reference internal" href="glossary.html#term-tail-call-elimination"><span class="xref std std-term">tail call elimination</span></a>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># returns the sum of nums in Vec</span>
+<span class="nv">:sum</span> &lt;- {(<span class="nv">:Vec</span>)
+  <span class="nv">:loop</span> &lt;- {(<span class="nv">:Accum</span> <span class="nv">:I</span>)
+    <span class="n">if</span>(<span class="nv">I</span> &lt; <span class="nv">Vec</span>.<span class="n">size</span>
+      { <span class="nv">:N</span> = <span class="nv">Vec</span>.<span class="n">get</span>(<span class="nv">I</span>)
+        <span class="n">loop</span>(<span class="nv">Accum</span> + <span class="nv">N</span> <span class="nv">I</span> + <span class="m">1</span>)
+      }
+      { <span class="nv">Accum</span> }
+    )
+  }
+  <span class="n">loop</span>(<span class="m">0</span> <span class="m">0</span>)
+}
+<span class="nv">:Sum</span> &lt;- <span class="n">sum</span>([<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span> <span class="m">10</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 55</span>
+</pre></div>
+</div>
+</section>
+<section id="non-local-control-by-delimited-continuation">
+<h2><span class="section-number">1.6. </span>Non-local control by delimited continuation<a class="headerlink" href="#non-local-control-by-delimited-continuation" title="Link to this heading">¶</a></h2>
+<p>Non-local control structures, such as <a class="reference internal" href="glossary.html#term-exception"><span class="xref std std-term">exceptions</span></a>,
+<a class="reference internal" href="api/kink-CONTROL.html#api-29c676e2986aaddd539609b493b6faaf"><span class="std std-ref">try-finally</span></a>,
+and <a class="reference internal" href="api/kink-iter-ITER.html#api-6d0602cb3762becfd16f81f49dc8de8a"><span class="std std-ref">generators</span></a> are not primitives,
+but implemented by shift/reset operations of
+<a class="reference internal" href="glossary.html#term-delimited-continuation"><span class="xref std std-term">delimited continuations</span></a>.</p>
+<p>To make delimited continuations practically usable,
+local variable binding must be virtually immutable by default.
+That is why <a class="reference internal" href="language/semantics.html#letclause"><span class="std std-ref">let clause</span></a> was introduced.</p>
+<p>Let's make a curried function with shift/reset
+which makes a three-element tuple from the arguments.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:KONT_TAG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:triple_correct</span> &lt;- {(<span class="nv">:A0</span>)
+  <span class="nv">:Tag</span> = <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+  <span class="nv">Tag</span>.<span class="n">reset</span>{
+    <span class="nv">:A1</span> = <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:k1</span>) <span class="nv">$k1</span> }
+    <span class="nv">:A2</span> = <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:k2</span>) <span class="nv">$k2</span> }
+    [<span class="nv">A0</span> <span class="nv">A1</span> <span class="nv">A2</span>]
+  }
+}
+
+<span class="nv">:triple_broken</span> &lt;- {(<span class="nv">:A0</span>)
+  <span class="nv">:Tag</span> = <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+  <span class="nv">Tag</span>.<span class="n">reset</span>{
+    <span class="nv">:A1</span> &lt;- <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:k1</span>) <span class="nv">$k1</span> }
+    <span class="nv">:A2</span> &lt;- <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:k2</span>) <span class="nv">$k2</span> }
+    [<span class="nv">A0</span> <span class="nv">A1</span> <span class="nv">A2</span>]
+  }
+}
+
+<span class="nv">:test</span> &lt;- {(<span class="nv">:triple</span>)
+  <span class="nv">:foo</span> &lt;- <span class="n">triple</span>(<span class="s1">&#39;foo&#39;</span>)
+  <span class="nv">:foo_bar</span> &lt;- <span class="n">foo</span>(<span class="s1">&#39;bar&#39;</span>)
+
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">foo_bar</span>(<span class="s1">&#39;baz&#39;</span>).<span class="n">repr</span>)
+  <span class="n">foo</span>(<span class="s1">&#39;XXX&#39;</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">foo_bar</span>(<span class="s1">&#39;baz&#39;</span>).<span class="n">repr</span>)
+}
+
+<span class="n">test</span>(<span class="nv">$triple_correct</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot;] [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot;]</span>
+<span class="n">test</span>(<span class="nv">$triple_broken</span>)  <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot;] [&quot;foo&quot; &quot;XXX&quot; &quot;baz&quot;]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">triple_correct</span></code> uses let clauses.
+You can see the invocation <code class="docutils literal notranslate"><span class="pre">foo('XXX')</span></code> does not change the behavior of <code class="docutils literal notranslate"><span class="pre">foo_bar</span></code>.</p>
+<p>On the other hand, <code class="docutils literal notranslate"><span class="pre">triple_broken</span></code> modifies the binding by
+<a class="reference internal" href="api/kink-VARREF.html#api-8e1458a61e933a2fc7dcdcb3592f20c1"><span class="std std-ref">Varref.op_store</span></a>.
+That is why the result of <code class="docutils literal notranslate"><span class="pre">foo_bar</span></code> changes after <code class="docutils literal notranslate"><span class="pre">foo('XXX')</span></code>.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Kink programming language manual</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="installation.html"><span class="section-number">2. </span>Installation</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

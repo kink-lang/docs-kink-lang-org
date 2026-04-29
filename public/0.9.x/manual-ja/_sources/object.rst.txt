@@ -1,0 +1,89 @@
+=============
+Object system
+=============
+This chapter describes the object system.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+.. _value:
+
+Values
+======
+
+A :dfn:`value` is a the primitive unit of data.
+“Value” can be abbreviated to “val.”
+For example, each line of the following example produces a value.
+
+::
+
+    'Foo' # a str value
+    42    # a num value
+    {(:Num) Num * 2 } # a fun value
+
+Aside from :term:`variables <variable>`, a value has :term:`embedded properties`.
+
+.. _embedded_properties:
+
+Embedded properties
+===================
+
+:dfn:`Embedded properties` are
+any data contained in a value not via variables.
+The following are examples of embedded properties:
+
+* the Unicode code point sequence of a :doc:`str value </api/kink-STR>`
+* the scale and the mantissa of a :doc:`num value </api/kink-NUM>`
+* the sequence of instructions of a :doc:`fun value </api/kink-FUN>`
+
+Embedded properties cannot be accessed directly from Kink programs,
+but can be used by the :term:`runtime`,
+or :term:`host procedures <host procedure>`.
+
+.. _variable:
+
+Variables
+=========
+
+A :dfn:`variable` is a pair of a value and a finite length sequence of Unicode code points, defined as follows:
+*Variables*  = { (owner, sym) | owner is a value, and sym is a finite length sequence of Unicode code points }.
+
+Here, ``owner`` is said to be the :dfn:`owner of the variable`,
+and ``sym`` is said to be the :dfn:`symbol of the variable`.
+The variable is said to be a variable of ``owner``.
+“Variable” can be abbreviated to “var”.
+
+If a symbol is accepted by :regexp:`[a-z_][a-z0-9_?]*`,
+the symbol is called a :dfn:`function symbol`.
+If a symbol is accepted by :regexp:`([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*`,
+the symbol is called a :dfn:`data symbol`.
+
+A variable has a content, which is either empty, or a value.
+
+.. _variable_operations:
+
+Variable operations
+-------------------
+
+There are three primitive operations about variables.
+
+* :dfn:`Variable-load operation`:
+  Gets the content of a variable.
+  The result is either empty or a value.
+* :dfn:`Variable-store operation`:
+  Sets a value as the content of the variable.
+* :dfn:`Variable-symbols operation`:
+  For value X,
+  gets { sym | the content of variable (X, sym) is a value }.
+
+Note that you cannot delete a variable.
+In other words, if the content of a variable is a value,
+it does not become empty.
+
+Memory model
+------------
+
+A variable acts like a non-volatile field of Java.
+
+.. vim: et sw=2 sts=2 et

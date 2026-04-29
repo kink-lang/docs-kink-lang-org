@@ -1,0 +1,221 @@
+================
+kink\/json\/JSON
+================
+
+Decoding from \/ encoding to JSON\.
+
+This mod supports JSON specified in RFC 8259\.
+
+https\:\/\/tools\.ietf\.org\/html\/rfc8259
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-0f95a6404e8aa3e0ba07f36f8bbbfe42:
+
+JSON\.parse\(Json \.\.\.\[\$config\=\{\}\]\)
+============================================
+
+JSON\.parse decodes a JSON value from the Json str\.
+
+See kink\/json\/JSON\_VAL mod for JSON values\.
+
+Preconditions\:
+
+\• Json must be a str
+
+\• \$config must be a fun which takes a parse\_config arg
+
+If Json is a valid JSON str\, the invocation of \.parse continues to the success continuation configured by \`on\_success\`\.
+
+If Json is not a valid JSON\, the invocation of \.parse continues to the error continuation configured by \`on\_error\`\.
+
+Example\:
+
+.. code:: kink
+
+    :JSON.require_from('kink/json/')
+        
+    stdout.print_line(JSON.parse('{"name": "Hakuho", "birthyear": 1985}').repr)
+    # => Flat_map("birthyear" 1985; "name" "Hakuho")
+        
+    :analyze_json <- {(:Json)
+      JSON.parse(Json){(:P)
+        P.on_success{(:Val)
+          'parsed as {}'.format(Val.repr)
+        }
+        P.on_error{(:Msg :Pos)
+          'error: {} at {}'.format(Msg Pos)
+        }
+      }
+    }
+        
+    stdout.print_line(analyze_json('42'))
+    # => parsed as 42
+        
+    stdout.print_line(analyze_json('broken!'))
+    # => error: unexpected character at 0
+
+§§ Scale of the number
+
+The scale of the number in the result JSON values is normalized to the minimum non\-negative number which can represent the number in the JSON\.
+
+Example\:
+
+.. code:: kink
+
+    :JSON.require_from('kink/json/')
+        
+    stdout.print_line(JSON.parse('42.000').repr)  # => 42
+    stdout.print_line(JSON.parse('1.23e+5').repr) # => 12300
+
+.. _api-fb2c0858a6f3e061ceaff44654764876:
+
+type parse\_config
+==================
+
+Config val type of JSON\.parse\.
+
+.. _api-3cf6a01fe67e06eb5eb1f38c4d51f290:
+
+C\.on\_success\(\$success\_cont\)
+---------------------------------
+
+\`on\_success\` sets \$success\_cont as the success continuation of the invocation of JSON\.parse\.
+
+Precondition\:
+
+\• \$success\_cont must be a fun which takes a JSON value
+
+If this method is not called\, VAL\.identity is used as the success continuation\.
+
+.. _api-7677b2f8281ad72f5a5da2a2f86e9786:
+
+C\.on\_error\(\$error\_cont\)
+-----------------------------
+
+\`on\_error\` sets \$error\_cont as the error continuation of the invocation of JSON\.parse\.
+
+Precondition\:
+
+\• \$error\_cont must be a fun which takes \(Msg\, Pos\)\,   where Msg is an error message\,   and Pos is the pos index of the error in the JSON str\.
+
+If this method is not called\, the default erro continuation\, which raises an exception for the error\, is used\.
+
+.. _api-39f69c0820a41596644a8568bbc574af:
+
+JSON\.stringify\(Json\_val \.\.\.\[\$config\=\{\}\]\)
+=====================================================
+
+JSON\.stringify converts a Json\_val to JSON\.
+
+Preconditions\:
+
+\• Json\_val must be a JSON value\. See kink\/json\/JSON\_VAL
+
+\• \$config must be a fun which takes a stringify\_config
+
+Example\:
+
+.. code:: kink
+
+    :JSON.require_from('kink/json/')
+    :FLAT_MAP.require_from('kink/container/')
+        
+    :Json_val <- FLAT_MAP.of('nums' [1 2 3])
+        
+    stdout.print_line(JSON.stringify(Json_val))
+    # Output:
+    #   {
+    #     "nums": [
+    #       1,
+    #       2,
+    #       3
+    #     ]
+    #   }
+        
+    stdout.print_line(
+      JSON.stringify(Json_val){(:S)
+        S.compact
+      }
+    )
+    # Output:
+    #   {"nums":[1,2,3]}
+
+.. _api-856fd5c0a025b704133d77c5b73852b7:
+
+type stringify\_config
+======================
+
+Config val of JSON\.stringify\.
+
+By default\, JSON\.stringify outputs JSON with the following setup\:
+
+\• pretty print mode\: put a newline for each entry of arrays and objects
+
+\• indent by 2 whitespace characters for each nest
+
+\• one whitespace character after \"\:\"
+
+.. _api-6d7f2742ab8f57fc30491d312c4ecbac:
+
+C\.single\_line
+---------------
+
+Activate single line mode\, which does not put newline for entries of arrays and objects\.
+
+.. _api-e347dab79efc251e8c5c099c867b04af:
+
+C\.indent\(Indent\)
+-------------------
+
+Add Indent as an indent for each nest\.
+
+Precondition\:
+
+\• Indent must be a str
+
+The default value is \'  \' \(two whitespace characters\)\.
+
+.. _api-8e4146bb5fb925c3a4de70c423e2dbdb:
+
+C\.after\_colon\(After\_colon\)
+-------------------------------
+
+Put After\_colon after \"\:\"\.
+
+Precondition\:
+
+\• After\_colon must be a str
+
+The default value is \' \' \(one whitespace character\)\.
+
+.. _api-1af5a287ef799dea5c40a764dcc0ec48:
+
+C\.after\_comma\(After\_comma\)
+-------------------------------
+
+Put After\_comma after \"\,\"\, when single line mode is activated\.
+
+Precondition\:
+
+\• After\_comma must be a str
+
+The default value is \' \' \(one whitespace character\)\.
+
+.. _api-c99f37fd55b8ab632e3dd8748de44521:
+
+C\.compact
+----------
+
+Omit whitespace and newline characters from the output\.
+
+Calling this method is equivalent to calling the following\:
+
+\• \.single\_line
+
+\• \.after\_colon\(\'\'\)
+
+\• \.after\_comma\(\'\'\)
+

@@ -1,0 +1,561 @@
+=========
+Variables
+=========
+
+:term:`Variables <variable>` can be classified into two categories
+based on their symbols as follows:
+
+function variable
+  A variable with a :term:`function symbol`.
+  The content should be a function.
+
+data variable
+  A variable with a :term:`data symbol`.
+  The content can be a value of an arbitrary type.
+
+Variables can also be classified into two categories based
+on their owners as follows:
+
+* :ref:`member variable <member_variable>`
+* :ref:`local variable <local_variable>`
+
+Thus, there are four subcategories of variables as follows:
+member function variables, member data variables,
+local function variables, and local data variables.
+
+This chapter describes how those subcategories of variables are used
+in programs.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+.. _member_variable:
+
+Member variables
+================
+
+A :dfn:`member variable` is a variable of an arbitrary type of owner.
+
+Store and load 
+--------------
+
+Assume you have an object in the top level variable ``Owner``.
+
+::
+
+  :Owner <- new_val
+
+You can set a content of the member variable
+by calling ``op_store`` method of the varref.
+It can be done by ``<-`` :ref:`operator <operatorlist>`,
+which is a syntactic sugar for ``op_store`` method.
+
+::
+
+  Owner:Data <- 42
+  Owner:fun <- { stdout.print_line('hello') }
+
+You can load the content of a member data variable using ``.``,
+and the content of a member function variable using ``$``.
+
+::
+
+  stdout.print_line(Owner.Data.repr)  # => 42
+  stdout.print_line(Owner$fun.repr)   # => (fun ,,,)
+
+You can call the content function in a member function variable using ``.``.
+
+::
+
+  Owner.fun  # => hello
+
+Initial values
+--------------
+
+You can set the initial values of member variables
+by passing values to ``new_val``.
+
+
+::
+
+  :Owner <- new_val(
+    'Data' 42
+    'fun' { stdout.print_line('hello') }
+  )
+
+  stdout.print_line(Owner.Data.repr)  # => 42
+  Owner.fun # => hello
+
+.. _local_variable:
+
+Local variables
+===============
+
+A :dfn:`local variable` is a variable of an owner which is a :doc:`binding </api/kink-BINDING>`.
+
+Simple store and load
+---------------------
+
+You can set a content of the local variable
+by calling ``op_store`` method of the varref.
+It can be done by ``<-`` :ref:`operator <operatorlist>`,
+which is a syntactic sugar for ``op_store`` method.
+
+::
+
+  :Data <- 42
+  :fun <- { stdout.print_line('hello') }
+
+
+The current binding can be produced by ``\binding``.
+Thus, the program above is equivalent to the following:
+
+::
+
+  \binding:Data <- 42
+  \binding:fun <- { stdout.print_line('hello') }
+
+You can load the content of a local data variable using the symbol,
+and the content of a local function variable using ``$`` and the symbol.
+
+::
+
+  stdout.print_line(Data.repr)  # => 42
+  stdout.print_line($fun.repr)  # => (fun ,,,)
+
+Again, the program above is equivalent to the following:
+
+::
+
+  stdout.print_line(\binding.Data.repr)  # => 42
+  stdout.print_line(\binding$fun.repr)   # => (fun ,,,)
+
+You can call the content function using the symbol of the variable:
+
+::
+
+  fun # => hello
+
+The program above is equivalent to the following.
+Note that ``nada`` is passed as the receiver.
+
+::
+
+  \binding.fun[()]  # => hello
+
+Lexical scoping
+---------------
+
+Local variables can be used as if they are resolved based on lexical scoping,
+namely by searching the symbol from the innermost context
+to the outermost context.
+
+Lexical scoping in Kink is realized by copying local variables.
+When a function is called, a new binding is created for the function call.
+All the variables of the binding of the outer function call
+are copied to the newly created binding, so that they can be accessed.
+This is done by the first four
+:term:`abstract instructions <abstract instruction>`
+in :ref:`functions <functionexpression>`:
+``(enclosingbinding) (clonebinding) (dup) (setbinding)``.
+
+As shown in the following example,
+``X`` variable, which is created at the top level,
+can be used in nested function calls of ``foo`` and ``bar``.
+``Y`` is overwritten in the function call of ``foo``,
+but it does not affect ``Y`` variable of the top level.
+``Z`` is created at the function call of ``foo``,
+so it can be used only within the function call of ``foo``.
+
+::
+
+  :X <- 'x'
+  :Y <- 'y'
+
+  :foo <- {
+    :Y <- 'y_masking'
+    :Z <- 'z'
+    stdout.print_line(X.repr) # => "x"
+    stdout.print_line(Y.repr) # => "y_masking"
+    stdout.print_line(Z.repr) # => "z"
+
+    :bar <- {
+      stdout.print_line(X.repr) # => "x"
+      stdout.print_line(Y.repr) # => "y_masking"
+      stdout.print_line(Z.repr) # => "z"
+    }
+    bar
+  }
+  foo
+
+  stdout.print_line(X.repr) # => "x"
+  stdout.print_line(Y.repr) # => "y"
+
+  Z # => no such var: Z
+
+.. _formal_receiver_formal_args:
+
+Formal receiver and formal arguments
+------------------------------------
+
+The formal receiver and the formal arguments are,
+when local variables are specified,
+desugared to assignment or
+:ref:`multiple assignment <multipleassignment>` to the local variables.
+They act in the same way as other local variables.
+
+Example:
+
+::
+
+  :new_time_bomb <- {(:Time)
+    new_val(
+      ... Time_bomb_trait
+      'Time' Time
+    )
+  }
+
+  :Time_bomb_trait <- [
+    'count_down' {[:B](:Delta)
+      B:Time <- B.Time - Delta
+      if(B.Time <= 0){
+        stdout.print_line('Bang!')
+      }
+    }
+  ]
+
+  :Bomb <- new_time_bomb(100)
+  Bomb.count_down(50)
+  Bomb.count_down(30)
+  Bomb.count_down(20) # => Bang!
+
+``count_down`` method above is equivalent to the following.
+Note that the receiver and the arguments are assigned to
+``_Recv`` and ``_Args`` respectively by
+:ref:`storerecvargs abstract instruction <storerecvargs-insn>`
+at the beginning of invocation.
+
+::
+
+    { :B <- _Recv
+      [:Delta] <- _Args
+
+      B:Time <- B.Time - Delta
+      if(B.Time <= 0){
+        stdout.print_line('Bang!')
+      }
+    }
+
+See :ref:`values_passed_from_caller`
+for advanced handling of formal arguments.
+
+.. _letpattern:
+
+Let Pattern
+-----------
+
+If you want to assign a value to a local variable within a function call,
+you should use :ref:`let clause <letclause>` through ``=`` in most cases,
+rather than directly using ``<-`` operator.
+
+In the following example, you should do like ``do_this``.
+
+::
+
+  :dont_do_this <- {
+    :Foo <- 'foo'
+    :Bar <- 'bar'
+    Foo + Bar
+  }
+  stdout.print_line(dont_do_this.repr) # => foobar
+
+  :do_this <- {
+    :Foo = 'foo'
+    :Bar = 'bar'
+    Foo + Bar
+  }
+  stdout.print_line(do_this.repr) # => foobar
+
+``do_this`` is translated to the following:
+
+::
+
+  :do_this <- {
+    {(:Foo)
+      {(:Bar)
+        Foo + Bar
+      }.call(() ['bar'])
+    }.call(() ['foo'])
+  }
+
+.. rubric:: Rationale
+
+:dfn:`Let Pattern` exists
+so that :doc:`continuation </api/kink-KONT_TAG>` is practically usable.
+With delimited continuation,
+a single function call associated with a single binding
+can be resumed multiple times.
+It means, if a local variable is assigned
+after a point where a continuation can be resumed,
+that assignment can be performed multiple times in a single function call.
+It breaks :ref:`write-once local variable <writeoncelocalvar>` convention,
+and can result in an unintended outcome.
+
+In the following example, ``triple_unsafe`` is intended to be
+a curried function which takes three arguments
+and returns a vec of the arguments.
+However, it does not work as intended.
+When ``foo`` is called twice,
+they resume the same function call of [a] at the end of
+the first invocation of ``shift``.
+It means ``Second`` is assigned twice for the same binding.
+Thus, the result of ``foo_bar`` changes after ``foo`` is called.
+
+::
+
+  :KONT_TAG.require_from('kink/')
+
+  :triple_unsafe <- {(:First)
+    :Tag = KONT_TAG.new
+    Tag.reset{ # [a]
+      :Second <- Tag.shift{(:resume) $resume }
+      :Third <- Tag.shift{(:resume) $resume }
+      [First Second Third]
+    }
+  }
+
+  :foo <- triple_unsafe('Foo')
+  :foo_bar <- foo('Bar')
+
+  stdout.print_line(foo_bar('Baz').repr) # => ["Foo" "Bar" "Baz"]
+
+  foo('broken!')
+
+  stdout.print_line(foo_bar('Baz').repr) # => ["Foo" "broken!" "Baz"]
+
+The program above should be written as follows using :dfn:`Let Pattern`.
+It does not overwrite ``Second``, because ``Second``
+is a variable of the binding of a function call which starts
+after the continuation is resumed.
+
+::
+
+  :KONT_TAG.require_from('kink/')
+
+  :triple_safe <- {(:First)
+    :Tag = KONT_TAG.new
+    Tag.reset{
+      :Second = Tag.shift{(:resume) $resume }
+      :Third = Tag.shift{(:resume) $resume }
+      [First Second Third]
+    }
+  }
+
+  :foo <- triple_safe('Foo')
+  :foo_bar <- foo('Bar')
+
+  stdout.print_line(foo_bar('Baz').repr) # => ["Foo" "Bar" "Baz"]
+
+  foo('not destructive')
+
+  stdout.print_line(foo_bar('Baz').repr) # => ["Foo" "Bar" "Baz"]
+
+.. _localrecursivefunpattern:
+
+Local recursive function pattern
+--------------------------------
+
+When you want to have a function stored in a local variable within a function,
+and make it recursive,
+:dfn:`let pattern` is not powerful enough (without a fixed point combinator).
+The following program results in “no such var” error.
+It is because the function stored in ``bar`` is outside of the scope of
+the local variable ``bar``.
+
+::
+
+  :foo <- {
+    :bar = {
+      bar # => no such var: bar
+    }
+    bar
+  }
+  foo
+
+In that case, you can make a recursive function
+directly using ``op_store`` operator ``<-``.
+
+::
+
+  :count_down <- {
+    :loop <- {(:N)
+      if(N >= 0){
+        stdout.print_line(N.repr)
+        loop(N - 1)
+      }
+    }
+    loop(5)
+  }
+  count_down # => 5 4 3 2 1 0
+
+You can also make mutually recursive functions
+directly using ``op_store`` operator ``<-``.
+
+::
+
+  :ping_pong <- {
+    :ping <- {
+      stdout.print_line('ping')
+      pong
+    }
+    :pong <- {
+      stdout.print_line('pong')
+      ping
+    }
+    ping
+  }
+  ping_pong # => ping pong ping pong ping ...
+
+.. rubric:: Rationale
+
+It can break :ref:`write-once local variable <writeoncelocalvar>` convention,
+but it does not practically change the outcome of the program.
+
+In the following example,
+``call_underscore`` and ``underscore`` are assigned every time ``resume``
+is called.
+That is why ``val_id`` for ``underscore`` changes.
+However, those distinct functions work in exactly the same way,
+because they have the same sequence of abstract instructions
+with the same enclosing binding.
+
+::
+
+  :KONT_TAG.require_from('kink/')
+  :VAL.require_from('kink/')
+
+  :setup_underscore <- {(:Str)
+    :Tag = KONT_TAG.new
+    Tag.reset{
+      Tag.shift{(:k) { k(()) } }
+      :call_underscore <- {
+        stdout.print_line('val_id: ' + VAL.val_id($underscore).repr)
+        stdout.print_line(underscore.repr)
+      }
+      :underscore <- {
+        '_' + Str + '_'
+      }
+      $call_underscore
+    }
+  }
+
+  :resume <- setup_underscore('hello')
+
+  :enc <- resume
+  enc # => val_id: 2 / "_hello_"
+
+  resume
+
+  enc # => val_id: 3 / "_hello_"
+
+.. _writeoncelocalvar:
+
+Local variables should be write-once
+------------------------------------
+
+It is better keeping local variables write-once,
+to avoid unintuitive outcomes.
+
+For instance, because local variables are copied on invocation,
+modification of a local variable in the outer context
+doesn't affect local variables of nested function calls in some cases.
+Example:
+
+::
+
+  :Num <- 42
+
+  :make_fun <- {
+    { Num }
+  }
+  :yield_num <- make_fun
+
+  stdout.print_line(yield_num.repr) # => 42
+
+  :Num <- 24
+  stdout.print_line(yield_num.repr) # => 42
+
+In the program above, modification of ``Num``
+does not affect the result of ``yield_num``.
+It can be explained as follows:
+
+* When ``Num`` is created at the top level,
+  the binding of the top level becomes ``[ Num => 42 ]``.
+* When ``make_fun`` is called,
+  the binding for the function call is created copying the top level binding
+  as ``[ Num => 42 ]`` [a].
+* The function ``{ Num }``, which is assigned to ``yield_num``,
+  is created within the call of ``make_fun``.
+  Thus, when ``yield_num`` is called, a new binding is created copying [a].
+* When ``Num`` is modified to ``24`` at the top level, the top level binding
+  becomes ``[ Num => 24 ]``.
+  However, it does not affect the already created binding [a].
+  [a] reamins as ``[ Num => 42 ]``.
+* When ``yield_num`` is called, a new binding is created copying [a],
+  as ``[ Num => 42 ]``.
+  Thus, ``Num`` yields ``42``.
+
+If you want to change the returned number,
+you can store the number in a member variable of a value
+which acts as a value container, like follows:
+
+::
+
+  :Data <- new_val('Num' 42)
+
+  :make_fun <- {
+    { Data.Num }
+  }
+  :yield_num <- make_fun
+
+  stdout.print_line(yield_num.repr) # => 42
+
+  Data:Num <- 24
+  stdout.print_line(yield_num.repr) # => 24
+
+
+.. _multipleassignment:
+
+Multiple assignment
+===================
+
+You can set contents of multiple variables using
+``op_store`` method of :doc:`vec </api/kink-VEC>` type.
+
+::
+
+  :Owner <- new_val
+  [Owner:Data Owner:fun] <- [
+    42
+    { stdout.print_line('hello') }
+  ]
+
+  stdout.print_line(Owner.Data.repr)  # => 42
+  Owner.fun # => hello
+
+Multiple assignment can also be used with :ref:`Let Pattern <letpattern>`.
+
+::
+
+  :foo <- {
+    [:Data :fun] = [
+      42
+      { stdout.print_line('hello') }
+    ]
+    stdout.print_line(Data.repr)  # => 42
+    fun # => hello
+  }
+  foo
+
+.. vim: et sw=2 sts=2

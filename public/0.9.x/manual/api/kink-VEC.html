@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.27. kink/VEC &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.28. kink/container/FLAT_MAP" href="kink-container-FLAT_MAP.html" />
+    <link rel="prev" title="6.26. kink/VARREF" href="kink-VARREF.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.27. kink/VEC</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-FLAT_MAP.html"><span class="section-number">6.28. </span>kink/container/FLAT_MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-vec">
+<h1><span class="section-number">6.27. </span>kink/VEC<a class="headerlink" href="#kink-vec" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-vec" id="id3">type vec</a></p>
+<ul>
+<li><p><a class="reference internal" href="#vec-get-ind" id="id4">Vec.get(Ind)</a></p></li>
+<li><p><a class="reference internal" href="#vec-size" id="id5">Vec.size</a></p></li>
+<li><p><a class="reference internal" href="#vec-front" id="id6">Vec.front</a></p></li>
+<li><p><a class="reference internal" href="#vec-back" id="id7">Vec.back</a></p></li>
+<li><p><a class="reference internal" href="#vec-take-front-n" id="id8">Vec.take_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-take-back-n" id="id9">Vec.take_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-drop-front-n" id="id10">Vec.drop_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-drop-back-n" id="id11">Vec.drop_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-slice-from-to" id="id12">Vec.slice(From To)</a></p></li>
+<li><p><a class="reference internal" href="#vec-set-ind-val" id="id13">Vec.set(Ind Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-push-front-val" id="id14">Vec.push_front(Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-push-back-val" id="id15">Vec.push_back(Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-push-at-pos-val" id="id16">Vec.push_at(Pos Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-append-front-eacher" id="id17">Vec.append_front(Eacher)</a></p></li>
+<li><p><a class="reference internal" href="#vec-append-back-eacher" id="id18">Vec.append_back(Eacher)</a></p></li>
+<li><p><a class="reference internal" href="#vec-append-at-pos-eacher" id="id19">Vec.append_at(Pos Eacher)</a></p></li>
+<li><p><a class="reference internal" href="#vec-pop-front" id="id20">Vec.pop_front</a></p></li>
+<li><p><a class="reference internal" href="#vec-pop-back" id="id21">Vec.pop_back</a></p></li>
+<li><p><a class="reference internal" href="#vec-pop-at-ind" id="id22">Vec.pop_at(Ind)</a></p></li>
+<li><p><a class="reference internal" href="#vec-clear-from-0-to-vec-size" id="id23">Vec.clear(...[From=0 To=Vec.size])</a></p></li>
+<li><p><a class="reference internal" href="#vec-dup" id="id24">Vec.dup</a></p></li>
+<li><p><a class="reference internal" href="#vec-reverse" id="id25">Vec.reverse</a></p></li>
+<li><p><a class="reference internal" href="#vec-concat" id="id26">Vec.concat</a></p></li>
+<li><p><a class="reference internal" href="#vec-unconcat-n" id="id27">Vec.unconcat(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-just-if-empty" id="id28">Vec.just(...[$if_empty])</a></p></li>
+<li><p><a class="reference internal" href="#vec-with-elems-with0-with1-with2" id="id29">Vec.with_elems(...[$with0 $with1 $with2 ,,,])</a></p></li>
+<li><p><a class="reference internal" href="#vec-each-consume" id="id30">Vec.each($consume)</a></p></li>
+<li><p><a class="reference internal" href="#vec-map-transform" id="id31">Vec.map($transform)</a></p></li>
+<li><p><a class="reference internal" href="#vec-concat-map-to-vec" id="id32">Vec.concat_map($to_vec)</a></p></li>
+<li><p><a class="reference internal" href="#vec-filter-include" id="id33">Vec.filter($include?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-count-counted" id="id34">Vec.count($counted?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-fold-init-combine" id="id35">Vec.fold(Init $combine)</a></p></li>
+<li><p><a class="reference internal" href="#vec-reduce-combine-empty-fallback" id="id36">Vec.reduce($combine ...[$empty_fallback])</a></p></li>
+<li><p><a class="reference internal" href="#vec-take-while-include" id="id37">Vec.take_while($include?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-drop-while-exclude" id="id38">Vec.drop_while($exclude?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-all-match" id="id39">Vec.all?($match?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-any-match-true" id="id40">Vec.any?(...[$match?={ true }])</a></p></li>
+<li><p><a class="reference internal" href="#vec-have-target" id="id41">Vec.have?(Target)</a></p></li>
+<li><p><a class="reference internal" href="#vec-have-all-vals" id="id42">Vec.have_all?(Vals)</a></p></li>
+<li><p><a class="reference internal" href="#vec-have-any-vals" id="id43">Vec.have_any?(Vals)</a></p></li>
+<li><p><a class="reference internal" href="#vec-sort-in-order-x-y-x-y" id="id44">Vec.sort(...[$in_order?={(:X :Y) X &lt;= Y }])</a></p></li>
+<li><p><a class="reference internal" href="#vec-iter-from-0-to-vec-size" id="id45">Vec.iter(...[From=0 To=Vec.size])</a></p></li>
+<li><p><a class="reference internal" href="#vec1-vec2" id="id46">Vec1 + Vec2</a></p></li>
+<li><p><a class="reference internal" href="#vec-n" id="id47">Vec * N</a></p></li>
+<li><p><a class="reference internal" href="#api-7b111e394601a5a4a97ab44892979c20" id="id48">Vec1 == Vec2</a></p></li>
+<li><p><a class="reference internal" href="#api-841e77748f0925e98ec50203bb9e02cf" id="id49">Vec1 &lt;= Vec2</a></p></li>
+<li><p><a class="reference internal" href="#lhs-rhs" id="id50">Lhs &lt;- Rhs</a></p></li>
+<li><p><a class="reference internal" href="#vec-repr" id="id51">Vec.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#vec-is-val" id="id52">VEC.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-from-each-eacher" id="id53">VEC.from_each(Eacher)</a></p></li>
+</ul>
+</nav>
+<section id="type-vec">
+<span id="api-8f14b909c07234a50b4b4c739ce19bcd"></span><h2><span class="section-number">6.27.1. </span>type vec<a class="headerlink" href="#type-vec" title="Link to this heading">¶</a></h2>
+<p>`vec` is a mutable and variable-length sequence of values.</p>
+<p>Elements of a `vec` are indexed using consequent integers starting from 0.</p>
+<p>A `vec` is a subtype of `plain_param`. See kink/param/PLAIN_PARAM.</p>
+<section id="vec-get-ind">
+<span id="api-39febd61d9157760a10685c5eb6d2166"></span><h3><span class="section-number">6.27.1.1. </span>Vec.get(Ind)<a class="headerlink" href="#vec-get-ind" title="Link to this heading">¶</a></h3>
+<p>`get` returns the element at the index `Ind`.</p>
+<p class="rubric">Precondition</p>
+<p>`Ind` must be an integer `num` in the range [0, Vec.size).</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">0</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;bar&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;baz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-size">
+<span id="api-c63033490c55d6d5fa1ce68e3419f391"></span><h3><span class="section-number">6.27.1.2. </span>Vec.size<a class="headerlink" href="#vec-size" title="Link to this heading">¶</a></h3>
+<p>`size` returns the number of elements of `Vec` as an integer `num` value.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">size</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 3</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-front">
+<span id="api-c1940fa5642a8c3bde6e9d410f1689d6"></span><h3><span class="section-number">6.27.1.3. </span>Vec.front<a class="headerlink" href="#vec-front" title="Link to this heading">¶</a></h3>
+<p>`front` returns the first element of `Vec`.</p>
+<p class="rubric">Precondition</p>
+<p>`Vec` must not be empty.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>].<span class="n">front</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-back">
+<span id="api-01fe1f1275f57ef5cfa7b05ea19d6043"></span><h3><span class="section-number">6.27.1.4. </span>Vec.back<a class="headerlink" href="#vec-back" title="Link to this heading">¶</a></h3>
+<p>`back` returns the last element of `Vec`.</p>
+<p class="rubric">Precondition</p>
+<p>`Vec` must not be empty.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>].<span class="n">back</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;baz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-take-front-n">
+<span id="api-bbbc267c848faf3a7d1fc36ed207d7f1"></span><h3><span class="section-number">6.27.1.5. </span>Vec.take_front(N)<a class="headerlink" href="#vec-take-front-n" title="Link to this heading">¶</a></h3>
+<p>`take_front` returns a new `vec` containing the first `N` elements of `Vec`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an integer `num` in the range [0, Vec.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">take_front</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-take-back-n">
+<span id="api-21b6e0437ef2762f3201094349a083cd"></span><h3><span class="section-number">6.27.1.6. </span>Vec.take_back(N)<a class="headerlink" href="#vec-take-back-n" title="Link to this heading">¶</a></h3>
+<p>`take_back` returns a new `vec` containing the last `N` elements of `Vec`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an integer `num` in the range [0, Vec.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">take_back</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;5&quot; &quot;6&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-drop-front-n">
+<span id="api-9d17792a30d8532e1435543378fb5afd"></span><h3><span class="section-number">6.27.1.7. </span>Vec.drop_front(N)<a class="headerlink" href="#vec-drop-front-n" title="Link to this heading">¶</a></h3>
+<p>`drop_front` returns a new `vec` which contains the elements of the slice of `Vec` in the range [N, Vec.size).</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an integer `num` in the range [0, Vec.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">drop_front</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot; &quot;6&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-drop-back-n">
+<span id="api-94b4b974000567ab055baa5f53f03f7f"></span><h3><span class="section-number">6.27.1.8. </span>Vec.drop_back(N)<a class="headerlink" href="#vec-drop-back-n" title="Link to this heading">¶</a></h3>
+<p>`drop_back` returns a new `vec` which contains the elements of the slice of `Vec` in the range [0, Vec.size - N).</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an integer `num` in the range [0, Vec.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">drop_back</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-slice-from-to">
+<span id="api-dbe3126411fadcf06a56bf9a663c4c20"></span><h3><span class="section-number">6.27.1.9. </span>Vec.slice(From To)<a class="headerlink" href="#vec-slice-from-to" title="Link to this heading">¶</a></h3>
+<p>`slice` returns a new `vec` which contains the elements of the slice of `Vec` in the range [From, To).</p>
+<p class="rubric">Preconditions</p>
+<p>`From` and `To` must be integer `num` values.</p>
+<p>0 &lt;= From &lt;= To &lt;= Vec.size</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">slice</span>(<span class="m">1</span> <span class="m">4</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-set-ind-val">
+<span id="api-091c481b61c349802ef8cd43a160033a"></span><h3><span class="section-number">6.27.1.10. </span>Vec.set(Ind Val)<a class="headerlink" href="#vec-set-ind-val" title="Link to this heading">¶</a></h3>
+<p>`set` stores `Val` at the index `Ind`.</p>
+<p>The size of `Vec` does not change.</p>
+<p class="rubric">Precondition</p>
+<p>`Ind` must be an integer `num` in the range [0, Vec.size).</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">set</span>(<span class="m">1</span> <span class="s1">&#39;X&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;X&quot; &quot;baz&#39;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-push-front-val">
+<span id="api-9983ea50c85218def5676d4517601c64"></span><h3><span class="section-number">6.27.1.11. </span>Vec.push_front(Val)<a class="headerlink" href="#vec-push-front-val" title="Link to this heading">¶</a></h3>
+<p>`push_front` inserts `Val` as the first element of `Vec`.</p>
+<p>The size of `Vec` is extended by one. The existing elements are copied to the back by one.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">push_front</span>(<span class="s1">&#39;X&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;X&quot; &quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-push-back-val">
+<span id="api-59a3c11fa64d87267cfc7f2ebb6bc355"></span><h3><span class="section-number">6.27.1.12. </span>Vec.push_back(Val)<a class="headerlink" href="#vec-push-back-val" title="Link to this heading">¶</a></h3>
+<p>`push_back` inserts `Val` as the last element of `Vec`.</p>
+<p>The size of `Vec` is extended by one.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">push_back</span>(<span class="s1">&#39;X&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;X&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-push-at-pos-val">
+<span id="api-762d2ba5aa201bf23bbe57140ffb1aa9"></span><h3><span class="section-number">6.27.1.13. </span>Vec.push_at(Pos Val)<a class="headerlink" href="#vec-push-at-pos-val" title="Link to this heading">¶</a></h3>
+<p>`push_at` inserts `Val` at the index `Pos`.</p>
+<p>The size of `Vec` is extended by one. The existing elements at and after `Pos` are copied to the back by one.</p>
+<p class="rubric">Preconditions</p>
+<p>`Pos` must be an integer `num`.</p>
+<p>0 &lt;= Pos &lt;= Vec.size</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">push_at</span>(<span class="m">2</span> <span class="s1">&#39;X&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;X&quot; &quot;baz&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-append-front-eacher">
+<span id="api-8c643c34b93d0b83914505087687119e"></span><h3><span class="section-number">6.27.1.14. </span>Vec.append_front(Eacher)<a class="headerlink" href="#vec-append-front-eacher" title="Link to this heading">¶</a></h3>
+<p>`append_front` inserts all the elements of `Eacher` to the front of `Vec`.</p>
+<p>If Eacher.each passes E(0), E(1), ,,, E(n-1) to $consume for each invocation, and `Vec` currently contains V(0), V(1), ,,, V(m-1), the elements of Vec will be E(0) E(1) ,,, E(n-1) V(0) V(1) ,,, V(m-1) after the invocation of `append_front`.</p>
+<p class="rubric">Precondition</p>
+<p>`Eacher` must support each($consume) method, which calls $consume with each element of `Eacher`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">append_front</span>([<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;X&quot; &quot;Y&quot; &quot;Z&quot; &quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-append-back-eacher">
+<span id="api-ed2ad30dff9f91964619d0e93b5f71bb"></span><h3><span class="section-number">6.27.1.15. </span>Vec.append_back(Eacher)<a class="headerlink" href="#vec-append-back-eacher" title="Link to this heading">¶</a></h3>
+<p>`append_back` inserts all the elements of `Eacher` to the back of `Vec`.</p>
+<p>If Eacher.each passes E(0), E(1), ,,, E(n-1) to $consume for each invocation, and `Vec` currently contains V(0), V(1), ,,, V(m-1), the elements of Vec will be V(0) V(1) ,,, V(m-1) E(0) E(1) ,,, E(n-1) after the invocation of `append_back`.</p>
+<p class="rubric">Precondition</p>
+<p>`Eacher` must support each($consume) method, which calls $consume with each element of `Eacher`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">append_back</span>([<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-append-at-pos-eacher">
+<span id="api-755dd9c94f5fe42fa51a80bc1d86105f"></span><h3><span class="section-number">6.27.1.16. </span>Vec.append_at(Pos Eacher)<a class="headerlink" href="#vec-append-at-pos-eacher" title="Link to this heading">¶</a></h3>
+<p>`append_at` inserts all the elements of `Eacher` to `Vec` at the index `Pos`.</p>
+<p>If Eacher.each passes E(0), E(1), ,,, E(n-1) to $consume for each invocation, and `Vec` currently contains V(0), V(1), ,,, V(m-1), the elements of `Vec` will be V(0), V(1) ,,, V(Pos-1), E(0), E(1) ,,, E(n-1), V(Pos) ,,, V(m-1) after the invocation of `append_at`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Pos` must be an integer `num`.</p>
+<p>0 &lt;= Pos &lt;= Vec.size</p>
+<p>`Eacher` must support each($consume) method, which calls $consume with each element of `Eacher`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">append_at</span>(<span class="m">2</span> [<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-pop-front">
+<span id="api-475416d7bb5a9d04284bee414492ac45"></span><h3><span class="section-number">6.27.1.17. </span>Vec.pop_front<a class="headerlink" href="#vec-pop-front" title="Link to this heading">¶</a></h3>
+<p>`pop_front` removes the first element of `Vec` and returns the removed element.</p>
+<p>The elements after the removed element are copied to the front by one. The size of `Vec` is curtailed by one.</p>
+<p class="rubric">Precondition</p>
+<p>`Vec` must not be empty.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">:Result</span> &lt;- <span class="nv">Vec</span>.<span class="n">pop_front</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; [&quot;bar&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-pop-back">
+<span id="api-c76eb65950d9561ff7b81af8cf856928"></span><h3><span class="section-number">6.27.1.18. </span>Vec.pop_back<a class="headerlink" href="#vec-pop-back" title="Link to this heading">¶</a></h3>
+<p>`pop_back` removes the last element of `Vec` and returns the removed element.</p>
+<p>The size of `Vec` is curtailed by one.</p>
+<p class="rubric">Precondition</p>
+<p>`Vec` must not be empty.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">:Result</span> &lt;- <span class="nv">Vec</span>.<span class="n">pop_back</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;grault&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-pop-at-ind">
+<span id="api-0b77840d3b7bb661b0e01cb492e4187f"></span><h3><span class="section-number">6.27.1.19. </span>Vec.pop_at(Ind)<a class="headerlink" href="#vec-pop-at-ind" title="Link to this heading">¶</a></h3>
+<p>`pop_at` removes the element at the index `Ind` and returns the removed element.</p>
+<p>The elements after the removed element are copied to the front by one. The size of `Vec` is curtailed by one.</p>
+<p class="rubric">Preconditions</p>
+<p>`Ind` must be an integer `num`.</p>
+<p>0 &lt;= Ind &lt; Vec.size</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">:Result</span> &lt;- <span class="nv">Vec</span>.<span class="n">pop_at</span>(<span class="m">1</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>)   <span class="c1"># =&gt; &quot;bar&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-clear-from-0-to-vec-size">
+<span id="api-ad3ac9a2915cdc73f1eb27dfbe1f0ef2"></span><h3><span class="section-number">6.27.1.20. </span>Vec.clear(...[From=0 To=Vec.size])<a class="headerlink" href="#vec-clear-from-0-to-vec-size" title="Link to this heading">¶</a></h3>
+<p>`clear` removes the elements from `Vec` in the slice of the range [From, To).</p>
+<p>The elements after the removed slice are copied to the front by (To - From). The size of `Vec` is curtailed to Vec.size - (To - From).</p>
+<p class="rubric">Preconditions</p>
+<p>`From` and `To` must be integer `num` values.</p>
+<p>0 &lt;= From &lt;= To &lt;= Vec.size</p>
+<p class="rubric">Example: with no arg</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">clear</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; []</span>
+</pre></div>
+</div>
+<p class="rubric">Example: with From</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">clear</span>(<span class="m">3</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot;]</span>
+</pre></div>
+</div>
+<p class="rubric">Example: with From and To</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">clear</span>(<span class="m">3</span> <span class="m">5</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;5&quot; &quot;6&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-dup">
+<span id="api-4f175b876e19fc10c267f6fce74d5315"></span><h3><span class="section-number">6.27.1.21. </span>Vec.dup<a class="headerlink" href="#vec-dup" title="Link to this heading">¶</a></h3>
+<p>`dup` makes a new `vec` containing the same sequence of elements as `Vec` has.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Orig</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="nv">:Dup</span> &lt;- <span class="nv">Orig</span>.<span class="n">dup</span>
+<span class="nv">Orig</span>.<span class="n">set</span>(<span class="m">0</span> <span class="s1">&#39;X&#39;</span>)
+<span class="nv">Dup</span>.<span class="n">set</span>(<span class="m">1</span> <span class="s1">&#39;Y&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Orig</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;X&quot; &#39;bar&quot; &quot;baz&quot;]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dup</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; [&quot;foo&quot; &#39;Y&quot; &quot;baz&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-reverse">
+<span id="api-935ab420e28fb248fb8aae6d385b54a0"></span><h3><span class="section-number">6.27.1.22. </span>Vec.reverse<a class="headerlink" href="#vec-reverse" title="Link to this heading">¶</a></h3>
+<p>`reverse` makes a new `vec` containing the same elements as `Vec` has, in the reversed order.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">reverse</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;3&quot; &quot;2&quot; &quot;1&quot; &quot;0&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-concat">
+<span id="api-108bdfb6645391be0ad2571c52e1d70b"></span><h3><span class="section-number">6.27.1.23. </span>Vec.concat<a class="headerlink" href="#vec-concat" title="Link to this heading">¶</a></h3>
+<p>`concat` concatenates `vec`s in `Vec`.</p>
+<p>`concat` assumes all the elements of `Vec` are `vec`s. `concat` returns a new `vec` which has all the elements of those `vec`s in the order of those `vec`s, and in the order of the elements of thsoe `vec`s.</p>
+<p class="rubric">Precondition</p>
+<p>All the elements of `Vec` must be `vec`s.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vecs</span> &lt;- [[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span>] [<span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>] [<span class="s1">&#39;4&#39;</span>]]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vecs</span>.<span class="n">concat</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-unconcat-n">
+<span id="api-aa4ccd1dae957de037c5a4795fcc7df5"></span><h3><span class="section-number">6.27.1.24. </span>Vec.unconcat(N)<a class="headerlink" href="#vec-unconcat-n" title="Link to this heading">¶</a></h3>
+<p>`unconcat` splits `Vec` into groups of `N` elements, and returns a new `vec` of `vec`s which have those `N` elements.</p>
+<p>If `Vec` contains E(0), E(1) ,,, E(N-1), E(N), E(N+1) ,,, E(N+(N-1)) ,,, E(m*N), E(m*N+1) ,,, E(m*N+(N-1)), the result `vec` will contain `vec`s [E(0) E(1) ,,, E(N-1)], [E(N) E(N+1) ,,, E(N+(N-1))] ,,, [E(m*N) E(m*N+1) ,,, E(m*N+(N-1))].</p>
+<p class="rubric">Preconditions</p>
+<p>`N` must be a positive integer `num`.</p>
+<p>Vec.size % N == 0</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">unconcat</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [[&quot;0&quot; &quot;1&quot;] [&quot;2&quot; &quot;3&quot;] [&quot;4&quot; &quot;5&quot;]]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-just-if-empty">
+<span id="api-6523915a7e48a2c692e24abff5a9a9f1"></span><h3><span class="section-number">6.27.1.25. </span>Vec.just(...[$if_empty])<a class="headerlink" href="#vec-just-if-empty" title="Link to this heading">¶</a></h3>
+<p>`just` assumes `Vec` has only one element, and returns the element.</p>
+<p>If `Vec` is empty, and $if_empty is passed, `just` tail-calls $if_empty.</p>
+<p>Otherwise, `just` raises an exception.</p>
+<p class="rubric">Precondition</p>
+<p>$if_empty must be a thunk.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">42</span>].<span class="n">just</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([].<span class="n">just</span>{ <span class="s1">&#39;empty&#39;</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;empty&quot;</span>
+
+[].<span class="n">just</span>
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   {(stdin) L4 C4 just} [].--&gt;just</span>
+<span class="c1">#   Vec.just(...[$if_empty]): Vec must be a 1-elem vec, but the number of elems was 0</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-with-elems-with0-with1-with2">
+<span id="api-9c1a3a7b764fa70187afe30654617332"></span><h3><span class="section-number">6.27.1.26. </span>Vec.with_elems(...[$with0 $with1 $with2 ,,,])<a class="headerlink" href="#vec-with-elems-with0-with1-with2" title="Link to this heading">¶</a></h3>
+<p>`with_elems` tail-calls a fun with the elements of `Vec` as args.</p>
+<p>`with_elems` takes an arbitrary number of funs. Let these be $with0, $with1, $with2, ,,, in that order. If the size of `Vec` is `N`, `with_elems` tail-calls $withN with the elements of `Vec` as args.</p>
+<p class="rubric">Preconditions</p>
+<p>The size of `Vec` must be less than the number of args.</p>
+<p>$withK (K = 0, 1, 2 ,,,) must take K args.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:print_num</span> &lt;- {(<span class="nv">:Num</span> <span class="nv">:Lang_tag</span>.<span class="n">opt</span>)
+  <span class="nv">:Locale</span> = <span class="nv">Lang_tag</span>.<span class="n">with_elems</span>(
+    { <span class="nv">LOCALE</span>.<span class="n">root</span> }
+    {(<span class="nv">:Lt</span>) <span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="nv">Lt</span>) }
+  )
+  <span class="n">stdout</span>.<span class="n">print_line</span>(
+    <span class="nv">Num</span>.<span class="n">show</span>{(<span class="nv">:C</span>)
+      <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">Locale</span>)
+      <span class="nv">C</span>.<span class="n">group_len</span>(<span class="m">3</span>)
+    }
+  )
+}
+
+<span class="n">print_num</span>(<span class="m">1234</span>)       <span class="c1"># =&gt; 1,234</span>
+<span class="n">print_num</span>(<span class="m">1234</span> <span class="s1">&#39;fr&#39;</span>)  <span class="c1"># =&gt; 1 234</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-each-consume">
+<span id="api-5522a3bd9e69a4a66469992a7f5e0386"></span><h3><span class="section-number">6.27.1.27. </span>Vec.each($consume)<a class="headerlink" href="#vec-each-consume" title="Link to this heading">¶</a></h3>
+<p>`each` calls $consume with each element from the front to the back.</p>
+<p>If `Vec` is not empty, `each` tail-calls $consume for the last element.</p>
+<p class="rubric">Precondition</p>
+<p>$consume must be a fun which takes a value.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">each</span>{(<span class="nv">:E</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;foo&quot;</span>
+<span class="c1">#   &quot;bar&quot;</span>
+<span class="c1">#   &quot;baz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-map-transform">
+<span id="api-3448e5bbbf0c59ea44e4ff57a9c9a131"></span><h3><span class="section-number">6.27.1.28. </span>Vec.map($transform)<a class="headerlink" href="#vec-map-transform" title="Link to this heading">¶</a></h3>
+<p>`map` makes a `vec` whose elements are transformed from the elements of `Vec` by $transform.</p>
+<p>If `Vec` contains E(0), E(1) ,,, E(n-1), the result `vec` will contain transform(E(0)) transform(E(1)) ,,, transform(E(n-1)).</p>
+<p class="rubric">Precondition</p>
+<p>$transform must be a fun which takes a value.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>]
+<span class="nv">:Mapped</span> &lt;- <span class="nv">Vec</span>.<span class="n">map</span>{(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">10</span> }
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Mapped</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [0 10 20 30 40]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-concat-map-to-vec">
+<span id="api-30daf5213e59651e3c34aed6a56eb4da"></span><h3><span class="section-number">6.27.1.29. </span>Vec.concat_map($to_vec)<a class="headerlink" href="#vec-concat-map-to-vec" title="Link to this heading">¶</a></h3>
+<p>`concat_map` returns a `vec` which concatenates `vec`s which are results of to_vec(element-of-Vec)</p>
+<p class="rubric">Precondition</p>
+<p>$to_vec must be a fun which takes a value and returns a `vec`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># extracts codepoints from the strs</span>
+<span class="nv">:to_codepoints</span> &lt;- {(<span class="nv">:Strs</span>)
+  <span class="nv">Strs</span>.<span class="n">concat_map</span>{(<span class="nv">:S</span>)
+    <span class="nv">S</span>.<span class="n">codepoints</span>
+  }
+}
+<span class="nv">:Codepoints</span> &lt;- <span class="n">to_codepoints</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Codepoints</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [102 111 111 98 97 114 98 97 122]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-filter-include">
+<span id="api-2c58ef95f8a75a29db05a46de52c8967"></span><h3><span class="section-number">6.27.1.30. </span>Vec.filter($include?)<a class="headerlink" href="#vec-filter-include" title="Link to this heading">¶</a></h3>
+<p>`filter` returns a `vec` containing all the elements that satisfy the predicate $include?.</p>
+<p class="rubric">Precondition</p>
+<p>$include? must be a predicate.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">13</span> <span class="m">21</span> <span class="m">34</span> <span class="m">55</span> <span class="m">89</span>]
+<span class="nv">:Evens</span> &lt;- <span class="nv">Nums</span>.<span class="n">filter</span>{(<span class="nv">:N</span>)
+  <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Evens</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [2 8 34]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-count-counted">
+<span id="api-c7cf80a654694c883ad4d6be8135c023"></span><h3><span class="section-number">6.27.1.31. </span>Vec.count($counted?)<a class="headerlink" href="#vec-count-counted" title="Link to this heading">¶</a></h3>
+<p>`count` returns the number of elements which satisfy the predicate $counted?, as an integer `num`.</p>
+<p class="rubric">Precondition</p>
+<p>$counted? must be a predicate.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">13</span> <span class="m">21</span> <span class="m">34</span> <span class="m">55</span> <span class="m">89</span>]
+<span class="nv">:Even_count</span> &lt;- <span class="nv">Nums</span>.<span class="n">count</span>{(<span class="nv">:N</span>)
+  <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Even_count</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 3</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-fold-init-combine">
+<span id="api-f7a2d4cc94155596c0b63f9e7d2a847c"></span><h3><span class="section-number">6.27.1.32. </span>Vec.fold(Init $combine)<a class="headerlink" href="#vec-fold-init-combine" title="Link to this heading">¶</a></h3>
+<p>`fold` folds elements seeded by `Init`.</p>
+<p>If `Vec` contains elements E(0) E(1) ,,, E(n-1), the result will be combine(combine(,,, combine(combine(Init E(0)) E(1)) ,,,) E(n-1)).</p>
+<p class="rubric">Precondition</p>
+<p>$combine must take two values.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:to_quote_line</span> &lt;- {(<span class="nv">:Words</span>)
+  <span class="nv">Words</span>.<span class="n">fold</span>(<span class="s1">&#39;%&#39;</span>){(<span class="nv">:Accum</span> <span class="nv">:Word</span>)
+    <span class="nv">Accum</span> + <span class="s1">&#39; &#39;</span> + <span class="nv">Word</span>
+  }
+}
+<span class="nv">:Quote</span> &lt;- <span class="n">to_quote_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Quote</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;% foo bar baz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-reduce-combine-empty-fallback">
+<span id="api-2df32705c7bfd54f55ac6f4e6b827746"></span><h3><span class="section-number">6.27.1.33. </span>Vec.reduce($combine ...[$empty_fallback])<a class="headerlink" href="#vec-reduce-combine-empty-fallback" title="Link to this heading">¶</a></h3>
+<p>`reduce` accumulates elements of `Vec` mutually.</p>
+<p>If `Vec` has one or more elements, `reduce` tail-calls `Vec.drop_front(1).fold(Vec.front $combine)`.</p>
+<p>If `Vec` is empty, and $empty_fallback is given, `reduce` tail-calls $empty_fallback with no arg.</p>
+<p>If `Vec` is empty, and $empty_fallback is not given, `reduce` raises an exception.</p>
+<p class="rubric">Preconditions</p>
+<p>$combine must be a fun which takes two values.</p>
+<p>$empty_fallback must be a thunk.</p>
+<p class="rubric">Example: without fallback</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:COMPARE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">31</span> <span class="m">41</span> <span class="m">59</span> <span class="m">26</span> <span class="m">53</span>].<span class="n">reduce</span>(<span class="nv">COMPARE$max</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 59</span>
+</pre></div>
+</div>
+<p class="rubric">Example: with fallback</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:separate_by_commas</span> &lt;- {(<span class="nv">:Args</span>)
+  <span class="nv">Args</span>.<span class="n">reduce</span>(
+    {(<span class="nv">:Accum</span> <span class="nv">:Arg</span>) <span class="nv">Accum</span> + <span class="s1">&#39;, &#39;</span> + <span class="nv">Arg</span> }
+    { <span class="s1">&#39;&#39;</span> }
+  )
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">separate_by_commas</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]).<span class="n">repr</span>)
+<span class="c1"># =&gt; &quot;foo, bar, baz&quot;</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">separate_by_commas</span>([]).<span class="n">repr</span>)
+<span class="c1"># =&gt; &quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-take-while-include">
+<span id="api-1f796154aaac67db79b07366b975faec"></span><h3><span class="section-number">6.27.1.34. </span>Vec.take_while($include?)<a class="headerlink" href="#vec-take-while-include" title="Link to this heading">¶</a></h3>
+<p>`take_while` returns a `vec` of the longest initial prefix whose elements satisfy the predicate $include?.</p>
+<p class="rubric">Precondition</p>
+<p>$include? must be a predicate.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> (-<span class="m">2</span>) <span class="m">3</span> (-<span class="m">4</span>) <span class="m">5</span> (-<span class="m">6</span>) <span class="m">7</span> (-<span class="m">8</span>)]
+<span class="nv">:Prefix</span> &lt;- <span class="nv">Nums</span>.<span class="n">take_while</span>{(<span class="nv">:N</span>)
+  <span class="nv">N</span> &lt; <span class="m">5</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Prefix</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [1 (-2) 3 (-4)]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-drop-while-exclude">
+<span id="api-d49548ba6040babf6593fdac6a64f369"></span><h3><span class="section-number">6.27.1.35. </span>Vec.drop_while($exclude?)<a class="headerlink" href="#vec-drop-while-exclude" title="Link to this heading">¶</a></h3>
+<p>`drop_while` returns a `vec` of the elements after the longest initial prefix whose elements satisfy the predicate $exclude?.</p>
+<p class="rubric">Precondition</p>
+<p>$exclude? must be a predicate.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> (-<span class="m">2</span>) <span class="m">3</span> (-<span class="m">4</span>) <span class="m">5</span> (-<span class="m">6</span>) <span class="m">7</span> (-<span class="m">8</span>)]
+<span class="nv">:Suffix</span> &lt;- <span class="nv">Nums</span>.<span class="n">drop_while</span>{(<span class="nv">:N</span>)
+  <span class="nv">N</span> &lt; <span class="m">5</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Suffix</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [5 (-6) 7 (-8)]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-all-match">
+<span id="api-3a663d57656e686d8ee0bfe5a9ea6c1e"></span><h3><span class="section-number">6.27.1.36. </span>Vec.all?($match?)<a class="headerlink" href="#vec-all-match" title="Link to this heading">¶</a></h3>
+<p>`all?` returns whether all the elements of `Vec` satisfy the predicate $match?.</p>
+<p class="rubric">Precondition</p>
+<p>$match? must be a predicate.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:all_even?</span> &lt;- {(<span class="nv">:Nums</span>)
+  <span class="nv">Nums</span>.<span class="n">all?</span>{(<span class="nv">:N</span>)
+    <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
+  }
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">all_even?</span>([<span class="m">0</span> <span class="m">2</span> <span class="m">4</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">all_even?</span>([<span class="m">6</span> <span class="m">7</span> <span class="m">9</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">all_even?</span>([<span class="m">1</span> <span class="m">3</span> <span class="m">5</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-any-match-true">
+<span id="api-11af723e0870efb38f34d5275664b3f9"></span><h3><span class="section-number">6.27.1.37. </span>Vec.any?(...[$match?={ true }])<a class="headerlink" href="#vec-any-match-true" title="Link to this heading">¶</a></h3>
+<p>`any?` returns whether at least one of the elements of `Vec` satisfies the predicate $match?.</p>
+<p>$match? is an optional arg with a default value { true }, So, if $match? is not passed, `any?` returns whether `Vec` is nonempty.</p>
+<p class="rubric">Precondition</p>
+<p>$match? must be a predicate.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:any_even?</span> &lt;- {(<span class="nv">:Nums</span>)
+  <span class="nv">Nums</span>.<span class="n">any?</span>{(<span class="nv">:N</span>)
+    <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
+  }
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">any_even?</span>([<span class="m">0</span> <span class="m">2</span> <span class="m">4</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">any_even?</span>([<span class="m">6</span> <span class="m">7</span> <span class="m">9</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">any_even?</span>([<span class="m">1</span> <span class="m">3</span> <span class="m">5</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span>].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-have-target">
+<span id="api-0cf79cfaf2d21da7624ed9357e09d981"></span><h3><span class="section-number">6.27.1.38. </span>Vec.have?(Target)<a class="headerlink" href="#vec-have-target" title="Link to this heading">¶</a></h3>
+<p>`have?` returns whether `Vec` has an element which is equal to `Target` by `==` operator, or `op_eq` method.</p>
+<p>Calling Vec.have?(Target) is equivalent to calling Vec.any?{(:E) Target == E }.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">1</span> <span class="m">3</span> <span class="m">5</span>].<span class="n">have?</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">2</span> <span class="m">4</span> <span class="m">6</span>].<span class="n">have?</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-have-all-vals">
+<span id="api-82b1d65bfeb4515918b278ec71879256"></span><h3><span class="section-number">6.27.1.39. </span>Vec.have_all?(Vals)<a class="headerlink" href="#vec-have-all-vals" title="Link to this heading">¶</a></h3>
+<p>`have_all?` returns whether `Vec` has all the elements of `Vals`.</p>
+<p>Calling Vec.have_all?(Vals) is equivalent to calling Vals.all?{(:T) Vec.have?(T) }.</p>
+<p class="rubric">Preconditions</p>
+<p>`Vals` must have all?($match?) method.</p>
+<p>`==` operator, or `op_eq` method, must be able to compare elements of `Vec` and `Vals`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Vec</span> &lt;- [<span class="m">2</span> <span class="m">4</span> <span class="m">6</span> <span class="m">8</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_all?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">2</span> <span class="m">4</span>)).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_all?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">6</span> <span class="m">7</span>)).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-have-any-vals">
+<span id="api-2f9fb22ebdbc1305055535e3563e3211"></span><h3><span class="section-number">6.27.1.40. </span>Vec.have_any?(Vals)<a class="headerlink" href="#vec-have-any-vals" title="Link to this heading">¶</a></h3>
+<p>`have_any?` returns whether `Vec` has any element of `Vals`.</p>
+<p>Calling Vec.have_any?(Vals) is equivalent to calling Vals.any?{(:T) Vec.have?(T) }.</p>
+<p class="rubric">Preconditions</p>
+<p>`Vals` must have any?($match?) method.</p>
+<p>`==` operator, or `op_eq` method, must be able to compare elements of `Vec` and `Vals`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Vec</span> &lt;- [<span class="m">2</span> <span class="m">4</span> <span class="m">6</span> <span class="m">8</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_any?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">2</span> <span class="m">4</span>)).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_any?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">6</span> <span class="m">7</span>)).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_any?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">10</span> <span class="m">20</span>)).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-sort-in-order-x-y-x-y">
+<span id="api-db860e884a84e1827982b48eee6be98f"></span><h3><span class="section-number">6.27.1.41. </span>Vec.sort(...[$in_order?={(:X :Y) X &lt;= Y }])<a class="headerlink" href="#vec-sort-in-order-x-y-x-y" title="Link to this heading">¶</a></h3>
+<p>`sort` returns a `vec` whose elements are copied from `Vec` and sorted in the ascending order specified by $in_order?.</p>
+<p class="rubric">Comparison</p>
+<p>Comparison of elements are done by $in_order?.</p>
+<p>$in_order? must be a total order relation of the elements of `Vec`. For all `X`, `Y`, and `Z` in the elements of `Vec`, $in_order? must satisfy the following.</p>
+<p>• reflexive: in_order?(X X)</p>
+<p>• transitive: if in_order?(X Y) &amp;&amp; in_order?(Y Z) then in_order?(X Z)</p>
+<p>• antisymmetric: if in_order?(X Y) &amp;&amp; in_order?(Y X) then X is equivalent to Y</p>
+<p>• strongly connected: in_order?(X Y) || in_order?(Y X)</p>
+<p class="rubric">Stable sort</p>
+<p>`sort` performs a stable sort. If in_order?(E1 E2) &amp;&amp; in_order?(E2 E1), for `E1` and `E2` in `Vec`, `E1` and `E2` appear in the result `vec` in the same order as in `Vec`.</p>
+<p class="rubric">Precondition</p>
+<p>$in_order? must be a fun which takes two values and returns a `bool`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;FOO&#39;</span> <span class="s1">&#39;BAR&#39;</span> <span class="s1">&#39;BAZ&#39;</span>]
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">sort</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;BAR&quot; &quot;BAZ&quot; &quot;FOO&quot; &quot;bar&quot; &quot;baz&quot; &quot;foo&quot;]</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">sort</span>{(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span>.<span class="n">ascii_downcase</span> &lt;= <span class="nv">Y</span>.<span class="n">ascii_downcase</span> }.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;bar&quot; &quot;BAR&quot; &quot;baz&quot; &quot;BAZ&quot; &quot;foo&quot; &quot;FOO&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-iter-from-0-to-vec-size">
+<span id="api-c31469da21f944429a8cf92a5403ec4f"></span><h3><span class="section-number">6.27.1.42. </span>Vec.iter(...[From=0 To=Vec.size])<a class="headerlink" href="#vec-iter-from-0-to-vec-size" title="Link to this heading">¶</a></h3>
+<p>`iter` method returns an `iter` containing the elements of the slice in the range [From, To).</p>
+<p class="rubric">Preconditions</p>
+<p>`From` and `To` must be integer `num` values.</p>
+<p>0 &lt;= From &lt;= To &lt;= Vec.size</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>].<span class="n">iter</span>.<span class="n">each</span>{(<span class="nv">:S</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;0&quot;</span>
+<span class="c1">#   &quot;1&quot;</span>
+<span class="c1">#   &quot;2&quot;</span>
+<span class="c1">#   &quot;3&quot;</span>
+<span class="c1">#   &quot;4&quot;</span>
+
+[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>].<span class="n">iter</span>(<span class="m">2</span>).<span class="n">each</span>{(<span class="nv">:S</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;2&quot;</span>
+<span class="c1">#   &quot;3&quot;</span>
+<span class="c1">#   &quot;4&quot;</span>
+
+[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>].<span class="n">iter</span>(<span class="m">2</span> <span class="m">4</span>).<span class="n">each</span>{(<span class="nv">:S</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;2&quot;</span>
+<span class="c1">#   &quot;3&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec1-vec2">
+<span id="api-d97345411758603e5d72d2026abceeea"></span><h3><span class="section-number">6.27.1.43. </span>Vec1 + Vec2<a class="headerlink" href="#vec1-vec2" title="Link to this heading">¶</a></h3>
+<p>`+` operator, or `op_add` method, returns a `vec` containing all the elements of `Vec1` in the front, and all the elements of `Vec2` in the back.</p>
+<p class="rubric">Precondition</p>
+<p>`Vec2` must be a `vec`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(([<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span>] + [<span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-n">
+<span id="api-61e61615143dade9dabbd34bcb5d4d16"></span><h3><span class="section-number">6.27.1.44. </span>Vec * N<a class="headerlink" href="#vec-n" title="Link to this heading">¶</a></h3>
+<p>`*` operator, or `op_mul` method, returns a `vec` containing the elements of `Vec` repeated `N` times.</p>
+<p class="rubric">Preconditions</p>
+<p>`N` must be a nonnegative integer `num`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(([<span class="m">1</span> <span class="m">2</span>] * <span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [1 2 1 2 1 2]</span>
+</pre></div>
+</div>
+</section>
+<section id="api-7b111e394601a5a4a97ab44892979c20">
+<span id="id1"></span><h3><span class="section-number">6.27.1.45. </span>Vec1 == Vec2<a class="headerlink" href="#api-7b111e394601a5a4a97ab44892979c20" title="Link to this heading">¶</a></h3>
+<p>`==` operator, or `op_eq` method, returns whether `Vec1` and `Vec2` are equal, or they contain equal elements in the same order.</p>
+<p>The two vecs are equal if:</p>
+<p>1)  Vec1.size == Vec2.size</p>
+<p>2)  For all i in [0, Vec1.size), Vec1.get(i) == Vec2.get(i)</p>
+<p>The conditions are tested in the numbered order, and from the smallest `i` to the biggest `i`. If a test returns false, subsequent tests are not evaluated and two vecs are decided not equal.</p>
+<p class="rubric">Precondition</p>
+<p>`Vec1` and `Vec2` must be `vec` values.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:test_equality</span> &lt;- {(<span class="nv">:Vec1</span> <span class="nv">:Vec2</span>)
+  <span class="nv">CONTROL</span>.<span class="n">try</span>(
+    { <span class="nv">Vec1</span> == <span class="nv">Vec2</span> }
+    {(<span class="nv">:Result</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>) }
+    {(<span class="nv">:Exc</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;op_eq: exception: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Exc</span>.<span class="n">message</span>))
+    }
+  )
+}
+
+<span class="c1"># equal</span>
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>])
+<span class="c1"># Output: true</span>
+
+<span class="c1"># not equal because sizes differ</span>
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;foo&#39;</span> <span class="m">42</span> <span class="s1">&#39;bar&#39;</span>])
+<span class="c1"># Output: false</span>
+
+<span class="c1"># not equal because the first elemenets differ</span>
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;bar&#39;</span> <span class="m">42</span>])
+<span class="c1"># Output: false</span>
+
+<span class="c1"># not equal because the first elemenets differ;</span>
+<span class="c1"># the second elements are not tested</span>
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;***&#39;</span>])
+<span class="c1"># Output: false</span>
+
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;***&#39;</span>])
+<span class="c1"># Output:</span>
+<span class="c1">#   op_eq: exception: Num1.op_eq(Num2): the arg must be an int num, but got &quot;***&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="api-841e77748f0925e98ec50203bb9e02cf">
+<span id="id2"></span><h3><span class="section-number">6.27.1.46. </span>Vec1 &lt;= Vec2<a class="headerlink" href="#api-841e77748f0925e98ec50203bb9e02cf" title="Link to this heading">¶</a></h3>
+<p>`&lt;=` operator, or `op_le` method, returns whether `Vec1` is less than or equal to `Vec2` by the order defined by `&lt;=` operator of the elements.</p>
+<p>`Vec1` is less than or equal to `Vec2` when:</p>
+<p>1)  There is a nonnegative integer k (k &lt; min(Vec1.size Vec2.size)),     such that for all i in [0, k)     Vec1.get(i) &lt;= Vec2.get(i) &amp;&amp; Vec2.get(i) &lt;= Vec1.get(i),     and ! (Vec2.get(k) &lt;= Vec1.get(k)); or</p>
+<p>2)  Vec1.size &lt;= Vec2.size and for all i in [0, Vec1.size),     Vec1.get(i) &lt;= Vec2.get(i) &amp;&amp; Vec2.get(i) &lt;= Vec1.get(i).</p>
+<p>Comparisons are done from the smallest index to the biggest index. When the result is determined, the subsequent comparisons are not performed.</p>
+<p class="rubric">Precondition</p>
+<p>`Vec2` must be a `vec`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:compare</span> &lt;- {(<span class="nv">:Vec1</span> <span class="nv">:Vec2</span>)
+  [<span class="nv">:Lt?</span> <span class="nv">:Le?</span> <span class="nv">:Gt?</span> <span class="nv">:Ge?</span>] = [
+    <span class="nv">Vec1</span> &lt; <span class="nv">Vec2</span>
+    <span class="nv">Vec1</span> &lt;= <span class="nv">Vec2</span>
+    <span class="nv">Vec1</span> &gt; <span class="nv">Vec2</span>
+    <span class="nv">Vec1</span> &gt;= <span class="nv">Vec2</span>
+  ]
+  <span class="n">stdout</span>.<span class="n">print_line</span>(
+    <span class="s1">&#39;Lt?={} Le?={} Gt?={} Ge?={}&#39;</span>.<span class="n">format</span>(<span class="nv">Lt?</span>.<span class="n">repr</span> <span class="nv">Le?</span>.<span class="n">repr</span> <span class="nv">Gt?</span>.<span class="n">repr</span> <span class="nv">Ge?</span>.<span class="n">repr</span>))
+}
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;A&#39;</span> <span class="m">42</span>])
+<span class="c1"># =&gt; Lt?=false Le?=true Gt?=false Ge?=true</span>
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;A&#39;</span> <span class="m">42</span> <span class="s1">&#39;foo&#39;</span>])
+<span class="c1"># =&gt; Lt?=true Le?=true Gt?=false Ge?=false</span>
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;A&#39;</span>])
+<span class="c1"># =&gt; Lt?=false Le?=false Gt?=true Ge?=true</span>
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;B&#39;</span> <span class="m">42</span>])
+<span class="c1"># =&gt; Lt?=true Le?=true Gt?=false Ge?=false</span>
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;A&#39;</span> <span class="m">84</span>])
+<span class="c1"># =&gt; Lt?=true Le?=true Gt?=false Ge?=false</span>
+</pre></div>
+</div>
+</section>
+<section id="lhs-rhs">
+<span id="api-6573895cd5761f6c138e0b1ce561a7e6"></span><h3><span class="section-number">6.27.1.47. </span>Lhs &lt;- Rhs<a class="headerlink" href="#lhs-rhs" title="Link to this heading">¶</a></h3>
+<p>`&lt;-` operator, or `op_store` method, performs multiple assignment between a `vec` on the left hand side, `Lhs`, and the `vec` on the right hand side, `Rhs.</p>
+<p>Here, elements of `Lhs` are called params, and elements of `Rhs` are called args.</p>
+<p class="rubric">Params and args</p>
+<p>There are three types of params:</p>
+<p>• plain_param: ex. varref, vec. Can receive 1 arg.</p>
+<p>• opt_param: ex. Varref.opt. Can receive 0 or 1 arg.</p>
+<p>• rest_param: ex. Varref.rest. Can receive an arbitrary number of args.</p>
+<p>`plain_param` and `opt_param` can appear any number of times in `Lhs`. An `opt_param` cannot precede a `plain_param`.</p>
+<p>`Lhs` can have zero or one `rest_param` at the back.</p>
+<p>Let `NP` be the number of `plain_param`, and `NO` be the number of `opt_param`. Here, P(0), P(1) ,,, P(NP-1), O(0), O(1) ,,, O(NO-1) are params, where P(i) for each i (0 &lt;= i &lt; NP) is a `plain_param`, and O(j) for each j (0 &lt;= j &lt; NO) is an `opt_param`.</p>
+<p>In addition, let `NA` be the number of args, and A(k) for each k (0 &lt;= k &lt; NA) be an arg.</p>
+<p>`op_store` behaves differently depending on whether `Lhs` has a `rest_param` or not.</p>
+<p class="rubric">When `Lhs` has no `rest_param`</p>
+<p>In this case, the number of args `NA` is valid when NP &lt;= NA &lt;= NP+NO.</p>
+<p>When the number of args is not valid, `op_store` raises an exception.</p>
+<p>When the number of args is valid, `op_store` calls a method of each param as follows:</p>
+<p>• P(k).op_store(A(k)) for each k (0 &lt;= k &lt; NP)</p>
+<p>• O(k - NP).pass_arg(A(k)) for each k (NP &lt;= k &lt; NA)</p>
+<p>• O(k - NP).pass_nothing for each k (NA &lt;= k &lt; NP+NO)</p>
+<p class="rubric">When `Lhs` has a `rest_param`, `R`</p>
+<p>In this case, the number of args `NA` is valid when NP &lt;= NA.</p>
+<p>When the number of args is not valid, `op_store` raises an exception.</p>
+<p>When the number of args is valid, `op_store` calls a method of each param as follows:</p>
+<p>• P(k).op_store(A(k)) for each k (0 &lt;= k &lt; NP)</p>
+<p>• O(k - NP).pass_arg(A(k)) for each k (NP &lt;= k &lt; NA)</p>
+<p>• O(k - NP).pass_nothing for each k (NA &lt;= k &lt; NP+NO)</p>
+<p>• R.pass_rest(vec of A(k) for each k (NP+NO &lt;= k &lt; NA))</p>
+<p class="rubric">Precondition</p>
+<p>`Rhs` must be a `vec`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+[<span class="nv">:X</span> <span class="nv">:Y</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot;</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y Z=[] W=[]&quot;</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y Z=[&quot;z&quot;] W=[]&quot;</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span> <span class="s1">&#39;w&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y Z=[&quot;z&quot;] W=[&quot;w&quot;]&quot;</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; R=[]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;r1&#39;</span> <span class="s1">&#39;r2&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; R=[&quot;r1&quot; &quot;r2&quot;]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; Z=[] W=[] R=[]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; Z=[&quot;z&quot;] W=[] R=[]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span> <span class="s1">&#39;w&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; Z=[&quot;z&quot;] W=[&quot;w&quot;] R=[]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span> <span class="s1">&#39;w&#39;</span> <span class="s1">&#39;r1&#39;</span> <span class="s1">&#39;r2&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; Z=[&quot;z&quot;] W=[&quot;w&quot;] R=[&quot;r1&quot; &quot;r2&quot;]</span>
+
+<span class="c1"># Invalid numbers of right-hand-side vals:</span>
+<span class="nv">CONTROL</span>.<span class="n">try</span>(
+  { [<span class="nv">:X</span> <span class="nv">:Y</span>] &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>] }
+  { <span class="n">raise</span>(<span class="s1">&#39;must not reach here&#39;</span>) }
+  {(<span class="nv">:Exc</span>)
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;exception: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Exc</span>.<span class="n">message</span>))
+  }
+)
+<span class="c1"># =&gt; exception: too many args: for [:X :Y], got [1 2 3]</span>
+
+<span class="nv">CONTROL</span>.<span class="n">try</span>(
+  { [<span class="nv">:X</span> <span class="nv">:Y</span>] &lt;- [<span class="m">1</span>] }
+  { <span class="n">raise</span>(<span class="s1">&#39;must not reach here&#39;</span>) }
+  {(<span class="nv">:Exc</span>)
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;exception: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Exc</span>.<span class="n">message</span>))
+  }
+)
+<span class="c1"># =&gt; exception: too few args: for [:X :Y], got [1]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-repr">
+<span id="api-97b5493e30b9b5d7d421ed0d4c007f3e"></span><h3><span class="section-number">6.27.1.48. </span>Vec.repr<a class="headerlink" href="#vec-repr" title="Link to this heading">¶</a></h3>
+<p>`repr` returns a `str` representation of `Vec`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>].<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;foo&quot; 42]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="vec-is-val">
+<span id="api-86a15de152657a3ba0b61d095050256c"></span><h2><span class="section-number">6.27.2. </span>VEC.is?(Val)<a class="headerlink" href="#vec-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `vec`.</p>
+</section>
+<section id="vec-from-each-eacher">
+<span id="api-9f0ca3a3c6cc97f50656aa977d61bbe5"></span><h2><span class="section-number">6.27.3. </span>VEC.from_each(Eacher)<a class="headerlink" href="#vec-from-each-eacher" title="Link to this heading">¶</a></h2>
+<p>`from_each` returns a new `vec` including all the elements of `Eacher`.</p>
+<p>`Eacher` must have .each($consume) method which calls $consume for each element.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VEC</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">VEC</span>.<span class="n">from_each</span>(<span class="nv">Set</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;bar&quot; &quot;baz&quot; &quot;foo&quot;]</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-FLAT_MAP.html"><span class="section-number">6.28. </span>kink/container/FLAT_MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,753 @@
+=================================
+Kinkdoc: API Documentation system
+=================================
+
+:dfn:`Kinkdoc` is an API documentation system for Kink programs.
+Like Javadoc, godoc, and Doxygen, documentation texts for kinkdoc
+are written in program comments.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Tutorial
+========
+
+Let's make a set of modules, and write kinkdoc documentation for them. 
+In this tutorial section, we will make following modules:
+
+* math/RAT : for rational numbers.
+* math/COMPLEX : for complex numbers.
+
+Here, asusme we implement have a library project
+as the following directory structure:
+
+* mathlib/ : the project directory
+
+  * src/ : the root of modules
+
+    * math/
+
+      * RAT.kn : program file of math/RAT module
+      * COMPLEX.kn : program file of math/COMPLEX module
+
+  * build/ : the directory of generated files
+
+Let's start from src/math/RAT.kn as follows.
+We will add documentation to this module and the library as a whole.
+
+::
+
+  :NUM.require_from('kink/')
+
+  :new <- {(:Numer :Denom)
+    :Desc = 'RAT.new(Numer Denom)'
+    NUM.is?(Numer) && Numer.int? || raise(
+      '{}: Numer must be an int num, but was {}'.format(Desc Numer.repr))
+    NUM.is?(Denom) && Denom.int? && Denom != 0 || raise(
+      '{}: Denom must be a non-zero int num, but was {}'.format(Desc Denom.repr))
+    new_val(
+      .. Rat_trait
+      'Numer' Numer
+      'Denom' Denom
+    )
+  }
+
+  :Rat_trait <- [
+    'numer' {[:R] R.Numer }
+    'denom' {[:R] R.Denom }
+    'repr' {[:R] '(rat {} {})'.format(R.numer R.denom) }
+  ]
+
+Function
+--------
+
+First, add a short description of ``new`` function.
+The first line of a kinkdoc comment chunk starts with ``##``,
+and subsequent lines start with ``#``, as follows.
+
+::
+
+  ## RAT.new(Numer Denom)
+  #
+  # `new` makes a `rat` value
+  # which represents a rational number.
+  #
+  # `Numer` is the numerator, and `Denom` is the denominator.
+  :new <- {(:Numer :Denom)
+    ,,,
+  }
+
+The text of the first line after ``##`` and a whitespace
+is treated as the title of the section.
+Following lines provide the body of the section.
+The text of the body starts after ``#`` and a whitespace,
+and it is separated to blocks or paragraphs by an empty comment line.
+So, the kinkdoc comment chunk above can be translated to HTML like this:
+
+.. code:: html
+
+  <h3>RAT.new(Numer Denom)</h3>
+
+  <p>`new` makes a `rat` value which represents a rational number.</p>
+
+  <p>`Numer` is the numerator, and `Denom` is the denominator.</p>
+
+Note that the backtick ````` is written to HTML verbatim.
+It is not a special character in kinkdoc format.
+Use of backticks to quote symbols or code fragments is just a convention.
+
+You may want to add an example code to the section.
+A code block is indented by two whitespaces.
+
+::
+
+  ## RAT.new(Numer Denom)
+  #
+  # `new` makes a `rat` value
+  # which represents a rational number.
+  #
+  # `Numer` is the numerator, and `Denom` is the denominator.
+  #
+  # Usage:
+  #
+  #   :RAT.require_from('org/example/')
+  #
+  #   :Rat <- RAT.new(1 2)
+  #   stdout.print_line(Rat.repr)  # => (rat 1 2)
+  :new <- {(:Numer :Denom)
+    ,,,
+  }
+
+The text after ``Usage:`` can be translated to HTML as follows:
+
+.. code:: html
+
+  <p>Usage:</p>
+
+  <pre>
+  :RAT.require_from('org/example/')
+  
+  :Rat &lt;- RAT.new(1 2)
+  stdout.print_line(Rat.repr)  # =&gt; (rat 1 2)
+  </pre>
+
+You might want to insert a heading to separate contents in the section body.
+If the block starts with ``==``, and ends with ``==``,
+it is regarded as a heading.
+
+::
+
+  ## RAT.new(Numer Denom)
+  #
+  # `new` makes a `rat` value
+  # which represents a rational number.
+  #
+  # `Numer` is the numerator, and `Denom` is the denominator.
+  #
+  # Usage:
+  #
+  #   :RAT.require_from('org/example/')
+  #
+  #   :Rat <- RAT.new(1 2)
+  #   stdout.print_line(Rat.repr)  # => (rat 1 2)
+  #
+  # == Preconditions: ==
+  #
+  # • `Numer` must be an int num.
+  #
+  # • `Denom` must be a non-zero int num.
+  :new <- {(:Numer :Denom)
+    ,,,
+  }
+
+The text after ``== Preconditions: ==`` can be translated to HTML as follows:
+
+.. code:: html
+
+  <p><em class="heading">Preconditions:</em></p>
+
+  <p>• `Numer` must be an int num.</p>
+
+  <p>• `Denom` must be a non-zero int num.</p>
+
+Note that the heading is not translated to ``h3``, ``h4``, or ``h5`` element,
+but just a ``p`` element with markups.
+It is because a heading does not affect the tree structure of the document.
+
+Also note that ``•`` is translated verbatim,
+because it is not a special character.
+
+Type and methods
+----------------
+
+Second, add documentation of ``rat`` type.
+The best location is before the assignment of ``Rat_trait``.
+
+::
+
+  ## type rat
+  #
+  # `rat` is a type of rational numbers.
+  :Rat_trait <- [
+    'numer' {[:R] R.Numer }
+    'denom' {[:R] R.Denom }
+    'repr' {[:R] '(rat {} {})'.format(R.numer R.denom) }
+  ]
+
+Then, add documentation of methods of ``rat`` type.
+
+::
+
+  ## type rat
+  #
+  # `rat` is a type of rational numbers.
+  :Rat_trait <- [
+
+    ## R.numer
+    #
+    # `numer` returns the numerator of the rational number `R`.
+    'numer' {[:R] R.Numer }
+
+    ## R.denom
+    #
+    # `denom` returns the denominator of the rational number `R`.
+    'denom' {[:R] R.Denom }
+
+    'repr' {[:R] '(rat {} {})'.format(R.numer R.denom) }
+  ]
+
+Here, kinkdoc comment chunks of ``R.numer`` and ``R.denom`` methods are
+indented from one of ``type rat``.
+Thus, the sections of ``R.numer`` and ``R.denom`` are regarded as children of
+the section of ``type rat``.
+So the above fragment can be translated to HTML as follows.
+
+.. code:: html
+
+  <h3>type rat</h3>
+
+  <p>`rat` is a type of rational numbers.</p>
+
+  <h4>R.numer</h4>
+
+  <p>`numer` returns the numerator of the rational number `R`.</p>
+
+  <h4>R.denom</h4>
+
+  <p>`denom` returns the denominator of the rational number `R`.</p>
+
+Module
+------
+
+You can also add documentation of a module.
+If the first kinkdoc comment chunk in a program file
+does not have a title string, it is handled as documentation of the module.
+
+Thus, finally, src/math/RAT.kn can be as follows.
+
+::
+
+  ##
+  # This module provides calculation of rational numbers.
+
+  :NUM.require_from('kink/')
+
+  ## RAT.new(Numer Denom)
+  #
+  # `new` makes a `rat` value
+  # which represents a rational number.
+  #
+  # `Numer` is the numerator, and `Denom` is the denominator.
+  #
+  # Usage:
+  #
+  #   :RAT.require_from('org/example/')
+  #
+  #   :Rat <- RAT.new(1 2)
+  #   stdout.print_line(Rat.repr)  # => (rat 1 2)
+  :new <- {(:Numer :Denom)
+    :Desc = 'RAT.new(Numer Denom)'
+    NUM.is?(Numer) && Numer.int? || raise(
+      '{}: Numer must be an int num, but was {}'.format(Desc Numer.repr))
+    NUM.is?(Denom) && Denom.int? && Denom != 0 || raise(
+      '{}: Denom must be a non-zero int num, but was {}'.format(Desc Denom.repr))
+    new_val(
+      .. Rat_trait
+      'Numer' Numer
+      'Denom' Denom
+    )
+  }
+
+  ## type rat
+  #
+  # `rat` is a type of rational numbers.
+  :Rat_trait <- [
+
+    ## R.numer
+    #
+    # `numer` returns the numerator of the rational number `R`.
+    'numer' {[:R] R.Numer }
+
+    ## R.denom
+    #
+    # `denom` returns the denominator of the rational number `R`.
+    'denom' {[:R] R.Denom }
+
+    'repr' {[:R] '(rat {} {})'.format(R.numer R.denom) }
+  ]
+
+Kinkdoc toolchain
+-----------------
+
+Assume you wrote src/math/COMPLEX.kn as well with kinkdoc comments.
+How can we generate documentation from those program files?
+
+Documentation generation is done by two steps:
+
+* Parsing: Generate a :ref:`JSON <kinkdocjsonschema>` file from program files.
+  Done by :doc:`DOC_PARSE_TOOL </api/kink-doc-DOC_PARSE_TOOL>` module.
+* Rendering: Generate an end result from the JSON file.
+  For example, :doc:`HTML_RENDER_TOOL
+  </api/kink-doc-render-html-HTML_RENDER_TOOL>` module for an HTML file,
+  and :doc:`SPHINX_RENDER_TOOL
+  </api/kink-doc-render-sphinx-SPHINX_RENDER_TOOL>` module
+  for Sphinx source files.
+
+The toolchain can be described as the following dataflow diagram.
+
+.. graphviz::
+
+  digraph kinkdocflow {
+    program [label = "proram files", shape = box];
+    json [label = "JSON", shape = box];
+    html [label = "HTML file", shape = box];
+    sphinx [label = "Sphinx files", shape = box];
+    other [label = "Other format", shape = box];
+
+    parser [label = "Parsing by DOC_PARSE_TOOL module"];
+    htmlrender [label = "HTML_RENDER_TOOL"];
+    sphinxrender [label = "SPHINX_RENDER_TOOL"];
+    otherrender [label = "Other renderer"];
+
+    program -> parser -> json;
+    json -> htmlrender -> html;
+    json -> sphinxrender -> sphinx;
+    json -> otherrender -> other;
+  }
+
+If you want to generate an HTML file as the output,
+you can run a command chain like this:
+
+.. code:: none
+
+  $ kink mod:kink/doc/DOC_PARSE_TOOL src | kink mod:kink/doc/render/html/HTML_RENDER_TOOL > doc.html
+
+:doc:`DOC_PARSE_TOOL </api/kink-doc-DOC_PARSE_TOOL>` module
+parses program files of public modules
+under the specified directory, ``src``,
+and writes the JSON data to the standard output.
+:doc:`HTML_RENDER_TOOL
+</api/kink-doc-render-html-HTML_RENDER_TOOL>`
+module reads the :ref:`JSON <kinkdocjsonschema>` data from the standard input,
+then writes an HTML document to the standard output.
+The html can be like the following:
+
+.. code:: html
+
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>API documentation</title>
+  </head>
+  <body>
+
+  <h1>API documentation</h1>
+
+  <h2>math/COMPLEX</h2>
+
+  <p>This module provides calculation of complex numbers.</p>
+
+  ,,,
+
+  <h2>math/RAT</h2>
+
+  <p>This module provides calculation of rational numbers.</p>
+
+  <h3>RAT.new(Numer Denom)</h3>
+
+  ,,,
+
+  </body>
+  </html>
+
+API level documentation
+-----------------------
+
+You can give the title of the entire API documentation by ``--title`` option
+of :doc:`DOC_PARSE_TOOL </api/kink-doc-DOC_PARSE_TOOL>` module.
+If ``--title`` is not specified, “API documentation”
+is used as the default title.
+
+You can also give the overview text of the API documentation.
+It can be done by making a program file containing kinkdoc comment chunks,
+and specifying the file to ``--overview`` option
+of :doc:`DOC_PARSE_TOOL </api/kink-doc-DOC_PARSE_TOOL>` module.
+The toplevel section of the specified program file
+is used as the overview text.
+The second and lower level sections are used as as module-level
+and lower level sections.
+
+Let's make src/overview.kn as follows:
+
+::
+
+  ##
+  # This library provides various systems of numbers.
+
+The overview file can be specified as follows.
+
+.. code:: none
+
+  $ kink mod:kink/doc/DOC_PARSE_TOOL src \
+      --title 'Math library' \
+      --overview src/overview.kn \
+      | kink mod:kink/doc/render/html/HTML_RENDER_TOOL > doc.html
+
+The end result can be as follows:
+
+.. code:: html
+
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Math library</title>
+  </head>
+  <body>
+
+  <h1>Math library</h1>
+
+  <p>This library provides various systems of numbers.</p>
+
+  <h2>math/COMPLEX</h2>
+
+  ,,,
+
+  <h2>math/RAT</h2>
+
+  ,,,
+
+  </body>
+  </html>
+
+Vim folding support
+-------------------
+
+If the title line contains ``{{{``, the substring from it is ignored. 
+So, it can be used as the start marker without changing the output.
+
+Example:
+
+::
+
+  ## type rat {{{1
+  #
+  # `rat` is a type of rational numbers.
+  :Rat_trait <- [
+
+    ## R.numer {{{
+    #
+    # `numer` returns the numerator of the rational number `R`.
+    'numer' {[:R]
+      R.Numer
+    } # }}}
+
+    ## R.denom {{{
+    #
+    # `denom` returns the denominator of the rational number `R`.
+    'denom' {[:R]
+      R.Denom
+    } # }}}
+
+    'repr' {[:R] '(rat {} {})'.format(R.numer R.denom) }
+
+  ] # }}}1
+
+Kinkdoc comment specification
+=============================
+
+Definitions of terms in the section
+-----------------------------------
+
+The following are definitions of terms used in
+the “Kinkdoc comment specification” section.
+
+.. rubric:: Whitespace character
+
+The :dfn:`whitespace character` is the codepoint U+0020.
+
+.. rubric:: ASCII control characters
+
+:dfn:`ASCII control characters` are the codepoints U+0000-U+001f and U+007f.
+
+.. rubric:: Space-like characters
+
+:dfn:`Space-like characters` are the whitespace character
+or ASCII control characters.
+
+.. rubric:: Line feed character
+
+:dfn:`Line feed character` is U+000a.
+
+.. rubric:: Line
+
+A :dfn:`line` is a range in a source program
+which meets one of the following conditions:
+
+* If the source program includes one or more line feed characters:
+
+  * From the start of the source program,
+    exclusively to the first line feed character.
+  * Exclusively from the last line feed character, to the end of the program.
+  * Exclusively from a line feed character,
+    exclusively to the next line feed character.
+
+* If the source program does not include a line feed character:
+
+  * From the start of the source program, to the end of the source program.
+
+.. rubric:: Number sign
+
+The :dfn:`number sign` is the codepoint ``#`` (U+0023).
+
+.. rubric:: Comment delimiter
+
+The :dfn:`comment delimiter` of a comment is the longest sequence
+of number signs inclusively from the number sign which starts the comment.
+
+.. rubric:: Comment only line
+
+A :dfn:`comment only line` is a line which meets the following conditions:
+
+* The line contains a :ref:`comment <comment>`.
+* All the codepoints in the line before the comment delimiter
+  are whitespace characters.
+
+.. rubric:: Comment text
+
+The :dfn:`comment text` of a comment is the codepoints of the range
+exclusively from the comment delimiter,
+exclusively to the sequence of space-like characters at the end of the line.
+
+.. rubric:: Empty comment line
+
+An :dfn:`empty comment line` is a comment only line the length
+of the comment text of which is zero.
+
+.. rubric:: Comment chunk
+
+A :dfn:`comment chunk` is a sequence of comment only lines,
+which is not preceded by a comment only line,
+and not followed by a comment only line.
+
+Kinkdoc comment chunk
+---------------------
+
+A documentation text is written in a comment chunk
+which meets the following conditions.
+Those chunks are called :dfn:`kinkdoc comment chunks`.
+
+* Every line must be indented at the same level.
+  In other words, the number of whitespace characters
+  at the beginning of the line must be equal for each line.
+
+* The comment delimiter of the first line
+  must be exactly two number signs ``##``.
+
+* If the chunk consists of 2 or more lines,
+  the comment delimiter of the second and following lines
+  must be exactly one number sign ``#``.
+
+* If the comment text is not empty,
+  the first codepoint after the comment delimiter must be a whitespace character.
+
+Title
+-----
+
+The title of the section is extracted from the comment text of the first line
+of the kinkdoc comment chunk.
+The comment text is first matched by the regex 
+``[\u0000-\u0020\u007f]*(?<RawText>.*?)[\u0000-\u0020\u007f]*(\{\{\{.*)?``
+and the group ``RawText`` is extracted.
+
+The title is made from ``RawText``, replacing ASCII control characters
+to a whitespace character.
+
+Blocks
+------
+
+The second and following lines of the kinkdoc comment chunk
+are split to :dfn:`blocks` by empty comment lines.
+
+There are three types of blocks:
+
+* Code block
+* Heading block
+* Paragraph block
+
+Code block
+~~~~~~~~~~
+
+If the comment text of every line of a block
+has three or more whitespace characters,
+the block is a :dfn:`code block`.
+
+The text of the code block is generated from comment texts as follows.
+First, three whitespace characters are removed from the head
+of the comment text of each line.
+Second, a line feed character is added to the end of the comment text
+of each line.
+Third, comment texts of the code block are concatenated in order.
+
+If a code block is directly followed by another code block,
+those code blocks are combined into a single code block.
+The text of the code block is made by joining the texts
+of the combined code blocks with a line feed character.
+
+Heading block
+~~~~~~~~~~~~~
+
+If a block meets following conditions, it is a :dfn:`heading block`.
+
+* The comment text of the first line of the block
+  starts with a white space character and two equals signs (U+003d),
+  and a white space character.
+* The comment text of the last line of the block
+  ends with a white space character, and two equal signs (U+003d).
+* One of the following conditions are met:
+
+  * The block consists of two or more lines.
+  * If the block consists of a single line,
+    the comment text matches the regex ``[ ]== +[^ ](.*[^ ]) +==``.
+
+The text of the heading block is generated as follows.
+First, comment texts of the lines are concatenated in order.
+Second, the text is matched with the regex
+``[ ]== +(?<Content>[^ ](.*[^ ])) +==``,
+and the group ``Content`` is extracted as the text of the heading block.
+
+Paragraph block
+~~~~~~~~~~~~~~~
+
+If a block does not meet the conditions
+of the :dfn:`code block` or the :dfn:`heading block`,
+it is a paragraph block.
+
+The text of the paragraph block is generated as follows.
+First, comment texts of the lines are concatenated in order.
+Second, whitespace characters at the head of the text are removed.
+
+Tree structure of sections
+--------------------------
+
+The toplevel section
+~~~~~~~~~~~~~~~~~~~~
+
+If the first kinkdoc comment chunk has an empty title,
+the blocks of the chunk are used as the blocks of the toplevel section.
+
+If the program file does not have a kinkdoc comment chunk,
+or the first kinkdoc comment chunk has a nonempty title,
+the toplevel section is created with no blocks.
+
+Non toplevel sections
+~~~~~~~~~~~~~~~~~~~~~
+
+The tree structure of non-toplevel sections are determined from
+indent levels of each kinkdoc comment chunk.
+Here, the indent level of a chunk is the number of whitespace characters
+before the comment delimiter.
+
+The tree structure is determined by the algorithm given
+by the pseudo code below.
+
+.. code:: none
+
+  toplevel_section := «the top level section»
+  chunks := «FIFO queue of non-toplevel kinkdoc comment chunks»
+
+  read_children(toplevel_section, 0)
+
+  def read_children(parent, min_indent) {
+    loop {
+      if empty?(chunks)
+        return
+
+      chunk := peek(chunks)
+      if chunk.indent_level < min_indent
+        return
+
+      dequeue(chunks)
+      section := «generate section from chunk»
+      add(parent.subsections, section)
+      read_children(section, chunk.indent_level + 1)
+    }
+  }
+
+.. _kinkdocjsonschema:
+
+JSON Schema
+===========
+
+The following is the JSON Schema of kinkdoc JSON data.
+
+.. code:: json
+
+  { "type": "object",
+    "required": ["title", "blocks", "subsections"],
+    "properties": {
+      "title": {
+        "type": "string",
+        "pattern": "[^\\u0000-\\u0020\\u007f]([^\\u0000-\\u001f\\u007f]*[^\\u0000-\\u0020\\u007f])?"
+      },
+      "blocks": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {
+              "enum": ["paragraph", "code", "heading"]
+            },
+          },
+          "if": {
+            "properties": {
+              "type": { "const": "code" }
+            }
+          },
+          "then": {
+            "properties": {
+              "text": {
+                "type": "string",
+                "pattern": "( *[^\\u0000-\\u0020\\u007f][^\\u0000-\\u001f\\u007f]*\\n)(([^\\u0000-\\u001f\\u007f]*\\n)*( *[^\\u0000-\\u0020\\u007f][^\\u0000-\\u001f\\u007f]*\\n))?"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "text": {
+                "type": "string",
+                "pattern": "[^\\u0000-\\u0020\\u007f]([^\\u0000-\\u001f\\u007f]*[^\\u0000-\\u0020\\u007f])?"
+              }
+            }
+          }
+        }
+      },
+      "subsections": {
+        "type": "array",
+        "items": { "$ref": "#" }
+      }
+    }
+  }
+
+.. vim: et sw=2 sts=2

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.83. kink/random/RNG &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.84. kink/regex/GROUP" href="kink-regex-GROUP.html" />
+    <link rel="prev" title="6.82. kink/random/PRNG" href="kink-random-PRNG.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.83. kink/random/RNG</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-random-PRNG.html"><span class="section-number">6.82. </span>kink/random/PRNG</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-regex-GROUP.html"><span class="section-number">6.84. </span>kink/regex/GROUP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-random-rng">
+<h1><span class="section-number">6.83. </span>kink/random/RNG<a class="headerlink" href="#kink-random-rng" title="Link to this heading">¶</a></h1>
+<p>Random number generators.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-rng" id="id2">type rng</a></p>
+<ul>
+<li><p><a class="reference internal" href="#rng-gen-int-upper-bound" id="id3">Rng.gen_int(Upper_bound)</a></p></li>
+<li><p><a class="reference internal" href="#rng-gen-bin-size" id="id4">Rng.gen_bin(Size)</a></p></li>
+<li><p><a class="reference internal" href="#rng-gen-bool" id="id5">Rng.gen_bool</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#rng-is-val" id="id6">RNG.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-rng">
+<span id="api-4dfecfdd657a21c4dbd838bfb375d027"></span><h2><span class="section-number">6.83.1. </span>type rng<a class="headerlink" href="#type-rng" title="Link to this heading">¶</a></h2>
+<p>Abstract type of random number generator.</p>
+<section id="rng-gen-int-upper-bound">
+<span id="api-e8712e91e935dcfdb3a7645b7c5c4293"></span><h3><span class="section-number">6.83.1.1. </span>Rng.gen_int(Upper_bound)<a class="headerlink" href="#rng-gen-int-upper-bound" title="Link to this heading">¶</a></h3>
+<p>`gen_int` produces a random int num in the range [0, Upper_bound).</p>
+<p>Preconditions:</p>
+<p>• `Upper_bound` must be an int num</p>
+<p>• `Upper_bound` must be greater than or equal to 1</p>
+<p>Every int nums in the range should be produced with approximately equal probability.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PRNG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/random/&#39;</span>)
+<span class="nv">:VEC</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Rng</span> &lt;- <span class="nv">PRNG</span>.<span class="n">from_seed</span>(<span class="m">42</span>)
+<span class="nv">:Nums</span> &lt;- <span class="nv">VEC</span>.<span class="n">from_each</span>(<span class="m">10</span>.<span class="n">times</span>.<span class="n">map</span>{ <span class="nv">Rng</span>.<span class="n">gen_int</span>(<span class="m">3</span>) })
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Nums</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [2 0 2 2 1 0 2 1 2 2]</span>
+</pre></div>
+</div>
+</section>
+<section id="rng-gen-bin-size">
+<span id="api-d1aa89956770037161b946b45d4c6a64"></span><h3><span class="section-number">6.83.1.2. </span>Rng.gen_bin(Size)<a class="headerlink" href="#rng-gen-bin-size" title="Link to this heading">¶</a></h3>
+<p>`gen_bin` produces a bin of the `Size` bits of which is randomly determined.</p>
+<p>Preconditions:</p>
+<p>• `Size` must be a non-negative int num</p>
+<p>Probability of `1` bits and `0` bits should be approximately equal.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PRNG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/random/&#39;</span>)
+
+<span class="nv">:Rng</span> &lt;- <span class="nv">PRNG</span>.<span class="n">from_seed</span>(<span class="m">42</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Rng</span>.<span class="n">gen_bin</span>(<span class="m">10</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; BIN.of(0x16 0x22 0xad 0x5f 0xe9 0xb6 0x94 0x4d 0x98 0xb1)</span>
+</pre></div>
+</div>
+</section>
+<section id="rng-gen-bool">
+<span id="api-f83907f1fbc438afd84325d8d0a9d3b0"></span><h3><span class="section-number">6.83.1.3. </span>Rng.gen_bool<a class="headerlink" href="#rng-gen-bool" title="Link to this heading">¶</a></h3>
+<p>`gen_bool` produces a random bool.</p>
+<p>Probability of true and false should be approximately equal.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PRNG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/random/&#39;</span>)
+<span class="nv">:VEC</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Rng</span> &lt;- <span class="nv">PRNG</span>.<span class="n">from_seed</span>(<span class="m">42</span>)
+<span class="nv">:Bools</span> &lt;- <span class="nv">VEC</span>.<span class="n">from_each</span>(<span class="m">10</span>.<span class="n">times</span>.<span class="n">map</span>{ <span class="nv">Rng</span>.<span class="n">gen_bool</span> })
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Bools</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [false true true false true true false false false true]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="rng-is-val">
+<span id="api-55f109c080d27d2abc3343d86fb07102"></span><h2><span class="section-number">6.83.2. </span>RNG.is?(Val)<a class="headerlink" href="#rng-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is an rng val.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-random-PRNG.html"><span class="section-number">6.82. </span>kink/random/PRNG</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-regex-GROUP.html"><span class="section-number">6.84. </span>kink/regex/GROUP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

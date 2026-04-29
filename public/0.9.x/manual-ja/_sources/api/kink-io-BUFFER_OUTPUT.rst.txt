@@ -1,0 +1,25 @@
+========================
+kink\/io\/BUFFER\_OUTPUT
+========================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-bf80c4f15b812d98a97ecf406a80561f:
+
+BUFFER\_OUTPUT\.new\(Wrapped\_output \.\.\.\[Max\_buf\_size\]\)
+===============================================================
+
+\`new\` returns an \`output\` which does userspace buffering\.
+
+Bytes written to the result output will be eventually written to \`Wrapped\_output\` after buffering\.
+
+\`Max\_buf\_size\` is used as the preferred buffer size\. The actual buffer size will not exceed \`Max\_buf\_size\`\. If not specified\, a default size will be used\.
+
+.. rubric:: Preconditions
+
+\`Wrapped\_output\` must be an \`output\` val\.
+
+\`Max\_buf\_size\` must be an int num \>\=1\.
+

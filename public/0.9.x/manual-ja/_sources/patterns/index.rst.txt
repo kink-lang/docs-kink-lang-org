@@ -1,0 +1,29 @@
+=============================
+Patterns and code conventions
+=============================
+
+Patterns are code practices which most programs follow.
+Code conventions are practices which programs should follow.
+This chapter describes patterns and code conventions
+without clearly distinguishing two.
+
+Patterns and code conventions are more than matters of preference,
+although they are not parts of language specification
+or runtime specification.
+Kink is a minimalist language in its specification.
+Thus, many aspects of programming, such as accessibility,
+are determined by patterns and code conventions.
+
+.. toctree::
+  :maxdepth: 2
+
+  variable
+  function
+  accessibility
+  typing
+  control
+  error
+  naming
+  style
+
+.. vim: et sw=2 sts=2

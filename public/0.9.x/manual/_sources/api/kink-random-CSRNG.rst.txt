@@ -1,0 +1,38 @@
+===================
+kink\/random\/CSRNG
+===================
+
+Cryptographically secure random number generators\.
+
+When you have to make such as random nonces\, salts\, or session ids\, use this mod to get an RNG\.
+
+RNGs created by this mod might or might not use hardware entropy source\. Thus\, CSRNG\.new\, \`gen\_int\`\, \`gen\_bin\`\, and \`gen\_bool\` migt or might not block\.
+
+See kink\/random\/RNG for \`rng\` type\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-b53613f85081cb975872061565be20e0:
+
+CSRNG\.new
+==========
+
+\`new\` makes a cryptographically secure rng val\. See kink\/random\/RNG mod for the result type \`rng\`\.
+
+Example\:
+
+.. code:: kink
+
+    :CSRNG.require_from('kink/random/')
+    :VEC.require_from('kink/')
+        
+    :Rng <- CSRNG.new
+    :Nums <- VEC.from_each(10.times.map{ Rng.gen_int(100) })
+    stdout.print_line(Nums.repr)
+    # Output varies for each execution:
+    #   [67 47 21 39 98 26 45 37 7 95]
+
+The result rng val is not thread\-safe\. Thus\, use of a single rng val from multiple threads must be synchronized\.
+

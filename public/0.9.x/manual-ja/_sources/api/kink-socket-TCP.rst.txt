@@ -1,0 +1,414 @@
+=================
+kink\/socket\/TCP
+=================
+
+Provides stream based connecting sockets\.
+
+.. rubric:: Example
+
+The following program spawns a TCP\/IP server and a client\. The client sets socket options TCP\_NODELAY\, SO\_SNDBUF\, and SO\_LINGER\, then sends bytes \[1\, 2\, 3\] to the server\.
+
+.. code:: kink
+
+    :TCP.require_from('kink/socket/')
+    :TCP_SERVER.require_from('kink/socket/')
+    :IP.require_from('kink/socket/')
+    :IP_PORT.require_from('kink/socket/')
+    :THREAD.require_from('kink/thread/')
+    :BIN.require_from('kink/')
+    :CONTROL.require_from('kink/')
+        
+    :spawn_client <- {(:Server_addr)
+      THREAD.spawn_io{
+        CONTROL.with_finally{(:finally)
+          :Tcp = TCP.open
+          finally{ Tcp.close }
+        
+          # initial socket options
+          stdout.print_line(Tcp.tcp_nodelay.load.repr) # => false
+          stdout.print_line(Tcp.so_sndbuf.load.repr) # => 8192 (initial values vary for systems)
+          stdout.print_line(Tcp.so_linger.load.repr) # => []
+        
+          # set socket options
+          Tcp.tcp_nodelay <- true
+          Tcp.so_sndbuf <- 1024
+          Tcp.so_linger <- [10]
+          stdout.print_line(Tcp.tcp_nodelay.load.repr) # => true
+          stdout.print_line(Tcp.so_sndbuf.load.repr) # => 2304 (the value was adjusted)
+          stdout.print_line(Tcp.so_linger.load.repr) # => [10]
+        
+          Tcp.connect(Server_addr)
+          :Out = Tcp.output
+          finally{ Out.close }
+        
+          Out.write(BIN.of(1))
+          Out.write(BIN.of(2))
+          Out.write(BIN.of(3))
+        }
+      }
+    }
+        
+    CONTROL.with_finally{(:finally)
+      :Server = TCP_SERVER.open
+      finally{ Server.close }
+        
+      Server.bind_listen(IP_PORT.new(IP.for_hostname('::1') 0))
+      :Server_addr = Server.local_address
+      spawn_client(Server_addr)
+        
+      :Tcp = Server.accept
+      finally{ Tcp.close }
+      :In = Tcp.input
+      finally{ In.close }
+        
+      :Bin = In.read_all
+      stdout.print_line(Bin.repr) # => (bin 0x01 0x02 0x03)
+    }
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-cebbf4b74b78e41bafcb8f39df72197d:
+
+type tcp
+========
+
+\`tcp\` is a stream\-based connecting socket\. The protocol can be either TCP\/IP\, or stream based Unix domain socket\.
+
+.. _api-169281f7a502b89a6fdce4a7b89a81fc:
+
+Tcp\.connect\(Remote \.\.\.\[\$config\=\{\}\]\)
+-----------------------------------------------
+
+\`connect\` tries to connect this socket to the remote address specified by \`Remote\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\• C\.on\_closed\(\$closed\)\: default \= a thunk which tail\-calls \$error
+
+\`connect\` waits until connection is established\, the socket is closed\, or an IO error occurs\.
+
+If connection is established\, \`connect\` tail\-calls \$success with no arg\. The client can read data from\, or write data to the socket\.
+
+If the connecting socket is closed\, before or during invocation of \`connect\`\, \`connect\` tail\-calls \$closed with no arg\.
+
+If an IO error occurs\, \`connect\` closes the connecting socket and tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Timeout
+
+Connection timeout can be implemented using C\.on\_closed and Tcp\.close\_unless\_connected\.
+
+.. code:: kink
+
+    :TCP.require_from('kink/socket/')
+    :IP.require_from('kink/socket/')
+    :IP_PORT.require_from('kink/socket/')
+    :THREAD.require_from('kink/thread/')
+    :CONTROL.require_from('kink/')
+    :PROCESS.require_from('kink/')
+        
+    CONTROL.with_finally{(:finally)
+      :Tcp = TCP.open
+      finally{ Tcp.close }
+        
+      # a blackhole address. see RFC 6666
+      :Blackhole = IP_PORT.new(IP.for_hostname('0100::1234') 8080)
+        
+      # times out connection after 10 seconds
+      THREAD.spawn_io{
+        THREAD.sleep(10)
+        Tcp.close_unless_connected
+      }
+        
+      # exits the process when connection times out
+      Tcp.connect(Blackhole){(:C)
+        C.on_closed{
+          stderr.print_line('connection time out')
+          PROCESS.exit(76)
+        }
+      }
+    }
+    # => connection time out
+
+Note that the runtime or the operating system might also time out connection\. In that case\, an IO error might occur\, rather than tail\-calling \$closed\.
+
+.. rubric:: Preconditions
+
+\`Remote\` must be a \`socket\_address\`\. It must match th protocol family of the socket\.
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`\.
+
+\$closed must be a thunk\.
+
+.. _api-21bbd4a079d2102435f13dc36b7a15ef:
+
+Tcp\.bind\(Local \.\.\.\[\$config\]\)
+-------------------------------------
+
+\`bind\` binds a local address specified by \`Local\` to the socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the address is successfully bound\, \`bind\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`bind\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Local\` must be a \`socket\_address\`\, whose protocol family matches one of the socket\.
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-b232dfea6356804f2de3413377fb4ac7:
+
+Tcp\.close\(\.\.\.\[\$config\=\{\}\]\)
+--------------------------------------
+
+\`close\` closes the connecting socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the socket is closed successfully\, \`close\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`close\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-8c98880928c126a3d40debb61fb8ad06:
+
+Tcp\.close\_unless\_connected\(\.\.\.\[\$config\=\{\}\]\)
+---------------------------------------------------------
+
+\`close\_unless\_connected\` closes the connecting socket if and only if the socket is not yet connected\. If the socket is connected\, or already closed\, \`close\_unless\_connected\` does nothing\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the socket is connected\, or already closed\, \`close\_unless\_connected\` tail\-calls \$success with no arg\.
+
+If the socket is not yet connected\, \`close\_unless\_connected\` closes the socket\. If it is successful\, \`close\_unless\_connected\` tail\-calls \$success with no arg\. If an IO error occurs\, \`close\_unless\_connected\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-68766f039f7c19637a23ace23fb91f13:
+
+Tcp\.input\(\.\.\.\[\$config\=\{\}\]\)
+--------------------------------------
+
+\`input\` method makes an \`input\` of the connecting socket\.
+
+Config method\:
+
+\• C\.buffer\(\.\.\.\[Max\_buf\_size\]\)
+
+If C\.buffer is called\, the result \`input\` will perform userspace buffering\. If \`Max\_buf\_size\` is given\, the buffer size will not exceed \`Max\_buf\_size\`\. If C\.buffer is not called\, the result \`input\` will not perform userspace buffering\.
+
+Closing the \`input\` will shut down the input stream of the socket\.
+
+.. rubric:: Precondition
+
+\`Max\_buf\_size\` must be a positive integer \`num\`\.
+
+.. _api-ae45015f3f0129c7d60cdd8fa71e61fa:
+
+Tcp\.output\(\.\.\.\[\$config\=\{\}\]\)
+---------------------------------------
+
+\`output\` method makes an \`output\` of the connecting socket\.
+
+Config method\:
+
+\• C\.buffer\(\.\.\.\[Max\_buf\_size\]\)
+
+If C\.buffer is called\, the result \`output\` will perform userspace buffering\. If \`Max\_buf\_size\` is given\, the buffer size will not exceed \`Max\_buf\_size\`\. If C\.buffer is not called\, the result \`output\` will not perform userspace buffering\.
+
+Closing the output will shut down the output stream of the socket\.
+
+.. rubric:: Precondition
+
+\`Max\_buf\_size\` must be a positive integer \`num\`\.
+
+.. _api-eefb25efa155d522a609eca1910f65b7:
+
+Tcp\.local\_address\(\.\.\.\[\$config\=\{\}\]\)
+-----------------------------------------------
+
+\`local\_address\` retrieves a \`socket\_address\` of the local address of the connecting socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the local address is available\, \`local\_address\` tail\-calls \$success with the \`socket\_address\`\.
+
+If an IO error occurs\, \`local\_address\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a function which takes a \`socket\_address\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-071d2849db6e7c1d4b138b1b9dd5a8a4:
+
+Tcp\.remote\_address\(\.\.\.\[\$config\=\{\}\]\)
+------------------------------------------------
+
+\`remote\_address\` retrieves a \`socket\_address\` of the remote address of the connecting socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the remote address is available\, \`remote\_address\` tail\-calls \$success with the \`socket\_address\`\.
+
+If an IO error occurs\, \`remote\_address\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a function which takes a \`socket\_address\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-ef70d6f9a0acc6c56641c1359f1b6951:
+
+Tcp\.tcp\_nodelay
+-----------------
+
+\`tcp\_nodelay\` returns a \`ref\` of a \`bool\` of TCP\_NODELAY option\.
+
+For usage of socket options\, see the example program at the beginning of this module\.
+
+.. rubric:: Precondition
+
+The protocol family must be ipv4 or ipv6\.
+
+.. _api-8819f44d54d0f02db504b5cb42f930ec:
+
+Tcp\.so\_keepalive
+------------------
+
+\`so\_keepalive\` returns a \`ref\` of a \`bool\` of SO\_KEEPALIVE option\.
+
+For usage of socket options\, see the example program at the beginning of this module\.
+
+.. rubric:: Precondition
+
+The protocol family must be ipv4 or ipv6\.
+
+.. _api-ee5d1813d01cefa7176bf1b02c06e8c7:
+
+Tcp\.so\_reuseaddr
+------------------
+
+\`so\_reuseaddr\` returns a \`ref\` of a \`bool\` of SO\_REUSEADDR option\.
+
+For usage of socket options\, see the example program at the beginning of this module\.
+
+.. rubric:: Precondition
+
+The protocol family must be ipv4 or ipv6\.
+
+.. _api-5c13e28de94a8c5ace6d49d81793a526:
+
+Tcp\.so\_linger
+---------------
+
+\`so\_linger\` returns an optional non\-negative integer \`num\` of SO\_LINGER option\.
+
+The value of the \`ref\` is either an empty \`vec\`\, or a singleton \`vec\` \[l\_linger\]\, where \`l\_linger\` is a non\-negative integer \`num\`\. When the value is an empty \`vec\`\, SO\_LINGER option is turned off\. When the value is a singleton \`vec\`\, SO\_LINGER option is turned on\, with \`l\_linger\` as the timeout seconds\.
+
+For usage of socket options\, see the example program at the beginning of this module\.
+
+.. rubric:: Precondition
+
+The protocol family must be ipv4 or ipv6\.
+
+.. _api-d47a13c1104d18f0d47dced54f330a22:
+
+Tcp\.so\_sndbuf
+---------------
+
+\`so\_sndbuf\` returns a \`ref\` of a non\-negative integer \`num\` of SO\_SNDBUF option\.
+
+For usage of socket options\, see the example program at the beginning of this module\.
+
+.. _api-da26214f32b315a73a9422044ca9946e:
+
+Tcp\.so\_rcvbuf
+---------------
+
+\`so\_rcvbuf\` returns a \`ref\` of a non\-negative integer \`num\` of SO\_RCVBUF option\.
+
+For usage of socket options\, see the example program at the beginning of this module\.
+
+.. _api-f955840172148033bc5d125387d4413f:
+
+TCP\.open\(\.\.\.\[Protocol\_family\=PROTOCOL\_FAMILY\.ipv6 \$config\=\{\}\]\)
+==============================================================================
+
+\`open\` makes a new connecting socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\• C\.on\_unsupported\(\$unsupported\)\: default \= a function which tail\-calls \$error
+
+If a socket is created\, \`open\` tail\-calls \$success with a \`tcp\`\.
+
+If the specified protocol family is not supported by the runtime\, \`open\` tail\-calls \$unsupported with no arg\.
+
+If an IO error occurs\, \`open\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+Protocol\_family must be a \`protocol\_family\`\.
+
+\$success must be a function which takes a \`tcp\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+\$unsupported must be a thunk\.
+
+.. _api-552da96bc44d88753699d67910890456:
+
+TCP\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a \`tcp\`\.
+

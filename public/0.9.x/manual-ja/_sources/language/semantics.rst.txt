@@ -1,0 +1,952 @@
+=========
+Semantics
+=========
+
+This chapter specifies the semantics of Kink programs as transformation
+into :term:`abstract instructions <abstract instruction>` of the :term:`abstract stack machine`.
+The transformation is comprised of the two steps: :term:`desugaring` and :term:`translation`.
+
+The following is an example program.
+
+::
+
+  :foo <- {
+    :Vec = [10 20 30]
+    Vec.each{(:E) bar(E) }
+  }
+
+The program above is desugared as follows.
+
+::
+
+  \binding:foo.op_store({
+    { [\binding:Vec].op_store(\binding._Args)
+      \binding.Vec.each({
+        [\binding:E].op_store(\binding._Args)
+        \binding.bar[()](\binding.E)
+      })
+    }.call(() [[10 20 30]])
+  })
+
+Then translated into abstract instructions as follows.
+
+::
+
+  (binding)
+  (varref "foo")
+  (dup)
+  (load "op_store")
+  (dup)
+  (checkfun)
+  (flip)
+  (emptyvec)
+  (binding)
+  (fun
+    (enclosingbinding)
+    (clonebinding)
+    (dup)
+    (setbinding)
+    (storerecvargs)
+
+    (binding)
+    (fun
+      (enclosingbinding)
+      (clonebinding)
+      (dup)
+      (setbinding)
+      (storerecvargs)
+
+      (emptyvec)
+      (binding)
+      (varref "Vec")
+      (add)
+      (dup)
+      (load "op_store")
+      (dup)
+      (checkfun)
+      (flip)
+      (emptyvec)
+      (binding)
+      (load "_Args")
+      (add)
+      (call "op_store")
+      (remove)
+
+      (binding)
+      (load "Vec")
+      (dup)
+      (load "each")
+      (dup)
+      (checkfun)
+      (flip)
+      (emptyvec)
+
+      (binding)
+      (fun
+        (enclosingbinding)
+        (clonebinding)
+        (dup)
+        (setbinding)
+        (storerecvargs)
+
+        (emptyvec)
+        (binding)
+        (varref "E")
+        (add)
+        (dup)
+        (load "op_store")
+        (dup)
+        (checkfun)
+        (flip)
+        (emptyvec)
+        (binding)
+        (load "_Args")
+        (add)
+        (call "op_store")
+        (binding)
+        (load "bar")
+        (dup)
+        (checkfun)
+        (nada)
+        (emptyvec)
+        (binding)
+        (load "E")
+        (add)
+        (call "bar")
+      )
+      (add)
+      (call "each")
+    )
+    (dup)
+    (load "call")
+    (dup)
+    (checkfun)
+    (flip)
+    (emptyvec)
+    (nada)
+    (add)
+    (emptyvec)
+    (num 10)
+    (add)
+    (num 20)
+    (add)
+    (num 30)
+    (add)
+    (add)
+    (call "call")
+  )
+  (add)
+  (call "op_store")
+  
+
+.. contents::
+  :local:
+  :backlinks: none
+
+.. _desugaring:
+
+Desugaring
+==========
+
+:dfn:`Desugaring` is transformation of a program into the :dfn:`desugared form`.
+
+Programs
+--------
+
+A Kink :token:`program` is composed of zero or more toplevel expressions.
+
+When a program is composed of expressions ``E1``, ``E2``, ,,, ``En``,
+the program is :dfn:`desugared` to a parentheses expression ``(E1 E2 ,,, En)``.
+
+.. _letclause:
+
+Let clauses
+-----------
+
+A let clause in the form ``E1 = E2 S``,
+where ``E1`` and ``E2`` are :token:`expressions <expression>`
+and ``S`` is a :token:`substantial_seq`,
+is :dfn:`desugared` to ``{(E1) S }.call(() [E2])``.
+
+Example program with let clauses:
+
+::
+
+  :fun <- {
+    :add = {(:X :Y) X + Y }
+    :Sum = add(10 20)
+    stdout.print_line(Sum.show)  # => 30
+  }
+
+The program above is :dfn:`desugared` to the following program.
+
+::
+
+  :fun <- {
+    {(:add)
+      {(:Sum)
+        stdout.print_line(Sum.show)
+      }.call(() [add(10 20)])
+    }.call(() [{(:X :Y) X + Y }])
+  }
+
+Operator expressions
+--------------------
+
+Operator expressions are syntactic sugar for
+member call expressions (:token:`member_call`).
+
+Here is the list of operators.
+
+.. _operatorlist:
+
+.. list-table::
+  :header-rows: 1
+  :widths: 10 10 45 15
+
+  * - Priority
+    - Token type
+    - Operators
+    - Associativity
+  * - Lowest
+    - :token:`store_op`
+    - ``<-``
+    - Non-associative
+  * -
+    - :token:`logor_op`
+    - ``||``
+    - Right-associative
+  * -
+    - :token:`logand_op`
+    - ``&&``
+    - Right-associative
+  * -
+    - :token:`relation_op`
+    - ``==``, ``!=``, ``<``, ``>``, ``<=``, ``>=``
+    - Non-associative
+  * -
+    - :token:`add_op`
+    - ``+``, ``-``, ``|``, ``^``
+    - Left-associative
+  * -
+    - :token:`multiply_op`
+    - ``*``, ``/``, ``//``, ``%``, ``&``, ``<<``, ``>>``
+    - Left-associative
+  * - Highest
+    - :token:`unary_op`
+    - ``-``, ``!``, ``~``
+    - Unary
+
+Each operator expression is :dfn:`desugared` as follows.
+
+.. list-table::
+  :header-rows: 1
+  :widths: 40 60
+
+  * - Operator expression
+    - Desugared as
+  * - ``X <- Y``
+    - ``(X).op_store(Y)``
+  * - ``X || Y``
+    - ``\binding.op_logor[()](X { Y })``
+  * - ``X && Y``
+    - ``\binding.op_logand[()](X { Y })``
+  * - ``X == Y``
+    - ``(X).op_eq(Y)``
+  * - ``X != Y``
+    - ``\binding.op_lognot[()]((X).op_eq(Y))``
+  * - ``X < Y``
+    - ``\binding.op_lognot[()]((Y).op_le(X))``
+  * - ``X > Y``
+    - ``\binding.op_lognot[()]((X).op_le(Y))``
+  * - ``X <= Y``
+    - ``(X).op_le(Y)``
+  * - ``X >= Y``
+    - ``(Y).op_le(X)``
+  * - ``X + Y``
+    - ``(X).op_add(Y)``
+  * - ``X - Y``
+    - ``(X).op_sub(Y)``
+  * - ``X | Y``
+    - ``(X).op_or(Y)``
+  * - ``X ^ Y``
+    - ``(X).op_xor(Y)``
+  * - ``X * Y``
+    - ``(X).op_mul(Y)``
+  * - ``X / Y``
+    - ``(X).op_div(Y)``
+  * - ``X // Y``
+    - ``(X).op_intdiv(Y)``
+  * - ``X % Y``
+    - ``(X).op_rem(Y)``
+  * - ``X & Y``
+    - ``(X).op_and(Y)``
+  * - ``X << Y``
+    - ``(X).op_shl(Y)``
+  * - ``X >> Y``
+    - ``(X).op_shr(Y)``
+  * - ``- U``
+    - ``(U).op_minus()``
+  * - ``! U``
+    - ``\binding.op_lognot[()](U)``
+  * - ``~ U``
+    - ``(U).op_not()``
+
+Function bodies
+---------------
+
+Formal receivers and formal arguments in function bodies (:token:`fun_body`)
+are syntactic sugar for member call expressions (:token:`member_call`).
+
+Function bodies are categorized in four groups:
+with or without the formal receiver, and with or without the formal arguments.
+The following table describes how each group is :dfn:`desugared`.
+In the table, ``C`` denotes a sequence (:token:`seq`),
+``E`` denotes an :token:`expression`,
+and ``VB`` denotes a vector body (:token:`vec_body`),
+
+.. list-table::
+  :header-rows: 1
+  :widths: 30 30 40 60
+
+  * - Formal receiver
+    - Formal arguments
+    - Seq after formal receiver and arguments
+    - Desugared as
+  * - ∅
+    - ∅
+    - ``C``
+    - ``C``
+  * - ∅
+    - ``(VB)``
+    - ``C``
+    - ``[VB].op_store(\binding._Args) (C)``
+  * - ``[E]``
+    - ∅
+    - ``C``
+    - ``(E).op_store(\binding._Recv) (C)``
+  * - ``[E]``
+    - ``(VB)``
+    - ``C``
+    - ``(E).op_store(\binding._Recv) [VB].op_store(\binding._Args) (C)``
+
+Therefore, ``fun1`` and ``fun2`` in the following example are equivalent.
+
+::
+
+  :fun1 <- {[:Self](:X :Y :Z)
+    'result'
+  }
+
+  :fun2 <- {
+    :Self <- _Recv
+    [:X :Y :Z] <- _Args
+    'result'
+  }
+
+
+Actual arguments vectors
+------------------------
+
+Actual arguments vectors (:token:`args`) are categorized in two groups:
+those with parentheses (:token:`paren_args`) and without parentheses.
+
+The following table describes how each group of actual arguments vectors
+are :dfn:`desugared`.
+In the table, ``E1``, ``E2``, ... ``En`` denotes zero or more elements producers (:token:`elements_producer`).
+``FB1``, ``FB2``, ... ``FBm`` denotes function bodies (:token:`fun_body`)
+of zero or more function arguments (:token:`fun_arg`) in the original form.
+or zero or more functions (:token:`fun`) in the :dfn:`desugared form`.
+
+.. list-table::
+    :header-rows: 1
+    :widths: 40 60
+
+    * - Original form
+      - Desugared as
+    * - ``(E1 E2 ‹...snip...› En){ FB1 }{ FB2 }‹...snip...›{ FBm }``
+      - ``(E1 E2 ‹...snip...› En { FB1 } { FB2 } ‹...snip...› { FBm })``
+    * - ``{ FB1 }{ FB2 }‹...snip...›{ FBm }``
+      - ``({ FB1 } { FB2 } ‹...snip...› { FBm })``
+
+Therefore, in the following example,
+each pair of invocations of ``show``, ``if`` and ``fold`` are mutually equivalent.
+
+::
+
+  Num.show
+  Num.show()
+
+  if(Str.any?){ stdout.print_line('not empty') }
+  if(Str.any? { stdout.print_line('not empty') })
+
+  Vec.fold(0){(:X :Y) X + Y}
+  Vec.fold(0 {(:X :Y) X + Y})
+
+Local load expressions
+----------------------
+
+Local load expressions (:token:`local_load`) are syntactic sugar for 
+member load expressions (:token:`member_load`) of the local binding.
+The local load expression in the form ``Data`` is :dfn:`desugared` to ``\binding.Data``.
+The local load expression in the form ``$fun`` is :dfn:`desugared` to ``\binding$fun``.
+
+In the following example, ``fun1`` and ``fun2`` are equivalent,
+thus the invocations of both functions output ``42`` to the standard output.
+
+::
+
+  :fun1 <- {(:Val :output)
+    :output_copy = $output
+    output_copy(Val)
+  }
+  fun1(42 {(:X) stdout.print_line(X.show) })  # => 42
+
+  :fun2 <- {(:Val :output)
+    :output_copy = \binding$output
+    output_copy(\binding.Val)
+  }
+  fun2(42 {(:X) stdout.print_line(\binding.X.show) })  # => 42
+
+Local reference expressions
+---------------------------
+
+Local reference expressions (:token:`local_varref`) are syntactic sugar for
+member reference expressions (:token:`member_varref`) of the local binding.
+The local reference expression in the form ``:Data`` is :dfn:`desugared` to ``\binding:Data``.
+The local reference expression in the form ``:fun`` is :dfn:`desugared` to ``\binding:fun``.
+
+In the following example, ``fun1`` and ``fun2`` are equivalent,
+thus the invocations of both functions output ``42`` to the standard output.
+
+::
+
+  :fun1 <- {
+    :Val = 42
+    :output = {(:X) stdout.print_line(X.show) }
+    output(Val)
+  }
+  fun1  # => 42
+
+  \binding:fun2 <- {
+    \binding:Val = 42
+    \binding:output = {(\binding:X) stdout.print_line(X.show) }
+    output(Val)
+  }
+  fun2  # => 42
+
+Local call expressions
+----------------------
+
+Local call expressions (:token:`local_call`) are syntactic sugar for
+member call expressions (:token:`member_call`) of functions owned by the local binding.
+
+The local call expression in the form ``fun(VB)`` is :dfn:`desugared` to ``\binding.fun[()](VB)``, where ``VB`` is a vector body.
+
+The local call expression in the form ``fun[R](VB)`` is :dfn:`desugared` to ``\binding.fun[R](VB)``,
+where ``R`` is an expression and ``VB`` is a vector body.
+
+In the following example, ``fun1`` and ``fun2`` are equivalent,
+thus the invocations of both functions output ``hello world`` to the standard output.
+
+::
+
+  :print_arg <- {(:Arg)
+    stdout.print_line(Arg.show)
+  }
+
+  :print_recv <- {[:R]
+    stdout.print_line(R.show)
+  }
+
+  :fun1 <- {
+    print_arg('hello ')
+    print_recv['world']
+  }
+  fun1  # => hello world
+
+  :fun2 <- {
+    \binding.print_arg[()]('hello ')
+    \binding.print_recv['world']()
+  }
+  fun2  # => hello world
+
+.. _translation:
+
+Translation
+===========
+
+:dfn:`Translation` is transformation of the :term:`desugared form` of a program into a sequence of
+:term:`abstract instructions <abstract instruction>`.
+
+Programs
+--------
+
+In the :dfn:`desugared form`,
+a :token:`program` is composed of a single parentheses expression.
+
+Translation of a program ``P`` to a sequence of :dfn:`abstract instructions` ``tprogram(P)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``P``
+    - Where
+    - ``tprogram(P)``
+  * - ``T``
+    - ``T`` : :token:`paren`
+    - ``«tparen(T)»``
+
+Sequences without let clauses
+-----------------------------
+
+In the :dfn:`desguared form`, thus without let clauses,
+a sequence (:token:`seq`) is a sequence of zero ore more expressions.
+If the sequence consists of no expressions, it produces the value ``()`` (called “nada”).
+If the sequence consists of one or more expressions,
+it evaluates the expressions in the order they appears,
+and produces the result of the last expression.
+
+Grammatically, a sequence is composed of either :token:`empty`
+or a substantial sequence (:token:`substantial_seq`).
+A substantial sequence is composed of a single expression,
+or a pair of an expression and a substantial sequence.
+
+Translation of a sequence ``S`` to an instruction sequence ``tseq(S)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``S``
+    - Where
+    - ``tseq(S)``
+  * - ``∅``
+    - ``∅`` : :token:`empty`
+    - ``(nada)``
+  * - ``SS``
+    - ``SS`` : :token:`substantial_seq`
+    - ``«tsubstantial_seq(SS)»``
+
+Translation of a substantial sequence
+``SS`` to an instruction sequence ``tsubstantial_seq(SS)`` is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``SS``
+    - Where
+    - ``tsubstantial_seq(SS)``
+  * - ``E``
+    - ``E`` : :token:`expression`
+    - ``«texpression(E)»``
+  * - ``E`` ``SSS``
+    - | ``E`` : :token:`expression`
+      | ``SSS`` : :token:`substantial_seq`
+    - ``«texpression(E)» (remove) «tsubstantial_seq(SSS)»``
+
+In the following example,
+``fun1`` outputs the result of an empty sequence, which is nada.
+``fun2`` outputs the result of
+a sequence comprising three expressions ``'foo'``, ``'bar'`` and ``'baz'``;
+the result is ``'baz'``.
+
+::
+
+  :fun1 <- {
+    :Result = () 
+    stdout.print_line(Result.repr)  # => nada
+  }
+  fun1
+
+  :fun2 <- {
+    :Result = ('foo' 'bar' 'baz')
+    stdout.print_line(Result.repr)  # => "baz"
+  }
+  fun2
+
+Expressions
+-----------
+
+In the normalized form,
+an :token:`expression` can be eventually reduced to a single primary expression (:token:`primary`).
+
+Therefore, translation of an expression ``E`` to an instruction sequence
+``texpression(E)`` is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``E``
+    - Where
+    - ``texpression(E)``
+  * - ``P``
+    - ``P`` : :token:`primary`
+    - ``«tprimary(P)»``
+
+Primary expressions
+-------------------
+
+Translation of a primary expression ``P`` to an instruction sequence ``tprimary(P)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``P``
+    - Where
+    - ``tprimary(P)``
+  * - ``N``
+    - ``N`` : :token:`num`
+    - ``«tnum(N)»``
+  * - ``S``
+    - ``S`` : :token:`str`
+    - ``«tstr(S)»``
+  * - ``CE``
+    - ``CE`` : :token:`binding`
+    - ``«tbinding(CE)»``
+  * - ``P``
+    - ``P`` : :token:`paren`
+    - ``«tparen(P)»``
+  * - ``V``
+    - ``V`` : :token:`vec`
+    - ``«tvec(V)»``
+  * - ``F``
+    - ``F`` : :token:`fun`
+    - ``«tfun(F)»``
+  * - ``D``
+    - ``D`` : :token:`member_load`
+    - ``«tmember_load(D)»``
+  * - ``R``
+    - ``R`` : :token:`member_varref`
+    - ``«tmember_varref(R)»``
+  * - ``AC``
+    - ``AC`` : :token:`member_call`
+    - ``«tmember_call(AC)»``
+
+Number expressions
+------------------
+
+A number expression (:token:`num`) produces a number value.
+
+Translation of a number expression ``N`` to an instruction ``tnum(N)`` is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``N``
+    - Where
+    - ``tnum(N)``
+  * - ``NN``
+    - ``NN`` : ``NUM``
+    - ``(num «NN as num»)``
+
+In the following example,
+``fun1`` outputs the result of the integer number expression ``42``.
+``fun2`` outputs the result of the decimal number expression ``3.14``.
+
+::
+
+  :fun1 <- {
+    :Result = 42
+    stdout.print_line(Result.show)  # => 42
+  }
+  fun1
+
+  :fun2 <- {
+    :Result = 3.14
+    stdout.print_line(Result.show)  # => 3.14
+  }
+  fun2
+
+String expressions
+------------------
+
+A string expression (:token:`str`) produces a string value.
+
+Translation of a string expression ``S`` to an instruction ``tstr(S)`` is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``S``
+    - Where
+    - ``tstr(S)``
+  * - ``SS``
+    - ``SS`` : ``STRING``
+    - ``(str «SS as str»)``
+
+The following example outputs the result of the string expression ``'foo'``.
+
+::
+
+  :Result <- 'foo'
+  stdout.print_line(Result)  # => foo
+
+Binding expressions
+-------------------
+
+A binding expression produces the current binding.
+
+Translation of a binding expression ``CE`` to an instruction ``tbinding(CE)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``CE``
+    - ``tbinding(CE)``
+  * - ``'\binding'``
+    - ``(binding)``
+
+The following example outputs the value of the variable ``Val`` of the current binding,
+namely, the local variable ``Val``.
+
+::
+
+  :Val <- 42
+  stdout.print_line(\binding.Val.show)  # => 42
+
+
+Parentheses expressions
+-----------------------
+
+A pair of parentheses is used to enclose a sequence as a primary expression.
+
+Translation of a parentheses expression ``P``
+to an instruction sequence ``tparen(P)`` is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``P``
+    - Where
+    - ``tparen(P)``
+  * - ``OPENPAREN`` ``S`` ``')'``
+    - ``S`` : :token:`seq`
+    - ``«tseq(S)»``
+  * - ``WS_OPENPAREN`` ``S`` ``')'``
+    - ``S`` : :token:`seq`
+    - ``«tseq(S)»``
+
+In the following example,
+the addition ``2 + 4`` is calculated before the mulliplication.
+
+::
+
+  :Val <- 7 * (2 + 4)
+  stdout.print_line(Val.show)  # => 42
+
+Vector expressions
+------------------
+
+A vector expression is used to make a vector.
+
+Translation of a vector expression ``V`` to an instruction sequence ``tvec(V)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``V``
+    - Where
+    - ``tvec(V)``
+  * - ``OPENBRACKET`` ``VB`` ``']'``
+    - ``VB`` : :token:`vec_body`
+    - ``(emptyvec) «tvec_body(VB)»``
+  * - ``WS_OPENBRACKET`` ``VB`` ``']'``
+    - ``VB`` : :token:`vec_body`
+    - ``(emptyvec) «tvec_body(VB)»``
+
+Vector bodies
+-------------
+
+A vector body (:token:`vec_body`) is used in vector expressions and actual arguments in function calls
+(and formal arguments in not normalized forms) to produce elements of vectors.
+
+Translation of a vector body ``VB`` to an instruction sequence ``tvec_body(VB)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``VB``
+    - Where
+    - ``tvec_body(VB)``
+  * - ``∅``
+    - ``∅`` : :token:`empty`
+    - ``∅``
+  * - ``EP`` ``VVB``
+    - | ``EP`` : :token:`elements_producer`
+      | ``VVB`` : :token:`vec_body`
+    - ``«telements_producer(EP)» «tvec_body(VVB)»``
+
+In the following example,
+the vector ``Spreaded`` is expanded in the second vector literal.
+
+::
+
+  :Spreaded <- [42 3.14]
+  :Vec <- ['foo' ...Spreaded 'bar']
+  stdout.print_line(Vec.repr)  # => ["foo" 42 3.14 "bar"]
+
+In the following example,
+the vector ``Spreaded`` is spreaded in the arguments vector for the function call of ``fun``.
+
+::
+
+  :fun <- {
+    stdout.print_line(_Args.repr)
+  }
+  :Spreaded <- [42 3.14]
+  fun('foo' ...Spreaded 'bar')  # => ["foo" 42 3.14 "bar"]
+
+Elements producers
+------------------
+
+An elements producer (:token:`elements_producer`) is a content of vector bodies.
+
+Translation of an element producer ``EP`` to an instruction sequence ``telements_producer(EP)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``EP``
+    - Where
+    - ``telements_producer(EP)``
+  * - ``E``
+    - ``E`` : :token:`expression`
+    - ``«texpression(E)» (add)``
+  * - ``'...'`` ``E``
+    - ``E`` : :token:`expression`
+    - ``«texpression(E)» (concat)``
+
+.. _functionexpression:
+
+Function expressions
+--------------------
+
+A function expression (:token:`fun`) produces a function value.
+
+Translation of a function expression ``F`` to an instruction sequence ``tfun(F)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``F``
+    - Where
+    - ``tfun(F)``
+  * - ``OPENBRACE`` ``S`` ``'}'``
+    - ``S`` : :token:`seq`
+    - ``(binding) (fun (enclosingbinding) (clonebinding) (dup) (setbinding) (storerecvargs) «tseq(S)»)``
+  * - ``WS_OPENBRACE`` ``S`` ``'}'``
+    - ``S`` : :token:`seq`
+    - ``(binding) (fun (enclosingbinding) (clonebinding) (dup) (setbinding) (storerecvargs) «tseq(S)»)``
+
+Member load expressions
+-----------------------
+
+A member load expression (:token:`member_load`) loads a variable of the owner.
+
+Translation of a member load expression ``D`` to an instruction sequence ``tmember_load(D)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``D``
+    - Where
+    - ``tmember_load(D)``
+  * - ``P`` ``'.'`` ``N``
+    - | ``P`` : :token:`primary`
+      | ``N`` : ``DATA_SYM``
+    - ``«tprimary(P)» (load «N as str»)``
+  * - ``P`` ``DOLLAR`` ``V``
+    - | ``P`` : :token:`primary`
+      | ``V`` : ``FUN_SYM``
+    - ``«tprimary(E)» (load «V as str»)``
+
+Member reference expressions
+----------------------------
+
+A member reference expression (:token:`member_varref`) produces a variable reference of the owner.
+
+Translation of a member reference expression ``R`` to an instruction sequence ``tmember_varref(R)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  * - Composition of ``R``
+    - Where
+    - ``tmember_varref(R)``
+  * - ``P`` ``COLON`` ``N``
+    - | ``P`` : :token:`primary`
+      | ``N`` : ``DATA_SYM``
+    - ``«tprimary(P)» (varref «N as str»)``
+  * - ``P`` ``COLON`` ``V``
+    - | ``P`` : :token:`primary`
+      | ``V`` : ``FUN_SYM``
+    - ``«tprimary(P)» (varref «V as str»)``
+
+Member call expressions
+-----------------------
+
+A member call expression (:token:`member_call`) invokes a function.
+
+Translation of a member call expression ``C`` to an instruction sequence ``tmember_call(C)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+  :widths: 2 1 4
+
+  * - Composition of ``C``
+    - Where
+    - ``tmember_call(C)``
+  * - ``P`` ``'.'`` ``V`` ``OPENBRACKET`` ``R`` ``']'`` ``OPENPAREN`` ``VB`` ``')'``
+    - | ``P`` : :token:`primary`
+      | ``V`` : ``FUN_SYM``
+      | ``R`` : :token:`expression`
+      | ``VB`` : :token:`vec_body`
+    - ``«tprimary(P)» (load «V as str») (dup) (checkfun) «texpression(R)» (emptyvec) «tvec_body(VB)» (call «V as str»)``
+  * - ``P`` ``'.'`` ``V`` ``OPENPAREN`` ``VB`` ``')'``
+    - | ``P`` : :token:`primary`
+      | ``V`` : ``FUN_SYM``
+      | ``VB`` : :token:`vec_body`
+    - ``«tprimary(P)» (dup) (load «V as str») (dup) (checkfun) (flip) (emptyvec) «tvec_body(VB)» (call «V as str»)``
+
+In the first form,
+``P`` is the owner of the function variable with the symbol ``V``,
+and ``R`` is the actual receiver passed to the function call.
+The actual receiver will be stored to ``_Recv`` variable of the binding
+of the function call. See :ref:`storerecvargs-insn`.
+
+In the second form,
+``P`` is not only the owner of the function variable with the symbol ``V``,
+but also the actual receiver passed to the function call.
+
+In either form,
+the elements of ``VB`` will be copied to
+the actual arguments passed to the function call.
+The actual arguments, which is a vec value, will be stored to ``_Args``
+variable of the binding of the function call.
+See :ref:`storerecvargs-insn`.
+
+Example:
+
+::
+
+  :Owner <- new_val(
+    'fun' {[:Recv](:Args.rest)
+      'Recv={} Args={}'.format(Recv.repr Args.repr)
+    }
+    'repr' { '(Owner)' }
+  )
+  stdout.print_line(Owner.fun['recv'](1 2 3)) # => Recv="recv" Args=[1 2 3]
+  stdout.print_line(Owner.fun(4 5 6)) # => Recv=(Owner) Args=[4 5 6]
+
+.. vim: et sw=2 sts=2 et

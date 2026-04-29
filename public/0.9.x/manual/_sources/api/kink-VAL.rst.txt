@@ -1,0 +1,157 @@
+=========
+kink\/VAL
+=========
+
+Provides funs for vals in general\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-68cc92efb7d516f5f1a8aebdb2e9cad8:
+
+type val
+========
+
+\`val\` is the universal supertype\, or the supertype of all other types\. Every value is an instance of \`val\` type\.
+
+\`val\` type has only one method\: \`repr\`\. It means that every value of Kink has \`repr\` method\.
+
+.. _api-7f7a08be81781b5fdb57b1bce9c6a4da:
+
+Val\.repr
+---------
+
+\`repr\` returns a \`str\` which describes \`Val\` for debugging purpose\.
+
+The format of the result differs for each type\:
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+        
+    stdout.print_line(new_val.repr)         # => (val id_hash=123)
+    stdout.print_line([1 2 3].repr)         # => [1 2 3]
+    stdout.print_line(BIN.of(1 2 3).repr)   # => (bin 0x01 0x02 0x03)
+    stdout.print_line("hello world\n".repr) # => "hello world\n"
+
+For example\, the result of \`repr\` can be used to construct an error message\:
+
+.. code:: kink
+
+    :NUM.require_from('kink/')
+        
+    :to_int <- {(:N)
+      NUM.is?(N) || raise(
+        'to_int(N): N must be a num, but was {}'.format(N.repr))
+      N // 1
+    }
+        
+    to_int('foo')
+    # Output:
+    #   -- main exception
+    #   ...
+    #   {(stdin) L4 C17 raise} NUM.is?(N) || -->raise(
+    #   to_int(N): N must be a num, but was "foo"
+
+The runtime also uses the result of \`repr\` to construct an error message\:
+
+.. code:: kink
+
+    'foo'.bar
+    # Output:
+    #   -- main exception
+    #   ...
+    #   [(stdin) L1 C7] 'foo'.-->bar
+    #   no such var: bar not found in "foo"
+
+Apart from error messages\, \`repr\` might be used to construct log messages\.
+
+There are some requirements for implementations of \`repr\`\.
+
+.. rubric:: \`repr\` must return a \`str\` value
+
+As described above\, \`repr\` is used to construct error messages\, and callers expect that \`repr\` returns a \`str\` value\. If \`repr\` returns a non\-str value\, hence it breaks the expectation\, things can get really messy\.
+
+.. rubric:: \`repr\` must return a finite length \`str\` for data of infinite length or depth
+
+If you implement a container type\, probably your \`repr\` implementation calls \`repr\` method of elements\. Make sure that \`repr\` properly returns a finite length \`str\` for data of infinite length or depth\.
+
+.. code:: kink
+
+    :Y <- [4 5 6]
+    :X <- [1 2 3 Y]
+    Y.push_back(X)
+    stdout.print_line(X.repr) # => [1 2 3 [4 5 6 [,,,]]]
+
+Recursion check can be done using \`dyn\` val\. Check the implementation of kink\/container\/FLAT\_SET for example\.
+
+.. rubric:: Keep the result short enough
+
+If the result of \`repr\` is too long\, it can mess up the debug output\. So make sure that the result is short enough\.
+
+.. _api-2d36b72d68d811f56ce0ba7352a8818a:
+
+VAL\.id\_hash\(Val\)
+====================
+
+\`id\_hash\` returns an int \`num\` appointed for \`Val\`\. Invocations of \`id\_hash\` for the same value always return the same integer\.
+
+The result can be used as a hash code of the identity of the value\.
+
+.. _api-4aa2adc68b7c0aa43a6373fdc23e61d3:
+
+VAL\.same\?\(X Y\)
+==================
+
+\`same\?\` returns whether two args\, \`X\` and \`\`Y\`\, are the same value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :VAL.require_from('kink/')
+        
+    :test_identity <- {(:X :Y)
+      if(VAL.same?(X Y)
+        { stdout.print_line('same') }
+        { stdout.print_line('different') }
+      )
+    }
+    :V <- new_val
+    test_identity(V V)        # => same
+    test_identity(V new_val)  # => different
+
+.. _api-c65e133bba43714af029cba11754dd2b:
+
+VAL\.var\_syms\(Val\)
+=====================
+
+\`var\_syms\` does variable\-symbols operation\, and returns the set of syms of the vars of \`Val\`\.
+
+The result is a \`set\` of \`str\` values\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :VAL.require_from('kink/')
+        
+    :V <- new_val('Data' 42 'fun' {})
+    stdout.print_line(VAL.var_syms(V).repr) # => (flat_set "Data" "fun" "repr")
+
+.. _api-ce30e92c8bb96e52425438471e4d64c8:
+
+VAL\.identity\(Val\)
+====================
+
+\`identity\` returns \`Val\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :VAL.require_from('kink/')
+        
+    stdout.print_line(VAL.identity('foo').repr) # => "foo"
+

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.18. kink/NUM_DIV &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.19. kink/PROCESS" href="kink-PROCESS.html" />
+    <link rel="prev" title="6.17. kink/NUM" href="kink-NUM.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.18. kink/NUM_DIV</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-NUM.html"><span class="section-number">6.17. </span>kink/NUM</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-PROCESS.html"><span class="section-number">6.19. </span>kink/PROCESS</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-num-div">
+<h1><span class="section-number">6.18. </span>kink/NUM_DIV<a class="headerlink" href="#kink-num-div" title="Link to this heading">¶</a></h1>
+<p>The companion mod for num_div vals.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-num-div" id="id1">type num_div</a></p>
+<ul>
+<li><p><a class="reference internal" href="#num-div-dividend" id="id2">Num_div.dividend</a></p></li>
+<li><p><a class="reference internal" href="#num-div-divisor" id="id3">Num_div.divisor</a></p></li>
+<li><p><a class="reference internal" href="#num-div-ceil-scale" id="id4">Num_div.ceil(Scale)</a></p></li>
+<li><p><a class="reference internal" href="#num-div-floor-scale" id="id5">Num_div.floor(Scale)</a></p></li>
+<li><p><a class="reference internal" href="#num-div-half-ceil-scale" id="id6">Num_div.half_ceil(Scale)</a></p></li>
+<li><p><a class="reference internal" href="#num-div-half-floor-scale" id="id7">Num_div.half_floor(Scale)</a></p></li>
+<li><p><a class="reference internal" href="#num-div-half-even-scale" id="id8">Num_div.half_even(Scale)</a></p></li>
+<li><p><a class="reference internal" href="#num-div-repr" id="id9">Num_div.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#num-div-new-dividend-divisor" id="id10">NUM_DIV.new(Dividend Divisor)</a></p></li>
+<li><p><a class="reference internal" href="#num-div-is-val" id="id11">NUM_DIV.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-num-div">
+<span id="api-10b9390ed1e764fc662783b7e5d8cd23"></span><h2><span class="section-number">6.18.1. </span>type num_div<a class="headerlink" href="#type-num-div" title="Link to this heading">¶</a></h2>
+<p>A num_div val (Dividend, Divisor) represents a division of Dividend by Divisor, where Dividend is a num, and Divisor is a non-zero num.</p>
+<p>Num_div vals are usually made by Num.op_div or Num.round.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM_DIV</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM_DIV</span>.<span class="n">new</span>(<span class="m">10</span> <span class="m">3</span>).<span class="n">ceil</span>(<span class="m">3</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 0.334</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM_DIV</span>.<span class="n">new</span>(<span class="m">10</span> <span class="m">3</span>).<span class="n">floor</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.333</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">10</span> / <span class="m">3</span>).<span class="n">ceil</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.334</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">10</span> / <span class="m">3</span>).<span class="n">floor</span>(<span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.333</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">1.23456</span>.<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">3</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 1.235</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">1.23456</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 1.234</span>
+</pre></div>
+</div>
+<section id="num-div-dividend">
+<span id="api-1cc14fc4af2b979b9ec78ef550308671"></span><h3><span class="section-number">6.18.1.1. </span>Num_div.dividend<a class="headerlink" href="#num-div-dividend" title="Link to this heading">¶</a></h3>
+<p>Num_div.dividend returns Dividend of the Num_div.</p>
+<p>The result is a num.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:D</span> &lt;- <span class="m">1.2</span> / <span class="m">3.4</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">D</span>.<span class="n">dividend</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 1.2</span>
+</pre></div>
+</div>
+</section>
+<section id="num-div-divisor">
+<span id="api-ad5d873578222eda1c9b59c614c22011"></span><h3><span class="section-number">6.18.1.2. </span>Num_div.divisor<a class="headerlink" href="#num-div-divisor" title="Link to this heading">¶</a></h3>
+<p>Num_div.divisor returns Divisor of the Num_div.</p>
+<p>The result is a num.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:D</span> &lt;- <span class="m">1.2</span> / <span class="m">3.4</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">D</span>.<span class="n">divisor</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 3.4</span>
+</pre></div>
+</div>
+</section>
+<section id="num-div-ceil-scale">
+<span id="api-bc3c25f372309c0e5e20969aff83e2fe"></span><h3><span class="section-number">6.18.1.3. </span>Num_div.ceil(Scale)<a class="headerlink" href="#num-div-ceil-scale" title="Link to this heading">¶</a></h3>
+<p>Num_div.ceil does toward-plus-infinity rounding to the result of the division.</p>
+<p>Precondition:</p>
+<p>• Scale must be an int num</p>
+<p>The result is the smallest num with the Scale not less than the result of the division.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.16</span>).<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-0.1)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.15</span>).<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-0.1)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.14</span>).<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-0.1)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.06</span>).<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.05</span>).<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.04</span>).<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.04</span>.<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.05</span>.<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.06</span>.<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.1</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.14</span>.<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.2</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.15</span>.<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.2</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.16</span>.<span class="n">round</span>.<span class="n">ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.2</span>
+</pre></div>
+</div>
+</section>
+<section id="num-div-floor-scale">
+<span id="api-244cd265fafb6a4ee724da7f2fb9b7b7"></span><h3><span class="section-number">6.18.1.4. </span>Num_div.floor(Scale)<a class="headerlink" href="#num-div-floor-scale" title="Link to this heading">¶</a></h3>
+<p>Num_div.floor does toward-minus-infinity rounding to the result of the division.</p>
+<p>Precondition:</p>
+<p>• Scale must be an int num</p>
+<p>The result is the biggest num with the Scale not more than the result of the division.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.16</span>).<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.2)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.15</span>).<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.2)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.14</span>).<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.2)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.06</span>).<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.1)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.05</span>).<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.1)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.04</span>).<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.1)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.04</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.05</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.06</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.14</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.15</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.16</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.1</span>
+</pre></div>
+</div>
+</section>
+<section id="num-div-half-ceil-scale">
+<span id="api-1beb735912665b2ed782e7e3308c1664"></span><h3><span class="section-number">6.18.1.5. </span>Num_div.half_ceil(Scale)<a class="headerlink" href="#num-div-half-ceil-scale" title="Link to this heading">¶</a></h3>
+<p>Num_div.half_ceil does toward-nearest rounding to the result of the division with tie-breaking toward plus infinity.</p>
+<p>Precondition:</p>
+<p>• Scale must be an int num</p>
+<p>The result is the num with the Scale nearest to the result of the division. If there are two such nums, the bigger one is returned.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.16</span>).<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.2)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.15</span>).<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.1)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.14</span>).<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.1)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.06</span>).<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.1)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.05</span>).<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.04</span>).<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.0</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.04</span>.<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.05</span>.<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.06</span>.<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.1</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.14</span>.<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.15</span>.<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.2</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.16</span>.<span class="n">round</span>.<span class="n">half_ceil</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.2</span>
+</pre></div>
+</div>
+</section>
+<section id="num-div-half-floor-scale">
+<span id="api-f98b5420930e1110196b41c786ffd3e0"></span><h3><span class="section-number">6.18.1.6. </span>Num_div.half_floor(Scale)<a class="headerlink" href="#num-div-half-floor-scale" title="Link to this heading">¶</a></h3>
+<p>Num_div.half_floor does toward-nearest rounding to the result of the division with tie-breaking toward minus infinity.</p>
+<p>Precondition:</p>
+<p>• Scale must be an int num</p>
+<p>The result is the num with the Scale nearest to the result of the division. If there are two such nums, the smaller one is returned.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.16</span>).<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-0.2)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.15</span>).<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-0.2)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.14</span>).<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-0.1)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.06</span>).<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-0.1)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.05</span>).<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-0.1)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.04</span>).<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.04</span>.<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.05</span>.<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.06</span>.<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.1</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.14</span>.<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.15</span>.<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.16</span>.<span class="n">round</span>.<span class="n">half_floor</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.2</span>
+</pre></div>
+</div>
+</section>
+<section id="num-div-half-even-scale">
+<span id="api-90456558cd75fee0e38c25c62fa50993"></span><h3><span class="section-number">6.18.1.7. </span>Num_div.half_even(Scale)<a class="headerlink" href="#num-div-half-even-scale" title="Link to this heading">¶</a></h3>
+<p>Num_div.half_even does bankers’ rounding to the result of the division.</p>
+<p>Precondition:</p>
+<p>• Scale must be an int num</p>
+<p>The result is the num with the Scale nearest to the result of the division. If there are two such nums, the num with an even Mantissa is returned.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.16</span>).<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.2)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.15</span>).<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.2)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.14</span>).<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.1)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.06</span>).<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (-0.1)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.05</span>).<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0.04</span>).<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.0</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.04</span>.<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.05</span>.<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.06</span>.<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.1</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.14</span>.<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.15</span>.<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.2</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">0.16</span>.<span class="n">round</span>.<span class="n">half_even</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 0.2</span>
+</pre></div>
+</div>
+</section>
+<section id="num-div-repr">
+<span id="api-22a463b98e7095b562ce3e9a19abeb7b"></span><h3><span class="section-number">6.18.1.8. </span>Num_div.repr<a class="headerlink" href="#num-div-repr" title="Link to this heading">¶</a></h3>
+<p>Num_div.repr returns a str such as &quot;(1.2/(-3.4))&quot;</p>
+</section>
+</section>
+<section id="num-div-new-dividend-divisor">
+<span id="api-0833bd4e4fe6b26d24ca44708464cedd"></span><h2><span class="section-number">6.18.2. </span>NUM_DIV.new(Dividend Divisor)<a class="headerlink" href="#num-div-new-dividend-divisor" title="Link to this heading">¶</a></h2>
+<p>NUM_DIV.new makes a num_div val with (Dividend, Divisor).</p>
+<p>Preconditions:</p>
+<p>• Dividend must be a num</p>
+<p>• Divisor must be a num</p>
+<p>• Divisor must not be equal to 0</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM_DIV</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM_DIV</span>.<span class="n">new</span>(<span class="m">10</span> <span class="m">3</span>).<span class="n">ceil</span>(<span class="m">3</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 0.334</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM_DIV</span>.<span class="n">new</span>(<span class="m">10</span> <span class="m">3</span>).<span class="n">floor</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.333</span>
+</pre></div>
+</div>
+</section>
+<section id="num-div-is-val">
+<span id="api-b6eea992e503046c995d4232a8362baf"></span><h2><span class="section-number">6.18.3. </span>NUM_DIV.is?(Val)<a class="headerlink" href="#num-div-is-val" title="Link to this heading">¶</a></h2>
+<p>NUM_DIV.is? returns whether Val is  a num_div val.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-NUM.html"><span class="section-number">6.17. </span>kink/NUM</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-PROCESS.html"><span class="section-number">6.19. </span>kink/PROCESS</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

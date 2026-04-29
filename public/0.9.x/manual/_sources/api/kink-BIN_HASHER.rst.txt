@@ -1,0 +1,94 @@
+=================
+kink\/BIN\_HASHER
+=================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-50404809bac753c9be0ad7e0a3fa2fbc:
+
+type bin\_hasher
+================
+
+\`bin\_hasher\` is\, conceptually\, an immutable tuple of \(Hash\_algorithm\, Accumulated\_bin\)\. When \`Tail\_bin\` is given by \`hash\` method\, it calculates a hash value of \(Accumulated\_bin \+ Tail\_bin\) by Hash\_algorithm\.
+
+Implementations are allowed not to hold Accumulated\_bin itself\. Instead\, holding the internal state calculated from \`Accumulated\_bin\` is allowed\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    :BIN_HASHER.require_from('kink/')
+        
+    :Md5 <- BIN_HASHER.for('MD5')
+        
+    stdout.print_line(Md5.hash.repr)
+    # md5(∅)
+    # => (bin 0xd4 0x1d 0x8c 0xd9 0x8f 0x00 0xb2 0x04 0xe9 0x80 0x09 0x98 0xec 0xf8 0x42 0x7e)
+        
+    stdout.print_line(Md5.hash(BIN.of(1 2 3)).repr)
+    # md5(1 2 3)
+    # => (bin 0x52 0x89 0xdf 0x73 0x7d 0xf5 0x73 0x26 0xfc 0xdd 0x22 0x59 0x7a 0xfb 0x1f 0xac)
+        
+    :Md5_123 <- Md5 + BIN.of(1 2 3)
+        
+    stdout.print_line(Md5_123.hash.repr)
+    # md5(1 2 3)
+    # => (bin 0x52 0x89 0xdf 0x73 0x7d 0xf5 0x73 0x26 0xfc 0xdd 0x22 0x59 0x7a 0xfb 0x1f 0xac)
+        
+    stdout.print_line(Md5_123.hash(BIN.of(4 5 6)).repr)
+    # md5(1 2 3 4 5 6)
+    # => (bin 0x6a 0xc1 0xe5 0x6b 0xc7 0x8f 0x03 0x10 0x59 0xbe 0x7b 0xe8 0x54 0x52 0x2c 0x4c)
+
+.. _api-d9d9ea9d7870acff5719f00592512290:
+
+Hasher\.hash\(\.\.\.\[Tail\_bin\=BIN\.of\(\)\]\)
+------------------------------------------------
+
+\`hash\` calculates a hash value from \(Accumulated\_bin \+ Tail\_bin\)\, then return it as a \`bin\`\.
+
+.. rubric:: Precondition
+
+\• \`Tail\_bin\` must be a \`bin\`
+
+.. _api-7b29855d4e71be0b33d6e2312dbf9f6e:
+
+Hasher \+ Bin
+-------------
+
+\`\+\` operator\, or \`op\_add\` method\, makes a new \`bin\_hasher\` of \(Hash\_algorithm\, Accumulated\_bin \+ Bin\)\.
+
+.. rubric:: Precondition
+
+\• \`Bin\` must be a \`bin\`\.
+
+.. _api-b72109886bb16f524c8cead8a48d831d:
+
+BIN\_HASHER\.for\(Hash\_algorithm \.\.\.\[\$config\=\{\}\]\)
+============================================================
+
+\`for\` makes a \`bin\_hasher\` of \(Hash\_algorithm\, BIN\.of\(\)\)\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception\.
+
+If a \`bin\_hasher\` is created\, \`for\` tail\-calls \$success with the \`bin\_hasher\`\.
+
+If \`Hash\_algorithm\` is not supported\, \`for\` tail\-calls \$error with no arg\.
+
+.. rubric:: Precondition
+
+\• \`Hash\_algorithm\` must be a \`str\`\.
+
+.. _api-13f73ee67f41164e2dfda55cf8bba1e3:
+
+BIN\_HASHER\.is\?\(Val\)
+========================
+
+\`is\?\` returns whether \`Val\` is a \`bin\_hasher\`\.
+

@@ -1,0 +1,89 @@
+====================
+kink\/thread\/THREAD
+====================
+
+Provides access to preemptive threads\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-431fec36c7549e58fdd8d99e80d94c69:
+
+THREAD\.spawn\(\$thunk\)
+========================
+
+\`spawn\` fun starts a new preemptive thread\, and runs \$thunk on a new abstract stack machine in the thread\.
+
+If the runtime supports multiple types of threads\, \`spawn\` chooses the thread system suitable for compute bound tasks\. For example\, on Java Virtual Machine\, the platform thread is chosen\.
+
+Precondition\:
+
+\• \$thunk must be a fun which takes no arg
+
+\`spawn\` returns nada\.
+
+Living threads do not prevent the process from exiting\, thus they act like Java\'s daemon threads\.
+
+When you spawn a thread\, it is automatically detatched from the spawning thread\, thus there is no need to join the thread\. If you want to block until another thread completes its work\, use a concurrency primitive such as MUTEX\.
+
+Concurrency\:
+
+\• Invocation of \`spawn\` happens\-before invocation of \$thunk in the new thread\.
+
+.. _api-5a3cd7825e00c60cbb00217cd891f196:
+
+THREAD\.spawn\_io\(\$thunk\)
+============================
+
+spawn\_io fun starts a new preemptive thread\, and runs \$thunk on a new abstract stack machine in the thread\.
+
+If the runtime supports multiple types of threads\, spawn\_io chooses the thread system suitable for IO bound tasks\. For example\, on Java Virtual Machine\, the virtual thread is chosen\.
+
+Precondition\:
+
+\• \$thunk must be a fun which takes no arg
+
+spawn\_io returns nada\.
+
+Living threads do not prevent the process from exiting\, thus they act like Java\'s daemon threads\.
+
+When you spawn a thread\, it is automatically detatched from the spawning thread\, thus there is no need to join the thread\. If you want to block until another thread completes its work\, use a concurrency primitive such as MUTEX\.
+
+Concurrency\:
+
+\• Invocation of spawn\_io happens\-before invocation of \$thunk in the new thread\.
+
+.. _api-541f7e39a756802e822049daf619a241:
+
+THREAD\.id
+==========
+
+\`id\` fun returns an int num as the id of the thread\.
+
+Thread ids are unique within the runtime for each thread\.
+
+.. _api-50f98472937c55ee0eb43b4877d2b535:
+
+THREAD\.name
+============
+
+\`name\` fun returns a str as the name of the current thread\.
+
+Thread names are not guaranteed to be unique\. Thread names can be empty\.
+
+.. _api-4d2da89fa9aad1e1e892ee7300fc30e6:
+
+THREAD\.sleep\(Seconds\)
+========================
+
+\`sleep\` causes the current thread to sleep for the specified \`Seconds\`\.
+
+\`Seconds\` must be a non\-negative num of arbitrary precision\. The maximum precision effective in the result depends on the runtime system\. For example\, in a Kink runtime system on the JVM\, the two invocations of STOPWATCH\.start in the following program are equivalent\. Both tries to sleep 1234 milliseconds\.
+
+.. code:: kink
+
+    :THREAD.require_from('kink/thread/')
+    THREAD.sleep(1.23456) # tries to sleep 1234 milliseconds
+    THREAD.sleep(1.234)   # tries to sleep 1234 milliseconds
+

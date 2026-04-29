@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.35. kink/container/SET &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.36. kink/container/TREE_MAP" href="kink-container-TREE_MAP.html" />
+    <link rel="prev" title="6.34. kink/container/ORDERED_SET" href="kink-container-ORDERED_SET.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.35. kink/container/SET</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-ORDERED_SET.html"><span class="section-number">6.34. </span>kink/container/ORDERED_SET</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-TREE_MAP.html"><span class="section-number">6.36. </span>kink/container/TREE_MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-container-set">
+<h1><span class="section-number">6.35. </span>kink/container/SET<a class="headerlink" href="#kink-container-set" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-set" id="id1">type set</a></p>
+<ul>
+<li><p><a class="reference internal" href="#set-have-elem" id="id2">Set.have?(Elem)</a></p></li>
+<li><p><a class="reference internal" href="#set-size" id="id3">Set.size</a></p></li>
+<li><p><a class="reference internal" href="#set-push-elem" id="id4">Set.push(Elem)</a></p></li>
+<li><p><a class="reference internal" href="#set-append-eacher" id="id5">Set.append(Eacher)</a></p></li>
+<li><p><a class="reference internal" href="#set-remove-elem" id="id6">Set.remove(Elem)</a></p></li>
+<li><p><a class="reference internal" href="#set-clear" id="id7">Set.clear</a></p></li>
+<li><p><a class="reference internal" href="#set-iter" id="id8">Set.iter</a></p></li>
+<li><p><a class="reference internal" href="#set-each-consume" id="id9">Set.each($consume)</a></p></li>
+<li><p><a class="reference internal" href="#set-all-match" id="id10">Set.all?($match?)</a></p></li>
+<li><p><a class="reference internal" href="#set-any-match-true" id="id11">Set.any?(...[$match?={ true }])</a></p></li>
+<li><p><a class="reference internal" href="#set-count-counted" id="id12">Set.count($counted?)</a></p></li>
+<li><p><a class="reference internal" href="#set-fold-init-combine" id="id13">Set.fold(Init $combine)</a></p></li>
+<li><p><a class="reference internal" href="#set-reduce-combine-empty-fallback" id="id14">Set.reduce($combine ...[$empty_fallback])</a></p></li>
+<li><p><a class="reference internal" href="#set-have-all-vals" id="id15">Set.have_all?(Vals)</a></p></li>
+<li><p><a class="reference internal" href="#set-have-any-vals" id="id16">Set.have_any?(Vals)</a></p></li>
+<li><p><a class="reference internal" href="#set1-set2" id="id17">Set1 == Set2</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#set-is-val" id="id18">SET.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-set">
+<span id="api-98311a76df5bead2d41432f82bacb54f"></span><h2><span class="section-number">6.35.1. </span>type set<a class="headerlink" href="#type-set" title="Link to this heading">¶</a></h2>
+<p>`set` is an abstract type of containers of unique elements. Elements must be unique in the `set`, in the equivalence relation defined by the implementation.</p>
+<p>`ordered_set` is a subtype of `set` which supports total ordering of elements. See kink/container/ORDERED_SET.</p>
+<section id="set-have-elem">
+<span id="api-2d702c4c238e10b4e1521da50bdf47fd"></span><h3><span class="section-number">6.35.1.1. </span>Set.have?(Elem)<a class="headerlink" href="#set-have-elem" title="Link to this heading">¶</a></h3>
+<p>`have?` returns whether `Set` has an element equivalent to `Elem`.</p>
+<p class="rubric">Precondition</p>
+<p>`Elem` must be in the domain of the equivalence relation of elements.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have?</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have?</span>(<span class="s1">&#39;xxx&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="set-size">
+<span id="api-f6a870e052111a171a3a51a7632e76d5"></span><h3><span class="section-number">6.35.1.2. </span>Set.size<a class="headerlink" href="#set-size" title="Link to this heading">¶</a></h3>
+<p>`size` returns the number of elements of `Set` as an integer `num`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">size</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 2</span>
+</pre></div>
+</div>
+</section>
+<section id="set-push-elem">
+<span id="api-7b8e5aaed8d30a07260fcc20cd0dbdd8"></span><h3><span class="section-number">6.35.1.3. </span>Set.push(Elem)<a class="headerlink" href="#set-push-elem" title="Link to this heading">¶</a></h3>
+<p>`push` inserts `Elem` to `Set`.</p>
+<p>If `Set` already has an element equivalent to `Elem`, `push` might either do nothing, or replace the element by `Elem`.</p>
+<p class="rubric">Precondition</p>
+<p>`Elem` must be in the domain of the equivalence relation of elements.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>()
+<span class="nv">Set</span>.<span class="n">push</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="nv">Set</span>.<span class="n">push</span>(<span class="s1">&#39;bar&#39;</span>)
+<span class="nv">Set</span>.<span class="n">push</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (tree_set &quot;bar&quot; &quot;foo&quot;)</span>
+</pre></div>
+</div>
+</section>
+<section id="set-append-eacher">
+<span id="api-81a0643d94216924bffb14257b663f13"></span><h3><span class="section-number">6.35.1.4. </span>Set.append(Eacher)<a class="headerlink" href="#set-append-eacher" title="Link to this heading">¶</a></h3>
+<p>`append` inserts elements of `Eacher` to `Set`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Eacher` must support .each($consume) method, which calls $consume for each element of `Eacher`.</p>
+<p>The elements of `Eacher` must be in the domain of the elements of `Set`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>)
+
+<span class="nv">Set</span>.<span class="n">append</span>([<span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (flat_set &quot;bar&quot; &quot;baz&quot; &quot;foo&quot;)</span>
+</pre></div>
+</div>
+</section>
+<section id="set-remove-elem">
+<span id="api-6fb354b113ac862b36172bcc5236e248"></span><h3><span class="section-number">6.35.1.5. </span>Set.remove(Elem)<a class="headerlink" href="#set-remove-elem" title="Link to this heading">¶</a></h3>
+<p>`remove` deletes an element equivalent to `Elem`. If `Set` does not have such an element, `remove` does nothing.</p>
+<p class="rubric">Precondition</p>
+<p>`Elem` must be in the domain of the equivalence relation of elements.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="nv">Set</span>.<span class="n">remove</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="nv">Set</span>.<span class="n">remove</span>(<span class="s1">&#39;xxx&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (flat_set &quot;bar&quot; &quot;baz&quot;)</span>
+</pre></div>
+</div>
+</section>
+<section id="set-clear">
+<span id="api-d35965eee7349b5ff82ee7ea0a644037"></span><h3><span class="section-number">6.35.1.6. </span>Set.clear<a class="headerlink" href="#set-clear" title="Link to this heading">¶</a></h3>
+<p>`clear` removes all the elements.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="nv">Set</span>.<span class="n">clear</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (flat_set)</span>
+</pre></div>
+</div>
+</section>
+<section id="set-iter">
+<span id="api-5af69d82af3645140f3d1b4ac8e22912"></span><h3><span class="section-number">6.35.1.7. </span>Set.iter<a class="headerlink" href="#set-iter" title="Link to this heading">¶</a></h3>
+<p>`iter` method returns an `iter` of the elements of `Set`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="nv">Set</span>.<span class="n">iter</span>.<span class="n">each</span>{(<span class="nv">:E</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;bar&quot;</span>
+<span class="c1">#   &quot;baz&quot;</span>
+<span class="c1">#   &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="set-each-consume">
+<span id="api-240a37b90bb8556a80d895e384f275b2"></span><h3><span class="section-number">6.35.1.8. </span>Set.each($consume)<a class="headerlink" href="#set-each-consume" title="Link to this heading">¶</a></h3>
+<p>`each` calls $consume for each element of `Set`.</p>
+<p class="rubric">Precondition</p>
+<p>$consume must be a fun which takes a value.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="nv">Set</span>.<span class="n">each</span>{(<span class="nv">:E</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;bar&quot;</span>
+<span class="c1">#   &quot;baz&quot;</span>
+<span class="c1">#   &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="set-all-match">
+<span id="api-0b782d162b7df18b6126b90dd687eb70"></span><h3><span class="section-number">6.35.1.9. </span>Set.all?($match?)<a class="headerlink" href="#set-all-match" title="Link to this heading">¶</a></h3>
+<p>`all?` returns whether all the elements of `Set` satisfy the predicate $match?.</p>
+<p class="rubric">Precondition</p>
+<p>$match? must be a predicate.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">all?</span>{(<span class="nv">:E</span>) <span class="nv">E</span> % <span class="m">2</span> == <span class="m">0</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">all?</span>{(<span class="nv">:E</span>) <span class="nv">E</span> &lt; <span class="m">10</span> }.<span class="n">repr</span>)    <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">all?</span>{(<span class="nv">:E</span>) <span class="nv">E</span> &gt;= <span class="m">10</span> }.<span class="n">repr</span>)   <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="set-any-match-true">
+<span id="api-edeae5d88aa8bffb3dcd74e23424afb5"></span><h3><span class="section-number">6.35.1.10. </span>Set.any?(...[$match?={ true }])<a class="headerlink" href="#set-any-match-true" title="Link to this heading">¶</a></h3>
+<p>`any?` returns whether one or more elements of `Set` satisfy the predicate $match?.</p>
+<p>$match? is an optional arg with a default value { true }. So, if $match? is not passed, `any?` returns whether `Set` is nonempty.</p>
+<p class="rubric">Precondition</p>
+<p>$match? must be a predicate.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">any?</span>{(<span class="nv">:E</span>) <span class="nv">E</span> % <span class="m">2</span> == <span class="m">0</span> }.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">any?</span>{(<span class="nv">:E</span>) <span class="nv">E</span> &lt; <span class="m">10</span> }.<span class="n">repr</span>)     <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">any?</span>{(<span class="nv">:E</span>) <span class="nv">E</span> &gt;= <span class="m">10</span> }.<span class="n">repr</span>)    <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>().<span class="n">any?</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">1</span>).<span class="n">any?</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span>).<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="set-count-counted">
+<span id="api-6d7bc24e8660964dfd50cf664e848b0f"></span><h3><span class="section-number">6.35.1.11. </span>Set.count($counted?)<a class="headerlink" href="#set-count-counted" title="Link to this heading">¶</a></h3>
+<p>`count` returns the number of elements of `Set` which satisfy the predicate $counted?, as an integer `num`.</p>
+<p class="rubric">Precondition</p>
+<p>$counted? must be a predicate.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+<span class="nv">:Even_count</span> &lt;- <span class="nv">Set</span>.<span class="n">count</span>{(<span class="nv">:E</span>) <span class="nv">E</span> % <span class="m">2</span> == <span class="m">0</span> }
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Even_count</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 2</span>
+</pre></div>
+</div>
+</section>
+<section id="set-fold-init-combine">
+<span id="api-5330fd16d1eaf8ab7d553fa260d12266"></span><h3><span class="section-number">6.35.1.12. </span>Set.fold(Init $combine)<a class="headerlink" href="#set-fold-init-combine" title="Link to this heading">¶</a></h3>
+<p>`fold` folds elements of `Set` seeded by `Init`.</p>
+<p>If `Set` has elements E1, E2, ,,, En_1, En, `fold` returns combine(combine(,,,combine(combine(Init E1) E2),,, En_1) En). Elements can appear in any order, unless `Set` is ordered.</p>
+<p>If `Set` is empty, `fold` returns `Init`.</p>
+<p class="rubric">Precondition</p>
+<p>$combine must be a fun which takes two values.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+<span class="nv">:N</span> &lt;- <span class="nv">Set</span>.<span class="n">fold</span>(<span class="m">100</span>){(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 115</span>
+</pre></div>
+</div>
+</section>
+<section id="set-reduce-combine-empty-fallback">
+<span id="api-a156e903d680115467cce66891212378"></span><h3><span class="section-number">6.35.1.13. </span>Set.reduce($combine ...[$empty_fallback])<a class="headerlink" href="#set-reduce-combine-empty-fallback" title="Link to this heading">¶</a></h3>
+<p>`reduce` folds elements of `Set` mutually.</p>
+<p>If `Set` has elements E1, E2, E3, ,,, En_1, En, `reduce` returns combine(combine(,,,combine(combine(E1 E2) E3),,, En_1) En). Elements can appear in any order, unless `Set` is ordered.</p>
+<p>If `Set` has a single element `E`, `reduce` returns `E`.</p>
+<p>If `Set` is empty, and $empty_fallback is given, `reduce` tail-calls $empty_fallback with no arg.</p>
+<p>If `Set` is empty, and $empty_fallback is not given, `reduce` raises an exception.</p>
+<p class="rubric">Preconditions</p>
+<p>$combine must take two values.</p>
+<p>$empty_fallback must be a thunk.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Empty</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>()
+<span class="nv">:Non_empty</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Non_empty</span>.<span class="n">reduce</span>{(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span>}.<span class="n">repr</span>) <span class="c1"># =&gt; 15</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Empty</span>.<span class="n">reduce</span>({(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span>} { <span class="s1">&#39;empty&#39;</span> }).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;empty&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="set-have-all-vals">
+<span id="api-fbc71650f19e6cf3e5d5de8af6bb2a3a"></span><h3><span class="section-number">6.35.1.14. </span>Set.have_all?(Vals)<a class="headerlink" href="#set-have-all-vals" title="Link to this heading">¶</a></h3>
+<p>`have_all?` returns whether `Set` has all the elements of `Vals`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Vals` must implement .all?($match?).</p>
+<p>The elements of `Vals` must be in the domain of the equivalence relation of elements of `Set`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have_all?</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have_all?</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;X&#39;</span>]).<span class="n">repr</span>)    <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have_all?</span>([<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="set-have-any-vals">
+<span id="api-a3384489cc9874681c332297686f29d9"></span><h3><span class="section-number">6.35.1.15. </span>Set.have_any?(Vals)<a class="headerlink" href="#set-have-any-vals" title="Link to this heading">¶</a></h3>
+<p>`have_any?` returns whether `Set` has any element of `Vals`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Vals` must implement .any?($match?).</p>
+<p>The elements of `Vals` must be in the domain of the equivalence relation of elements of `Set`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have_any?</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have_any?</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;X&#39;</span>]).<span class="n">repr</span>)    <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have_any?</span>([<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="set1-set2">
+<span id="api-69f7e6fa1e8b35c831b29df075981948"></span><h3><span class="section-number">6.35.1.16. </span>Set1 == Set2<a class="headerlink" href="#set1-set2" title="Link to this heading">¶</a></h3>
+<p>`==` operator, or `op_eq` method, returns whether `Set1` and `Set2` have equivalent collections of elements.</p>
+<p>In other words, `op_eq` returns whether `Set1` has all the elements of `Set2`, and `Set2` has all the elements of `Set1`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Set2` must be a `set`.</p>
+<p>The equivalence relations of elements of `Set1` and `Set2` must be the same.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:X</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="nv">:Y</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="nv">:Z</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;A&#39;</span> <span class="s1">&#39;B&#39;</span> <span class="s1">&#39;C&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">X</span> == <span class="nv">Y</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">X</span> == <span class="nv">Z</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="set-is-val">
+<span id="api-fbe09f5a1c8c097b4b22ec3c03804f84"></span><h2><span class="section-number">6.35.2. </span>SET.is?(Val)<a class="headerlink" href="#set-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `set`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-ORDERED_SET.html"><span class="section-number">6.34. </span>kink/container/ORDERED_SET</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-TREE_MAP.html"><span class="section-number">6.36. </span>kink/container/TREE_MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>1. 言語設計の特徴 &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=8f459034"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="2. Installation" href="installation.html" />
+    <link rel="prev" title="Kinkプログラミング言語マニュアル" href="index.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>1. 言語設計の特徴</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Kinkプログラミング言語マニュアル</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="installation.html"><span class="section-number">2. </span>Installation</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="key-design-features">
+<h1><span class="section-number">1. </span>言語設計の特徴<a class="headerlink" href="#key-design-features" title="Link to this heading">¶</a></h1>
+<p>このページでは、Kink言語の主要な設計上の特徴について述べる。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#principle-keep-it-simple" id="id2">原則: ものごとは単純に</a></p></li>
+<li><p><a class="reference internal" href="#function-is-a-value" id="id3">関数は値である</a></p></li>
+<li><p><a class="reference internal" href="#object-is-just-a-bunch-of-variables" id="id4">オブジェクトは単に変数の束である</a></p></li>
+<li><p><a class="reference internal" href="#assignment-by-function-call" id="id5">関数呼び出しによる代入</a></p></li>
+<li><p><a class="reference internal" href="#local-control-by-function-call" id="id6">関数呼び出しによる局所的な制御</a></p></li>
+<li><p><a class="reference internal" href="#non-local-control-by-delimited-continuation" id="id7">限定継続による非局所的な制御</a></p></li>
+</ul>
+</nav>
+<section id="principle-keep-it-simple">
+<h2><span class="section-number">1.1. </span>原則: ものごとは単純に<a class="headerlink" href="#principle-keep-it-simple" title="Link to this heading">¶</a></h2>
+<p>Kinkの言語設計の原則は、ものごとをできるだけ <em>概念的に単純に</em> することである。これは、基本的な構成要素の数をできるだけ少なくすることを意味する。</p>
+<p>たとえば、例外、ジェネレータ、スレッドローカルストア (TLS) は基本的な構成要素ではない。そのかわり、<a class="reference internal" href="api/kink-EXCEPTION.html#api-08fee0648a753752ac74e092d8e9cbfd"><span class="std std-ref">例外</span></a>、<a class="reference internal" href="api/kink-iter-ITER.html#api-6d0602cb3762becfd16f81f49dc8de8a"><span class="std std-ref">ジェネレータ</span></a>、<a class="reference internal" href="api/kink-DYN.html#api-08ef172995301f2f7d7b31cf767db64d"><span class="std std-ref">TLSのようなストア</span></a>は、いずれも<a class="reference internal" href="glossary.html#term-delimited-continuation"><span class="xref std std-term">限定継続</span></a>を基本的な構成要素として構築される。</p>
+</section>
+<section id="function-is-a-value">
+<h2><span class="section-number">1.2. </span>関数は値である<a class="headerlink" href="#function-is-a-value" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="glossary.html#term-function"><span class="xref std std-term">関数</span></a> は第一級の値である。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:double</span> &lt;- {(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">2</span> }
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">double</span>(<span class="m">42</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 84</span>
+
+<span class="nv">:Doubled_vec</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>].<span class="n">map</span>(<span class="nv">$double</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Doubled_vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [2 4 6]</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="glossary.html#term-method"><span class="xref std std-term">メソッド</span></a> は、値の変数に格納された関数である。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new_dog</span> &lt;- {
+  <span class="n">new_val</span>(
+    <span class="s1">&#39;bark&#39;</span> { <span class="s1">&#39;Bow&#39;</span> }
+    <span class="s1">&#39;howl&#39;</span> { <span class="s1">&#39;Wow&#39;</span> }
+  )
+}
+
+<span class="nv">:Dog</span> &lt;- <span class="n">new_dog</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dog</span>.<span class="n">bark</span>) <span class="c1"># =&gt; Bow</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dog</span>.<span class="n">howl</span>) <span class="c1"># =&gt; Wow</span>
+</pre></div>
+</div>
+</section>
+<section id="object-is-just-a-bunch-of-variables">
+<h2><span class="section-number">1.3. </span>オブジェクトは単に変数の束である<a class="headerlink" href="#object-is-just-a-bunch-of-variables" title="Link to this heading">¶</a></h2>
+<p>Kinkの<a class="reference internal" href="object.html"><span class="doc">オブジェクトシステム</span></a>には、クラスベース言語のようなクラス/インスタンス関係や、プロトタイプベース言語のようなプロトタイプ/子関係がない。つまり、継承や委譲は存在しない。オブジェクト、つまり<a class="reference internal" href="glossary.html#term-value"><span class="xref std std-term">値</span></a>は、単に変数の束である。</p>
+<p>この設計は、継承や委譲とは、最適化のための単なる重複排除に過ぎない、という観察にもとづいている。ランタイムがバックエンドで重複排除するのであれば、それが言語仕様に表れる必要はない。</p>
+<p>データとメソッドを属性として持つ値を作るには、単に <a class="reference internal" href="api/kink-BINDING.html#api-fbc90c7785322a766a80191e6e1ea8de"><span class="std std-ref">new_val</span></a> を呼ぶ。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new_account</span> &lt;- {(<span class="nv">:Initial_balance</span>)
+  <span class="n">new_val</span>(
+    <span class="s1">&#39;balance&#39;</span> {[<span class="nv">:A</span>]() <span class="nv">A</span>.<span class="nv">Balance</span> }
+    <span class="s1">&#39;deposit&#39;</span> {[<span class="nv">:A</span>](<span class="nv">:Delta</span>) <span class="nv">A:Balance</span> &lt;- <span class="nv">A</span>.<span class="n">balance</span> + <span class="nv">Delta</span> }
+    <span class="s1">&#39;Balance&#39;</span> <span class="nv">Initial_balance</span>
+  )
+}
+
+<span class="nv">:X</span> &lt;- <span class="n">new_account</span>(<span class="m">100</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">balance</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 100</span>
+<span class="nv">X</span>.<span class="n">deposit</span>(<span class="m">20</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">balance</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 120</span>
+
+<span class="nv">:Y</span> &lt;- <span class="n">new_account</span>(<span class="m">300</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Y</span>.<span class="n">balance</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 300</span>
+</pre></div>
+</div>
+<p>見ての通り、balanceメソッドとdepositメソッドは、XとYとで共通している。クラスベース言語で、メソッドをオブジェクト間で共有するためには、クラスが使われる。これに対してKinkでは、メソッドは<a class="reference internal" href="glossary.html#term-vector"><span class="xref std std-term">ベクタ</span></a>に格納されて、new_valの引数として展開される。このようなベクタは<a class="reference internal" href="glossary.html#term-trait"><span class="xref std std-term">トレイト</span></a>と呼ばれる。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new_account</span> &lt;- {(<span class="nv">:Initial_balance</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Account_trait</span>
+    <span class="s1">&#39;Balance&#39;</span> <span class="nv">Initial_balance</span>
+  )
+}
+
+<span class="nv">:Account_trait</span> &lt;- [
+  <span class="s1">&#39;balance&#39;</span> {[<span class="nv">:A</span>]() <span class="nv">A</span>.<span class="nv">Balance</span> }
+  <span class="s1">&#39;deposit&#39;</span> {[<span class="nv">:A</span>](<span class="nv">:Delta</span>) <span class="nv">A:Balance</span> &lt;- <span class="nv">A</span>.<span class="n">balance</span> + <span class="nv">Delta</span> }
+]
+
+<span class="nv">:X</span> &lt;- <span class="n">new_account</span>(<span class="m">100</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">balance</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 100</span>
+</pre></div>
+</div>
+</section>
+<section id="assignment-by-function-call">
+<h2><span class="section-number">1.4. </span>関数呼び出しによる代入<a class="headerlink" href="#assignment-by-function-call" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="glossary.html#term-variable"><span class="xref std std-term">変数</span></a> の代入は <a class="reference internal" href="glossary.html#term-variable-reference"><span class="xref std std-term">変数参照</span></a> 値の <a class="reference internal" href="api/kink-VARREF.html#api-8e1458a61e933a2fc7dcdcb3592f20c1"><span class="std std-ref">op_store</span></a> メソッドによって行われる。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span> &lt;- <span class="n">new_val</span>
+<span class="nv">V:Num</span> &lt;- <span class="m">42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="nv">Num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p>上のプログラムは次と同等だ。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span>.<span class="n">op_store</span>(<span class="n">new_val</span>)
+<span class="nv">V:Num</span>.<span class="n">op_store</span>(<span class="m">42</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="nv">Num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p>したがって、Kinkの文法には左辺値のようなものはない。</p>
+</section>
+<section id="local-control-by-function-call">
+<h2><span class="section-number">1.5. </span>関数呼び出しによる局所的な制御<a class="headerlink" href="#local-control-by-function-call" title="Link to this heading">¶</a></h2>
+<p>局所的な制御構造は関数によって実装される。たとえばif-then-elseは、事前ロード済み関数である <a class="reference internal" href="api/kink-BINDING.html#api-b98148331ab9b2bb0ff826ae2a7d0c6d"><span class="std std-ref">if</span></a> で提供される。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:abs</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="n">if</span>(<span class="nv">N</span> &gt;= <span class="m">0</span>
+    { <span class="nv">N</span> }
+    { -<span class="nv">N</span> }
+  )
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">abs</span>(<span class="m">42</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">abs</span>(-<span class="m">42</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="glossary.html#term-vector"><span class="xref std std-term">vector</span></a> の要素のループは、<a class="reference internal" href="api/kink-VEC.html#api-f7a2d4cc94155596c0b63f9e7d2a847c"><span class="std std-ref">fold</span></a> などのメソッドで行える。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Sum</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span> <span class="m">10</span>].<span class="n">fold</span>(<span class="m">0</span>){(<span class="nv">:Accum</span> <span class="nv">:N</span>)
+  <span class="nv">Accum</span> + <span class="nv">N</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 55</span>
+</pre></div>
+</div>
+<p>一般的に、ループは再帰的な <a class="reference internal" href="glossary.html#term-tail-call"><span class="xref std std-term">末尾呼び出し</span></a> によって実装できる。これは、連続する末尾呼び出しがスタックオーバーフローを起こさないことが保証されているからだ。 <a class="reference internal" href="glossary.html#term-tail-call-elimination"><span class="xref std std-term">末尾呼び出し除去</span></a> を見よ。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># returns the sum of nums in Vec</span>
+<span class="nv">:sum</span> &lt;- {(<span class="nv">:Vec</span>)
+  <span class="nv">:loop</span> &lt;- {(<span class="nv">:Accum</span> <span class="nv">:I</span>)
+    <span class="n">if</span>(<span class="nv">I</span> &lt; <span class="nv">Vec</span>.<span class="n">size</span>
+      { <span class="nv">:N</span> = <span class="nv">Vec</span>.<span class="n">get</span>(<span class="nv">I</span>)
+        <span class="n">loop</span>(<span class="nv">Accum</span> + <span class="nv">N</span> <span class="nv">I</span> + <span class="m">1</span>)
+      }
+      { <span class="nv">Accum</span> }
+    )
+  }
+  <span class="n">loop</span>(<span class="m">0</span> <span class="m">0</span>)
+}
+<span class="nv">:Sum</span> &lt;- <span class="n">sum</span>([<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span> <span class="m">10</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 55</span>
+</pre></div>
+</div>
+</section>
+<section id="non-local-control-by-delimited-continuation">
+<h2><span class="section-number">1.6. </span>限定継続による非局所的な制御<a class="headerlink" href="#non-local-control-by-delimited-continuation" title="Link to this heading">¶</a></h2>
+<p>非局所的な制御構造、たとえば <a class="reference internal" href="glossary.html#term-exception"><span class="xref std std-term">例外</span></a> 、 <a class="reference internal" href="api/kink-CONTROL.html#api-29c676e2986aaddd539609b493b6faaf"><span class="std std-ref">try-finally</span></a>, <a class="reference internal" href="api/kink-iter-ITER.html#api-6d0602cb3762becfd16f81f49dc8de8a"><span class="std std-ref">ジェネレータ</span></a> などはプリミティブではなく、 <a class="reference internal" href="glossary.html#term-delimited-continuation"><span class="xref std std-term">限定継続</span></a> のshift/reset操作によって実装される。</p>
+<p>限定継続を実用的に使えるようにするためには、局所変数の束縛はデフォルトで事実上不変でなければならない。 <a class="reference internal" href="language/semantics.html#letclause"><span class="std std-ref">let節</span></a> が導入されたのはこのためだ。</p>
+<p>shift/resetを使って、引数から三要素のタプルを作るカリー化された関数を作ってみよう。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:KONT_TAG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:triple_correct</span> &lt;- {(<span class="nv">:A0</span>)
+  <span class="nv">:Tag</span> = <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+  <span class="nv">Tag</span>.<span class="n">reset</span>{
+    <span class="nv">:A1</span> = <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:k1</span>) <span class="nv">$k1</span> }
+    <span class="nv">:A2</span> = <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:k2</span>) <span class="nv">$k2</span> }
+    [<span class="nv">A0</span> <span class="nv">A1</span> <span class="nv">A2</span>]
+  }
+}
+
+<span class="nv">:triple_broken</span> &lt;- {(<span class="nv">:A0</span>)
+  <span class="nv">:Tag</span> = <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+  <span class="nv">Tag</span>.<span class="n">reset</span>{
+    <span class="nv">:A1</span> &lt;- <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:k1</span>) <span class="nv">$k1</span> }
+    <span class="nv">:A2</span> &lt;- <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:k2</span>) <span class="nv">$k2</span> }
+    [<span class="nv">A0</span> <span class="nv">A1</span> <span class="nv">A2</span>]
+  }
+}
+
+<span class="nv">:test</span> &lt;- {(<span class="nv">:triple</span>)
+  <span class="nv">:foo</span> &lt;- <span class="n">triple</span>(<span class="s1">&#39;foo&#39;</span>)
+  <span class="nv">:foo_bar</span> &lt;- <span class="n">foo</span>(<span class="s1">&#39;bar&#39;</span>)
+
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">foo_bar</span>(<span class="s1">&#39;baz&#39;</span>).<span class="n">repr</span>)
+  <span class="n">foo</span>(<span class="s1">&#39;XXX&#39;</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">foo_bar</span>(<span class="s1">&#39;baz&#39;</span>).<span class="n">repr</span>)
+}
+
+<span class="n">test</span>(<span class="nv">$triple_correct</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot;] [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot;]</span>
+<span class="n">test</span>(<span class="nv">$triple_broken</span>)  <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot;] [&quot;foo&quot; &quot;XXX&quot; &quot;baz&quot;]</span>
+</pre></div>
+</div>
+<p>triple_correctはlet節を使っている。 <code class="docutils literal notranslate"><span class="pre">foo('XXX')</span></code> の呼び出しがfoo_barのふるまいを変えていないことが分かる。</p>
+<p>一方で、triple_brokenは <a class="reference internal" href="api/kink-VARREF.html#api-8e1458a61e933a2fc7dcdcb3592f20c1"><span class="std std-ref">Varref.op_store</span></a> によって束縛を変更している。このため、foo_barの結果は <code class="docutils literal notranslate"><span class="pre">foo('XXX')</span></code> の前後で変わってしまう。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Kinkプログラミング言語マニュアル</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="installation.html"><span class="section-number">2. </span>Installation</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

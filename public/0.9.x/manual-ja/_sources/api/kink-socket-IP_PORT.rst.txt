@@ -1,0 +1,69 @@
+======================
+kink\/socket\/IP\_PORT
+======================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-4b514a78777cecaf5b651499abeeae2e:
+
+type ip\_port
+=============
+
+\`ip\_port\` is a pair of an IP address and a port number\. \`ip\_port\` is a subtype of type \`socket\_address\`\.
+
+Port number of 0 indicates that an ephemeral port should be assigned in \`bind\` operations\, like Udp\_socket\.bind\, Tcp\.bind\, and Tcp\_server\.bind\_listen\.
+
+.. _api-7bca52bb9efd9fbae066d3f7c18f25d6:
+
+Ipp\.ip
+-------
+
+\`ip\` method returns the IP address\, in type \`ip\`\.
+
+.. _api-29a5fdb6aff241e636843ae8238e6697:
+
+Ipp\.port
+---------
+
+\`port\` returns the port number as an integer \`num\`\.
+
+.. _api-c993a8c45f0cc172f8bc8820c530a831:
+
+Ipp\.protocol\_family
+---------------------
+
+\`protocol\_family\` returns either PROTOCOL\_FAMILY\.ipv4 or PROTOCOL\_FAMILY\.ipv6\.
+
+.. _api-0f9dbe9884b2751dec62d4261b554728:
+
+X \=\= Y
+--------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`Y\` is an \`ip\_port\`\, and \`X\` and \`Y\` have the same IP address and the same port number\.
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`socket\_address\`\.
+
+.. _api-315a4e9a43b17642f6ec36c9ca42e7ef:
+
+IP\_PORT\.new\(Ip Port\)
+========================
+
+\`new\` makes a new \`ip\_port\` value\.
+
+.. rubric:: Preconditions
+
+\`Ip\` must be an \`ip\`\.
+
+\`Port\` must be an integer \`num\` in the range \[0\, 65535\]\.
+
+.. _api-154dd5a193193cc04256886bb76a11eb:
+
+IP\_PORT\.is\?\(Val\)
+=====================
+
+\`is\?\` returns whether \`Val\` is an \`ip\_port\`\.
+

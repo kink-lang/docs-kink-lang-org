@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.92. kink/socket/SOCKET_ADDRESS &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.93. kink/socket/TCP" href="kink-socket-TCP.html" />
+    <link rel="prev" title="6.91. kink/socket/PROTOCOL_FAMILY" href="kink-socket-PROTOCOL_FAMILY.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.92. kink/socket/SOCKET_ADDRESS</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-PROTOCOL_FAMILY.html"><span class="section-number">6.91. </span>kink/socket/PROTOCOL_FAMILY</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-TCP.html"><span class="section-number">6.93. </span>kink/socket/TCP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-socket-socket-address">
+<h1><span class="section-number">6.92. </span>kink/socket/SOCKET_ADDRESS<a class="headerlink" href="#kink-socket-socket-address" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-socket-address" id="id1">type socket_address</a></p>
+<ul>
+<li><p><a class="reference internal" href="#addr-protocol-family" id="id2">Addr.protocol_family</a></p></li>
+<li><p><a class="reference internal" href="#addr1-addr2" id="id3">Addr1 == Addr2</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#socket-address-is-val" id="id4">SOCKET_ADDRESS.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-socket-address">
+<span id="api-bf5011c931e6af1c43c80acfc22029b4"></span><h2><span class="section-number">6.92.1. </span>type socket_address<a class="headerlink" href="#type-socket-address" title="Link to this heading">¶</a></h2>
+<p>`socket_address` is a supertype of `ip_port` and `unix_domain_socket_path`.</p>
+<section id="addr-protocol-family">
+<span id="api-9724e853398ec6b01fb204c46d25fdbc"></span><h3><span class="section-number">6.92.1.1. </span>Addr.protocol_family<a class="headerlink" href="#addr-protocol-family" title="Link to this heading">¶</a></h3>
+<p>`protocol_family` returns the protocol family of the socket address as `protocol_family` type.</p>
+<p>See kink/socket/PROTOCOL_FAMILY for `protocol_family` type.</p>
+</section>
+<section id="addr1-addr2">
+<span id="api-717af2205e34a52a417a1a27ebccb813"></span><h3><span class="section-number">6.92.1.2. </span>Addr1 == Addr2<a class="headerlink" href="#addr1-addr2" title="Link to this heading">¶</a></h3>
+<p>`==` operator, or `op_eq` method, returns true if and only if one of the following conditions is met.</p>
+<p>• `Addr1` and `Addr2` are both values of `ip_port` type,   and they have the same ip address and the port number.</p>
+<p>• `Addr1` and `Addr2` are both values of `unix_domain_socket_path` type,   the paths of them are equal by `==` operator of type `str`.</p>
+<p class="rubric">Precondition</p>
+<p>`Addr2` must be a `socket_address` value.</p>
+</section>
+</section>
+<section id="socket-address-is-val">
+<span id="api-1ad7ce0919bc678e30081cb9ea543013"></span><h2><span class="section-number">6.92.2. </span>SOCKET_ADDRESS.is?(Val)<a class="headerlink" href="#socket-address-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `socket_address`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-PROTOCOL_FAMILY.html"><span class="section-number">6.91. </span>kink/socket/PROTOCOL_FAMILY</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-TCP.html"><span class="section-number">6.93. </span>kink/socket/TCP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

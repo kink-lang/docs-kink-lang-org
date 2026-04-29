@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>7.3. Accessibility &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="7.4. Typing" href="typing.html" />
+    <link rel="prev" title="7.2. 関数" href="function.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>7.3. Accessibility</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="function.html"><span class="section-number">7.2. </span>関数</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="typing.html"><span class="section-number">7.4. </span>Typing</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="accessibility">
+<h1><span class="section-number">7.3. </span>Accessibility<a class="headerlink" href="#accessibility" title="Link to this heading">¶</a></h1>
+<p>Accessibility control of Kink is advisory,
+rather than enforced by the runtime.
+This chapter describes how library authors
+should indicate accessibility of their components,
+and how clients should follow them.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#public-or-private" id="id2">Public or private</a></p></li>
+<li><p><a class="reference internal" href="#modules" id="id3">Modules</a></p></li>
+<li><p><a class="reference internal" href="#data-variables" id="id4">Data variables</a></p></li>
+<li><p><a class="reference internal" href="#functions-and-methods" id="id5">Functions and methods</a></p></li>
+</ul>
+</nav>
+<section id="public-or-private">
+<h2><span class="section-number">7.3.1. </span>Public or private<a class="headerlink" href="#public-or-private" title="Link to this heading">¶</a></h2>
+<p>Components like modules, functions, and methods are either public or private.</p>
+<p>Public components are parts of the published API of the library.
+Clients of the library can use public components.</p>
+<p>Private components are not parts of the published API of the library.
+Clients are not supposed to use private components.</p>
+</section>
+<section id="modules">
+<h2><span class="section-number">7.3.2. </span>Modules<a class="headerlink" href="#modules" title="Link to this heading">¶</a></h2>
+<p>If no part of the <a class="reference internal" href="../glossary.html#term-module"><span class="xref std std-term">module</span></a> name starts with underscore <code class="docutils literal notranslate"><span class="pre">_</span></code>,
+the module is public.
+If one or more parts of the module name start with underscore,
+the module is private.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">example/adt/MULTI_SET</span></code> : public</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example/adt/_ALLOCATOR</span></code> : private</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">example/adt/_impl/RED_BLACK_TREE</span></code> : private</p></li>
+</ul>
+</section>
+<section id="data-variables">
+<h2><span class="section-number">7.3.3. </span>Data variables<a class="headerlink" href="#data-variables" title="Link to this heading">¶</a></h2>
+<p>All data variables are private.</p>
+</section>
+<section id="functions-and-methods">
+<h2><span class="section-number">7.3.4. </span>Functions and methods<a class="headerlink" href="#functions-and-methods" title="Link to this heading">¶</a></h2>
+<p>A toplevel function of a public module
+is public when the symbol does not start with underscore <code class="docutils literal notranslate"><span class="pre">_</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:MULTI_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;example/adt/&#39;</span>)
+
+<span class="nv">MULTI_SET</span>.<span class="n">new</span>           <span class="c1"># public</span>
+<span class="nv">MULTI_SET</span>.<span class="n">from_each</span>     <span class="c1"># public</span>
+<span class="nv">MULTI_SET</span>.<span class="n">_make_config</span>  <span class="c1"># private</span>
+</pre></div>
+</div>
+<p>Obviously, a toplevel function of a private module is private,
+regardless of its symbol.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># example/adt/_ALLOCATOR is private</span>
+<span class="nv">:_ALLOCATOR</span>.<span class="n">require_from</span>(<span class="s1">&#39;example/adt/&#39;</span>)
+
+<span class="nv">_ALLOCATOR</span>.<span class="n">new</span>          <span class="c1"># private</span>
+<span class="nv">_ALLOCATOR</span>.<span class="n">_make_config</span> <span class="c1"># private</span>
+</pre></div>
+</div>
+<p>Local function variables which are not on the toplevel are private.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:foo</span> &lt;- {(<span class="nv">:bar</span>)
+  <span class="nv">:baz</span> &lt;- { <span class="s1">&#39;baz&#39;</span> }
+
+  <span class="n">bar</span> <span class="c1"># private</span>
+  <span class="n">baz</span> <span class="c1"># private</span>
+}
+</pre></div>
+</div>
+<p>A method of a public data type is public
+when the symbol does not start with <code class="docutils literal notranslate"><span class="pre">_</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:MULTI_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;example/adt/&#39;</span>)
+
+<span class="nv">:Ms</span> &lt;- <span class="nv">MULTI_SET</span>.<span class="n">new</span>
+<span class="nv">Ms</span>.<span class="n">any?</span>       <span class="c1"># public</span>
+<span class="nv">Ms</span>.<span class="n">have_all?</span>  <span class="c1"># public</span>
+<span class="nv">Ms</span>.<span class="n">_realocate</span> <span class="c1"># private</span>
+</pre></div>
+</div>
+<p>Obviously, a method of a private data type is private,
+regardless of its symbol.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:MULTI_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;example/adt/&#39;</span>)
+
+<span class="c1"># assume builder is not public</span>
+<span class="nv">:Builder</span> &lt;- <span class="nv">MULTI_SET</span>.<span class="n">_new_builder</span>
+
+<span class="nv">Builder</span>.<span class="n">_clear</span>  <span class="c1"># private</span>
+<span class="nv">Builder</span>.<span class="n">build</span>   <span class="c1"># private</span>
+</pre></div>
+</div>
+<p>Regardless of whether a function or a method is public,
+clients are not supposed to overwrite them.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="function.html"><span class="section-number">7.2. </span>関数</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="typing.html"><span class="section-number">7.4. </span>Typing</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

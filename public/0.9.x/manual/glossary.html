@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>11. Glossary &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="12. Changelog" href="changelog.html" />
+    <link rel="prev" title="10.2. REPL" href="commandline/repl.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>11. Glossary</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="commandline/repl.html"><span class="section-number">10.2. </span>REPL</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="changelog.html"><span class="section-number">12. </span>Changelog</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="glossary">
+<h1><span class="section-number">11. </span>Glossary<a class="headerlink" href="#glossary" title="Link to this heading">¶</a></h1>
+<section id="language-and-runtime">
+<h2><span class="section-number">11.1. </span>Language and runtime<a class="headerlink" href="#language-and-runtime" title="Link to this heading">¶</a></h2>
+<dl class="simple glossary">
+<dt id="term-value">value<a class="headerlink" href="#term-value" title="Link to this term">¶</a></dt><dd><p>The primitive unit of data.
+Can be abbreviated to “val”.
+See <a class="reference internal" href="object.html#value"><span class="std std-ref">Values</span></a>.</p>
+</dd>
+<dt id="term-embedded-properties">embedded properties<a class="headerlink" href="#term-embedded-properties" title="Link to this term">¶</a></dt><dd><p>Data contained in a value not via variables.
+See <a class="reference internal" href="object.html#embedded-properties"><span class="std std-ref">Embedded properties</span></a>.</p>
+</dd>
+<dt id="term-variable">variable<a class="headerlink" href="#term-variable" title="Link to this term">¶</a></dt><dd><p>A pair of the owner value and the symbol,
+which can have a content value.
+See <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a>.</p>
+</dd>
+<dt id="term-owner-of-the-variable">owner of the variable<a class="headerlink" href="#term-owner-of-the-variable" title="Link to this term">¶</a></dt><dd><p>The <a class="reference internal" href="#term-value"><span class="xref std std-term">value</span></a> which owns the variable.
+See <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a>.</p>
+</dd>
+<dt id="term-symbol-of-the-variable">symbol of the variable<a class="headerlink" href="#term-symbol-of-the-variable" title="Link to this term">¶</a></dt><dd><p>The Unicode code point sequence of the variable.
+Can be abbreviated to “sym”.
+See <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a>.</p>
+</dd>
+<dt id="term-function-symbol">function symbol<a class="headerlink" href="#term-function-symbol" title="Link to this term">¶</a></dt><dd><p>A symbol which is accepted by <code class="regexp docutils literal notranslate"><span class="pre">[a-z_][a-z0-9_?]*</span></code>.
+See <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a>.</p>
+</dd>
+<dt id="term-data-symbol">data symbol<a class="headerlink" href="#term-data-symbol" title="Link to this term">¶</a></dt><dd><p>A symbol which is accepted by <code class="regexp docutils literal notranslate"><span class="pre">([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*</span></code>.
+See <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a>.</p>
+</dd>
+<dt id="term-variable-load-operation">variable-load operation<a class="headerlink" href="#term-variable-load-operation" title="Link to this term">¶</a></dt><dt id="term-variable-store-operation">variable-store operation<a class="headerlink" href="#term-variable-store-operation" title="Link to this term">¶</a></dt><dt id="term-variable-symbols-operation">variable-symbols operation<a class="headerlink" href="#term-variable-symbols-operation" title="Link to this term">¶</a></dt><dd><p>Three primitive operations about variables.
+See <a class="reference internal" href="object.html#variable-operations"><span class="std std-ref">Variable operations</span></a>.</p>
+</dd>
+<dt id="term-compile">compile<a class="headerlink" href="#term-compile" title="Link to this term">¶</a></dt><dd><p>Steps to convert a program to a <a class="reference internal" href="#term-function"><span class="xref std std-term">function</span></a>.
+Compilation is done by <a class="reference internal" href="api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">Program.compile</span></a>.
+See <a class="reference internal" href="language/index.html"><span class="doc">Language specification</span></a> for the specification of compilation.</p>
+</dd>
+<dt id="term-desugaring">desugaring<a class="headerlink" href="#term-desugaring" title="Link to this term">¶</a></dt><dd><p>A step of <a class="reference internal" href="#term-compile"><span class="xref std std-term">compile</span></a> which transforms a program to its <a class="reference internal" href="#term-desugared-form"><span class="xref std std-term">desugared form</span></a>.
+See <a class="reference internal" href="language/semantics.html#desugaring"><span class="std std-ref">Desugaring</span></a>.</p>
+</dd>
+<dt id="term-desugared-form">desugared form<a class="headerlink" href="#term-desugared-form" title="Link to this term">¶</a></dt><dd><p>A program made by <a class="reference internal" href="#term-desugaring"><span class="xref std std-term">desugaring</span></a>.
+A program in the desugared form can be an input of <a class="reference internal" href="#term-translation"><span class="xref std std-term">translation</span></a>.
+See <a class="reference internal" href="language/semantics.html#desugaring"><span class="std std-ref">Desugaring</span></a>.</p>
+</dd>
+<dt id="term-translation">translation<a class="headerlink" href="#term-translation" title="Link to this term">¶</a></dt><dd><p>A step of <a class="reference internal" href="#term-compile"><span class="xref std std-term">compile</span></a> which converts a program in the desugared form
+into <a class="reference internal" href="#term-abstract-instruction"><span class="xref std std-term">abstract instructions</span></a>.
+See <a class="reference internal" href="language/semantics.html#translation"><span class="std std-ref">Translation</span></a>.</p>
+</dd>
+<dt id="term-abstract-stack-machine">abstract stack machine<a class="headerlink" href="#term-abstract-stack-machine" title="Link to this term">¶</a></dt><dd><p>An abstract machine which evaluates <a class="reference internal" href="#term-abstract-instruction"><span class="xref std std-term">abstract instruction</span></a>.
+See <a class="reference internal" href="language/eval.html"><span class="doc">Evaluation</span></a>.</p>
+</dd>
+<dt id="term-abstract-instruction">abstract instruction<a class="headerlink" href="#term-abstract-instruction" title="Link to this term">¶</a></dt><dd><p>An instruction which is evaluated by <a class="reference internal" href="#term-abstract-stack-machine"><span class="xref std std-term">abstract stack machine</span></a>.
+See <a class="reference internal" href="language/eval.html"><span class="doc">Evaluation</span></a>.</p>
+</dd>
+<dt id="term-call-stack">call stack<a class="headerlink" href="#term-call-stack" title="Link to this term">¶</a></dt><dd><p>The stack of an <a class="reference internal" href="#term-abstract-stack-machine"><span class="xref std std-term">abstract stack machine</span></a>,
+which consists of a sequence of <a class="reference internal" href="#term-abstract-instruction"><span class="xref std std-term">abstract instructions</span></a>.
+See <a class="reference internal" href="language/eval.html#call-stack"><span class="std std-ref">Call stack</span></a>.</p>
+</dd>
+<dt id="term-tail-call">tail call<a class="headerlink" href="#term-tail-call" title="Link to this term">¶</a></dt><dd><p>A function call done at the end of a function call,
+which is done by <a class="reference internal" href="language/eval.html#tailcall-instruction"><span class="std std-ref">tailcall instruction</span></a>.</p>
+</dd>
+<dt id="term-tail-call-elimination">tail call elimination<a class="headerlink" href="#term-tail-call-elimination" title="Link to this term">¶</a></dt><dd><p>The requirement for the runtime
+that consecutive <a class="reference internal" href="#term-tail-call"><span class="xref std std-term">tail calls</span></a> do not cause stack overflow.
+See <a class="reference internal" href="language/eval.html#tailcall-instruction"><span class="std std-ref">tailcall instruction</span></a>.</p>
+</dd>
+<dt id="term-delimited-continuation">delimited continuation<a class="headerlink" href="#term-delimited-continuation" title="Link to this term">¶</a></dt><dd><p>A <a class="reference internal" href="#term-function"><span class="xref std std-term">function</span></a> to resume the evaluation
+from an invocation of <a class="reference internal" href="api/kink-KONT_TAG.html#api-35db7c321b93a22b6e6164fab36bf940"><span class="std std-ref">Kont_tag.shift</span></a>
+to the end of an invocation of <a class="reference internal" href="api/kink-KONT_TAG.html#api-9877213663340a1e14488dc493151c3a"><span class="std std-ref">Kont_tag.reset</span></a>.
+Can be abbreviated to “kont”.
+See <a class="reference internal" href="language/eval.html#kont-instruction"><span class="std std-ref">kont instruction</span></a> for the definition.</p>
+</dd>
+<dt id="term-host-procedure">host procedure<a class="headerlink" href="#term-host-procedure" title="Link to this term">¶</a></dt><dd><p>An abstract unit of information to specify a procedure within the <a class="reference internal" href="#term-host-system"><span class="xref std std-term">host system</span></a>.
+See <a class="reference internal" href="language/eval.html#hostcall-instruction"><span class="std std-ref">hostcall instruction</span></a>.</p>
+</dd>
+<dt id="term-runtime">runtime<a class="headerlink" href="#term-runtime" title="Link to this term">¶</a></dt><dd><p>The <em class="dfn">runtime</em> is a system which consists of values, executors and other components.</p>
+</dd>
+<dt id="term-host-system">host system<a class="headerlink" href="#term-host-system" title="Link to this term">¶</a></dt><dd><p>The <em class="dfn">host system</em> is a system on which the <a class="reference internal" href="#term-runtime"><span class="xref std std-term">runtime</span></a> is implemented.
+Typically, the host system is a Java Virtual Machine.</p>
+</dd>
+<dt id="term-module-system">module system<a class="headerlink" href="#term-module-system" title="Link to this term">¶</a></dt><dd><p>A subsystem of the <a class="reference internal" href="#term-runtime"><span class="xref std std-term">runtime</span></a> which manages <a class="reference internal" href="#term-module"><span class="xref std std-term">modules</span></a>.
+See <a class="reference internal" href="modsystem.html"><span class="doc">Module system</span></a>.</p>
+</dd>
+<dt id="term-module">module<a class="headerlink" href="#term-module" title="Link to this term">¶</a></dt><dd><p>A value loaded by the <a class="reference internal" href="#term-module-system"><span class="xref std std-term">module system</span></a>.
+Can be abbreviated to “mod”.
+See <a class="reference internal" href="modsystem.html"><span class="doc">Module system</span></a>.</p>
+</dd>
+<dt id="term-module-base-paths">module base paths<a class="headerlink" href="#term-module-base-paths" title="Link to this term">¶</a></dt><dd><p>A set of directories where module sources can be placed.
+See <a class="reference internal" href="modsystem.html#module-base-paths"><span class="std std-ref">Module base paths</span></a>.</p>
+</dd>
+</dl>
+</section>
+<section id="builtin-library">
+<h2><span class="section-number">11.2. </span>Builtin library<a class="headerlink" href="#builtin-library" title="Link to this heading">¶</a></h2>
+<dl class="simple glossary">
+<dt id="term-function">function<a class="headerlink" href="#term-function" title="Link to this term">¶</a></dt><dd><p>A value of <a class="reference internal" href="api/kink-FUN.html#api-26c971da584c97df3028fa31cf051166"><span class="std std-ref">type fun</span></a>.
+Can be abbreviated to “fun”.</p>
+</dd>
+<dt id="term-variable-reference">variable reference<a class="headerlink" href="#term-variable-reference" title="Link to this term">¶</a></dt><dd><p>A value of <a class="reference internal" href="api/kink-VARREF.html#api-43c405a672f1fcd864105835744e4c63"><span class="std std-ref">type varref</span></a>.
+Can be abbreviated to “varref”.</p>
+</dd>
+<dt id="term-vector">vector<a class="headerlink" href="#term-vector" title="Link to this term">¶</a></dt><dd><p>A value of <a class="reference internal" href="api/kink-VEC.html#api-8f14b909c07234a50b4b4c739ce19bcd"><span class="std std-ref">type vec</span></a>.
+Can be abbreviated to “vec”.</p>
+</dd>
+<dt id="term-bool">bool<a class="headerlink" href="#term-bool" title="Link to this term">¶</a></dt><dd><p>A value of <a class="reference internal" href="api/kink-BOOL.html#api-4114da34f96e8d8f51b850be2f586125"><span class="std std-ref">type bool</span></a>,
+which is either <a class="reference internal" href="api/kink-BINDING.html#api-cad6f8e450bbe63736bc0643397a5f4c"><span class="std std-ref">true</span></a>
+or <a class="reference internal" href="api/kink-BINDING.html#api-778dd33edaef2635e679ce12ef09930b"><span class="std std-ref">false</span></a>.</p>
+</dd>
+<dt id="term-exception">exception<a class="headerlink" href="#term-exception" title="Link to this term">¶</a></dt><dd><p>A value of <a class="reference internal" href="api/kink-EXCEPTION.html#api-08fee0648a753752ac74e092d8e9cbfd"><span class="std std-ref">type exception</span></a>,
+which represents a runtime error.</p>
+</dd>
+<dt id="term-delimited-continuation-tag">delimited continuation tag<a class="headerlink" href="#term-delimited-continuation-tag" title="Link to this term">¶</a></dt><dd><p>A value of <a class="reference internal" href="api/kink-KONT_TAG.html#api-30c0ec5df9d2435c0132d55f5a695215"><span class="std std-ref">type kont_tag</span></a>.
+See <a class="reference internal" href="language/eval.html#delimit-instruction"><span class="std std-ref">delimit instruction</span></a>.</p>
+</dd>
+</dl>
+</section>
+<section id="patterns-and-conventions">
+<h2><span class="section-number">11.3. </span>Patterns and conventions<a class="headerlink" href="#patterns-and-conventions" title="Link to this heading">¶</a></h2>
+<dl class="simple glossary">
+<dt id="term-method">method<a class="headerlink" href="#term-method" title="Link to this term">¶</a></dt><dd><p>A function which is stored in a variable of a value,
+and used to do an operation for the value as the receiver.
+See <a class="reference internal" href="patterns/function.html#method"><span class="std std-ref">Methods</span></a>.</p>
+</dd>
+<dt id="term-constructor">constructor<a class="headerlink" href="#term-constructor" title="Link to this term">¶</a></dt><dd><p>A function which creates a new value.
+See <a class="reference internal" href="patterns/function.html#constructor"><span class="std std-ref">Constructors</span></a>.</p>
+</dd>
+<dt id="term-trait">trait<a class="headerlink" href="#term-trait" title="Link to this term">¶</a></dt><dd><p>A vec which stores methods and the symbols,
+which are spreaded as arguments of <a class="reference internal" href="api/kink-BINDING.html#api-fbc90c7785322a766a80191e6e1ea8de"><span class="std std-ref">new_val</span></a>.
+See <a class="reference internal" href="patterns/function.html#constructor"><span class="std std-ref">Constructors</span></a>.</p>
+</dd>
+<dt id="term-thunk">thunk<a class="headerlink" href="#term-thunk" title="Link to this term">¶</a></dt><dd><p>A function that is not used as a method, and takes no arguments.
+See <a class="reference internal" href="patterns/function.html#thunk"><span class="std std-ref">Thunks</span></a>.</p>
+</dd>
+<dt id="term-predicate">predicate<a class="headerlink" href="#term-predicate" title="Link to this term">¶</a></dt><dd><p>A function that is not used as a method, takes one argument,
+and returns a bool.
+See <a class="reference internal" href="patterns/function.html#predicate"><span class="std std-ref">Predicates</span></a>.</p>
+</dd>
+<dt id="term-constant">constant<a class="headerlink" href="#term-constant" title="Link to this term">¶</a></dt><dd><p>A <a class="reference internal" href="#term-thunk"><span class="xref std std-term">thunk</span></a> which returns a same value every time.
+See <a class="reference internal" href="patterns/function.html#constant"><span class="std std-ref">Constants</span></a>.</p>
+</dd>
+<dt id="term-continuation">continuation<a class="headerlink" href="#term-continuation" title="Link to this term">¶</a></dt><dd><p>A function which is called at the tail of a function call.
+Don't confuse with <a class="reference internal" href="#term-delimited-continuation"><span class="xref std std-term">delimited continuation</span></a>.
+See <a class="reference internal" href="patterns/function.html#continuation"><span class="std std-ref">Continuation</span></a>.</p>
+</dd>
+<dt id="term-continuation-passing-style">continuation passing style<a class="headerlink" href="#term-continuation-passing-style" title="Link to this term">¶</a></dt><dd><p>Composition of a program where the <a class="reference internal" href="#term-continuation"><span class="xref std std-term">continuation</span></a>
+is passed from the caller.
+See <a class="reference internal" href="patterns/function.html#continuation"><span class="std std-ref">Continuation</span></a>.</p>
+</dd>
+<dt id="term-kinkdoc">kinkdoc<a class="headerlink" href="#term-kinkdoc" title="Link to this term">¶</a></dt><dd><p>API documentation system for Kink programs.
+See <a class="reference internal" href="kinkdoc.html"><span class="doc">Kinkdoc: API Documentation system</span></a>.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="commandline/repl.html"><span class="section-number">10.2. </span>REPL</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="changelog.html"><span class="section-number">12. </span>Changelog</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

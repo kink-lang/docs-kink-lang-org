@@ -1,0 +1,67 @@
+=========
+kink\/MOD
+=========
+
+Operates the module system\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-36236434317e1c52d15948d18e2c4bc2:
+
+MOD\.require\(Mod\_name \.\.\.\[\$config\=\{\}\]\)
+==================================================
+
+\`require\` loads the module specified by \`Mod\_name\`\. See “Module system” section of the manual for details of module loading\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\$identity
+
+\• C\.on\_not\_found\(\$not\_found\)\: default \= a fun which raises an exception
+
+\• C\.on\_compile\_error\(\$compile\_error\)\: default \= a fun which raises an exception
+
+If module loading ends with \`success\` status\, \`require\` tail\-calls \$success with the loaded module\.
+
+If module loading ends with \`not\_found\` status\, \`require\` tail\-calls \$not\_found with no arg\.
+
+If module loading ends with \`compile\_error\` status\, \`require\` tail\-calls \$compile\_error with a \`compile\_error\` value\.
+
+If an exception is thrown while module loading\, the exception is propagated to the caller\.
+
+.. rubric:: Preconditions
+
+\`Mod\_name\` must be a \`str\`\.
+
+\$success must be a fun which takes a module\.
+
+\$not\_found must be a thunk\.
+
+\$compile\_error must be a fun which takes a \`compile\_error\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :MOD.require_from('kink/')
+        
+    :FLAT_SET <- MOD.require('kink/container/FLAT_SET')
+    stdout.print_line(FLAT_SET.of('foo' 'bar' 'baz').repr) # => (flat_set "bar" "baz" "foo")
+        
+    MOD.require('no/such/MOD'){(:C)
+      C.on_not_found{ stdout.print_line('no such mod') }
+    } # => no such mod
+
+.. _api-82a542809dbc766c2795a2ac99f618be:
+
+MOD\.add\_path\(Path\)
+======================
+
+\`add\_path\` inserts \`Path\` to the mod base paths as the last path\.
+
+Precondition\:
+
+\• \`Path\` must be a str
+

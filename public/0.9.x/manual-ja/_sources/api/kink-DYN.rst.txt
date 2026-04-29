@@ -1,0 +1,139 @@
+=========
+kink\/DYN
+=========
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-08ef172995301f2f7d7b31cf767db64d:
+
+type dyn
+========
+
+A \`dyn\` is a tag of values which are pushed and popped on the call stack\.
+
+The name \`dyn\` comes from “dynamic scope”\, as it acts like dynamically scoped variables of some dialects of Lisp\.
+
+A \`dyn\` can be used to carry runtime context\, such as transactions\. See the following example\:
+
+.. code:: kink
+
+    :DYN.require_from('kink/')
+        
+    :Tx_dyn <- DYN.new
+        
+    :do_transaction <- {(:Tx_name :thunk)
+      Tx_dyn.with(Tx_name){
+        thunk
+      }
+    }
+        
+    :commit <- {()
+      :Current_tx = Tx_dyn.top
+      stdout.print_line('commit {}'.format(Current_tx))
+    }
+        
+    do_transaction('Outer'){
+      commit # => commit Outer
+      do_transaction('Inner'){
+        commit # => commit Inner
+      }
+      commit # => commit Outer
+    }
+
+.. _api-2c27f8f74ce3dab7f33b5d9ca1950786:
+
+Dyn\.with\(Val \$thunk\)
+------------------------
+
+\`with\` pushes \`Val\`\, associating it with \`Dyn\`\, on the call stack\, and calls \$thunk with no arg\. When the invocation of \$thunk exits\, \`Val\` is popped from the call stack\.
+
+.. rubric:: Precondition
+
+\$thunk must be a thunk\.
+
+.. _api-135c4d320d91a28be33edf3e8ccfe4a9:
+
+Dyn\.all
+--------
+
+\`all\` returns a vec of values associated with \`Dyn\`\, in the order from the bottom of the call stack to the top of the call stack\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :DYN.require_from('kink/')
+        
+    :Dyn <- DYN.new
+        
+    Dyn.with('foo'){
+      Dyn.with('bar'){
+        Dyn.with('baz'){
+          stdout.print_line(Dyn.all.repr) # => ["foo" "bar" "baz"]
+        }
+        stdout.print_line(Dyn.all.repr) # => ["foo" "bar"]
+      }
+      stdout.print_line(Dyn.all.repr) # => ["foo"]
+    }
+    stdout.print_line(Dyn.all.repr) # => []
+
+.. _api-273361543cd275c0692117dde2ea82ff:
+
+Dyn\.top
+--------
+
+\`top\` returns the value associated with \`Dyn\` which is closest to the top of the call stack\.
+
+.. rubric:: Precondition
+
+At least one value must be associated with \`Dyn\` in the call stack\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :DYN.require_from('kink/')
+        
+    :Dyn <- DYN.new
+        
+    Dyn.with('foo'){
+      stdout.print_line(Dyn.top.repr) # => "foo"
+    }
+    Dyn.top # => raises an exception
+
+.. _api-68457ea90ac062e2c2b824aae11911a8:
+
+Dyn\.any\?
+----------
+
+\`any\?\` returns whether any value is associated with \`Dyn\` in the call stack\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :DYN.require_from('kink/')
+        
+    :Dyn <- DYN.new
+        
+    Dyn.with('foo'){
+      stdout.print_line(Dyn.any?.repr) # => true
+    }
+    stdout.print_line(Dyn.any?.repr) # => false
+
+.. _api-ad397f21080e64cc50f0d1baa0f6f764:
+
+DYN\.new
+========
+
+\`new\` makes a new \`dyn\`\.
+
+.. _api-624a4955f41017521c4be265fd5785e8:
+
+DYN\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a \`dyn\`\.
+

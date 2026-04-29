@@ -1,0 +1,69 @@
+==================
+Naming conventions
+==================
+
+Variable names in Kink have syntactical roles.
+If a function is stored in a variable whose symbol is a :term:`function symbol`,
+which does not contain upper case letters,
+the function can be called by its symbol.
+In contrast, a function in a variable whose symbol is a :term:`data symbol`
+cannot be called by its symbol.
+
+.. note::
+
+  The distinction between function variables and data variables
+  was inspired by the orthography of German language,
+  where nouns are capitalized.
+
+Variable names also can indicate their :doc:`accessibility <accessibility>`.
+For example, if a method name starts from ``_``,
+the method is private.
+
+This chapter describes other aspects of naming conventions of variables.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Words are separated by underscores
+==================================
+
+Words of variable symbols should be separated by an underscore ``_``.
+
+Examples: ``open_to_read``, ``_make_config``, ``More_lines?``.
+
+Only the first letter of a data variable should be capitalized
+==============================================================
+
+As a general rule, only the first letter of a data variable
+should be capitalized.
+Examples: ``X``, ``Tree``, ``Valid_arg?``.
+
+As an exception, a variable containing a :term:`module` should be the end part
+of the module name.
+For example, ``kink/BIN`` module should be stored in ``BIN`` variable.
+
+Example::
+
+  :BIN.require_from('kink/')
+
+  :Prefix <- BIN.of(0xca 0xfe 0xba 0xbe)
+  stdout.print_line(Prefix.repr)  # => (bin 0xca 0xfe 0xba 0xbe)
+
+As another example, if a data variable refers to a symbol of a different
+programming language,
+it is permissible to have multiple uppercase letters.
+For example, a variable which represents Java class
+``java.util.ArrayList`` can be named as ``ArrayList_class``.
+
+``?`` at the end of Bool variables and functions
+================================================
+
+A symbol of a data variable which contains a bool value,
+or a function which returns a bool value
+should end with ``?``.
+
+Examples: ``Null?``, ``More_lines?``, ``is?``, ``_valid_type?``
+
+.. vim: et sw=2 sts=2 et
+

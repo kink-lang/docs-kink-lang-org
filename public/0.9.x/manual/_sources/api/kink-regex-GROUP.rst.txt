@@ -1,0 +1,57 @@
+==================
+kink\/regex\/GROUP
+==================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-2e074993ea2e6c145952bea81a7375f2:
+
+type group
+==========
+
+A \`group\` is a slice in the matched text\.
+
+A \`group\` is either the entire region of the match result\, or a region which a named capturing group matches\.
+
+Example\:
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Regex <- REGEX.compile('(?<Lhs>[a-z]+) *= *(?<Rhs>[a-z]+)')
+    :M <- Regex.match('foo = bar')
+    :Rhs <- M.group('Rhs')
+    stdout.print_line(Rhs.slice.repr) # => "bar"
+    stdout.print_line(Rhs.from.repr)  # => 6
+    stdout.print_line(Rhs.to.repr)    # => 9
+
+.. _api-8b0441029c179cca565623b4f6948aef:
+
+G\.slice
+--------
+
+\`slice\` returns the sliced str of the text where the group matches\.
+
+.. _api-8460149cc02b1fd6908ad98957f8d537:
+
+G\.from
+-------
+
+\`from\` returns the pos from which the group matches in the text\.
+
+.. _api-64920b793253afd96f6ac3140af7aa9e:
+
+G\.to
+-----
+
+\`to\` returns the pos to which the group matches in the text\.
+
+.. _api-3bd7e77b57182d6f5aac2ba9178283d6:
+
+GROUP\.is\?\(Val\)
+==================
+
+\`is\?\` returns whether \`Val\` is a group val\.
+

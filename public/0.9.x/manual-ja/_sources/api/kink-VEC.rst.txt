@@ -1,0 +1,1319 @@
+=========
+kink\/VEC
+=========
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-8f14b909c07234a50b4b4c739ce19bcd:
+
+type vec
+========
+
+\`vec\` is a mutable and variable\-length sequence of values\.
+
+Elements of a \`vec\` are indexed using consequent integers starting from 0\.
+
+A \`vec\` is a subtype of \`plain\_param\`\. See kink\/param\/PLAIN\_PARAM\.
+
+.. _api-39febd61d9157760a10685c5eb6d2166:
+
+Vec\.get\(Ind\)
+---------------
+
+\`get\` returns the element at the index \`Ind\`\.
+
+.. rubric:: Precondition
+
+\`Ind\` must be an integer \`num\` in the range \[0\, Vec\.size\)\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz']
+    stdout.print_line(Vec.get(0).repr)  # => "foo"
+    stdout.print_line(Vec.get(1).repr)  # => "bar"
+    stdout.print_line(Vec.get(2).repr)  # => "baz"
+
+.. _api-c63033490c55d6d5fa1ce68e3419f391:
+
+Vec\.size
+---------
+
+\`size\` returns the number of elements of \`Vec\` as an integer \`num\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz']
+    stdout.print_line(Vec.size.repr)  # => 3
+
+.. _api-c1940fa5642a8c3bde6e9d410f1689d6:
+
+Vec\.front
+----------
+
+\`front\` returns the first element of \`Vec\`\.
+
+.. rubric:: Precondition
+
+\`Vec\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(['foo' 'bar' 'baz'].front.repr)  # => "foo"
+
+.. _api-01fe1f1275f57ef5cfa7b05ea19d6043:
+
+Vec\.back
+---------
+
+\`back\` returns the last element of \`Vec\`\.
+
+.. rubric:: Precondition
+
+\`Vec\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(['foo' 'bar' 'baz'].back.repr)  # => "baz"
+
+.. _api-bbbc267c848faf3a7d1fc36ed207d7f1:
+
+Vec\.take\_front\(N\)
+---------------------
+
+\`take\_front\` returns a new \`vec\` containing the first \`N\` elements of \`Vec\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an integer \`num\` in the range \[0\, Vec\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3' '4' '5' '6']
+    stdout.print_line(Vec.take_front(2).repr) # => ["0" "1"]
+
+.. _api-21b6e0437ef2762f3201094349a083cd:
+
+Vec\.take\_back\(N\)
+--------------------
+
+\`take\_back\` returns a new \`vec\` containing the last \`N\` elements of \`Vec\`\.
+
+.. rubric:: Precondition
+
+\`N\` must be an integer \`num\` in the range \[0\, Vec\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3' '4' '5' '6']
+    stdout.print_line(Vec.take_back(2).repr) # => ["5" "6"]
+
+.. _api-9d17792a30d8532e1435543378fb5afd:
+
+Vec\.drop\_front\(N\)
+---------------------
+
+\`drop\_front\` returns a new \`vec\` which contains the elements of the slice of \`Vec\` in the range \[N\, Vec\.size\)\.
+
+.. rubric:: Precondition
+
+\`N\` must be an integer \`num\` in the range \[0\, Vec\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3' '4' '5' '6']
+    stdout.print_line(Vec.drop_front(2).repr) # => ["2" "3" "4" "5" "6"]
+
+.. _api-94b4b974000567ab055baa5f53f03f7f:
+
+Vec\.drop\_back\(N\)
+--------------------
+
+\`drop\_back\` returns a new \`vec\` which contains the elements of the slice of \`Vec\` in the range \[0\, Vec\.size \- N\)\.
+
+.. rubric:: Precondition
+
+\`N\` must be an integer \`num\` in the range \[0\, Vec\.size\]\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3' '4' '5' '6']
+    stdout.print_line(Vec.drop_back(2).repr) # => ["0" "1" "2" "3" "4"]
+
+.. _api-dbe3126411fadcf06a56bf9a663c4c20:
+
+Vec\.slice\(From To\)
+---------------------
+
+\`slice\` returns a new \`vec\` which contains the elements of the slice of \`Vec\` in the range \[From\, To\)\.
+
+.. rubric:: Preconditions
+
+\`From\` and \`To\` must be integer \`num\` values\.
+
+0 \<\= From \<\= To \<\= Vec\.size
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3' '4' '5' '6']
+    stdout.print_line(Vec.slice(1 4).repr) # => ["1" "2" "3"]
+
+.. _api-091c481b61c349802ef8cd43a160033a:
+
+Vec\.set\(Ind Val\)
+-------------------
+
+\`set\` stores \`Val\` at the index \`Ind\`\.
+
+The size of \`Vec\` does not change\.
+
+.. rubric:: Precondition
+
+\`Ind\` must be an integer \`num\` in the range \[0\, Vec\.size\)\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz']
+    Vec.set(1 'X')
+    stdout.print_line(Vec.repr) # => ["foo" "X" "baz']
+
+.. _api-9983ea50c85218def5676d4517601c64:
+
+Vec\.push\_front\(Val\)
+-----------------------
+
+\`push\_front\` inserts \`Val\` as the first element of \`Vec\`\.
+
+The size of \`Vec\` is extended by one\. The existing elements are copied to the back by one\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3']
+    Vec.push_front('X')
+    stdout.print_line(Vec.repr) # => ["X" "0" "1" "2" "3"]
+
+.. _api-59a3c11fa64d87267cfc7f2ebb6bc355:
+
+Vec\.push\_back\(Val\)
+----------------------
+
+\`push\_back\` inserts \`Val\` as the last element of \`Vec\`\.
+
+The size of \`Vec\` is extended by one\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3']
+    Vec.push_back('X')
+    stdout.print_line(Vec.repr) # => ["0" "1" "2" "3" "X"]
+
+.. _api-762d2ba5aa201bf23bbe57140ffb1aa9:
+
+Vec\.push\_at\(Pos Val\)
+------------------------
+
+\`push\_at\` inserts \`Val\` at the index \`Pos\`\.
+
+The size of \`Vec\` is extended by one\. The existing elements at and after \`Pos\` are copied to the back by one\.
+
+.. rubric:: Preconditions
+
+\`Pos\` must be an integer \`num\`\.
+
+0 \<\= Pos \<\= Vec\.size
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz']
+    Vec.push_at(2 'X')
+    stdout.print_line(Vec.repr) # => ["foo" "bar" "X" "baz"]
+
+.. _api-8c643c34b93d0b83914505087687119e:
+
+Vec\.append\_front\(Eacher\)
+----------------------------
+
+\`append\_front\` inserts all the elements of \`Eacher\` to the front of \`Vec\`\.
+
+If Eacher\.each passes E\(0\)\, E\(1\)\, \,\,\, E\(n\-1\) to \$consume for each invocation\, and \`Vec\` currently contains V\(0\)\, V\(1\)\, \,\,\, V\(m\-1\)\, the elements of Vec will be E\(0\) E\(1\) \,\,\, E\(n\-1\) V\(0\) V\(1\) \,\,\, V\(m\-1\) after the invocation of \`append\_front\`\.
+
+.. rubric:: Precondition
+
+\`Eacher\` must support each\(\$consume\) method\, which calls \$consume with each element of \`Eacher\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz' 'qux' 'grault']
+    Vec.append_front(['X' 'Y' 'Z'])
+    stdout.print_line(Vec.repr)
+    # => ["X" "Y" "Z" "foo" "bar" "baz" "qux" "grault"]
+
+.. _api-ed2ad30dff9f91964619d0e93b5f71bb:
+
+Vec\.append\_back\(Eacher\)
+---------------------------
+
+\`append\_back\` inserts all the elements of \`Eacher\` to the back of \`Vec\`\.
+
+If Eacher\.each passes E\(0\)\, E\(1\)\, \,\,\, E\(n\-1\) to \$consume for each invocation\, and \`Vec\` currently contains V\(0\)\, V\(1\)\, \,\,\, V\(m\-1\)\, the elements of Vec will be V\(0\) V\(1\) \,\,\, V\(m\-1\) E\(0\) E\(1\) \,\,\, E\(n\-1\) after the invocation of \`append\_back\`\.
+
+.. rubric:: Precondition
+
+\`Eacher\` must support each\(\$consume\) method\, which calls \$consume with each element of \`Eacher\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz' 'qux' 'grault']
+    Vec.append_back(['X' 'Y' 'Z'])
+    stdout.print_line(Vec.repr)
+    # => ["foo" "bar" "baz" "qux" "grault" "X" "Y" "Z"]
+
+.. _api-755dd9c94f5fe42fa51a80bc1d86105f:
+
+Vec\.append\_at\(Pos Eacher\)
+-----------------------------
+
+\`append\_at\` inserts all the elements of \`Eacher\` to \`Vec\` at the index \`Pos\`\.
+
+If Eacher\.each passes E\(0\)\, E\(1\)\, \,\,\, E\(n\-1\) to \$consume for each invocation\, and \`Vec\` currently contains V\(0\)\, V\(1\)\, \,\,\, V\(m\-1\)\, the elements of \`Vec\` will be V\(0\)\, V\(1\) \,\,\, V\(Pos\-1\)\, E\(0\)\, E\(1\) \,\,\, E\(n\-1\)\, V\(Pos\) \,\,\, V\(m\-1\) after the invocation of \`append\_at\`\.
+
+.. rubric:: Preconditions
+
+\`Pos\` must be an integer \`num\`\.
+
+0 \<\= Pos \<\= Vec\.size
+
+\`Eacher\` must support each\(\$consume\) method\, which calls \$consume with each element of \`Eacher\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz' 'qux' 'grault']
+    Vec.append_at(2 ['X' 'Y' 'Z'])
+    stdout.print_line(Vec.repr)
+    # => ["foo" "bar" "X" "Y" "Z" "baz" "qux" "grault"]
+
+.. _api-475416d7bb5a9d04284bee414492ac45:
+
+Vec\.pop\_front
+---------------
+
+\`pop\_front\` removes the first element of \`Vec\` and returns the removed element\.
+
+The elements after the removed element are copied to the front by one\. The size of \`Vec\` is curtailed by one\.
+
+.. rubric:: Precondition
+
+\`Vec\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz' 'qux' 'grault']
+    :Result <- Vec.pop_front
+    stdout.print_line(Result.repr)  # => "foo"
+    stdout.print_line(Vec.repr)     # => ["bar" "baz" "qux" "grault"]
+
+.. _api-c76eb65950d9561ff7b81af8cf856928:
+
+Vec\.pop\_back
+--------------
+
+\`pop\_back\` removes the last element of \`Vec\` and returns the removed element\.
+
+The size of \`Vec\` is curtailed by one\.
+
+.. rubric:: Precondition
+
+\`Vec\` must not be empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz' 'qux' 'grault']
+    :Result <- Vec.pop_back
+    stdout.print_line(Result.repr)  # => "grault"
+    stdout.print_line(Vec.repr)     # => ["foo" "bar" "baz" "qux"]
+
+.. _api-0b77840d3b7bb661b0e01cb492e4187f:
+
+Vec\.pop\_at\(Ind\)
+-------------------
+
+\`pop\_at\` removes the element at the index \`Ind\` and returns the removed element\.
+
+The elements after the removed element are copied to the front by one\. The size of \`Vec\` is curtailed by one\.
+
+.. rubric:: Preconditions
+
+\`Ind\` must be an integer \`num\`\.
+
+0 \<\= Ind \< Vec\.size
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz' 'qux' 'grault']
+    :Result <- Vec.pop_at(1)
+    stdout.print_line(Result)   # => "bar"
+    stdout.print_line(Vec.repr) # => ["foo" "baz" "qux" "grault"]
+
+.. _api-ad3ac9a2915cdc73f1eb27dfbe1f0ef2:
+
+Vec\.clear\(\.\.\.\[From\=0 To\=Vec\.size\]\)
+---------------------------------------------
+
+\`clear\` removes the elements from \`Vec\` in the slice of the range \[From\, To\)\.
+
+The elements after the removed slice are copied to the front by \(To \- From\)\. The size of \`Vec\` is curtailed to Vec\.size \- \(To \- From\)\.
+
+.. rubric:: Preconditions
+
+\`From\` and \`To\` must be integer \`num\` values\.
+
+0 \<\= From \<\= To \<\= Vec\.size
+
+.. rubric:: Example\: with no arg
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3' '4' '5' '6']
+    Vec.clear
+    stdout.print_line(Vec.repr)
+    # => []
+
+.. rubric:: Example\: with From
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3' '4' '5' '6']
+    Vec.clear(3)
+    stdout.print_line(Vec.repr)
+    # => ["0" "1" "2"]
+
+.. rubric:: Example\: with From and To
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3' '4' '5' '6']
+    Vec.clear(3 5)
+    stdout.print_line(Vec.repr)
+    # => ["0" "1" "2" "5" "6"]
+
+.. _api-4f175b876e19fc10c267f6fce74d5315:
+
+Vec\.dup
+--------
+
+\`dup\` makes a new \`vec\` containing the same sequence of elements as \`Vec\` has\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Orig <- ['foo' 'bar' 'baz']
+    :Dup <- Orig.dup
+    Orig.set(0 'X')
+    Dup.set(1 'Y')
+    stdout.print_line(Orig.repr)  # => ["X" 'bar" "baz"]
+    stdout.print_line(Dup.repr)   # => ["foo" 'Y" "baz"]
+
+.. _api-935ab420e28fb248fb8aae6d385b54a0:
+
+Vec\.reverse
+------------
+
+\`reverse\` makes a new \`vec\` containing the same elements as \`Vec\` has\, in the reversed order\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3']
+    stdout.print_line(Vec.reverse.repr)  # => ["3" "2" "1" "0"]
+
+.. _api-108bdfb6645391be0ad2571c52e1d70b:
+
+Vec\.concat
+-----------
+
+\`concat\` concatenates \`vec\`s in \`Vec\`\.
+
+\`concat\` assumes all the elements of \`Vec\` are \`vec\`s\. \`concat\` returns a new \`vec\` which has all the elements of those \`vec\`s in the order of those \`vec\`s\, and in the order of the elements of thsoe \`vec\`s\.
+
+.. rubric:: Precondition
+
+All the elements of \`Vec\` must be \`vec\`s\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vecs <- [['0' '1'] ['2' '3'] ['4']]
+    stdout.print_line(Vecs.concat.repr) # => ["0" "1" "2" "3" "4"]
+
+.. _api-aa4ccd1dae957de037c5a4795fcc7df5:
+
+Vec\.unconcat\(N\)
+------------------
+
+\`unconcat\` splits \`Vec\` into groups of \`N\` elements\, and returns a new \`vec\` of \`vec\`s which have those \`N\` elements\.
+
+If \`Vec\` contains E\(0\)\, E\(1\) \,\,\, E\(N\-1\)\, E\(N\)\, E\(N\+1\) \,\,\, E\(N\+\(N\-1\)\) \,\,\, E\(m\*N\)\, E\(m\*N\+1\) \,\,\, E\(m\*N\+\(N\-1\)\)\, the result \`vec\` will contain \`vec\`s \[E\(0\) E\(1\) \,\,\, E\(N\-1\)\]\, \[E\(N\) E\(N\+1\) \,\,\, E\(N\+\(N\-1\)\)\] \,\,\, \[E\(m\*N\) E\(m\*N\+1\) \,\,\, E\(m\*N\+\(N\-1\)\)\]\.
+
+.. rubric:: Preconditions
+
+\`N\` must be a positive integer \`num\`\.
+
+Vec\.size \% N \=\= 0
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['0' '1' '2' '3' '4' '5']
+    stdout.print_line(Vec.unconcat(2).repr) # => [["0" "1"] ["2" "3"] ["4" "5"]]
+
+.. _api-6523915a7e48a2c692e24abff5a9a9f1:
+
+Vec\.just\(\.\.\.\[\$if\_empty\]\)
+----------------------------------
+
+\`just\` assumes \`Vec\` has only one element\, and returns the element\.
+
+If \`Vec\` is empty\, and \$if\_empty is passed\, \`just\` tail\-calls \$if\_empty\.
+
+Otherwise\, \`just\` raises an exception\.
+
+.. rubric:: Precondition
+
+\$if\_empty must be a thunk\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line([42].just.repr)  # => 42
+    stdout.print_line([].just{ 'empty' }.repr)  # => "empty"
+        
+    [].just
+    # Output:
+    #   -- main exception
+    #   ,,,
+    #   {(stdin) L4 C4 just} [].-->just
+    #   Vec.just(...[$if_empty]): Vec must be a 1-elem vec, but the number of elems was 0
+
+.. _api-9c1a3a7b764fa70187afe30654617332:
+
+Vec\.with\_elems\(\.\.\.\[\$with0 \$with1 \$with2 \,\,\,\]\)
+------------------------------------------------------------
+
+\`with\_elems\` tail\-calls a fun with the elements of \`Vec\` as args\.
+
+\`with\_elems\` takes an arbitrary number of funs\. Let these be \$with0\, \$with1\, \$with2\, \,\,\, in that order\. If the size of \`Vec\` is \`N\`\, \`with\_elems\` tail\-calls \$withN with the elements of \`Vec\` as args\.
+
+.. rubric:: Preconditions
+
+The size of \`Vec\` must be less than the number of args\.
+
+\$withK \(K \= 0\, 1\, 2 \,\,\,\) must take K args\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :LOCALE.require_from('kink/')
+        
+    :print_num <- {(:Num :Lang_tag.opt)
+      :Locale = Lang_tag.with_elems(
+        { LOCALE.root }
+        {(:Lt) LOCALE.for(Lt) }
+      )
+      stdout.print_line(
+        Num.show{(:C)
+          C.locale(Locale)
+          C.group_len(3)
+        }
+      )
+    }
+        
+    print_num(1234)       # => 1,234
+    print_num(1234 'fr')  # => 1 234
+
+.. _api-5522a3bd9e69a4a66469992a7f5e0386:
+
+Vec\.each\(\$consume\)
+----------------------
+
+\`each\` calls \$consume with each element from the front to the back\.
+
+If \`Vec\` is not empty\, \`each\` tail\-calls \$consume for the last element\.
+
+.. rubric:: Precondition
+
+\$consume must be a fun which takes a value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz']
+    Vec.each{(:E)
+      stdout.print_line(E.repr)
+    }
+    # Output:
+    #   "foo"
+    #   "bar"
+    #   "baz"
+
+.. _api-3448e5bbbf0c59ea44e4ff57a9c9a131:
+
+Vec\.map\(\$transform\)
+-----------------------
+
+\`map\` makes a \`vec\` whose elements are transformed from the elements of \`Vec\` by \$transform\.
+
+If \`Vec\` contains E\(0\)\, E\(1\) \,\,\, E\(n\-1\)\, the result \`vec\` will contain transform\(E\(0\)\) transform\(E\(1\)\) \,\,\, transform\(E\(n\-1\)\)\.
+
+.. rubric:: Precondition
+
+\$transform must be a fun which takes a value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- [0 1 2 3 4]
+    :Mapped <- Vec.map{(:N) N * 10 }
+    stdout.print_line(Mapped.repr)  # => [0 10 20 30 40]
+
+.. _api-30daf5213e59651e3c34aed6a56eb4da:
+
+Vec\.concat\_map\(\$to\_vec\)
+-----------------------------
+
+\`concat\_map\` returns a \`vec\` which concatenates \`vec\`s which are results of to\_vec\(element\-of\-Vec\)
+
+.. rubric:: Precondition
+
+\$to\_vec must be a fun which takes a value and returns a \`vec\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    # extracts codepoints from the strs
+    :to_codepoints <- {(:Strs)
+      Strs.concat_map{(:S)
+        S.codepoints
+      }
+    }
+    :Codepoints <- to_codepoints(['foo' 'bar' 'baz'])
+    stdout.print_line(Codepoints.repr)
+    # => [102 111 111 98 97 114 98 97 122]
+
+.. _api-2c58ef95f8a75a29db05a46de52c8967:
+
+Vec\.filter\(\$include\?\)
+--------------------------
+
+\`filter\` returns a \`vec\` containing all the elements that satisfy the predicate \$include\?\.
+
+.. rubric:: Precondition
+
+\$include\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Nums <- [1 2 3 5 8 13 21 34 55 89]
+    :Evens <- Nums.filter{(:N)
+      N % 2 == 0
+    }
+    stdout.print_line(Evens.repr) # => [2 8 34]
+
+.. _api-c7cf80a654694c883ad4d6be8135c023:
+
+Vec\.count\(\$counted\?\)
+-------------------------
+
+\`count\` returns the number of elements which satisfy the predicate \$counted\?\, as an integer \`num\`\.
+
+.. rubric:: Precondition
+
+\$counted\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Nums <- [1 2 3 5 8 13 21 34 55 89]
+    :Even_count <- Nums.count{(:N)
+      N % 2 == 0
+    }
+    stdout.print_line(Even_count.repr) # => 3
+
+.. _api-f7a2d4cc94155596c0b63f9e7d2a847c:
+
+Vec\.fold\(Init \$combine\)
+---------------------------
+
+\`fold\` folds elements seeded by \`Init\`\.
+
+If \`Vec\` contains elements E\(0\) E\(1\) \,\,\, E\(n\-1\)\, the result will be combine\(combine\(\,\,\, combine\(combine\(Init E\(0\)\) E\(1\)\) \,\,\,\) E\(n\-1\)\)\.
+
+.. rubric:: Precondition
+
+\$combine must take two values\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :to_quote_line <- {(:Words)
+      Words.fold('%'){(:Accum :Word)
+        Accum + ' ' + Word
+      }
+    }
+    :Quote <- to_quote_line(['foo' 'bar' 'baz'])
+    stdout.print_line(Quote.repr) # => "% foo bar baz"
+
+.. _api-2df32705c7bfd54f55ac6f4e6b827746:
+
+Vec\.reduce\(\$combine \.\.\.\[\$empty\_fallback\]\)
+----------------------------------------------------
+
+\`reduce\` accumulates elements of \`Vec\` mutually\.
+
+If \`Vec\` has one or more elements\, \`reduce\` tail\-calls \`Vec\.drop\_front\(1\)\.fold\(Vec\.front \$combine\)\`\.
+
+If \`Vec\` is empty\, and \$empty\_fallback is given\, \`reduce\` tail\-calls \$empty\_fallback with no arg\.
+
+If \`Vec\` is empty\, and \$empty\_fallback is not given\, \`reduce\` raises an exception\.
+
+.. rubric:: Preconditions
+
+\$combine must be a fun which takes two values\.
+
+\$empty\_fallback must be a thunk\.
+
+.. rubric:: Example\: without fallback
+
+.. code:: kink
+
+    :COMPARE.require_from('kink/')
+        
+    stdout.print_line([31 41 59 26 53].reduce(COMPARE$max).repr) # => 59
+
+.. rubric:: Example\: with fallback
+
+.. code:: kink
+
+    :separate_by_commas <- {(:Args)
+      Args.reduce(
+        {(:Accum :Arg) Accum + ', ' + Arg }
+        { '' }
+      )
+    }
+        
+    stdout.print_line(separate_by_commas(['foo' 'bar' 'baz']).repr)
+    # => "foo, bar, baz"
+        
+    stdout.print_line(separate_by_commas([]).repr)
+    # => ""
+
+.. _api-1f796154aaac67db79b07366b975faec:
+
+Vec\.take\_while\(\$include\?\)
+-------------------------------
+
+\`take\_while\` returns a \`vec\` of the longest initial prefix whose elements satisfy the predicate \$include\?\.
+
+.. rubric:: Precondition
+
+\$include\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Nums <- [1 (-2) 3 (-4) 5 (-6) 7 (-8)]
+    :Prefix <- Nums.take_while{(:N)
+      N < 5
+    }
+    stdout.print_line(Prefix.repr)
+    # => [1 (-2) 3 (-4)]
+
+.. _api-d49548ba6040babf6593fdac6a64f369:
+
+Vec\.drop\_while\(\$exclude\?\)
+-------------------------------
+
+\`drop\_while\` returns a \`vec\` of the elements after the longest initial prefix whose elements satisfy the predicate \$exclude\?\.
+
+.. rubric:: Precondition
+
+\$exclude\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Nums <- [1 (-2) 3 (-4) 5 (-6) 7 (-8)]
+    :Suffix <- Nums.drop_while{(:N)
+      N < 5
+    }
+    stdout.print_line(Suffix.repr)
+    # => [5 (-6) 7 (-8)]
+
+.. _api-3a663d57656e686d8ee0bfe5a9ea6c1e:
+
+Vec\.all\?\(\$match\?\)
+-----------------------
+
+\`all\?\` returns whether all the elements of \`Vec\` satisfy the predicate \$match\?\.
+
+.. rubric:: Precondition
+
+\$match\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :all_even? <- {(:Nums)
+      Nums.all?{(:N)
+        N % 2 == 0
+      }
+    }
+    stdout.print_line(all_even?([0 2 4]).repr)  # => true
+    stdout.print_line(all_even?([6 7 9]).repr)  # => false
+    stdout.print_line(all_even?([1 3 5]).repr)  # => false
+
+.. _api-11af723e0870efb38f34d5275664b3f9:
+
+Vec\.any\?\(\.\.\.\[\$match\?\=\{ true \}\]\)
+---------------------------------------------
+
+\`any\?\` returns whether at least one of the elements of \`Vec\` satisfies the predicate \$match\?\.
+
+\$match\? is an optional arg with a default value \{ true \}\, So\, if \$match\? is not passed\, \`any\?\` returns whether \`Vec\` is nonempty\.
+
+.. rubric:: Precondition
+
+\$match\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :any_even? <- {(:Nums)
+      Nums.any?{(:N)
+        N % 2 == 0
+      }
+    }
+    stdout.print_line(any_even?([0 2 4]).repr)  # => true
+    stdout.print_line(any_even?([6 7 9]).repr)  # => true
+    stdout.print_line(any_even?([1 3 5]).repr)  # => false
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line([].any?.repr) # => false
+    stdout.print_line(['foo'].any?.repr) # => true
+    stdout.print_line(['foo' 'bar'].any?.repr) # => true
+
+.. _api-0cf79cfaf2d21da7624ed9357e09d981:
+
+Vec\.have\?\(Target\)
+---------------------
+
+\`have\?\` returns whether \`Vec\` has an element which is equal to \`Target\` by \`\=\=\` operator\, or \`op\_eq\` method\.
+
+Calling Vec\.have\?\(Target\) is equivalent to calling Vec\.any\?\{\(\:E\) Target \=\= E \}\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line([1 3 5].have?(3).repr)  # => true
+    stdout.print_line([2 4 6].have?(3).repr)  # => false
+
+.. _api-82b1d65bfeb4515918b278ec71879256:
+
+Vec\.have\_all\?\(Vals\)
+------------------------
+
+\`have\_all\?\` returns whether \`Vec\` has all the elements of \`Vals\`\.
+
+Calling Vec\.have\_all\?\(Vals\) is equivalent to calling Vals\.all\?\{\(\:T\) Vec\.have\?\(T\) \}\.
+
+.. rubric:: Preconditions
+
+\`Vals\` must have all\?\(\$match\?\) method\.
+
+\`\=\=\` operator\, or \`op\_eq\` method\, must be able to compare elements of \`Vec\` and \`Vals\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Vec <- [2 4 6 8]
+    stdout.print_line(Vec.have_all?(FLAT_SET.of(2 4)).repr) # => true
+    stdout.print_line(Vec.have_all?(FLAT_SET.of(6 7)).repr) # => false
+
+.. _api-2f9fb22ebdbc1305055535e3563e3211:
+
+Vec\.have\_any\?\(Vals\)
+------------------------
+
+\`have\_any\?\` returns whether \`Vec\` has any element of \`Vals\`\.
+
+Calling Vec\.have\_any\?\(Vals\) is equivalent to calling Vals\.any\?\{\(\:T\) Vec\.have\?\(T\) \}\.
+
+.. rubric:: Preconditions
+
+\`Vals\` must have any\?\(\$match\?\) method\.
+
+\`\=\=\` operator\, or \`op\_eq\` method\, must be able to compare elements of \`Vec\` and \`Vals\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Vec <- [2 4 6 8]
+    stdout.print_line(Vec.have_any?(FLAT_SET.of(2 4)).repr)   # => true
+    stdout.print_line(Vec.have_any?(FLAT_SET.of(6 7)).repr)   # => true
+    stdout.print_line(Vec.have_any?(FLAT_SET.of(10 20)).repr) # => false
+
+.. _api-db860e884a84e1827982b48eee6be98f:
+
+Vec\.sort\(\.\.\.\[\$in\_order\?\=\{\(\:X \:Y\) X \<\= Y \}\]\)
+---------------------------------------------------------------
+
+\`sort\` returns a \`vec\` whose elements are copied from \`Vec\` and sorted in the ascending order specified by \$in\_order\?\.
+
+.. rubric:: Comparison
+
+Comparison of elements are done by \$in\_order\?\.
+
+\$in\_order\? must be a total order relation of the elements of \`Vec\`\. For all \`X\`\, \`Y\`\, and \`Z\` in the elements of \`Vec\`\, \$in\_order\? must satisfy the following\.
+
+\• reflexive\: in\_order\?\(X X\)
+
+\• transitive\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y Z\) then in\_order\?\(X Z\)
+
+\• antisymmetric\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y X\) then X is equivalent to Y
+
+\• strongly connected\: in\_order\?\(X Y\) \|\| in\_order\?\(Y X\)
+
+.. rubric:: Stable sort
+
+\`sort\` performs a stable sort\. If in\_order\?\(E1 E2\) \&\& in\_order\?\(E2 E1\)\, for \`E1\` and \`E2\` in \`Vec\`\, \`E1\` and \`E2\` appear in the result \`vec\` in the same order as in \`Vec\`\.
+
+.. rubric:: Precondition
+
+\$in\_order\? must be a fun which takes two values and returns a \`bool\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- ['foo' 'bar' 'baz' 'FOO' 'BAR' 'BAZ']
+        
+    stdout.print_line(Vec.sort.repr)
+    # => ["BAR" "BAZ" "FOO" "bar" "baz" "foo"]
+        
+    stdout.print_line(Vec.sort{(:X :Y) X.ascii_downcase <= Y.ascii_downcase }.repr)
+    # => ["bar" "BAR" "baz" "BAZ" "foo" "FOO"]
+
+.. _api-c31469da21f944429a8cf92a5403ec4f:
+
+Vec\.iter\(\.\.\.\[From\=0 To\=Vec\.size\]\)
+--------------------------------------------
+
+\`iter\` method returns an \`iter\` containing the elements of the slice in the range \[From\, To\)\.
+
+.. rubric:: Preconditions
+
+\`From\` and \`To\` must be integer \`num\` values\.
+
+0 \<\= From \<\= To \<\= Vec\.size
+
+.. rubric:: Example
+
+.. code:: kink
+
+    ['0' '1' '2' '3' '4'].iter.each{(:S)
+      stdout.print_line(S.repr)
+    }
+    # Output:
+    #   "0"
+    #   "1"
+    #   "2"
+    #   "3"
+    #   "4"
+        
+    ['0' '1' '2' '3' '4'].iter(2).each{(:S)
+      stdout.print_line(S.repr)
+    }
+    # Output:
+    #   "2"
+    #   "3"
+    #   "4"
+        
+    ['0' '1' '2' '3' '4'].iter(2 4).each{(:S)
+      stdout.print_line(S.repr)
+    }
+    # Output:
+    #   "2"
+    #   "3"
+
+.. _api-d97345411758603e5d72d2026abceeea:
+
+Vec1 \+ Vec2
+------------
+
+\`\+\` operator\, or \`op\_add\` method\, returns a \`vec\` containing all the elements of \`Vec1\` in the front\, and all the elements of \`Vec2\` in the back\.
+
+.. rubric:: Precondition
+
+\`Vec2\` must be a \`vec\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line((['0' '1'] + ['2' '3']).repr) # => ["0" "1" "2" "3"]
+
+.. _api-61e61615143dade9dabbd34bcb5d4d16:
+
+Vec \* N
+--------
+
+\`\*\` operator\, or \`op\_mul\` method\, returns a \`vec\` containing the elements of \`Vec\` repeated \`N\` times\.
+
+.. rubric:: Preconditions
+
+\`N\` must be a nonnegative integer \`num\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(([1 2] * 3).repr) # => [1 2 1 2 1 2]
+
+.. _api-7b111e394601a5a4a97ab44892979c20:
+
+Vec1 \=\= Vec2
+--------------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`Vec1\` and \`Vec2\` are equal\, or they contain equal elements in the same order\.
+
+The two vecs are equal if\:
+
+1\)  Vec1\.size \=\= Vec2\.size
+
+2\)  For all i in \[0\, Vec1\.size\)\, Vec1\.get\(i\) \=\= Vec2\.get\(i\)
+
+The conditions are tested in the numbered order\, and from the smallest \`i\` to the biggest \`i\`\. If a test returns false\, subsequent tests are not evaluated and two vecs are decided not equal\.
+
+.. rubric:: Precondition
+
+\`Vec1\` and \`Vec2\` must be \`vec\` values\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+        
+    :test_equality <- {(:Vec1 :Vec2)
+      CONTROL.try(
+        { Vec1 == Vec2 }
+        {(:Result) stdout.print_line(Result.repr) }
+        {(:Exc)
+          stdout.print_line('op_eq: exception: {}'.format(Exc.message))
+        }
+      )
+    }
+        
+    # equal
+    test_equality(['foo' 42] ['foo' 42])
+    # Output: true
+        
+    # not equal because sizes differ
+    test_equality(['foo' 42] ['foo' 42 'bar'])
+    # Output: false
+        
+    # not equal because the first elemenets differ
+    test_equality(['foo' 42] ['bar' 42])
+    # Output: false
+        
+    # not equal because the first elemenets differ;
+    # the second elements are not tested
+    test_equality(['foo' 42] ['bar' '***'])
+    # Output: false
+        
+    test_equality(['foo' 42] ['foo' '***'])
+    # Output:
+    #   op_eq: exception: Num1.op_eq(Num2): the arg must be an int num, but got "***"
+
+.. _api-841e77748f0925e98ec50203bb9e02cf:
+
+Vec1 \<\= Vec2
+--------------
+
+\`\<\=\` operator\, or \`op\_le\` method\, returns whether \`Vec1\` is less than or equal to \`Vec2\` by the order defined by \`\<\=\` operator of the elements\.
+
+\`Vec1\` is less than or equal to \`Vec2\` when\:
+
+1\)  There is a nonnegative integer k \(k \< min\(Vec1\.size Vec2\.size\)\)\,     such that for all i in \[0\, k\)     Vec1\.get\(i\) \<\= Vec2\.get\(i\) \&\& Vec2\.get\(i\) \<\= Vec1\.get\(i\)\,     and \! \(Vec2\.get\(k\) \<\= Vec1\.get\(k\)\)\; or
+
+2\)  Vec1\.size \<\= Vec2\.size and for all i in \[0\, Vec1\.size\)\,     Vec1\.get\(i\) \<\= Vec2\.get\(i\) \&\& Vec2\.get\(i\) \<\= Vec1\.get\(i\)\.
+
+Comparisons are done from the smallest index to the biggest index\. When the result is determined\, the subsequent comparisons are not performed\.
+
+.. rubric:: Precondition
+
+\`Vec2\` must be a \`vec\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :compare <- {(:Vec1 :Vec2)
+      [:Lt? :Le? :Gt? :Ge?] = [
+        Vec1 < Vec2
+        Vec1 <= Vec2
+        Vec1 > Vec2
+        Vec1 >= Vec2
+      ]
+      stdout.print_line(
+        'Lt?={} Le?={} Gt?={} Ge?={}'.format(Lt?.repr Le?.repr Gt?.repr Ge?.repr))
+    }
+        
+    compare(['A' 42] ['A' 42])
+    # => Lt?=false Le?=true Gt?=false Ge?=true
+        
+    compare(['A' 42] ['A' 42 'foo'])
+    # => Lt?=true Le?=true Gt?=false Ge?=false
+        
+    compare(['A' 42] ['A'])
+    # => Lt?=false Le?=false Gt?=true Ge?=true
+        
+    compare(['A' 42] ['B' 42])
+    # => Lt?=true Le?=true Gt?=false Ge?=false
+        
+    compare(['A' 42] ['A' 84])
+    # => Lt?=true Le?=true Gt?=false Ge?=false
+
+.. _api-6573895cd5761f6c138e0b1ce561a7e6:
+
+Lhs \<\- Rhs
+------------
+
+\`\<\-\` operator\, or \`op\_store\` method\, performs multiple assignment between a \`vec\` on the left hand side\, \`Lhs\`\, and the \`vec\` on the right hand side\, \`Rhs\.
+
+Here\, elements of \`Lhs\` are called params\, and elements of \`Rhs\` are called args\.
+
+.. rubric:: Params and args
+
+There are three types of params\:
+
+\• plain\_param\: ex\. varref\, vec\. Can receive 1 arg\.
+
+\• opt\_param\: ex\. Varref\.opt\. Can receive 0 or 1 arg\.
+
+\• rest\_param\: ex\. Varref\.rest\. Can receive an arbitrary number of args\.
+
+\`plain\_param\` and \`opt\_param\` can appear any number of times in \`Lhs\`\. An \`opt\_param\` cannot precede a \`plain\_param\`\.
+
+\`Lhs\` can have zero or one \`rest\_param\` at the back\.
+
+Let \`NP\` be the number of \`plain\_param\`\, and \`NO\` be the number of \`opt\_param\`\. Here\, P\(0\)\, P\(1\) \,\,\, P\(NP\-1\)\, O\(0\)\, O\(1\) \,\,\, O\(NO\-1\) are params\, where P\(i\) for each i \(0 \<\= i \< NP\) is a \`plain\_param\`\, and O\(j\) for each j \(0 \<\= j \< NO\) is an \`opt\_param\`\.
+
+In addition\, let \`NA\` be the number of args\, and A\(k\) for each k \(0 \<\= k \< NA\) be an arg\.
+
+\`op\_store\` behaves differently depending on whether \`Lhs\` has a \`rest\_param\` or not\.
+
+.. rubric:: When \`Lhs\` has no \`rest\_param\`
+
+In this case\, the number of args \`NA\` is valid when NP \<\= NA \<\= NP\+NO\.
+
+When the number of args is not valid\, \`op\_store\` raises an exception\.
+
+When the number of args is valid\, \`op\_store\` calls a method of each param as follows\:
+
+\• P\(k\)\.op\_store\(A\(k\)\) for each k \(0 \<\= k \< NP\)
+
+\• O\(k \- NP\)\.pass\_arg\(A\(k\)\) for each k \(NP \<\= k \< NA\)
+
+\• O\(k \- NP\)\.pass\_nothing for each k \(NA \<\= k \< NP\+NO\)
+
+.. rubric:: When \`Lhs\` has a \`rest\_param\`\, \`R\`
+
+In this case\, the number of args \`NA\` is valid when NP \<\= NA\.
+
+When the number of args is not valid\, \`op\_store\` raises an exception\.
+
+When the number of args is valid\, \`op\_store\` calls a method of each param as follows\:
+
+\• P\(k\)\.op\_store\(A\(k\)\) for each k \(0 \<\= k \< NP\)
+
+\• O\(k \- NP\)\.pass\_arg\(A\(k\)\) for each k \(NP \<\= k \< NA\)
+
+\• O\(k \- NP\)\.pass\_nothing for each k \(NA \<\= k \< NP\+NO\)
+
+\• R\.pass\_rest\(vec of A\(k\) for each k \(NP\+NO \<\= k \< NA\)\)
+
+.. rubric:: Precondition
+
+\`Rhs\` must be a \`vec\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+        
+    [:X :Y] <- ['x' 'y']
+    stdout.print_line('X={} Y={}'.format(X.repr Y.repr))
+    # => X="x" Y="y"
+        
+    [:X :Y :Z.opt :W.opt] <- ['x' 'y']
+    stdout.print_line('X={} Y={} Z={} W={}'.format(X.repr Y.repr Z.repr W.repr))
+    # => X="x" Y="y Z=[] W=[]"
+        
+    [:X :Y :Z.opt :W.opt] <- ['x' 'y' 'z']
+    stdout.print_line('X={} Y={} Z={} W={}'.format(X.repr Y.repr Z.repr W.repr))
+    # => X="x" Y="y Z=["z"] W=[]"
+        
+    [:X :Y :Z.opt :W.opt] <- ['x' 'y' 'z' 'w']
+    stdout.print_line('X={} Y={} Z={} W={}'.format(X.repr Y.repr Z.repr W.repr))
+    # => X="x" Y="y Z=["z"] W=["w"]"
+        
+    [:X :Y :R.rest] <- ['x' 'y']
+    stdout.print_line('X={} Y={} R={}'.format(X.repr Y.repr R.repr))
+    # => X="x" Y="y" R=[]
+        
+    [:X :Y :R.rest] <- ['x' 'y' 'r1' 'r2']
+    stdout.print_line('X={} Y={} R={}'.format(X.repr Y.repr R.repr))
+    # => X="x" Y="y" R=["r1" "r2"]
+        
+    [:X :Y :Z.opt :W.opt :R.rest] <- ['x' 'y']
+    stdout.print_line('X={} Y={} Z={} W={} R={}'.format(X.repr Y.repr Z.repr W.repr R.repr))
+    # => X="x" Y="y" Z=[] W=[] R=[]
+        
+    [:X :Y :Z.opt :W.opt :R.rest] <- ['x' 'y' 'z']
+    stdout.print_line('X={} Y={} Z={} W={} R={}'.format(X.repr Y.repr Z.repr W.repr R.repr))
+    # => X="x" Y="y" Z=["z"] W=[] R=[]
+        
+    [:X :Y :Z.opt :W.opt :R.rest] <- ['x' 'y' 'z' 'w']
+    stdout.print_line('X={} Y={} Z={} W={} R={}'.format(X.repr Y.repr Z.repr W.repr R.repr))
+    # => X="x" Y="y" Z=["z"] W=["w"] R=[]
+        
+    [:X :Y :Z.opt :W.opt :R.rest] <- ['x' 'y' 'z' 'w' 'r1' 'r2']
+    stdout.print_line('X={} Y={} Z={} W={} R={}'.format(X.repr Y.repr Z.repr W.repr R.repr))
+    # => X="x" Y="y" Z=["z"] W=["w"] R=["r1" "r2"]
+        
+    # Invalid numbers of right-hand-side vals:
+    CONTROL.try(
+      { [:X :Y] <- [1 2 3] }
+      { raise('must not reach here') }
+      {(:Exc)
+        stdout.print_line('exception: {}'.format(Exc.message))
+      }
+    )
+    # => exception: too many args: for [:X :Y], got [1 2 3]
+        
+    CONTROL.try(
+      { [:X :Y] <- [1] }
+      { raise('must not reach here') }
+      {(:Exc)
+        stdout.print_line('exception: {}'.format(Exc.message))
+      }
+    )
+    # => exception: too few args: for [:X :Y], got [1]
+
+.. _api-97b5493e30b9b5d7d421ed0d4c007f3e:
+
+Vec\.repr
+---------
+
+\`repr\` returns a \`str\` representation of \`Vec\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    stdout.print_line(['foo' 42].repr)  # => ["foo" 42]
+
+.. _api-86a15de152657a3ba0b61d095050256c:
+
+VEC\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a \`vec\`\.
+
+.. _api-9f0ca3a3c6cc97f50656aa977d61bbe5:
+
+VEC\.from\_each\(Eacher\)
+=========================
+
+\`from\_each\` returns a new \`vec\` including all the elements of \`Eacher\`\.
+
+\`Eacher\` must have \.each\(\$consume\) method which calls \$consume for each element\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :VEC.require_from('kink/')
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of('foo' 'bar' 'baz')
+    stdout.print_line(VEC.from_each(Set).repr)
+    # => ["bar" "baz" "foo"]
+

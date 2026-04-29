@@ -1,0 +1,204 @@
+==================
+kink\/random\/PRNG
+==================
+
+Pseudo random number generators using xoshiro256\*\* algorithm\.
+
+This is a non\-blocking deterministic RNG\, desgined to be used for Monte Carlo simulation\.
+
+xoshiro256\*\* is not cryptographically secure\. Thus\, if you have to generate such as random nonces\, salts\, or session ids\, use kink\/random\/CSRNG instead\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-4e81448f6d6b456a93b8795f8e25017c:
+
+type prng
+=========
+
+\`prng\` is a type of pseudo RNGs based on xoshiro256\*\* algorithm\.
+
+\`prng\` is a subtype of \`rng\`\. See kink\/random\/RNG for \`rng\` type\.
+
+\`prng\` val is not thread\-safe\. Thus\, use of a single \`prng\` val from multiple threads must be synchronized\.
+
+.. _api-06e76b5fbe89d3d5179125d1bf312465:
+
+Prng\.gen\_int\(Seed\) \.gen\_bin\(Size\) \.gen\_bool
+-----------------------------------------------------
+
+See \`rng\` type on kink\/random\/RNG mod for these methods\.
+
+.. _api-fd072d7298084dc055f87efb3584510f:
+
+Prng\.state
+-----------
+
+\`state\` returns the internal state of the RNG as a 32 bytes \`bin\` val\. The result bin contains at least one non\-zero bit\.
+
+The result bin can be used as the arg of PRNG\.from\_state\.
+
+Example\:
+
+.. code:: kink
+
+    :PRNG.require_from('kink/random/')
+        
+    :Rng <- PRNG.from_seed(-42)
+    stdout.print_line(Rng.state.repr)
+    # => BIN.of(0xfe 0xc8 0x00 0x06 0xdf 0x05 0x42 0x54 0x9b 0x4c 0xba 0xaf 0xb8 0x98 0x7e 0xee 0x00 0xbb 0x49 0xbc 0xa3 0x96 0xee 0xfe 0x9a 0xc8 0xbe 0x5b 0x59 0x28 0xe8 0xf6)
+        
+    Rng.gen_bool
+    stdout.print_line(Rng.state.repr)
+    # => BIN.of(0xff 0x4c 0x04 0xf2 0x3e 0xb5 0xd4 0x4c 0x65 0x3f 0xf3 0x15 0xc4 0x0b 0xd2 0x44 0x8b 0x2c 0x38 0x8a 0x81 0x4f 0xac 0xaa 0x12 0xc3 0x00 0x30 0x80 0x9e 0x9c 0x36)
+
+.. _api-167f0c53a577b515b5a01450a63185c2:
+
+Prng\.jump\(\$config\)
+----------------------
+
+\`jump\` moves the internal state of the RNG forward by the given number of steps\.
+
+\$config must take a config val\, which has following methods\.
+
+\• C\.node\(Node\)
+
+\• C\.thread\(Thread\)
+
+\• C\.offset\(Offset\)
+
+All the config methods take a non\-negative int numer as the argument\. If a method is not called\, the value defaults to 0\.
+
+The number of steps will be computed as follows\: Node \* 2\*\*192 \+ Thread \* 2\*\*128 \+ Offset\.
+
+Example\:
+
+.. code:: kink
+
+    :PRNG.require_from('kink/random/')
+    :THREAD.require_from('kink/thread/')
+    :MUTEX.require_from('kink/thread/')
+    :TREE_MAP.require_from('kink/container/')
+        
+    :Test_count <- 10
+    :Seed <- -42
+    :Ans <- TREE_MAP.new
+    :Mutex <- MUTEX.new
+        
+    # do cointoss simulation in 10 threads
+    Test_count.times.each{(:Test)
+      THREAD.spawn{
+        :Rng = PRNG.from_seed(Seed)
+        Rng.jump{(:C)
+          C.thread(Test)
+        }
+        :Attempts = 1000
+        :Cointoss_series = Attempts.times.map{ Rng.gen_int(2) }
+        :Sum = Cointoss_series.fold(0){(:X :Y) X + Y }
+        :Avg = (Sum / Attempts).floor(3)
+        Mutex.with_lock{
+          Ans.set(Test Avg)
+          Mutex.notify_all
+        }
+      }
+    }
+        
+    Mutex.with_lock{
+      Mutex.wait_until{ Ans.size == Test_count }
+      Ans.pair_iter.each{([:Test :Avg])
+        stdout.print_line('Test {}: {}'.format(Test Avg))
+      }
+    }
+        
+    # Output:
+    #   Test 0: 0.475
+    #   Test 1: 0.512
+    #   Test 2: 0.492
+    #   Test 3: 0.490
+    #   Test 4: 0.513
+    #   Test 5: 0.504
+    #   Test 6: 0.509
+    #   Test 7: 0.503
+    #   Test 8: 0.506
+    #   Test 9: 0.517
+
+.. _api-6035f5b46e9f6018fa38250895437c2f:
+
+PRNG\.from\_seed\(Seed\)
+========================
+
+\`from\_seed\` makes a new \`prng\` val from the Seed\.
+
+Preconditions\:
+
+\• Seed must be an int num\.
+
+The initial state of the RNG is created as follows\:
+
+.. code:: kink
+
+    seed_bin := sha256(ASCII representation of Seed.show)
+    initial state := seed_bin if seed_bin is not all-zero, or otherwise sha256(empty bytes)
+
+Example\:
+
+.. code:: kink
+
+    :PRNG.require_from('kink/random/')
+        
+    :A <- PRNG.from_seed(-42)
+    stdout.print_line(A.gen_int(100).repr)  # => 62
+    stdout.print_line(A.gen_int(100).repr)  # => 30
+    stdout.print_line(A.gen_int(100).repr)  # => 11
+        
+    :B <- PRNG.from_seed(-42)
+    stdout.print_line(B.gen_int(100).repr)  # => 62
+    stdout.print_line(B.gen_int(100).repr)  # => 30
+    stdout.print_line(B.gen_int(100).repr)  # => 11
+        
+    :C <- PRNG.from_seed(31)
+    stdout.print_line(C.gen_int(100).repr)  # => 56
+    stdout.print_line(C.gen_int(100).repr)  # => 96
+    stdout.print_line(C.gen_int(100).repr)  # => 97
+
+.. _api-6ead0ee97c44d86f6c6928fddc1773bd:
+
+PRNG\.from\_state\(State\)
+==========================
+
+\`from\_state\` makes a new \`prng\` val from the initial \`State\`\.
+
+Preconditions\:
+
+\• \`State\` must be a \`bin\` val
+
+\• The size of \`State\` must be 32
+
+\• At least one bit of \`State\` must be 1
+
+The result of Prng\.state can be used as the arg of \`from\_state\`\.
+
+Example\:
+
+.. code:: kink
+
+    :PRNG.require_from('kink/random/')
+    :BIN.require_from('kink/')
+        
+    :Initial_state <- BIN.of(
+      0xfe 0xc8 0x00 0x06 0xdf 0x05 0x42 0x54 0x9b 0x4c 0xba 0xaf 0xb8 0x98 0x7e 0xee
+      0x00 0xbb 0x49 0xbc 0xa3 0x96 0xee 0xfe 0x9a 0xc8 0xbe 0x5b 0x59 0x28 0xe8 0xf6
+    )
+    :Rng <- PRNG.from_state(Initial_state)
+    stdout.print_line(Rng.gen_int(100).repr)  # => 62
+    stdout.print_line(Rng.gen_int(100).repr)  # => 30
+    stdout.print_line(Rng.gen_int(100).repr)  # => 11
+
+.. _api-ca843d7dde212c24955baadc2b1ac44f:
+
+PRNG\.is\?\(Val\)
+=================
+
+\`is\?\` returns whether \`Val\` is a \`prng\` val\.
+

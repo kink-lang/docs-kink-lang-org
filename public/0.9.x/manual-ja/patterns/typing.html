@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>7.4. Typing &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="7.5. Control structure" href="control.html" />
+    <link rel="prev" title="7.3. Accessibility" href="accessibility.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>7.4. Typing</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="accessibility.html"><span class="section-number">7.3. </span>Accessibility</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="control.html"><span class="section-number">7.5. </span>Control structure</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="typing">
+<h1><span class="section-number">7.4. </span>Typing<a class="headerlink" href="#typing" title="Link to this heading">¶</a></h1>
+<p>Kink language does not support static type system.
+However, in the perspective of programming practices, typing exists.
+For example, <code class="docutils literal notranslate"><span class="pre">repr</span></code> method of any value
+is expected to return a value of str type,
+and a str value is expected to have <code class="docutils literal notranslate"><span class="pre">size</span></code> method.
+Thus, you can write <code class="docutils literal notranslate"><span class="pre">repr_size</span></code> function as follows:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># (Val: any type) -&gt; int num type</span>
+<span class="nv">:repr_size</span> &lt;- {(<span class="nv">:Val</span>)
+  <span class="nv">Val</span>.<span class="n">repr</span>.<span class="n">size</span>
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">repr_size</span>(<span class="m">12345</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 5</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">repr_size</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; 13</span>
+</pre></div>
+</div>
+<p>This chapter describes typing and type testing patterns of Kink.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#typing-contracts" id="id2">Typing contracts</a></p></li>
+<li><p><a class="reference internal" href="#type-testing-by-intrinsic-property" id="id3">Type testing by intrinsic property</a></p></li>
+<li><p><a class="reference internal" href="#duck-type-testing" id="id4">Duck type testing</a></p></li>
+</ul>
+</nav>
+<section id="typing-contracts">
+<h2><span class="section-number">7.4.1. </span>Typing contracts<a class="headerlink" href="#typing-contracts" title="Link to this heading">¶</a></h2>
+<p>Typing can be considered as a contract between a component and its client.
+Here, components include the language and modules.
+Contracts should be specified in public documentation.</p>
+<p>For example, in the language specification,
+a <a class="reference internal" href="../language/semantics.html#functionexpression"><span class="std std-ref">function expression</span></a>
+is specified to produce a <a class="reference internal" href="../api/kink-FUN.html"><span class="doc">function value</span></a>.
+It is a postcondition contract of a function expression.
+Thus, a program can assume the result of a function expression
+can be called, or has <code class="docutils literal notranslate"><span class="pre">call</span></code> method.</p>
+<p>For another example,
+the first argument of <code class="docutils literal notranslate"><span class="pre">print_line</span></code> method of
+a <a class="reference internal" href="../api/kink-io-PRINTER.html"><span class="doc">printer</span></a>
+value is specified to be a str.
+It is a precondition contract.
+Thus, if the value given to the argument is not a str value,
+the behavior of the method is not specified.</p>
+</section>
+<section id="type-testing-by-intrinsic-property">
+<h2><span class="section-number">7.4.2. </span>Type testing by intrinsic property<a class="headerlink" href="#type-testing-by-intrinsic-property" title="Link to this heading">¶</a></h2>
+<p>The runtime or a <a class="reference internal" href="../glossary.html#term-host-procedure"><span class="xref std std-term">host procedure</span></a> might test the type of a value
+by its intrinsic property,
+such as the runtime class of the value.</p>
+<p>One example is <a class="reference internal" href="../language/eval.html#checkfun-insn"><span class="std std-ref">checkfun abstract instruction</span></a>,
+which ensures that the called value is a function.
+The check is probably done using an instrinsic property of the value,
+such as by testing the runtime class.</p>
+<p>For another example,
+<code class="docutils literal notranslate"><span class="pre">raise</span></code> <a class="reference internal" href="../api/kink-BINDING.html"><span class="doc">preloaded function</span></a>
+takes a str value as the argument.
+Probably the function ensures that the argument is a str,
+by testing the runtime class.</p>
+</section>
+<section id="duck-type-testing">
+<h2><span class="section-number">7.4.3. </span>Duck type testing<a class="headerlink" href="#duck-type-testing" title="Link to this heading">¶</a></h2>
+<p>Another way of type testing is <em class="dfn">duck type testing</em>.
+<em class="dfn">duck type testing</em> is type testing based on what methods a value has.</p>
+<p>For example, if <code class="docutils literal notranslate"><span class="pre">rat</span></code> type is expected to have <code class="docutils literal notranslate"><span class="pre">numer</span></code>, <code class="docutils literal notranslate"><span class="pre">denom</span></code>
+and <code class="docutils literal notranslate"><span class="pre">repr</span></code> methods,
+duck type testing can be done by ensuring
+a value has <code class="docutils literal notranslate"><span class="pre">numer</span></code> and <code class="docutils literal notranslate"><span class="pre">denom</span></code> variables.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>Every value has <code class="docutils literal notranslate"><span class="pre">repr</span></code> method.
+Thus, testing exisitence of <code class="docutils literal notranslate"><span class="pre">repr</span></code> method is not needed.</p>
+</div>
+<p>Usually, a set of methods can be extracted out of the <a class="reference internal" href="../glossary.html#term-trait"><span class="xref std std-term">trait</span></a>.
+In the following example,
+A vec of method symbols is stored in <code class="docutils literal notranslate"><span class="pre">Rat_var_syms</span></code> variable.
+<code class="docutils literal notranslate"><span class="pre">is?</span></code> method does duck type testing comparing the variable symbols
+of the value to test, and <code class="docutils literal notranslate"><span class="pre">Rat_var_syms</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># example/RAT.kn</span>
+
+<span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="c1"># `new` makes a new rat value.</span>
+<span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Rat_trait</span>
+    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
+    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
+  )
+}
+
+<span class="c1"># `is?` returns whether `Val` is a rat value.</span>
+<span class="c1"># The type testing is done by duck type testing.</span>
+<span class="nv">:is?</span> &lt;- {(<span class="nv">:Val</span>)
+  <span class="nv">VAL</span>.<span class="n">var_syms</span>(<span class="nv">Val</span>).<span class="n">have_all?</span>(<span class="nv">Rat_var_syms</span>)
+}
+
+<span class="nv">:Rat_trait</span> &lt;- [
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>]() <span class="nv">R</span>.<span class="nv">Numer</span> }
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>]() <span class="nv">R</span>.<span class="nv">Denom</span> }
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>]()
+    <span class="s1">&#39;(rat numer={} denom={})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">denom</span>.<span class="n">repr</span>)
+  }
+]
+
+<span class="c1"># =&gt; [&#39;numer&#39; &#39;denom&#39; &#39;repr&#39;]</span>
+<span class="nv">:Rat_var_syms</span> &lt;- <span class="nv">Rat_trait</span>.<span class="n">chunk</span>(<span class="m">2</span>).<span class="n">map</span>{([<span class="nv">:Sym</span> <span class="nv">:Val</span>]) <span class="nv">Sym</span> }
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">is?</span></code> method can be used as follows:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:RAT</span>.<span class="n">require_from</span>(<span class="s1">&#39;example/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">RAT</span>.<span class="n">is?</span>(<span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">10</span> <span class="m">20</span>)).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">RAT</span>.<span class="n">is?</span>(<span class="n">nada</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="accessibility.html"><span class="section-number">7.3. </span>Accessibility</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="control.html"><span class="section-number">7.5. </span>Control structure</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

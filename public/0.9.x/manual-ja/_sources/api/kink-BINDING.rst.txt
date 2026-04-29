@@ -1,0 +1,474 @@
+=============
+kink\/BINDING
+=============
+
+Operates \`binding\` values\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BINDING.require_from('kink/')
+    :PROGRAM.require_from('kink/program/')
+        
+    :Binding <- BINDING.new
+    :Program <- PROGRAM.new('program' 'Num * 2')
+    :prog <- Program.compile{(:C)
+      C.binding(Binding)
+    }
+    Binding:Num <- 42
+    stdout.print_line(prog.repr) # => 84
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-3a046d0b373eaacef45ecba66825bf5b:
+
+type binding
+============
+
+A binding val is a holder of local variables\.
+
+See Language specification → Evaluation chapter about manipulation of bindings\.
+
+Every binding has preloaded funs such as \`nada\` and \`new\_val\`\.
+
+.. _api-5e050a798b5cefd652b23e1f244598e8:
+
+nada
+----
+
+“Just this creaking metal sign that said nada\, nada\, against the blue sky\. I used to wake up hollering” ―― The Crying of Lot 49 \(1966\, Thomas Pynchon\)\.
+
+\`nada\` returns nada val\, which is identical to the result of the expression “\(\)”\.
+
+.. code:: kink
+
+    stdout.print_line(nada.repr)  # => nada
+
+nada is used when no meaningful val is needed\. For example\, Varref\.op\_store returns nada val\.
+
+.. code:: kink
+
+    stdout.print_line((:X <- 49).repr) # => nada
+
+.. _api-cad6f8e450bbe63736bc0643397a5f4c:
+
+true
+----
+
+\`true\` returns the true bool val\.
+
+.. _api-778dd33edaef2635e679ce12ef09930b:
+
+false
+-----
+
+\`false\` returns the false bool val\.
+
+.. _api-fbc90c7785322a766a80191e6e1ea8de:
+
+new\_val\(\.\.\.\[Sym1 Val1 Sym2 Val2 \,\,\,\]\)
+------------------------------------------------
+
+\`new\_val\` makes a new val\, assigning vals to corresponding vars specified by the syms\.
+
+Preconditions\:
+
+\• The number of args can be 0\, 2\, 4\, or an arbitrary even number\.
+
+\• \`Sym1\`\, \`Sym2\` \,\,\, must be strs\.
+
+If the same sym is specified multiple times\, the last val is assigned to the var\.
+
+Example\:
+
+.. code:: kink
+
+    :V <- new_val(
+      'bark' { 'Bow' }
+      'howl' { 'Wow' }
+    )
+    stdout.print_line(V.bark) # => Bow
+    stdout.print_line(V.howl) # => Wow
+
+The program above is equivalent to the following one\.
+
+.. code:: kink
+
+    :V <- new_val
+    V:bark <- { 'Bow' }
+    V:howl <- { 'Wow' }
+    stdout.print_line(V.bark) # => Bow
+    stdout.print_line(V.howl) # => Wow
+
+It is a idiom to store sym\-val pairs as a vec\, then spread it when calling new\_val fun\. Such an array is called a trait\. Example\:
+
+.. code:: kink
+
+    # make a rational val
+    :new_rational <- {(:Numer :Denom)
+      new_val(
+        # reuse Rational_trait, which is common to all rational vals
+        ... Rational_trait
+        
+        # Data vars
+        'Numer' Numer
+        'Denom' Denom
+      )
+    }
+        
+    # trait for rational vals
+    :Rational_trait <- [
+      'numer' {[:R]() R.Numer }
+      'denom' {[:R]() R.Denom }
+      'repr' {[:R]()
+        '{}/{}'.format(R.numer R.denom)
+      }
+    ]
+        
+    stdout.print_line(new_rational(2 3).repr)  # => 2/3
+    stdout.print_line(new_rational(4 5).repr)  # => 4/5
+
+.. _api-aaa5e30a2b43a3520dd33febd014bf81:
+
+raise\(Msg\)
+------------
+
+\`raise\` raises an exception with \`Msg\` as the message\, and the current traces as the traces\.
+
+Precondition\:
+
+\• \`Msg\` must be a str\.
+
+\`raise\` can be defined as follows\.
+
+.. code:: kink
+
+    :EXCEPTION.require_from('kink/')
+    :TRACE.require_from('kink/')
+        
+    :raise <- {(:Msg)
+      EXCEPTION.new(Msg).raise
+    }
+
+.. _api-41364bccd0b873223fdb4df4cdb01efd:
+
+op\_lognot\(Bool\)
+------------------
+
+\`op\_lognot\` returns logical negation of \`Bool\`\.
+
+Precondition\:
+
+\• \`Bool\` must be a bool\.
+
+If \`Bool\` is true\, \`op\_lognot\` returns false\.
+
+If \`Bool\` is false\, \`op\_lognot\` returns true\.
+
+Note that expression “\! X” is translated to “op\_lognot\(X\)”\. See Semantics section of the manual\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line((! true).repr) # => false
+    stdout.print_line((! false).repr) # => true
+
+The code above is translated to the following\:
+
+.. code:: kink
+
+    stdout.print_line(op_lognot(true).repr) # => false
+    stdout.print_line(op_lognot(false).repr) # => true
+
+.. _api-55b6764094a9afa86ed313fc615d6655:
+
+op\_logor\(Bool \$thunk\)
+-------------------------
+
+\`op\_logor\` returns logical OR of two bools\.
+
+Preconditions\:
+
+\• \`Bool\` must be a bool
+
+\• \$thunk must be a fun
+
+If \`Bool\` is true\, \`op\_logor\` returns true\.
+
+If \`Bool\` is false\, \`op\_logor\` tail\-calls \$thunk\.
+
+Hence\, \$thunk is called only when \`Bool\` is false\.
+
+Note that expression “X \|\| Y” is translated to “op\_logor\(X \{ Y \}\)”\. See Semantics section of the manual\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line((true || true))   => true
+    stdout.print_line((true || false))  => true
+    stdout.print_line((false || true))  => true
+    stdout.print_line((false || false)) => false
+
+The code above is translated to the following\:
+
+.. code:: kink
+
+    stdout.print_line(op_logor(true { true }))   => true
+    stdout.print_line(op_logor(true { false }))  => true
+    stdout.print_line(op_logor(false { true }))  => true
+    stdout.print_line(op_logor(false { false })) => false
+
+.. _api-e9c15ddedded8a95e98e166baa9febfe:
+
+op\_logand\(Bool \$thunk\)
+--------------------------
+
+\`op\_logand\` returns logical AND of two bools\.
+
+Preconditions\:
+
+\• \`Bool\` must be a bool
+
+\• \$thunk must be a fun
+
+If \`Bool\` is true\, \`op\_logor\` tail\-calls \$thunk\.
+
+If \`Bool\` is false\, \`op\_logor\` returns false\.
+
+Hence\, \$thunk is called only when \`Bool\` is true\.
+
+Note that expression “X \&\& Y” is translated to “op\_logand\(X \{ Y \}\)”\. See Semantics section of the manual\.
+
+Example\:
+
+.. code:: kink
+
+    stdout.print_line((true && true))   => true
+    stdout.print_line((true && false))  => false
+    stdout.print_line((false && true))  => false
+    stdout.print_line((false && false)) => false
+
+The code above is translated to the following\:
+
+.. code:: kink
+
+    stdout.print_line(op_logand(true { true }))   => true
+    stdout.print_line(op_logand(true { false }))  => false
+    stdout.print_line(op_logand(false { true }))  => false
+    stdout.print_line(op_logand(false { false })) => false
+
+.. _api-b98148331ab9b2bb0ff826ae2a7d0c6d:
+
+if\(Bool \$true\_cont \.\.\.\[\$false\_cont\=\{\}\]\)
+-----------------------------------------------------
+
+\`if\` does 1\-way or 2\-way branch\.
+
+Preconditions\:
+
+\• \`Bool\` must be a bool
+
+\• \$true\_cont must be a fun
+
+\• \$false\_cont\, if given\, must be a fun
+
+If \`Bool\` is true\, \`if\` tail\-calls \$true\_cont\.
+
+If \`Bool\` is false\, and \$false\_cont is given\, \`if\` tail\-calls \$false\_cont\.
+
+If \`Bool\` is false\, and \$false\_cont is not given\, \`if\` returns nada\.
+
+Example\: 1 way branch
+
+.. code:: kink
+
+    :print_if_even <- {(:N)
+      if(N % 2 == 0){
+        stdout.print_line('even number {}'.format(N.repr))
+      }
+    }
+    print_if_even(8)  # => even number 8
+    print_if_even(11) # => (no output)
+
+Example\: 2 way branch
+
+.. code:: kink
+
+    :compare <- {(Num)
+      if(Num < 100
+        { 'less than 100' }
+        { 'greater than or equal to 100' }
+      )
+    }
+    stdout.print_line(compare(50))  # => less than 100
+    stdout.print_line(compare(200)) # => greater than or equal to 100
+
+.. _api-7469fb370542d8e1c27b199ca0bf27ea:
+
+branch\(\.\.\.\[\$cond1 \$then1 \$cond2 \$then2 \,\,\,\]\)
+----------------------------------------------------------
+
+\`branch\` does a multiway branch\.
+
+First\, \`branch\` calls \$cond1\, \$cond2\, \,\,\, in the order of occurrence with no args\, till one of the cond thunks returns true\. If no cond thunk returns true\, \`branch\` raises an exception\.
+
+Second\, \`branch\` tail\-calls the \`then\` thunk corresponding to the \`cond\` thunk which returned true\.
+
+The number of args can be 0\, 2\, 4\, or an arbitrary even number\.
+
+\$cond1\, \$cond2\, \,\,\, must take no args\, and return true or false\.
+
+\$then1\, \$then2\, \,\,\, must take no args\.
+
+Example\:
+
+.. code:: kink
+
+    :Sorted_nums <- [1 2 3 5 8 11 19 30 49 89]
+        
+    # returns whether Sorted_nums contains N, by binary search algorithm
+    :contain? <- {(:N)
+        
+      # `if` and `branch` tail-calls a body thunk.
+      # Thus the loop does not cause a stack overflow
+      # even when Sorted_nums contains a large number of elements.
+      :in_range? <- {(:From :To)
+        if(From < To
+          { :Ind = (From + To) // 2
+            :T = Sorted_nums.get(Ind)
+            branch(
+              { T < N } { in_range?(Ind + 1 To) }
+              { T > N } { in_range?(From Ind) }
+              $true { true }
+            )
+          }
+          { false }
+        )
+      }
+      in_range?(0 Sorted_nums.size)
+    }
+        
+    stdout.print_line(contain?(30).repr) # => true
+    stdout.print_line(contain?(42).repr) # => false
+
+If you do a one\-way or two\-way branch\, \`if\` might be a better choice\.
+
+.. _api-80aae17bfe9cd10d64b7efe432c26191:
+
+stdin
+-----
+
+\`stdin\` returns a scanner\+input for the standard input of the runtime system\.
+
+When the stdin scanner\+input is used as a scanner\, it decodes the byte stream using the runtime default charset \(CHARSET\.default\)\.
+
+Example\: read all from the stdin then dump it to the stdout
+
+.. code:: kink
+
+    :Bin <- stdin.read_all
+    stdout.write(Bin)
+
+Example\: emulates \"cat \-n\"
+
+.. code:: kink
+
+    :loop <- {(:N)
+      stdin.scan_line{(:C)
+        C.on_success{(:Line)
+          stdout.print("{}\t{}".format(N Line))
+          loop(N + 1)
+        }
+        C.on_eof{}
+      }
+    }
+    loop(1)
+
+Example\: scan lines from the stdin decoding the byte stream as UTF\-8
+
+.. code:: kink
+
+    :INPUT_SCANNER.require_from('kink/io/')
+    :CHARSET.require_from('kink/')
+    :Scanner <- INPUT_SCANNER.new(stdin CHARSET.utf8)
+    :loop <- {(:N)
+      Scanner.scan_line{(:C)
+        C.on_success{(:Line)
+          stdout.print("{}\t{}".format(N Line))
+          loop(N + 1)
+        }
+        C.on_eof{}
+      }
+    }
+    loop(1)
+
+.. _api-349441e1f68b69b4e716f5d05354b7ac:
+
+stdout
+------
+
+\`stdout\` returns a printer\+output for the standard output of the runtime system\.
+
+When the stdout printer\+output is used as a printer\, it terminates lines using the runtime default newline str \(STR\.default\_newline\)\, and encodes the str using the runtime default charset \(CHARSET\.default\)\.
+
+Example\: writes bin to the stdout
+
+.. code:: kink
+
+    :BIN.require_from('kink/')
+    stdout.write(BIN.of(0x66 0x6f 0x6f 0x62 0x61 0x72 0x0a)) # => foobar
+
+Example\: prints a line to the stdout
+
+.. code:: kink
+
+    stdout.print_line('foobar') # => foobar
+
+Example\: prints a line using UTF\-8 and LF
+
+.. code:: kink
+
+    :OUTPUT_PRINTER.require_from('kink/io/')
+    :CHARSET.require_from('kink/')
+    :Printer <- OUTPUT_PRINTER.new(stdout CHARSET.utf8 "\n")
+    Printer.print_line('foobar') # => foobar
+
+.. _api-1d3113732916cec85c49ef707586cb23:
+
+stderr
+------
+
+\`stderr\` returns a printer\+output for the standard error output of the runtime system\.
+
+When the stderr printer\+output is used as a printer\, it terminates lines using the runtime default newline str \(STR\.default\_newline\)\, and encodes the str using the runtime default charset \(CHARSET\.default\)\.
+
+When encoding error happens on print\_xxx methods\, \`stderr\` writes replacement byte sequence instead\, rather than resulting in an IO error\. This is because\, when printing an error message\, it is better you can read the original message even incomplete\, rather than reading a message describing the conversion error\.
+
+write\, print\, flush\, close operations of stderr are synchronized\, in order that multiple threads can output error messages to stderr\.
+
+.. _api-48d31ff08342f84e07b462beed6a045e:
+
+Binding\.repr
+-------------
+
+\`repr\` returns a str such as \"\(binding id\_hash\=42\)\"\.
+
+.. _api-3af92f167f7b73e1e2282e555f52a7c6:
+
+BINDING\.new
+============
+
+\`new\` makes a new binding\.
+
+.. _api-48f74b0378fc7db0fcdeb007cfda68eb:
+
+BINDING\.is\?\(Val\)
+====================
+
+\`is\?\` returns whether the \`Val\` is a binding val\.
+

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.8. kink/CONFIG_FUN_RUNNER &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.9. kink/CONTROL" href="kink-CONTROL.html" />
+    <link rel="prev" title="6.7. kink/COMPARE" href="kink-COMPARE.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.8. kink/CONFIG_FUN_RUNNER</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-COMPARE.html"><span class="section-number">6.7. </span>kink/COMPARE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-CONTROL.html"><span class="section-number">6.9. </span>kink/CONTROL</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-config-fun-runner">
+<h1><span class="section-number">6.8. </span>kink/CONFIG_FUN_RUNNER<a class="headerlink" href="#kink-config-fun-runner" title="Link to this heading">¶</a></h1>
+<p>Read simple configuration from a config function as a map.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONFIG_FUN_RUNNER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:open_file</span> &lt;- {(<span class="nv">:Config</span>.<span class="n">opt</span>)
+  <span class="nv">:config</span> = <span class="nv">Config</span>.<span class="n">just</span>{ {} }
+  <span class="nv">:Map</span> = <span class="n">_run_config_fun</span>(<span class="nv">$config</span>)
+
+  <span class="nv">:Append?</span> = <span class="nv">Map</span>.<span class="n">have_key?</span>(<span class="s1">&#39;append&#39;</span>)
+  <span class="n">stdout</span>.<span class="n">print</span>(<span class="s1">&#39;Append? = {}&#39;</span>.<span class="n">format</span>(<span class="nv">Append?</span>.<span class="n">repr</span>))
+
+  <span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;buffer&#39;</span>).<span class="n">with_elems</span>(
+    { <span class="n">stdout</span>.<span class="n">print</span>(<span class="s1">&#39;, No buffer&#39;</span>) }
+    {(<span class="nv">:Buf_size</span>)
+      <span class="n">stdout</span>.<span class="n">print</span>(<span class="s1">&#39;, Buffer size = {}&#39;</span>.<span class="n">format</span>(<span class="nv">Buf_size</span>))
+    }
+  )
+
+  <span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;newline&#39;</span>).<span class="n">with_elems</span>(
+    { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;, No newline&#39;</span>) }
+    {(<span class="nv">:Newline</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;, Newline = {}&#39;</span>.<span class="n">format</span>(<span class="nv">Newline</span>.<span class="n">repr</span>))
+    }
+  )
+}
+
+<span class="nv">:_run_config_fun</span> &lt;- <span class="nv">CONFIG_FUN_RUNNER</span>.<span class="n">new</span>{(<span class="nv">:Rc</span>)
+  <span class="nv">Rc</span>.<span class="n">no_arg</span>(<span class="s1">&#39;append&#39;</span>)
+  <span class="nv">Rc</span>.<span class="n">opt_arg</span>(<span class="s1">&#39;buffer&#39;</span> { <span class="m">2048</span> })
+  <span class="nv">Rc</span>.<span class="n">req_arg</span>(<span class="s1">&#39;newline&#39;</span>)
+}
+
+<span class="n">open_file</span>
+<span class="c1"># =&gt; Append? = false, No buffer, No newline</span>
+
+<span class="n">open_file</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">append</span>
+  <span class="nv">C</span>.<span class="n">buffer</span>(<span class="m">1024</span>)
+  <span class="nv">C</span>.<span class="n">newline</span>(<span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>)
+}
+<span class="c1"># =&gt; Append? = true, Buffer size = 1024, Newline = &quot;\n&quot;</span>
+
+<span class="n">open_file</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">buffer</span>
+}
+<span class="c1"># =&gt; Append? = false, Buffer size = 2048, No newline</span>
+</pre></div>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#config-fun-runner-new-runner-config-fun" id="id1">CONFIG_FUN_RUNNER.new($runner_config_fun)</a></p></li>
+<li><p><a class="reference internal" href="#type-runner-config" id="id2">type runner_config</a></p>
+<ul>
+<li><p><a class="reference internal" href="#rc-no-arg-method-name" id="id3">Rc.no_arg(Method_name)</a></p></li>
+<li><p><a class="reference internal" href="#rc-req-arg-method-name-validate" id="id4">Rc.req_arg(Method_name ...[$validate={}])</a></p></li>
+<li><p><a class="reference internal" href="#rc-req-fun-method-name" id="id5">Rc.req_fun(Method_name)</a></p></li>
+<li><p><a class="reference internal" href="#rc-opt-arg-method-name-make-default-validate" id="id6">Rc.opt_arg(Method_name $make_default ...[$validate={}])</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="config-fun-runner-new-runner-config-fun">
+<span id="api-0974c779d31c6b60c767f47118dc8174"></span><h2><span class="section-number">6.8.1. </span>CONFIG_FUN_RUNNER.new($runner_config_fun)<a class="headerlink" href="#config-fun-runner-new-runner-config-fun" title="Link to this heading">¶</a></h2>
+<p>`new` makes a function to get simple setup from config functions. Methods of config values are specified by $runner_config_fun.</p>
+<p>Precondition:</p>
+<p>• $runner_config_fun must be a function which takes a `runner_config` value.</p>
+<p>`new` returns a function. Let's call this a runner function. The runner function takes a config function, which takes a config value containing the methods specified by $runner_config_fun. The runner function calls the config function with a config value, and returns a result map. See methods of `runner_config` type for entries of the result map.</p>
+</section>
+<section id="type-runner-config">
+<span id="api-c3d4a867c36cefa94b42c2f9555ffcf9"></span><h2><span class="section-number">6.8.2. </span>type runner_config<a class="headerlink" href="#type-runner-config" title="Link to this heading">¶</a></h2>
+<p>Config value for CONFIG_FUN_RUNNER.new.</p>
+<section id="rc-no-arg-method-name">
+<span id="api-129409def001d7c30b4700f8314a9f44"></span><h3><span class="section-number">6.8.2.1. </span>Rc.no_arg(Method_name)<a class="headerlink" href="#rc-no-arg-method-name" title="Link to this heading">¶</a></h3>
+<p>`no_arg` specifies that a config value has a method with the specified `Method_name`, and the method does not take an argument.</p>
+<p>Precondition:</p>
+<p>• `Method_name` must be a str.</p>
+<p>When the created method is called for a config value, an unspecified value is set to the result map associated with `Method_name` as the key.</p>
+</section>
+<section id="rc-req-arg-method-name-validate">
+<span id="api-e91eae2bb8f17f2348028aa85c16869c"></span><h3><span class="section-number">6.8.2.2. </span>Rc.req_arg(Method_name ...[$validate={}])<a class="headerlink" href="#rc-req-arg-method-name-validate" title="Link to this heading">¶</a></h3>
+<p>`req_arg` specifies that a config value has a method with the specified `Method_name`, and the method takes an argument.</p>
+<p>Preconditions:</p>
+<p>• `Method_name` must be a str.</p>
+<p>• $validate must be a fun which takes an argument.</p>
+<p>When the created method is called for a config value, the argument of the method is set to the result map, associated with `Method_name` as the key.</p>
+<p>$validate is called with the method argument before the value is set, so that it can validate the argument. If the method argument is not acceptable, $validate can raise an exception. The result of $validate is ignored.</p>
+</section>
+<section id="rc-req-fun-method-name">
+<span id="api-f61b0f1497afd3d280b379d022712bef"></span><h3><span class="section-number">6.8.2.3. </span>Rc.req_fun(Method_name)<a class="headerlink" href="#rc-req-fun-method-name" title="Link to this heading">¶</a></h3>
+<p>`req_fun` specifies that a config value has a method with the specified `Method_name`, the method takes an argument, and the method validates that the argument is a fun.</p>
+<p>Besides validation, the behavior of the added method is same with one added by `req_arg`.</p>
+<p class="rubric">Precondition</p>
+<p>• `Method_name` must be a str.</p>
+</section>
+<section id="rc-opt-arg-method-name-make-default-validate">
+<span id="api-a3dd8b5aa8e05ceb8be0bcc9e7956064"></span><h3><span class="section-number">6.8.2.4. </span>Rc.opt_arg(Method_name $make_default ...[$validate={}])<a class="headerlink" href="#rc-opt-arg-method-name-make-default-validate" title="Link to this heading">¶</a></h3>
+<p>`opt_arg` specifies that a config value has a method with the specified `Method_name`, and the method takes an optional argument.</p>
+<p>Preconditions:</p>
+<p>• `Method_name` must be a str</p>
+<p>• $make_default must be a thunk.</p>
+<p>• $validate must be a fun which takes an argument.</p>
+<p>When the created method is called with an argument, the argument is set to the result map, associated with `Method_name` as the key. If the method is called without an argument, a value created by $make_default is set to the result map, associated with `Method_name` as the key.</p>
+<p>$validate is called with the method argument before the value is set, so that it can validate the argument. If the method argument is not acceptable, $validate can raise an exception. The result of $validate is ignored.</p>
+</section>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-COMPARE.html"><span class="section-number">6.7. </span>kink/COMPARE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-CONTROL.html"><span class="section-number">6.9. </span>kink/CONTROL</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,265 @@
+==============
+Error handling
+==============
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Error handling approeaches
+==========================
+
+In general, there are three common approaches to handle exceptional situation
+in program languages: variant types, :term:`exceptions <exception>`,
+and :term:`continuation` passing.
+
+Variant types such as ``Either`` in Haskell can naturally represent
+that an expression can yield either a normal result, or an exceptional result.
+However, variant types are pointless without static typing, or syntactical
+mechanisms such as monad, which Kink does not support.
+
+Exceptions are convenient to raise and ignore, but cumbersome to catch.
+It's really easy to miss what can happen where,
+because you might catch an exception raised
+from any subexpression of the ``try`` block, at any depth of the call stack.
+Java's checked exception aimed to address that problem,
+resulting in tons of new problems.
+Sometimes you know your code never results in an exception,
+but nevertheless you must still check it because it is a checked exception.
+Example:
+
+.. code:: java
+
+  MessageDigest md;
+  try {
+      md = MessageDigest.getInstance("SHA-256");
+  } catch (NoSuchAlgorithmException x) {
+      throw new RuntimeException(
+        "must reach here; SHA-256 is always supported", x);
+  }
+
+With the third approach, continuation passing,
+the caller can pass actions to be performed when the invocation resulted
+in a success, or an error.
+Continuation passing is practical in languages like Kink,
+where an anonymous function can be easily produced as a first class value.
+
+Kink adopts continuation passing and exceptions as error handling approaches.
+
+Error result for valid input
+============================
+
+If a function call can result in an error with valid input,
+it is recommended that the function optionally
+take :term:`continuations <continuation>`
+for both a success result and an error result.
+
+For example, ``compile`` function of
+:doc:`kink/regex/REGEX </api/kink-regex-REGEX>` 
+takes a success continuation and an error continuation
+through a config function.
+You can specify a success continuation by ``on_success``,
+and an error continuation by ``on_error``.
+The success continuation is tail-called when the pattern can be compiled,
+and the error continuation is tail-called when the pattern has a syntax error.
+
+::
+
+  # match.kn
+
+  :REGEX.require_from('kink/regex/')
+
+  :main <- {(:Argv)
+    :Pattern = Argv.front
+    REGEX.compile(Pattern){(:C)
+      C.on_success{(:Regex)
+        :Msg = if(Regex.accept?('foobar')
+          { '/{}/ matches "foobar"'.format(REGEX.escape(Pattern)) }
+          { '/{}/ does not match "foobar"'.format(REGEX.escape(Pattern)) }
+        )
+        stdout.print_line(Msg)
+      }
+      C.on_error{(:Msg :Ind)
+        stdout.print_line('error at index={}: {}'.format(Ind Msg))
+      }
+    }
+  }
+
+  # $ kink match.kn 'fo+bar'
+  # /\Qfo+bar\E/ matches "foobar"
+  #
+  # $ kink match.kn 'fx+bar'
+  # /\Qfx+bar\E/ does not match "foobar"
+  #
+  # $ kink match.kn '[[['
+  # error at index=2: Unclosed character class
+
+It is recommended that the default success continuation return the result.
+It is recommended that the default error continuation raise an :term:`exception`.
+
+In the following example, no continuations are specified for ``compile``,
+so an exception is raised when the pattern has a syntax error.
+
+::
+
+  # match_lazy.kn
+
+  :REGEX.require_from('kink/regex/')
+
+  :main <- {(:Argv)
+    :Pattern = Argv.front
+    :Regex = REGEX.compile(Pattern)
+    :Msg = if(Regex.accept?('foobar')
+      { '/{}/ matches "foobar"'.format(REGEX.escape(Pattern)) }
+      { '/{}/ does not match "foobar"'.format(REGEX.escape(Pattern)) }
+    )
+    stdout.print_line(Msg)
+  }
+
+  # $ kink match_lazy.kn 'fo+bar'
+  # /\Qfo+bar\E/ matches "foobar"
+  #
+  # $ kink match_lazy.kn 'fx+bar'
+  # /\Qfx+bar\E/ does not match "foobar"
+  #
+  # $ kink match_lazy.kn '[[['
+  # -- main exception
+  # [(root)]
+  # ,,,
+  # REGEX.compile(Pattern ...[$config]): syntax error: Unclosed character class: [[-->[
+
+Note that information within exceptions
+should be used only for debugging purpose.
+That is why an exception contains only the message, the stack trace,
+and optionally the next exception in the chain.
+If you want to use detailed information such as the position index
+where the syntax error is found, specify an error continuation
+instead of catching the exception.
+
+Exception as a panic button
+===========================
+
+When things go wrong and there is nothing else you can do,
+you can raise an :term:`exception` as a panic button.
+As an example, you can raise an exception when
+a precondition of a function is not met.
+It can be a type mismatch, zero division, and so on.
+
+In the next program, ``new_rat`` is a constructor of a rational number type.
+``new_rat`` has a precondition that ``Denom`` must be nonzero,
+because the denominator of a rational number cannot be zero.
+However, invocation of ``new_rat`` at [A] passes ``0`` as ``Denom``,
+thus the precondition does not match.
+In that case, there is nothing else ``new_rat`` can do,
+so it raises an exception.
+
+::
+
+  :NUM.require_from('kink/')
+
+  :new_rat <- {(:Numer :Denom)
+    NUM.is?(Numer) && Numer.int? || raise(
+      'new_rat(Numer Denom): Numer must be int num, but was {}'
+      .format(Numer.repr))
+    NUM.is?(Denom) && Denom.int? && Denom != 0 || raise(
+      'new_rat(Numer Denom): Denom must be nonzero int num, but was {}'
+      .format(Denom.repr))
+
+    new_val(
+      ... Rat_trait
+      'Numer' Numer
+      'Denom' Denom
+    )
+  }
+
+  :Rat_trait <- [
+    'numer' {[:R] R.Numer }
+    'denom' {[:R] R.Denom }
+    'repr' {[:R] '(rat {}/{})'.format(R.numer R.denom) }
+  ]
+
+  stdout.print_line(new_rat(2 5).repr)  # => (rat 2/5)
+
+  # [A]
+  new_rat(3 0)
+  # Output:
+  #   -- main exception
+  #   [..root..]
+  #   {..call by host..}
+  #   ,,,
+  #   {..call by host..}
+  #   {(stdin) L8 C51 raise} NUM.is?(Denom) && Denom.int? && Denom != 0 || -->raise(
+  #   new_rat(Numer Denom): Denom must be nonzero int num, but was 0
+
+When to catch an exception
+==========================
+
+Catch an :term:`exception` only to report the error to engineers,
+and to continue the process.
+
+For example, an HTTP server will catch an exception
+which is raised during request processing.
+It will probably write the exception to the log file,
+and return 500 Internal Server Error response.
+
+As another example, a multithread producer-consumer framework
+will catch an exception which is raised during task processing.
+It will probably write the exception to the log file,
+and notify the task producer of the error.
+
+If you want to get details of an error, such as the SQL error code
+or the HTTP status code, exceptions are not the way to go.
+Use continuation passing instead.
+When you determine what to do based on the exception message in your program,
+it is a sign of a bad design. Example:
+
+::
+
+  # DON'T DO LIKE THIS
+  :add_employee_bad_way <- {(:Conn :Id :Name :success_cont :duplicate_id_cont)
+    CONTROL.try(
+      { Conn.execute('INSERT INTO employee(id, name) VALUES(?, ?)' [Id Name]) }
+      { success_cont }
+      {(:Exc)
+        if(Exc.message.have_slice?('SQL code: 00001')
+          { duplicate_id_cont }
+          { Exc.raise }
+        )
+      }
+    )
+  }
+
+  # do like this
+  :add_employee <- {(:Conn :Id :Name :success_cont :duplicate_id_cont)
+    Conn.execute('INSERT INTO employee(id, name) VALUES(?, ?)' [Id Name]){(:C)
+      C.on_success{ success_cont }
+      C.on_uniqueness_violation{ duplicate_id_cont }
+      # for other types of errors, let `execute` raise an exception
+    }
+  }
+
+Of course,
+it is permissible to catch an exception to test the exception message.
+
+::
+
+  :RAT.require_from('org/example/')
+  :TEST.require_from('kink/test/')
+  :CONTROL.require_from('kink/')
+
+  TEST.group('Rat / rat'){
+    TEST.test('zero division is not allowed'){
+      :Numer = RAT.new(2 3)
+      :Denom = RAT.new(0 2)
+      CONTROL.try(
+        { Numer / Denom }
+        {(:R) raise('got {}'.format(R.repr)) }
+        {(:Exc)
+          :Msg = Exc.message
+          Msg.have_slice?('Rat.op_div') && Msg.have_slice?('zero') || Exc.raise
+        }
+      )
+    }
+  }
+
+.. vim: et sw=2 sts=2

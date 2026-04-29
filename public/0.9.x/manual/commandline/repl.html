@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>10.2. REPL &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="11. Glossary" href="../glossary.html" />
+    <link rel="prev" title="10.1. kink and kinkw commands" href="kink-kinkw.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>10.2. REPL</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-kinkw.html"><span class="section-number">10.1. </span>kink and kinkw commands</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="../glossary.html"><span class="section-number">11. </span>Glossary</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="repl">
+<h1><span class="section-number">10.2. </span>REPL<a class="headerlink" href="#repl" title="Link to this heading">¶</a></h1>
+<p>REPL (read-evel-print loop) is an interactive shell of Kink language.
+The core functionality of REPL is provided by <a class="reference internal" href="../api/kink-repl-REPL.html"><span class="doc">kink/repl/REPL</span></a> mod.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#start-and-stop" id="id1">Start and stop</a></p></li>
+<li><p><a class="reference internal" href="#usage" id="id2">Usage</a></p></li>
+<li><p><a class="reference internal" href="#cancel-the-input" id="id3">Cancel the input</a></p></li>
+</ul>
+</nav>
+<section id="start-and-stop">
+<h2><span class="section-number">10.2.1. </span>Start and stop<a class="headerlink" href="#start-and-stop" title="Link to this heading">¶</a></h2>
+<p>To start REPL, execute kink command without spec-and-argv args (see <a class="reference internal" href="kink-kinkw.html#commandline-kink-kinkw-format"><span class="std std-ref">commandline format</span></a>).</p>
+<p>REPL itself does not provide line editing or completion.
+Thus, in Unix-like environments, using <a class="reference external" href="https://github.com/hanslub42/rlwrap">rlwrap</a> is recommended.
+For example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ rlwrap kink
+</pre></div>
+</div>
+<p>In windows environment, Command Prompt provides a basic line editing function.
+Thus, it might be enough to just invoking kink command.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt; kink
+</pre></div>
+</div>
+<p>To exit from REPL, kill the JVM process by pressing Ctrl+C.</p>
+</section>
+<section id="usage">
+<h2><span class="section-number">10.2.2. </span>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<p>REPL reads a Kink program from <a class="reference internal" href="../api/kink-BINDING.html#api-80aae17bfe9cd10d64b7efe432c26191"><span class="std std-ref">stdin</span></a>,
+and writes the result of <code class="docutils literal notranslate"><span class="pre">repr</span></code> method of the result of the program
+to <a class="reference internal" href="../api/kink-BINDING.html#api-349441e1f68b69b4e716f5d05354b7ac"><span class="std std-ref">stdout</span></a>.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kink#0001:0001&gt; 1 + 2 + 3
+  6
+
+kink#0002:0001&gt; &#39;foo&#39; + &#39;bar&#39;
+  &quot;foobar&quot;
+</pre></div>
+</div>
+<p>REPL reports a compile error if the input is not a valid program.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kink#0001:0001&gt; 1 + 2 + + 3
+  compile error: unexpected token: [kink#0001 L1 C9] 1 + 2 + --&gt;+ 3
+</pre></div>
+</div>
+<p>REPL continues reading from stdin while the program can be valid with more input.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kink#0001:0001&gt; 1 +
+kink#0001:0002\ 2 +
+kink#0001:0003\ 3
+  6
+kink#0002:0001&gt; &#39;foo&#39; +
+kink#0002:0002\ &#39;bar&#39;
+  &quot;foobar&quot;
+</pre></div>
+</div>
+<p>An environment is shared among execution of programs.
+Thus, you can use local variables to store data.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kink#0001:0001&gt; :dbl &lt;- {(:N)
+kink#0001:0002\   N * 2
+kink#0001:0003\ }
+  nada
+kink#0002:0001&gt; :A &lt;- 21
+  nada
+kink#0003:0001&gt; dbl(A)
+  42
+</pre></div>
+</div>
+<p>If the program raises an exception,
+the exception traces are printed to stdout.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kink#0001:0001&gt; 10 // 0
+  -- main exception
+  [..root..]
+  {..call by host..}
+  {..call by host..}
+  {startup}
+  {builtin:kink-mods/kink/_startup/STARTUP.kn L260 C3 _startup_aux} --&gt;_startup_aux(Args Dep)
+  {builtin:kink-mods/kink/_startup/STARTUP.kn L243 C11 try} CONTROL.--&gt;try(
+  [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.--&gt;reset{
+  {..call by host..}
+  [..kont tag..]
+  [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = --&gt;body
+  {..snip..}
+  {builtin:kink-mods/kink/javahost/JAVA_STREAM_INPUT.kn L93 C9 if} --&gt;if(Size &lt; 0
+  {builtin:kink-mods/kink/javahost/JAVA_STREAM_INPUT.kn L96 C13 success} --&gt;success(Bin)
+  {builtin:kink-mods/kink/io/INPUT_SCANNER.kn L175 C19 consume} S.Dec.--&gt;consume(Bin { loop(Line_or_all) } $decode_error)
+  {builtin:kink-mods/kink/_str/DECODER.kn L77 C5 if} --&gt;if(Cr.call_method(&#39;isError&#39;).to_kink_bool
+  {builtin:kink-mods/kink/_str/DECODER.kn L79 C9 success} { --&gt;success }
+  {builtin:kink-mods/kink/io/INPUT_SCANNER.kn L175 C33 loop} S.Dec.consume(Bin { --&gt;loop(Line_or_all) } $decode_error)
+  {builtin:kink-mods/kink/io/INPUT_SCANNER.kn L169 C5 branch} --&gt;branch(
+  {builtin:kink-mods/kink/io/INPUT_SCANNER.kn L170 C44 success} { Line_or_all.have_suffix?(&quot;\n&quot;) } { --&gt;success(Line_or_all) }
+  {builtin:kink-mods/kink/repl/REPL.kn L151 C17 compile} PROGRAM.--&gt;compile(Program){(:C)
+  {builtin:kink-mods/kink/PROGRAM.kn L80 C3 _compile_raw} --&gt;_compile_raw(
+  {builtin:kink-mods/kink/PROGRAM.kn L134 C3 handler} --&gt;handler
+  {builtin:kink-mods/kink/PROGRAM.kn L141 C16 success_cont} JAVA.wrap{ --&gt;success_cont($compiled_fun) }
+  [builtin:kink-mods/kink/repl/REPL.kn L117 C15 try] CONTROL.--&gt;try(
+  [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.--&gt;reset{
+  {..call by host..}
+  [..kont tag..]
+  [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = --&gt;body
+  {builtin:kink-mods/kink/repl/REPL.kn L118 C11 program} { --&gt;program }
+  {kink#0001 L1 C4 op_intdiv} 10 --&gt;// 0
+  Num.op_intdiv(Divisor): zero division: 10 is divided by 0
+</pre></div>
+</div>
+</section>
+<section id="cancel-the-input">
+<h2><span class="section-number">10.2.3. </span>Cancel the input<a class="headerlink" href="#cancel-the-input" title="Link to this heading">¶</a></h2>
+<p>When you want to cancel the input of a program, insert EOF.</p>
+<p>In Unix like systems, press Control+D to insert EOF.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kink#0003:0001&gt; 10 +
+kink#0003:0002\ 20 +
+kink#0003:0003\ (press Control-D here)
+kink#0004:0001&gt;
+</pre></div>
+</div>
+<p>In Windows, press Control+Z and the return key to input EOF.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kink#0003:0001&gt; 10 +
+kink#0003:0002\ 20 +
+kink#0003:0003\ (press Control-Z and the return key here)
+kink#0004:0001&gt;
+</pre></div>
+</div>
+<p>When you press Control+Z and the return key at the beginning of the program,
+it terminates REPL.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-kinkw.html"><span class="section-number">10.1. </span>kink and kinkw commands</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="../glossary.html"><span class="section-number">11. </span>Glossary</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

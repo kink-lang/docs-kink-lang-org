@@ -1,0 +1,391 @@
+==================
+kink\/regex\/REGEX
+==================
+
+The mod provides a regular expression engine backed by java\.util\.regex package\.
+
+The syntax of regex patterns is same as one of Java\. See\:
+
+https\:\/\/docs\.oracle\.com\/en\/java\/javase\/21\/docs\/api\/java\.base\/java\/util\/regex\/Pattern\.html
+
+There are three basic types\.
+
+\• regex\:   A regular expression pattern\.   A regex val provides features such as matching\, searching\,   replacing and splitting\.
+
+\• match\:   A result of a successful matching\. A regex\_match contains groups\.   See kink\/regex\/MATCH for details\.
+
+\• group\:   A slice in the matched text\,   which can be the entire slice of the regex\_match\,   or a slice of a named capturing group\.   See kink\/regex\/GROUP for details\.
+
+\`match\` type is a subtype of \`group\`\, which represents the entire slice of the matched area\.
+
+Regexes handle indices of code points\, in contrast to java\.util\.regex which handles indices of UTF\-16 code units\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Num_regex <- REGEX.compile('0x(?<Hex>[0-9a-f]+)|(?<Dec>[0-9]+)')
+    Num_regex.search_all('0xa5a5 42 0xcafe').each{(:Match)
+      if(Match.have_group?('Hex')
+        { stdout.print_line('Hex: {}'.format(Match.group('Hex').slice)) }
+        { stdout.print_line('Dec: {}'.format(Match.group('Dec').slice)) }
+      )
+    }
+    # Output:
+    #   Hex: a5a5
+    #   Dec: 42
+    #   Hex: cafe
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-e32b8c16bd0e859f4e3f682680e9ae73:
+
+type regex
+==========
+
+\`regex\` is a type of immutable regular expression pattern\.
+
+\`regex\` provides features such as matching\, searching\, replacing and splitting\.
+
+.. _api-b3b9e570d28891e2e479697327ccc5b7:
+
+Regex\.pattern
+--------------
+
+\`pattern\` returns the pattern str from which the regex is made\.
+
+\=\= Example \=a\=
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Regex <- REGEX.compile('.*')
+    stdout.print_line(Regex.pattern.repr) # => ".*"
+
+.. _api-badea547f1a1a1f2a26b3ea16e61716d:
+
+Regex\.accept\?\(Text\)
+-----------------------
+
+\`accept\?\` returns whether the entire \`Text\` str matches the pattern of the regex
+
+Precondition\:
+
+\• \`Text\` must be a str\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Verb_regex <- REGEX.compile('[a-z_][a-z0-9_?]*')
+    stdout.print_line(Verb_regex.accept?('white_light').repr)  # => true
+    stdout.print_line(Verb_regex.accept?('<black_heat>').repr) # => false
+
+.. _api-2d4798ecb84f6b0444dc3418bb4960f4:
+
+Regex\.match\(Text \.\.\.\[\$config\=\{\}\]\)
+---------------------------------------------
+
+\`match\` tries to match the regex to the entire \`Text\` str\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity\.
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception\.
+
+If matched\, \`match\` tail\-calls \$success with a val of \`match\` type\.
+
+If not matched\, \`match\` tail\-calls \$error with no arg\.
+
+.. rubric:: Preconditions
+
+\• \`Text\` must be a str\.
+
+\• \$success must be a fun which takes a \`match\` val\.
+
+\• \$error must be a fun which takes no arg\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+        
+    :Regex <- REGEX.compile('(?<Int>[0-9]+)\.(?<Frac>[0-9]+)')
+    :M <- Regex.match('3.14')
+    stdout.print_line('Int={} Frac={}'.format(M.group('Int').slice M.group('Frac').slice))
+    # Output:
+    #   Int=3 Frac=14
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+        
+    :Hex_regex <- REGEX.compile('0x(?<Digits>[0-9a-f]+)')
+    :handle <- {(:Text)
+      Hex_regex.match(Text){(:C)
+        C.on_success{(:Match)
+          :Entire = Match.slice
+          :Digits = Match.group('Digits').slice
+          stdout.print_line('hex={} digits={}'.format(Entire.repr Digits.repr))
+        }
+        C.on_error{ stdout.print_line('unmatched') }
+      }
+    }
+    handle('0xa5a5') # => hex="0xa5a5" digits="a5a5"
+    handle('<0xff>') # => unmatched
+
+.. _api-2c5cd9d4f21d040cbf6462c97c5f4897:
+
+Regex\.search\(Text Start\_pos \.\.\.\[\$config\=\{\}\]\)
+---------------------------------------------------------
+
+\`search\` searches for the first slice of the \`Text\` which the regex matches\. The search starts from \`Start\_pos\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the search succeeds\, \`search\` tail\-calls \$success with a \`match\` val\.
+
+If the search fails\, \`search\` tail\-calls \$error with no arg\.
+
+.. rubric:: Preconditions
+
+\• \`Text\` must be a str
+
+\• \`Start\_pos\` must be an int num in the range \[0\, Text\.size\]
+
+\• \$success must be a fun which takes a \`match\` val
+
+\• \$error must be a fun which takes no arg
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+        
+    :Regex <- REGEX.compile('[a-z]+')
+    :First_match <- Regex.search('foo bar baz' 0)
+    stdout.print_line(First_match.slice.repr) # => "foo"
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+        
+    :Hex_regex <- REGEX.compile('0x[0-9a-f]+')
+    :handle <- {(:Text :Start_pos)
+      Hex_regex.search(Text Start_pos){(:C)
+        C.on_success{(:Match)
+          stdout.print_line('from={} to={}'.format(Match.from Match.to))
+        }
+        C.on_error{ stdout.print_line('not found') }
+      }
+    }
+    :Program <- '0xca 0xfe'
+    handle(Program 2) # => from=5 to=9
+    handle(Program 6) # => not found
+
+.. _api-9ef5776bd51fc7e310ddc75679f41736:
+
+Regex\.search\_all\(Text\)
+--------------------------
+
+\`search\_all\` searches for all the slices of the \`Text\` which the regex matches\, and returns an iter of \`match\` vals for the found slices\.
+
+The first search is attempted from the beginning of the Text\.
+
+If a search from \`Ind\` results in a \`match\` for an empty slice\, the next search is attempted from \(Ind \+ 1\)\. Otherwise\, the next search is attempted from \`Match\.to\` of the current \`match\`\.
+
+.. rubric:: Precondition
+
+\• \`Text\` must be a str\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Hex_regex <- REGEX.compile('0x[0-9a-f]+')
+    :Program <- '0xca 0xfe'
+    Hex_regex.search_all(Program)
+    .map{(:M) M.slice }
+    .each{(:Hex)
+      stdout.print_line(Hex.repr)
+    }
+    # Output:
+    #   "0xca"
+    #   "0xfe"
+
+.. _api-c5fb7eb660309b86c9e5de338c404808:
+
+Regex\.replace\_all\(Text \$match\_to\_str\)
+--------------------------------------------
+
+\`replace\_all\` replaces all the slices of the \`Text\` which the regex matches\.
+
+Searching is done in the way same as \`search\_all\`\.
+
+Matched slices are replaced by \$match\_to\_str\. \$match\_to\_str must take a \`match\`\, and return a str\.
+
+.. rubric:: Precondition
+
+\• \`Text\` must be a str\.
+
+.. rubric:: Example
+
+Convert hex literals to decimal\:
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :NUM.require_from('kink/')
+    :Hex_regex <- REGEX.compile('0x(?<Digits>[0-9a-f]+)')
+        
+    :Program <- '0xca 0xfe'
+    :Decimal_program <- Hex_regex.replace_all(Program){(:M)
+      :Digits = M.group('Digits').slice
+      :N = NUM.parse_int(Digits){(:C) C.radix(16) }
+      N.show
+    }
+    stdout.print_line(Decimal_program.repr)
+    # => "202 254"
+
+.. _api-7b06c7750e5600354c9e72621ad71df0:
+
+Regex\.split\(Text \.\.\.\[Max\_field\_count\]\)
+------------------------------------------------
+
+\`split\` splits \`Text\` into a vec of str vals\, using the regex as the pattern of delimiters\.
+
+If \`Max\_field\_count\` is specified\, spliting is performed at most \`Max\_field\_count \- 1\` times\. Thus\, the number of fields is no more than \`Max\_field\_count\`\.
+
+If \`Max\_field\_count\` is not specified\, splitting is performed on all the matches\.
+
+.. rubric:: Precondition
+
+\• \`Max\_field\_count\` must be an int num greater than or equal to 1
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Sep_regex <- REGEX.compile(' *, *')
+        
+    stdout.print_line(Sep_regex.split('foo, bar, baz').repr) # => ["foo" "bar" "baz"]
+    stdout.print_line(Sep_regex.split('foo, bar').repr) # => ["foo" "bar"]
+    stdout.print_line(Sep_regex.split('foo').repr) # => ["foo"]
+    stdout.print_line(Sep_regex.split('').repr) # => [""]
+        
+    stdout.print_line(Sep_regex.split('foo, bar, baz' 2).repr) # => ["foo" "bar, baz"]
+    stdout.print_line(Sep_regex.split('foo, bar' 2).repr) # => ["foo" "bar"]
+    stdout.print_line(Sep_regex.split('foo' 2).repr) # => ["foo"]
+    stdout.print_line(Sep_regex.split('' 2).repr) # => [""]
+
+.. _api-345987b2f55607253e0d7ea3e8c19fb8:
+
+REGEX\.compile\(Pattern \.\.\.\[\$config\]\)
+============================================
+
+\`compile\` makes a regex from \`Pattern\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity\.
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception\.
+
+If \`Pattern\` can be compiled as a regex\, \`compile\` tail\-calls \$success with the created regex val\.
+
+If compilation hits a syntax error\, \`compile\` tail\-calls \$error with \(Error\_msg\, Ind\)\, where \`Error\_msg\` is a str of the error message str\, and \`Ind\` is an int num of the index of the error place in \`Pattern\`\.
+
+.. rubric:: Preconditions
+
+\• Pattern must be a str\.
+
+\• \$config must be a fun which takes a conf val\.
+
+\• \$success must be a fun which takes a \`regex\` val\.
+
+\• \$error must be a fun which takes \(str\, int num\)\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+        
+    stdout.print_line(REGEX.compile('[a-z]*').repr)
+    # => (regex "[a-z]*")
+        
+    REGEX.compile('(**)')
+    # Output:
+    #   ...
+    #   {builtin:kink-mods/kink/regex/REGEX.kn L444 C7 error} -->error(Msg Ind)
+    #   {builtin:kink-mods/kink/regex/REGEX.kn L476 C5 raise} -->raise('REGEX.compile(Pattern ...[$config]): syntax error: {}: {}'.format(Msg Place_desc))
+    #   REGEX.compile(Pattern ...[$config]): syntax error: Dangling meta character '*': (-->**)
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+        
+    :try_compile <- {(:Pattern)
+      REGEX.compile(Pattern){(:C)
+        C.on_success{(:Regex)
+          stdout.print_line('compiled: {}'.format(Regex.repr))
+        }
+        C.on_error{(:Msg :Ind)
+          stdout.print_line('error at index={}: {}'.format(Ind Msg))
+        }
+      }
+    }
+        
+    try_compile('[a-z]*')
+    # => compiled: (regex "[a-z]*")
+        
+    try_compile('(**)')
+    # => error at index=1: Dangling meta character '*'
+
+.. _api-330c7e83624136455520351a2cb0220d:
+
+REGEX\.is\?\(Val\)
+==================
+
+\`is\?\` returns whether the \`Val\` is a regex val\.
+
+.. _api-bb37a3a3a301a44096d21d94adcde895:
+
+REGEX\.escape\(Str\)
+====================
+
+\`escape\` escapes regex special characters in \`Str\`\. The result can be used as an arg of REGEX\.compile\, or can be embedded in a regex pattern\.
+
+Precondition\:
+
+\• \`Str\` must be a str\.
+
+Example\:
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+        
+    :Escaped <- REGEX.escape('int main() { puts("hello\n"); }')
+    stdout.print_line(Escaped.repr)
+    # => "\\Qint main() { puts(\"hello\\n\"); }\\E"
+

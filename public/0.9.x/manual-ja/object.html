@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>4. Object system &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=8f459034"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="5. モジュールシステム" href="modsystem.html" />
+    <link rel="prev" title="3.3. 評価" href="language/eval.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>4. Object system</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="language/eval.html"><span class="section-number">3.3. </span>評価</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="modsystem.html"><span class="section-number">5. </span>モジュールシステム</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="object-system">
+<h1><span class="section-number">4. </span>Object system<a class="headerlink" href="#object-system" title="Link to this heading">¶</a></h1>
+<p>This chapter describes the object system.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#values" id="id4">Values</a></p></li>
+<li><p><a class="reference internal" href="#embedded-properties" id="id5">Embedded properties</a></p></li>
+<li><p><a class="reference internal" href="#variables" id="id6">Variables</a></p>
+<ul>
+<li><p><a class="reference internal" href="#variable-operations" id="id7">Variable operations</a></p></li>
+<li><p><a class="reference internal" href="#memory-model" id="id8">Memory model</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="values">
+<span id="value"></span><h2><span class="section-number">4.1. </span>Values<a class="headerlink" href="#values" title="Link to this heading">¶</a></h2>
+<p>A <em class="dfn">value</em> is a the primitive unit of data.
+“Value” can be abbreviated to “val.”
+For example, each line of the following example produces a value.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;Foo&#39;</span> <span class="c1"># a str value</span>
+<span class="m">42</span>    <span class="c1"># a num value</span>
+{(<span class="nv">:Num</span>) <span class="nv">Num</span> * <span class="m">2</span> } <span class="c1"># a fun value</span>
+</pre></div>
+</div>
+<p>Aside from <a class="reference internal" href="glossary.html#term-variable"><span class="xref std std-term">variables</span></a>, a value has <a class="reference internal" href="glossary.html#term-embedded-properties"><span class="xref std std-term">embedded properties</span></a>.</p>
+</section>
+<section id="embedded-properties">
+<span id="id2"></span><h2><span class="section-number">4.2. </span>Embedded properties<a class="headerlink" href="#embedded-properties" title="Link to this heading">¶</a></h2>
+<p><em class="dfn">Embedded properties</em> are
+any data contained in a value not via variables.
+The following are examples of embedded properties:</p>
+<ul class="simple">
+<li><p>the Unicode code point sequence of a <a class="reference internal" href="api/kink-STR.html"><span class="doc">str value</span></a></p></li>
+<li><p>the scale and the mantissa of a <a class="reference internal" href="api/kink-NUM.html"><span class="doc">num value</span></a></p></li>
+<li><p>the sequence of instructions of a <a class="reference internal" href="api/kink-FUN.html"><span class="doc">fun value</span></a></p></li>
+</ul>
+<p>Embedded properties cannot be accessed directly from Kink programs,
+but can be used by the <a class="reference internal" href="glossary.html#term-runtime"><span class="xref std std-term">runtime</span></a>,
+or <a class="reference internal" href="glossary.html#term-host-procedure"><span class="xref std std-term">host procedures</span></a>.</p>
+</section>
+<section id="variables">
+<span id="variable"></span><h2><span class="section-number">4.3. </span>Variables<a class="headerlink" href="#variables" title="Link to this heading">¶</a></h2>
+<p>A <em class="dfn">variable</em> is a pair of a value and a finite length sequence of Unicode code points, defined as follows:
+<em>Variables</em>  = { (owner, sym) | owner is a value, and sym is a finite length sequence of Unicode code points }.</p>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">owner</span></code> is said to be the <em class="dfn">owner of the variable</em>,
+and <code class="docutils literal notranslate"><span class="pre">sym</span></code> is said to be the <em class="dfn">symbol of the variable</em>.
+The variable is said to be a variable of <code class="docutils literal notranslate"><span class="pre">owner</span></code>.
+“Variable” can be abbreviated to “var”.</p>
+<p>If a symbol is accepted by <code class="regexp docutils literal notranslate"><span class="pre">[a-z_][a-z0-9_?]*</span></code>,
+the symbol is called a <em class="dfn">function symbol</em>.
+If a symbol is accepted by <code class="regexp docutils literal notranslate"><span class="pre">([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*</span></code>,
+the symbol is called a <em class="dfn">data symbol</em>.</p>
+<p>A variable has a content, which is either empty, or a value.</p>
+<section id="variable-operations">
+<span id="id3"></span><h3><span class="section-number">4.3.1. </span>Variable operations<a class="headerlink" href="#variable-operations" title="Link to this heading">¶</a></h3>
+<p>There are three primitive operations about variables.</p>
+<ul class="simple">
+<li><p><em class="dfn">Variable-load operation</em>:
+Gets the content of a variable.
+The result is either empty or a value.</p></li>
+<li><p><em class="dfn">Variable-store operation</em>:
+Sets a value as the content of the variable.</p></li>
+<li><p><em class="dfn">Variable-symbols operation</em>:
+For value X,
+gets { sym | the content of variable (X, sym) is a value }.</p></li>
+</ul>
+<p>Note that you cannot delete a variable.
+In other words, if the content of a variable is a value,
+it does not become empty.</p>
+</section>
+<section id="memory-model">
+<h3><span class="section-number">4.3.2. </span>Memory model<a class="headerlink" href="#memory-model" title="Link to this heading">¶</a></h3>
+<p>A variable acts like a non-volatile field of Java.</p>
+</section>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="language/eval.html"><span class="section-number">3.3. </span>評価</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="modsystem.html"><span class="section-number">5. </span>モジュールシステム</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

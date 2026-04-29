@@ -1,0 +1,236 @@
+=======================
+kink and kinkw commands
+=======================
+
+.. highlight:: none
+
+kink and kinkw commands run a Kink runtime.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Executable files
+================
+
+The following executable files are placed under ``bin`` directory in the distributed archive.
+
+kink
+  Bash shell script to launch the runtime.
+
+kink.exe
+  32bit Windows executable file to launch the runtime in CUI mode.
+
+kinkw.exe
+  32bit Windows executable file to launch the runtime in GUI mode.
+
+In this page, ``kink`` shell script is assumed to be used to launch the runtime.
+
+.. _commandline-kink-kinkw-format:
+
+Commandline format
+==================
+
+::
+
+  kink [Launch_options]... [Standard_options]... [--] [Spec_and_argv]...
+
+Launch options
+--------------
+
+Launch options must be placed before standard options and spec-and-argv.
+Launch options are used to configure the JVM of the host environment.
+
+.. rubric:: -J{javaopt} / -J {javaopt}
+
+Specifies a commandline option given to the JVM.
+
+If you want to pass multiple options to the JVM,
+specify -J option multiple times.
+
+For example:
+
+::
+
+  $ kink -J-Xms64M -J-Xmx128M app.kn
+
+.. rubric:: -E{javaexecutable} / -E {javaexecutable}
+
+Specifies the executable file of the JVM.
+This option has a priority over the environment variable ``JAVA_HOME``.
+For example, this option is useful to run jdb to debug the interpreter (ex. -E jdb).
+
+Standard options
+----------------
+
+Standard options are placed after launch options,
+and before spec-and-argv.
+Standard options are consumed by the runtime.
+
+Standard options are interpreted in a way same as glibc getopt_long function.
+For example, ``--pa=dir/`` is interpreted same as ``--path dir/``.
+
+.. _pathoption:
+
+.. rubric:: -p {Mod_path} / --path {Mod_path}
+
+Appends ``Mod_path`` to :term:`module base paths`.
+
+To append multiple paths, specify --path option multiple times.
+
+For example:
+
+::
+
+  $ kink --path mod/dir/first --path mod/dir/second app.kn
+
+.. rubric:: -h / --help
+
+Prints out the help text to the standard output, and exits with the exit status 0.
+
+.. rubric:: -v / --version
+
+Prints out the version to the standard output, and exits with the exit status 0.
+
+Double hyphens: --
+------------------
+
+Standard options and spec-and-argv can optionally be separated by double hyphens.
+
+Example:
+
+::
+
+  $ kink --path mod/dir/first --path mod/dir/second -- app.kn
+
+Spec-and-argv
+-------------
+
+Spec-and-argv is placed after launch options and standard options.
+
+If spec-and-argv is empty, the command launches :doc:`REPL <repl>`.
+
+If spec-and-argv consists of one or more elements,
+it is analyzed as follows:
+
+::
+
+  {Spec} [Argv]...
+
+Argv is the list of args given to the launched program.
+
+Spec determines the way to launch the program,
+and must fall under one of the following formats.
+
+.. rubric:: mod:{Mod_name}
+
+Launches ``main`` fun of the mod specified by ``Mod_name``.
+
+The mod must contain a fun named ``main``.
+``main`` is called with a vec of Argv.
+
+For example, the following command invokes ``main`` fun of kink/test/TEST_TOOL mod,
+with ``['src/test/unit' 'src/test/system']`` as Argv.
+
+::
+
+  $ kink mod:kink/test/TEST_TOOL src/test/unit src/test/system
+
+.. rubric:: script:{Program_text}
+
+Compiles ``Program_text`` as a program text, and runs it with a new :doc:`binding </api/kink-BINDING>`
+as the top level binding (see :ref:`Program.compile <api-eb38c6c06f06250d57f7c828992a2147>`).
+
+If ``main`` variable is set in the top level binding,
+it is called with a vec of Argv.
+
+Examples:
+
+::
+
+  $ kink 'script: stdout.print_line("foobar")'
+  foobar
+
+  $ kink 'script: :main <- {(:Argv) Argv.each{(:A) stdout.print_line(A) } }' foo bar baz
+  foo
+  bar
+  baz
+
+.. rubric:: Single hyphen: -
+
+Reads bytes from the standard input, decodes it as UTF-8,
+compiles it as a program, and runs it with a new :doc:`binding </api/kink-BINDING>`
+as the top level binding (see :ref:`Program.compile <api-eb38c6c06f06250d57f7c828992a2147>`).
+
+If ``main`` variable is set in the top level binding,
+it is called with a vec of Argv.
+
+Examples:
+
+::
+
+  $ echo 'stdout.print_line("foobar")' | kink -
+  foobar
+
+  $ echo ':main <- {(:Argv) Argv.each{(:A) stdout.print_line(A) } }' | kink - foo bar baz
+  foo
+  bar
+  baz
+
+.. rubric:: {File_path}
+
+If no other formats can be applied, ``Spec`` is analyzed as ``File_path``.
+
+In this case, the command reads bytes from the file specified by ``File_path``,
+decodes it as UTF-8,
+compiles it as a program, and runs it with a new :doc:`binding </api/kink-BINDING>`
+as the top level binding (see :ref:`Program.compile <api-eb38c6c06f06250d57f7c828992a2147>`).
+
+Examples:
+
+::
+
+  $ echo 'stdout.print_line("foobar")' > a.kn
+  $ kink a.kn
+  foobar
+
+  $ echo ':main <- {(:Argv) Argv.each{(:A) stdout.print_line(A) } }' > b.kn
+  $ kink b.kn foo bar baz
+  foo
+  bar
+  baz
+
+
+Environment variables
+=====================
+
+The following environment variables affect the execution of the command.
+
+KINK_HOME
+  Path of the directory where the system is installed (ex. /opt/kink).
+  If the environment variable is not set, the command determines the directory
+  based on the path of the executable file.
+
+JAVA_HOME
+  Path of the directory of the JVM which is used to launch the interpreter (ex. /opt/jdk).
+  This value is not used if the launch option ``-E`` is specified.
+  If the environment variable is not set and ``-E`` is not specified,
+  the command just uses ``java`` or ``javaw`` command.
+
+Exit status
+===========
+
+The following exit values are returned.
+
+0
+  When the program terminates without raising an exception,
+  or ``--help`` or ``--version`` options are specified.
+
+Not 0
+  When the program terminate raising an exception,
+  or the command fails because of such as unknown options, wrong file names and so on.
+
+The command can also be terminated by PROCESS.exit with an arbitrary exit status.
+See :doc:`kink/PROCESS </api/kink-PROCESS>`.
+
+.. vim: et sw=2 sts=2 et

@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>3.3. 評価 &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="4. Object system" href="../object.html" />
+    <link rel="prev" title="3.2. 意味論" href="semantics.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>3.3. 評価</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="semantics.html"><span class="section-number">3.2. </span>意味論</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="../object.html"><span class="section-number">4. </span>Object system</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="evaluation">
+<h1><span class="section-number">3.3. </span>評価<a class="headerlink" href="#evaluation" title="Link to this heading">¶</a></h1>
+<p>This chapter specifies the operational semantics of <em class="dfn">abstract instructions</em>
+within an <em class="dfn">abstract stack machine</em>,
+to indirectly give semantics of a Kink program.
+Abstract instructions are transformed from a Kink program
+through <a class="reference internal" href="../glossary.html#term-desugaring"><span class="xref std std-term">desugaring</span></a> and <a class="reference internal" href="../glossary.html#term-translation"><span class="xref std std-term">translation</span></a> steps.</p>
+<p>An <em class="dfn">abstract stack machine</em> is an abstract machine
+which evaluates <a class="reference internal" href="../glossary.html#term-abstract-instruction"><span class="xref std std-term">abstract instructions</span></a>.</p>
+<p>An <em class="dfn">abstract instruction</em> is an instruction which is evaluated by the <a class="reference internal" href="../glossary.html#term-abstract-stack-machine"><span class="xref std std-term">abstract stack machine</span></a>.</p>
+<p>Multiple abstract stack machines can exist in a single <a class="reference internal" href="../glossary.html#term-runtime"><span class="xref std std-term">runtime</span></a>,
+and they can evaluate <a class="reference internal" href="../glossary.html#term-abstract-instruction"><span class="xref std std-term">abstract instructions</span></a> in parallel.</p>
+<p>The abstract stack machine and abstract instructions are defined
+just to show how Kink programs should behave.
+Thus, an implementation of <a class="reference internal" href="../glossary.html#term-runtime"><span class="xref std std-term">runtime</span></a> need not implement the abstract stack machine literally,
+however, the observable behavior must obey the definition.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#conventions" id="id7">Conventions</a></p>
+<ul>
+<li><p><a class="reference internal" href="#abstract-instruction" id="id8">Abstract instruction</a></p></li>
+<li><p><a class="reference internal" href="#data-types" id="id9">Data types</a></p></li>
+<li><p><a class="reference internal" href="#sequence-of-instructions" id="id10">Sequence of instructions</a></p></li>
+<li><p><a class="reference internal" href="#call-stack" id="id11">Call stack</a></p></li>
+<li><p><a class="reference internal" href="#reduction-rules" id="id12">Reduction rules</a></p></li>
+<li><p><a class="reference internal" href="#metavariable" id="id13">Metavariable</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#initial-state" id="id14">Initial state</a></p></li>
+<li><p><a class="reference internal" href="#terminal-state" id="id15">Terminal state</a></p></li>
+<li><p><a class="reference internal" href="#abstract-instructions" id="id16">Abstract instructions</a></p>
+<ul>
+<li><p><a class="reference internal" href="#val-instruction" id="id17">val instruction</a></p></li>
+<li><p><a class="reference internal" href="#uncaught-instruction" id="id18">uncaught instruction</a></p></li>
+<li><p><a class="reference internal" href="#num-instruction" id="id19">num instruction</a></p></li>
+<li><p><a class="reference internal" href="#str-instruction" id="id20">str instruction</a></p></li>
+<li><p><a class="reference internal" href="#nada-instruction" id="id21">nada instruction</a></p></li>
+<li><p><a class="reference internal" href="#fun-instruction" id="id22">fun instruction</a></p></li>
+<li><p><a class="reference internal" href="#emptyvec-instruction" id="id23">emptyvec instruction</a></p></li>
+<li><p><a class="reference internal" href="#add-instruction" id="id24">add instruction</a></p></li>
+<li><p><a class="reference internal" href="#concat-instruction" id="id25">concat instruction</a></p></li>
+<li><p><a class="reference internal" href="#doconcat-instruction" id="id26">doconcat instruction</a></p></li>
+<li><p><a class="reference internal" href="#dup-instruction" id="id27">dup instruction</a></p></li>
+<li><p><a class="reference internal" href="#flip-instruction" id="id28">flip instruction</a></p></li>
+<li><p><a class="reference internal" href="#remove-instruction" id="id29">remove instruction</a></p></li>
+<li><p><a class="reference internal" href="#varref-instruction" id="id30">varref instruction</a></p></li>
+<li><p><a class="reference internal" href="#load-instruction" id="id31">load instruction</a></p></li>
+<li><p><a class="reference internal" href="#checkfun-instruction" id="id32">checkfun instruction</a></p></li>
+<li><p><a class="reference internal" href="#call-instruction" id="id33">call instruction</a></p></li>
+<li><p><a class="reference internal" href="#tailcall-instruction" id="id34">tailcall instruction</a></p></li>
+<li><p><a class="reference internal" href="#docall-instruction" id="id35">docall instruction</a></p></li>
+<li><p><a class="reference internal" href="#traces-instruction" id="id36">traces instruction</a></p></li>
+<li><p><a class="reference internal" href="#exception-instruction" id="id37">exception instruction</a></p></li>
+<li><p><a class="reference internal" href="#raise-instruction" id="id38">raise instruction</a></p></li>
+<li><p><a class="reference internal" href="#binding-instruction" id="id39">binding instruction</a></p></li>
+<li><p><a class="reference internal" href="#enclosingbinding-instruction" id="id40">enclosingbinding instruction</a></p></li>
+<li><p><a class="reference internal" href="#clonebinding-instruction" id="id41">clonebinding instruction</a></p></li>
+<li><p><a class="reference internal" href="#setbinding-instruction" id="id42">setbinding instruction</a></p></li>
+<li><p><a class="reference internal" href="#storerecvargs-instruction" id="id43">storerecvargs instruction</a></p></li>
+<li><p><a class="reference internal" href="#tail-instruction" id="id44">tail instruction</a></p></li>
+<li><p><a class="reference internal" href="#hostcall-instruction" id="id45">hostcall instruction</a></p></li>
+<li><p><a class="reference internal" href="#canshift-instruction" id="id46">canshift instruction</a></p></li>
+<li><p><a class="reference internal" href="#kont-instruction" id="id47">kont instruction</a></p></li>
+<li><p><a class="reference internal" href="#abort-instruction" id="id48">abort instruction</a></p></li>
+<li><p><a class="reference internal" href="#delimit-instruction" id="id49">delimit instruction</a></p></li>
+<li><p><a class="reference internal" href="#trace-instruction" id="id50">trace instruction</a></p></li>
+<li><p><a class="reference internal" href="#tailtrace-instruction" id="id51">tailtrace instruction</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#resource-error" id="id52">Resource error</a></p></li>
+</ul>
+</nav>
+<section id="conventions">
+<h2><span class="section-number">3.3.1. </span>Conventions<a class="headerlink" href="#conventions" title="Link to this heading">¶</a></h2>
+<section id="abstract-instruction">
+<h3><span class="section-number">3.3.1.1. </span>Abstract instruction<a class="headerlink" href="#abstract-instruction" title="Link to this heading">¶</a></h3>
+<p>An abstract instruction is parenthesized like the following:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">varref</span> <span class="s2">&quot;op_store&quot;</span>)
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">varref</span></code> is the opcode of the instruction, and
+<code class="docutils literal notranslate"><span class="pre">&quot;op_store&quot;</span></code> is the operand of the instruction.</p>
+<p>Every instruction has a location as an implicit operand.</p>
+</section>
+<section id="data-types">
+<h3><span class="section-number">3.3.1.2. </span>Data types<a class="headerlink" href="#data-types" title="Link to this heading">¶</a></h3>
+<p>The following data types are used as operands of abstract instructions:</p>
+<ul class="simple">
+<li><p>val : a Kink val.</p></li>
+<li><p>str : an immutable, finite length sequence of unicode codepoints,
+which can be represented by a <a class="reference internal" href="../api/kink-STR.html"><span class="doc">str value</span></a>.</p></li>
+<li><p>num : a combination of (Mantissa, Scale),
+which can be represented by a <a class="reference internal" href="../api/kink-NUM.html"><span class="doc">num value</span></a>.</p></li>
+<li><p>location : a combination of (Program_name, Program_text, Pos),
+which can be represented by a <a class="reference internal" href="../api/kink-program-LOCATION.html#api-33da096af45bcf193ac0fbc14b17592f"><span class="std std-ref">location value</span></a>.</p></li>
+<li><p>a sequence of instructions.</p></li>
+</ul>
+</section>
+<section id="sequence-of-instructions">
+<h3><span class="section-number">3.3.1.3. </span>Sequence of instructions<a class="headerlink" href="#sequence-of-instructions" title="Link to this heading">¶</a></h3>
+<p>A sequence of instructions is represented by just placing instructions in order like the following:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">emptyvec</span>) (<span class="n">binding</span>) (<span class="n">load</span> <span class="s2">&quot;X&quot;</span>) (<span class="n">add</span>)
+</pre></div>
+</div>
+<p>If a sequence contains no instruction,
+the sequence is represented as follows:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>∅
+</pre></div>
+</div>
+</section>
+<section id="call-stack">
+<span id="id2"></span><h3><span class="section-number">3.3.1.4. </span>Call stack<a class="headerlink" href="#call-stack" title="Link to this heading">¶</a></h3>
+<p>An <em class="dfn">abstract stack machine</em> operates on its <em class="dfn">call stack</em>.</p>
+<p>A call stack consists of a sequence of instructions,
+and the sequence of instructions is updated every time a reduction rule is applied.</p>
+<p>A call stack is represented like the following:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>^ (<span class="n">str</span> <span class="s2">&quot;Foo&quot;</span>) (<span class="n">dup</span>) (<span class="n">remove</span>) $
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">^</span></code> is the mark of the top of the call stack,
+and <code class="docutils literal notranslate"><span class="pre">$</span></code> is the mark of the bottom of the call stack.</p>
+</section>
+<section id="reduction-rules">
+<h3><span class="section-number">3.3.1.5. </span>Reduction rules<a class="headerlink" href="#reduction-rules" title="Link to this heading">¶</a></h3>
+<p>A reduction rule is written like the following:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">V</span>) (<span class="n">dup</span>) → (<span class="n">val</span> <span class="nv">V</span>) (<span class="n">val</span> <span class="nv">V</span>)
+</pre></div>
+</div>
+<p>It means that if there is a sub-sequence of instructions <code class="docutils literal notranslate"><span class="pre">(val</span> <span class="pre">V)</span> <span class="pre">(dup)</span></code> in the call stack,
+the reduction rule is applied, and the sub-sequence is updated to <code class="docutils literal notranslate"><span class="pre">(val</span> <span class="pre">V)</span> <span class="pre">(val</span> <span class="pre">V)</span></code>.
+Note that <code class="docutils literal notranslate"><span class="pre">V</span></code> is a metavariable.
+In this case, the metavariable <code class="docutils literal notranslate"><span class="pre">V</span></code> represents a Kink val,
+because <code class="docutils literal notranslate"><span class="pre">val</span></code> instruction takes a Kink val as the operand.</p>
+<p>Additional conditions of a reduction rule can be given using comment lines which start with <code class="docutils literal notranslate"><span class="pre">#</span></code>.</p>
+<p>If there are multiple reduction rules which can be applied for a call stack,
+the reduction rule which can be applied to the leftmost sequence is chosen.</p>
+</section>
+<section id="metavariable">
+<h3><span class="section-number">3.3.1.6. </span>Metavariable<a class="headerlink" href="#metavariable" title="Link to this heading">¶</a></h3>
+<p>In this chapter, metavariables of the following formats are used to represent
+an abstract instruction, a sequence of abstruct instructions, and other data.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">_snake_case_with_underscore_as_prefix_and_suffix_</span></code></dt><dd><p>A sequence of abstract instructions.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">Capitalized_snake_case</span></code></dt><dd><p>An abstract instruction, a val, a str, a num, or a location, depending on the context.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="initial-state">
+<h2><span class="section-number">3.3.2. </span>Initial state<a class="headerlink" href="#initial-state" title="Link to this heading">¶</a></h2>
+<p>Evaluation of an abstract stack machine starts invoking a fun with no args.
+When evaluation is started with a fun val <code class="docutils literal notranslate"><span class="pre">Fun</span></code>,
+the initial state of the call stack is:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>^ (<span class="n">val</span> <span class="nv">Fun</span>) (<span class="n">nada</span>) (<span class="n">emptyvec</span>) (<span class="n">call</span> <span class="s2">&quot;..root..&quot;</span>) $
+</pre></div>
+</div>
+</section>
+<section id="terminal-state">
+<h2><span class="section-number">3.3.3. </span>Terminal state<a class="headerlink" href="#terminal-state" title="Link to this heading">¶</a></h2>
+<p>If no reduction rule can be applied to the call stack,
+the call stack is said to be in a <em class="dfn">terminal state</em>.</p>
+<p>The terminal state should be represented in one of the following states.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>^ (<span class="n">val</span> <span class="nv">V</span>) $
+</pre></div>
+</div>
+<p>This terminal state means that the abstract stack machine terminates returining a val.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>^ (<span class="n">uncaught</span> <span class="nv">Exc</span>) $
+</pre></div>
+</div>
+<p>This terminal state means the abstract stack machine terminates with an uncaught exception.</p>
+</section>
+<section id="abstract-instructions">
+<h2><span class="section-number">3.3.4. </span>Abstract instructions<a class="headerlink" href="#abstract-instructions" title="Link to this heading">¶</a></h2>
+<section id="val-instruction">
+<h3><span class="section-number">3.3.4.1. </span>val instruction<a class="headerlink" href="#val-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">val</span></code> instruction places a Kink val on the call stack.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">V</span>)
+</pre></div>
+</div>
+<p>There is no reduction rule for <code class="docutils literal notranslate"><span class="pre">val</span></code> instruction.</p>
+<p>A single <code class="docutils literal notranslate"><span class="pre">val</span></code> instruction can be a terminal state of the <em class="dfn">abstract stack machine</em>.</p>
+</section>
+<section id="uncaught-instruction">
+<h3><span class="section-number">3.3.4.2. </span>uncaught instruction<a class="headerlink" href="#uncaught-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">uncaught</span></code> instruction means an exception which is not caught within the <em class="dfn">abstract stack machine</em>.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">uncaught</span> <span class="nv">Exc</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Exc</span></code> is an exception val.</p>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">uncaught</span> <span class="nv">Exc</span>) <span class="nv">Any</span> → (<span class="n">uncaught</span> <span class="nv">Exc</span>)
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Any</span></code> is any instruction</p></li>
+</ul>
+<p>This rule means that the uncaught exception is propagated until the terminal state.</p>
+</section>
+<section id="num-instruction">
+<h3><span class="section-number">3.3.4.3. </span>num instruction<a class="headerlink" href="#num-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">num</span></code> instruction produces a num val.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">num</span> <span class="nv">Num</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Num</span></code> parameter is a num.</p>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">num</span> <span class="nv">Num</span>)
+
+→ (<span class="n">val</span> <span class="nv">Num_val</span>)
+<span class="c1"># where `Num_val` is a num val converted from `Num`.</span>
+</pre></div>
+</div>
+</section>
+<section id="str-instruction">
+<h3><span class="section-number">3.3.4.4. </span>str instruction<a class="headerlink" href="#str-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">str</span></code> instruction produces a str val.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">str</span> <span class="nv">Str</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Str</span></code> parameter is a str.</p>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">str</span> <span class="nv">Str</span>)
+
+→ (<span class="n">val</span> <span class="nv">Str_val</span>)
+<span class="c1"># where `Str_val` is a str val converted from `Str`</span>
+</pre></div>
+</div>
+</section>
+<section id="nada-instruction">
+<h3><span class="section-number">3.3.4.5. </span>nada instruction<a class="headerlink" href="#nada-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">nada</span></code> instruction produces <code class="docutils literal notranslate"><span class="pre">nada</span></code> val.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">nada</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">nada</span>)
+
+→ (<span class="n">val</span> <span class="nv">Nada_val</span>)
+<span class="c1"># where `Nada_val` is `nada` val</span>
+</pre></div>
+</div>
+</section>
+<section id="fun-instruction">
+<h3><span class="section-number">3.3.4.6. </span>fun instruction<a class="headerlink" href="#fun-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">fun</span></code> instruction produces a <a class="reference internal" href="../glossary.html#term-function"><span class="xref std std-term">function</span></a> val.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">fun</span> <span class="n">_insns_</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">_insns_</span></code> is a sequence of instructions.</p>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Enclosing_binding</span>) (<span class="n">fun</span> <span class="n">_insns_</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Enclosing_binding` is a binding val.</span>
+
+→ (<span class="n">val</span> <span class="nv">Fun</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Fun` is a fun val with instructions copied from `_insns_`,</span>
+<span class="c1">#   replacing every occurrence of (enclosingbinding) by (val Enclosing_binding).</span>
+</pre></div>
+</div>
+</section>
+<section id="emptyvec-instruction">
+<h3><span class="section-number">3.3.4.7. </span>emptyvec instruction<a class="headerlink" href="#emptyvec-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">emptyvec</span></code> instruction produces a newly created vec val with no element.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">emptyvec</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">emptyvec</span>)
+
+→ (<span class="n">val</span> <span class="nv">Empty_vec</span>)
+<span class="c1"># where `Empty_vec` is a newly created vec val with no element</span>
+</pre></div>
+</div>
+</section>
+<section id="add-instruction">
+<h3><span class="section-number">3.3.4.8. </span>add instruction<a class="headerlink" href="#add-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">add</span></code> instruction produces a newly created vec val adding an element to
+the back of an existing vec.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">add</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Vec</span>) (<span class="n">val</span> <span class="nv">Elem</span>) (<span class="n">add</span>)
+<span class="c1"># where `Vec` is a vec val</span>
+
+→ (<span class="n">val</span> <span class="nv">New_vec</span>)
+<span class="c1"># where `New_vec` is a newly created vec val containing the elements of `Vec`</span>
+<span class="c1"># at the front, and `Elem` at the back.</span>
+</pre></div>
+</div>
+</section>
+<section id="concat-instruction">
+<h3><span class="section-number">3.3.4.9. </span>concat instruction<a class="headerlink" href="#concat-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">concat</span></code> instruction produces <code class="docutils literal notranslate"><span class="pre">doconcat</span></code> and <code class="docutils literal notranslate"><span class="pre">trace</span></code> instructions.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">concat</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rules</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">concat</span>)
+
+→ (<span class="n">doconcat</span>) (<span class="n">trace</span> <span class="s2">&quot;&quot;</span> <span class="nv">Location</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Location` is the location of the implicit location of the `concat` instruction.</span>
+</pre></div>
+</div>
+<p>Note that the trace is used when an exception occurs when
+a reduction rule to <code class="docutils literal notranslate"><span class="pre">doconcat</span></code> is applied.</p>
+</section>
+<section id="doconcat-instruction">
+<h3><span class="section-number">3.3.4.10. </span>doconcat instruction<a class="headerlink" href="#doconcat-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">doconcat</span></code> instruction produces a newly created vec val concatenating
+two vec vals.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">doconcat</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rules</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">X</span>) (<span class="n">val</span> <span class="nv">Y</span>) (<span class="n">doconcat</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `X` is a vec val</span>
+<span class="c1"># • `Y` is a vec val</span>
+
+→ (<span class="n">val</span> <span class="nv">New_vec</span>)
+<span class="c1"># where `New_vec` is a newly created vec val</span>
+<span class="c1"># concatenating `X` at the front, and `Y` at the back.</span>
+</pre></div>
+</div>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">X</span>) (<span class="n">val</span> <span class="nv">Non_vec</span>) (<span class="n">doconcat</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `X` is a vec val</span>
+<span class="c1"># • `Non_vec` is not a vec val</span>
+
+→ (<span class="n">str</span> <span class="nv">Message</span>) (<span class="n">traces</span>) (<span class="n">exception</span>) (<span class="n">raise</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Message` is an error message.</span>
+</pre></div>
+</div>
+</section>
+<section id="dup-instruction">
+<h3><span class="section-number">3.3.4.11. </span>dup instruction<a class="headerlink" href="#dup-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">dup</span></code> instruction duplicates the preceding val on the call stack.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">dup</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">V</span>) (<span class="n">dup</span>) → (<span class="n">val</span> <span class="nv">V</span>) (<span class="n">val</span> <span class="nv">V</span>)
+</pre></div>
+</div>
+</section>
+<section id="flip-instruction">
+<h3><span class="section-number">3.3.4.12. </span>flip instruction<a class="headerlink" href="#flip-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">flip</span></code> instruction swaps the preceding two vals on the call stack.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">flip</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">A</span>) (<span class="n">val</span> <span class="nv">B</span>) (<span class="n">flip</span>) → (<span class="n">val</span> <span class="nv">B</span>) (<span class="n">val</span> <span class="nv">A</span>)
+</pre></div>
+</div>
+</section>
+<section id="remove-instruction">
+<h3><span class="section-number">3.3.4.13. </span>remove instruction<a class="headerlink" href="#remove-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">remove</span></code> instruction removes the preceding val from the call stack.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">remove</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">V</span>) (<span class="n">remove</span>) → ∅
+</pre></div>
+</div>
+</section>
+<section id="varref-instruction">
+<h3><span class="section-number">3.3.4.14. </span>varref instruction<a class="headerlink" href="#varref-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">varref</span></code> instruction produces a <a class="reference internal" href="../api/kink-VARREF.html"><span class="doc">varref val</span></a>.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">varref</span> <span class="nv">Symbol</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Symbol</span></code> is a str.</p>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Owner</span>) (<span class="n">varref</span> <span class="nv">Symbol</span>)
+
+→ (<span class="n">val</span> <span class="nv">Varref</span>)
+<span class="c1"># where `Varref` is a varref val whose owner is `Owner`, and whose symbol is `Symbol`.</span>
+</pre></div>
+</div>
+</section>
+<section id="load-instruction">
+<h3><span class="section-number">3.3.4.15. </span>load instruction<a class="headerlink" href="#load-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">load</span></code> instruction does <a class="reference internal" href="../glossary.html#term-variable-load-operation"><span class="xref std std-term">variable-load operation</span></a> for a variable.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">load</span> <span class="nv">Symbol</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Symbol</span></code> is a a str.</p>
+<p class="rubric">reduction rules</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Owner</span>) (<span class="n">load</span> <span class="nv">Symbol</span>)
+<span class="c1"># where the content of variable (`Owner`, `Symbol`) is not empty</span>
+
+→ (<span class="n">val</span> <span class="nv">Content</span>)
+<span class="c1"># where `Content` is the content of the variable (`Owner`, `Symbol`)</span>
+</pre></div>
+</div>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Owner</span>) (<span class="n">load</span> <span class="nv">Symbol</span>)
+<span class="c1"># where the content of variable (`Owner`, `Symbol`) does not have a value.</span>
+
+→ (<span class="n">str</span> <span class="nv">Message</span>) (<span class="n">traces</span>) (<span class="n">exception</span>) (<span class="n">raise</span>) (<span class="n">trace</span> <span class="s2">&quot;&quot;</span> <span class="nv">Location</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Message` is an error message.</span>
+<span class="c1"># • `Location` is the implicit location of the `load` instruction.</span>
+</pre></div>
+</div>
+</section>
+<section id="checkfun-instruction">
+<span id="checkfun-insn"></span><h3><span class="section-number">3.3.4.16. </span>checkfun instruction<a class="headerlink" href="#checkfun-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">checkfun</span></code> instruction ensures that the preceding val is a fun val.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">checkfun</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rules</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Fun</span>) (<span class="n">checkfun</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Fun` is a fun val.</span>
+
+→ ∅
+</pre></div>
+</div>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Not_fun</span>) (<span class="n">checkfun</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Not_fun` is not a fun val.</span>
+
+→ (<span class="n">str</span> <span class="nv">Message</span>) (<span class="n">traces</span>) (<span class="n">exception</span>) (<span class="n">raise</span>) (<span class="n">trace</span> <span class="s2">&quot;&quot;</span> <span class="nv">Location</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Message` is an error message.</span>
+<span class="c1"># • `Location` is the implicit location of the `checkfun` instruction.</span>
+</pre></div>
+</div>
+</section>
+<section id="call-instruction">
+<h3><span class="section-number">3.3.4.17. </span>call instruction<a class="headerlink" href="#call-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">call</span></code> instruction produces a sequence of instructions
+which calls a fun.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">call</span> <span class="nv">Symbol</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Symbol</span></code> is a str.</p>
+<p class="rubric">reduction rules</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Fun</span>) (<span class="n">val</span> <span class="nv">Recv</span>) (<span class="n">val</span> <span class="nv">Args</span>) (<span class="n">call</span> <span class="nv">Symbol</span>) (<span class="n">tail</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Fun` is a fun val.</span>
+<span class="c1"># • `Args` is a vec val.</span>
+
+→ (<span class="n">val</span> <span class="nv">Fun</span>) (<span class="n">val</span> <span class="nv">Recv</span>) (<span class="n">val</span> <span class="nv">Args</span>) (<span class="n">tailcall</span>) (<span class="n">tailtrace</span> <span class="nv">Symbol</span> <span class="nv">Location</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Location` is the implicit location of the `call` instruction.</span>
+</pre></div>
+</div>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Fun</span>) (<span class="n">val</span> <span class="nv">Recv</span>) (<span class="n">val</span> <span class="nv">Args</span>) (<span class="n">call</span> <span class="nv">Symbol</span>) <span class="nv">Non_tail</span>
+<span class="c1"># where</span>
+<span class="c1"># • `Fun` is a fun val.</span>
+<span class="c1"># • `Args` is a vec val.</span>
+<span class="c1"># • `Non_tail` is an instruction which is not `tail`</span>
+
+→ (<span class="n">val</span> <span class="nv">Fun</span>) (<span class="n">val</span> <span class="nv">Recv</span>) (<span class="n">val</span> <span class="nv">Args</span>) (<span class="n">docall</span>) (<span class="n">trace</span> <span class="nv">Symbol</span> <span class="nv">Location</span>) <span class="nv">Non_tail</span>
+<span class="c1"># where</span>
+<span class="c1"># • `Location` is the implicit location of the `call` instruction.</span>
+</pre></div>
+</div>
+</section>
+<section id="tailcall-instruction">
+<span id="id3"></span><h3><span class="section-number">3.3.4.18. </span>tailcall instruction<a class="headerlink" href="#tailcall-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">tailcall</span></code> instruction sets up tail traces and invocation of a fun.
+A function call done by <code class="docutils literal notranslate"><span class="pre">tailcall</span></code> is said to be a <em class="dfn">tail call</em>.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">tailcall</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">tailcall</span>) <span class="n">_tail_traces_</span>
+<span class="c1"># where</span>
+<span class="c1"># • `_tail_traces_` is a sequence of 0 or more `tailtrace` instructions.</span>
+
+→ (<span class="n">docall</span>) <span class="n">_snipped_tail_traces_</span>
+<span class="c1"># where</span>
+<span class="c1"># • `_snipped_tail_traces_` is a sequence of `tailtrace` instructions,</span>
+<span class="c1">#   snipped from `_tail_traces_` following the the rule below.</span>
+</pre></div>
+</div>
+<p class="rubric">tail trace snipping rule</p>
+<p>This specification requires that consecutive tail calls do not result in stack overflow.
+Such requirement is called <a class="reference internal" href="../glossary.html#term-tail-call-elimination"><span class="xref std std-term">tail call elimination</span></a>.
+To guarantee it, the sequence of <code class="docutils literal notranslate"><span class="pre">tailtrace</span></code> instructions is snipped as follows:</p>
+<ul class="simple">
+<li><p>Each <code class="docutils literal notranslate"><span class="pre">tailtrace</span></code> instruction can be remvoed.</p></li>
+<li><p>Each <code class="docutils literal notranslate"><span class="pre">tailtrace</span></code> instruction can be converted to
+<code class="docutils literal notranslate"><span class="pre">(tailtrace</span> <span class="pre">&quot;&quot;</span> <span class="pre">(program</span> <span class="pre">name=&quot;&quot;,</span> <span class="pre">program</span> <span class="pre">text=&quot;&quot;,</span> <span class="pre">pos</span> <span class="pre">index</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">program</span> <span class="pre">text=0))</span></code></p></li>
+<li><p>The length of the sequence must be kept less than or equal to
+the constant maximum number which the runtime defines.</p></li>
+</ul>
+</section>
+<section id="docall-instruction">
+<h3><span class="section-number">3.3.4.19. </span>docall instruction<a class="headerlink" href="#docall-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">docall</span></code> instruction invokes a fun.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">docall</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Fun</span>) (<span class="n">val</span> <span class="nv">Recv</span>) (<span class="n">val</span> <span class="nv">Args</span>) (<span class="n">docall</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Fun` is a fun val.</span>
+<span class="c1"># • `Args` is a vec val.</span>
+
+→ (<span class="n">val</span> <span class="nv">Recv</span>) (<span class="n">val</span> <span class="nv">Args_copy</span>) <span class="n">_fun_insns_</span> (<span class="n">tail</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `_fun_insns_` is the insns within `Fun`.</span>
+<span class="c1"># • `Args_copy` is a newly created vec val copying the elements of `Args`.</span>
+</pre></div>
+</div>
+</section>
+<section id="traces-instruction">
+<h3><span class="section-number">3.3.4.20. </span>traces instruction<a class="headerlink" href="#traces-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">traces</span></code> instruction makes a vec of trace vals
+from <code class="docutils literal notranslate"><span class="pre">trace</span></code> and <code class="docutils literal notranslate"><span class="pre">tailtrace</span></code> instructions in the call stack.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">traces</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rules</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">traces</span>) <span class="n">_insns_</span> $
+<span class="c1"># where `_insns_` is a sequence of instructions.</span>
+
+→ (<span class="n">val</span> <span class="nv">Traces</span>) <span class="n">_insns_</span> $
+<span class="c1"># where</span>
+<span class="c1"># • `Traces` is a newly created vec val of trace vals,</span>
+<span class="c1">#   converted from `trace`, `tailtrace`, and `delimit` instructions in `_insns_` as follows,</span>
+<span class="c1">#   reverting the order.</span>
+<span class="c1">#   • From a `trace` instruction, a non-tail trace val is produced.</span>
+<span class="c1">#   • From a `tailtrace` instruction, a tail trace val is produced.</span>
+<span class="c1">#   • From a `delimit` instruction, a non-tail trace val is produced with symbol=&quot;..kont tag..&quot;,</span>
+<span class="c1">#     and location=(&quot;&quot;, &quot;&quot;, 0).</span>
+</pre></div>
+</div>
+</section>
+<section id="exception-instruction">
+<h3><span class="section-number">3.3.4.21. </span>exception instruction<a class="headerlink" href="#exception-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">exception</span></code> instruction produces an <a class="reference internal" href="../glossary.html#term-exception"><span class="xref std std-term">exception</span></a> value.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">exception</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Message</span>) (<span class="n">val</span> <span class="nv">Traces</span>) (<span class="n">exception</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Message` is a str val</span>
+<span class="c1"># • `Traces` is a vec of trace vals</span>
+
+→ (<span class="n">val</span> <span class="nv">Exc</span>)
+<span class="c1"># where `Exc` is an exception val made from `Message` and `Traces`</span>
+</pre></div>
+</div>
+</section>
+<section id="raise-instruction">
+<h3><span class="section-number">3.3.4.22. </span>raise instruction<a class="headerlink" href="#raise-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">raise</span></code> instruction raises an exception.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">raise</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rules</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Exc</span>) (<span class="n">raise</span>) <span class="n">_no_escape_</span> (<span class="n">val</span> <span class="nv">Escape_tag</span>) (<span class="n">delimit</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Escape_tag` is the escape tag (see kink/KONT_TAG.escape_tag).</span>
+<span class="c1"># • `_no_escape_` is a sequence of instructions</span>
+<span class="c1">#   which does not contain (delimit) directly preceded by (val Escape_tag).</span>
+
+→ (<span class="n">val</span> <span class="nv">Fun</span>) (<span class="n">val</span> <span class="nv">Escape_tag</span>) (<span class="n">delimit</span>)
+<span class="c1"># where `Fun` is a fun val like {(:cont_raised :cont_jump) cont_raised(Exc) }</span>
+</pre></div>
+</div>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Exc</span>) (<span class="n">raise</span>) <span class="n">_no_escape_</span> $
+<span class="c1"># where</span>
+<span class="c1"># • `_no_escape_` is a sequence of instructions</span>
+<span class="c1">#   which does not contain (delimit) directly preceded by (val Escape_tag).</span>
+
+→ (<span class="n">uncaught</span> <span class="nv">Exc</span>) <span class="n">_no_escape_</span> $
+</pre></div>
+</div>
+</section>
+<section id="binding-instruction">
+<h3><span class="section-number">3.3.4.23. </span>binding instruction<a class="headerlink" href="#binding-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">binding</span></code> instruction is the place-holder of the current binding.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">binding</span>)
+</pre></div>
+</div>
+</section>
+<section id="enclosingbinding-instruction">
+<h3><span class="section-number">3.3.4.24. </span>enclosingbinding instruction<a class="headerlink" href="#enclosingbinding-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">enclosingbinding</span></code> instruction is the place-holder of the enclosing binding.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">enclosingbinding</span>)
+</pre></div>
+</div>
+</section>
+<section id="clonebinding-instruction">
+<h3><span class="section-number">3.3.4.25. </span>clonebinding instruction<a class="headerlink" href="#clonebinding-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">clonebinding</span></code> instruction makes a new binding from the enclosing binding.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">clonebinding</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Enclosing_binding</span>) (<span class="n">clonebinding</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Enclosing_binding` is a binding val.</span>
+
+→ (<span class="n">val</span> <span class="nv">Binding</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Binding` is a newly created binding val,</span>
+<span class="c1">#   copying all the vars of `Enclosing_binding`.</span>
+</pre></div>
+</div>
+</section>
+<section id="setbinding-instruction">
+<h3><span class="section-number">3.3.4.26. </span>setbinding instruction<a class="headerlink" href="#setbinding-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">setbinding</span></code> instruction sets the current binding.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">setbinding</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Binding</span>) (<span class="n">setbinding</span>) <span class="n">_insns_</span> (<span class="n">tail</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Binding` is a binding val.</span>
+<span class="c1"># • `_insns_` is a sequence of instructions</span>
+<span class="c1">#   which does not contain `tail` instruction.</span>
+
+→ <span class="n">_converted_insns_</span> (<span class="n">tail</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `_converted_insns_` is a sequence of instructions</span>
+<span class="c1">#   copied from `_insns_`,</span>
+<span class="c1">#   replacing every occurrence of (binding) by (val Binding).</span>
+</pre></div>
+</div>
+</section>
+<section id="storerecvargs-instruction">
+<span id="storerecvargs-insn"></span><h3><span class="section-number">3.3.4.27. </span>storerecvargs instruction<a class="headerlink" href="#storerecvargs-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">storerecvargs</span></code> instruction sets <code class="docutils literal notranslate"><span class="pre">_Recv</span></code> and <code class="docutils literal notranslate"><span class="pre">_Args</span></code> vars of the current binding.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">storerecvargs</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Recv</span>) (<span class="n">val</span> <span class="nv">Args</span>) (<span class="n">val</span> <span class="nv">Binding</span>) (<span class="n">storerecvargs</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Args` is a vec val.</span>
+<span class="c1"># • `Binding` is a binding val.</span>
+
+→ ∅
+</pre></div>
+</div>
+<p>When this reduction rule is applied,
+<code class="docutils literal notranslate"><span class="pre">Recv</span></code> is assigined to <code class="docutils literal notranslate"><span class="pre">_Recv</span></code> variable of <code class="docutils literal notranslate"><span class="pre">Binding</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">Args</span></code> is assigined to <code class="docutils literal notranslate"><span class="pre">_Args</span></code> variable of <code class="docutils literal notranslate"><span class="pre">Binding</span></code>.</p>
+</section>
+<section id="tail-instruction">
+<h3><span class="section-number">3.3.4.28. </span>tail instruction<a class="headerlink" href="#tail-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">tail</span></code> instruction is the marker of tail context.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">tail</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">tail</span>) → ∅
+</pre></div>
+</div>
+<p>This rule means that <code class="docutils literal notranslate"><span class="pre">tail</span></code> instruction acts as NOP.</p>
+</section>
+<section id="hostcall-instruction">
+<span id="id4"></span><h3><span class="section-number">3.3.4.29. </span>hostcall instruction<a class="headerlink" href="#hostcall-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">hostcall</span></code> instruction invokes a <a class="reference internal" href="../glossary.html#term-host-procedure"><span class="xref std std-term">host procedure</span></a>.</p>
+<p>A <em class="dfn">host procedure</em> is an abstract unit of information
+to specify a procedure within the <a class="reference internal" href="../glossary.html#term-host-system"><span class="xref std std-term">host system</span></a>,
+such as a function address, closure, object reference.
+A host procedure should take a single value as the argument,
+and return a single value as the result.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">hostcall</span> <span class="nv">Host_proc</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Host_proc</span></code> is a <em class="dfn">host procedure</em>.</p>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Arg</span>) (<span class="n">hostcall</span> <span class="nv">Host_proc</span>)
+
+→ (<span class="n">val</span> <span class="nv">Result</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Result` is the result of `Host_proc` with the argument `Arg`.</span>
+</pre></div>
+</div>
+</section>
+<section id="canshift-instruction">
+<h3><span class="section-number">3.3.4.30. </span>canshift instruction<a class="headerlink" href="#canshift-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">canshift</span></code> instruction tests whether
+the call stack is delimited by a <a class="reference internal" href="../glossary.html#term-delimited-continuation-tag"><span class="xref std std-term">delimited continuation tag</span></a>.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">canshift</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rules</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">canshift</span>) <span class="n">_insns_</span> (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">delimit</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Kont_tag` is a delimited continuation tag.</span>
+→ (<span class="n">val</span> <span class="nv">True</span>) <span class="n">_insns_</span> (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">delimit</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `True` is true val.</span>
+
+(<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">canshift</span>) <span class="n">_no_kont_tag_</span> $
+<span class="c1"># where</span>
+<span class="c1"># • `Kont_tag` is a delimited continuation tag.</span>
+<span class="c1"># • `_no_kont_tag_` is a sequence of instructions</span>
+<span class="c1">#   which does not contain (delimit) directly preceded by (val Kont_tag).</span>
+→ (<span class="n">val</span> <span class="nv">False</span>) <span class="n">_no_kont_tag_</span> $
+<span class="c1"># where</span>
+<span class="c1"># • `False` is false val.</span>
+</pre></div>
+</div>
+</section>
+<section id="kont-instruction">
+<span id="id5"></span><h3><span class="section-number">3.3.4.31. </span>kont instruction<a class="headerlink" href="#kont-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">kont</span></code> instruction makes a <a class="reference internal" href="../glossary.html#term-delimited-continuation"><span class="xref std std-term">delimited continuation</span></a>
+function from the call stack.</p>
+<p>A <em class="dfn">delimited continuation</em>
+is a <a class="reference internal" href="../glossary.html#term-function"><span class="xref std std-term">function</span></a> to resume the evaluation between <code class="docutils literal notranslate"><span class="pre">kont</span></code> instruction
+and <code class="docutils literal notranslate"><span class="pre">delimit</span></code> instruction, or in other words,
+from an invocation of <a class="reference internal" href="../api/kink-KONT_TAG.html#api-35db7c321b93a22b6e6164fab36bf940"><span class="std std-ref">Kont_tag.shift</span></a>
+to the end of an invocation of <a class="reference internal" href="../api/kink-KONT_TAG.html#api-9877213663340a1e14488dc493151c3a"><span class="std std-ref">Kont_tag.reset</span></a>.
+Construction of a delimited continuation is specified below.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">kont</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">kont</span>) (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">abort</span>) <span class="n">_insns_</span> (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">delimit</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Kont_tag` is a delimited continuation tag.</span>
+<span class="c1"># • `_insns_` is a sequence of instructions which does not contain (delimit)</span>
+<span class="c1">#   directly preceded by (val Kont_tag).</span>
+
+→ (<span class="n">val</span> <span class="nv">Kont_fun</span>) (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">abort</span>) <span class="n">_insns_</span> (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">delimit</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Kont_fun` is a delimited continuation created as follows:</span>
+</pre></div>
+</div>
+<p class="rubric">making of a delimited continuation</p>
+<p>In the previous reduction rule, <code class="docutils literal notranslate"><span class="pre">Kont_fun</span></code> is a function
+which takes a single argument.
+When the function is called,
+at the tail of the invocation,
+the following sequence of instructions is evaluated:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>{<span class="n">push</span> <span class="n">the</span> <span class="n">argument</span> <span class="n">of</span> <span class="nv">Kont_fun</span>}
+<span class="n">_no_delimit_</span>
+(<span class="n">val</span> <span class="nv">Kont_tag</span>)
+(<span class="n">delimit</span>)
+</pre></div>
+</div>
+</section>
+<section id="abort-instruction">
+<h3><span class="section-number">3.3.4.32. </span>abort instruction<a class="headerlink" href="#abort-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">abort</span></code> instruction moves to the corresponding <code class="docutils literal notranslate"><span class="pre">delimit</span></code>.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">abort</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Abort_fun</span>) (<span class="n">val</span> <span class="nv">Kont_fun</span>) (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">abort</span>) <span class="n">_insns_</span> (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">delimit</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Abort_fun` is a fun val.</span>
+<span class="c1"># • `Kont_fun` is a fun val.</span>
+<span class="c1"># • `Kont_tag` is a delimited continuation tag.</span>
+<span class="c1"># • `_insns_` is a  sequence of instructions which does not contain (delimit)</span>
+<span class="c1">#   directly preceded by (val Kont_tag).</span>
+
+→ (<span class="n">val</span> <span class="nv">Abort_fun</span>) (<span class="n">nada</span>) (<span class="n">emptyvec</span>) (<span class="n">val</span> <span class="nv">Kont_fun</span>) (<span class="n">add</span>) (<span class="n">call</span> <span class="s2">&quot;call&quot;</span>) (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">delimit</span>)
+</pre></div>
+</div>
+</section>
+<section id="delimit-instruction">
+<span id="id6"></span><h3><span class="section-number">3.3.4.33. </span>delimit instruction<a class="headerlink" href="#delimit-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">delimit</span></code> instruction is a marker of a <a class="reference internal" href="../glossary.html#term-delimited-continuation-tag"><span class="xref std std-term">delimited continuation tag</span></a>
+in the call stack.</p>
+<p>A <em class="dfn">delimited continuation tag</em> is a value used to mark
+the delimiter of a <a class="reference internal" href="../glossary.html#term-delimited-continuation"><span class="xref std std-term">delimited continuation</span></a>.
+A delimited continuation tag is a value of <a class="reference internal" href="../api/kink-KONT_TAG.html#api-30c0ec5df9d2435c0132d55f5a695215"><span class="std std-ref">type kont_tag</span></a>.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">delimit</span>)
+</pre></div>
+</div>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">X</span>) (<span class="n">val</span> <span class="nv">Kont_tag</span>) (<span class="n">delimit</span>) → (<span class="n">val</span> <span class="nv">X</span>)
+</pre></div>
+</div>
+</section>
+<section id="trace-instruction">
+<h3><span class="section-number">3.3.4.34. </span>trace instruction<a class="headerlink" href="#trace-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">trace</span></code> instruction places a non-tail trace.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">trace</span> <span class="nv">Symbol</span> <span class="nv">Location</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Symbol</span></code> is a str.
+<code class="docutils literal notranslate"><span class="pre">Location</span></code> is a tuple of (program name, program text, pos index in the program text).</p>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">trace</span> <span class="nv">Symbol</span> <span class="nv">Location</span>) → ∅
+</pre></div>
+</div>
+<p>This rule means that <code class="docutils literal notranslate"><span class="pre">trace</span></code> instruction acts as NOP.</p>
+</section>
+<section id="tailtrace-instruction">
+<h3><span class="section-number">3.3.4.35. </span>tailtrace instruction<a class="headerlink" href="#tailtrace-instruction" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">tailtrace</span></code> instruction places a tail trace.</p>
+<p class="rubric">syntax</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">tailtrace</span> <span class="nv">Symbol</span> <span class="nv">Location</span>)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Symbol</span></code> is a str.
+<code class="docutils literal notranslate"><span class="pre">Location</span></code> is a tuple of (program name, program text, pos index in the program text).</p>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">tailtrace</span> <span class="nv">Symbol</span> <span class="nv">Location</span>) → ∅
+</pre></div>
+</div>
+<p>This rule means that <code class="docutils literal notranslate"><span class="pre">tailtrace</span></code> instruction acts as NOP.</p>
+</section>
+</section>
+<section id="resource-error">
+<h2><span class="section-number">3.3.5. </span>Resource error<a class="headerlink" href="#resource-error" title="Link to this heading">¶</a></h2>
+<p>The following reduction rule can be applied anytime,
+when any type of resource error happens,
+for example,
+when the length of the sequence of instructions of the call stack becomes too long (stack overflow).</p>
+<p class="rubric">reduction rule</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>^
+
+→ ^ (<span class="n">str</span> <span class="nv">Message</span>) (<span class="n">traces</span>) (<span class="n">exception</span>) (<span class="n">raise</span>)
+<span class="c1"># where</span>
+<span class="c1"># • `Message` is an error message.</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="semantics.html"><span class="section-number">3.2. </span>意味論</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="../object.html"><span class="section-number">4. </span>Object system</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

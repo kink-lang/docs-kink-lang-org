@@ -1,0 +1,109 @@
+=============
+Accessibility
+=============
+
+Accessibility control of Kink is advisory,
+rather than enforced by the runtime.
+This chapter describes how library authors
+should indicate accessibility of their components,
+and how clients should follow them.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Public or private
+=================
+
+Components like modules, functions, and methods are either public or private.
+
+Public components are parts of the published API of the library.
+Clients of the library can use public components.
+
+Private components are not parts of the published API of the library.
+Clients are not supposed to use private components.
+
+Modules
+=======
+
+If no part of the :term:`module` name starts with underscore ``_``,
+the module is public.
+If one or more parts of the module name start with underscore,
+the module is private.
+
+Examples:
+
+* ``example/adt/MULTI_SET`` : public
+* ``example/adt/_ALLOCATOR`` : private
+* ``example/adt/_impl/RED_BLACK_TREE`` : private
+
+Data variables
+==============
+
+All data variables are private.
+
+Functions and methods
+=====================
+
+A toplevel function of a public module
+is public when the symbol does not start with underscore ``_``.
+
+::
+
+  :MULTI_SET.require_from('example/adt/')
+
+  MULTI_SET.new           # public
+  MULTI_SET.from_each     # public
+  MULTI_SET._make_config  # private
+
+Obviously, a toplevel function of a private module is private,
+regardless of its symbol.
+
+::
+
+  # example/adt/_ALLOCATOR is private
+  :_ALLOCATOR.require_from('example/adt/')
+
+  _ALLOCATOR.new          # private
+  _ALLOCATOR._make_config # private
+
+Local function variables which are not on the toplevel are private.
+
+::
+
+  :foo <- {(:bar)
+    :baz <- { 'baz' }
+
+    bar # private
+    baz # private
+  }
+
+A method of a public data type is public
+when the symbol does not start with ``_``.
+
+::
+
+  :MULTI_SET.require_from('example/adt/')
+
+  :Ms <- MULTI_SET.new
+  Ms.any?       # public
+  Ms.have_all?  # public
+  Ms._realocate # private
+
+Obviously, a method of a private data type is private,
+regardless of its symbol.
+
+::
+
+  :MULTI_SET.require_from('example/adt/')
+
+  # assume builder is not public
+  :Builder <- MULTI_SET._new_builder
+
+  Builder._clear  # private
+  Builder.build   # private
+
+Regardless of whether a function or a method is public,
+clients are not supposed to overwrite them.
+
+.. vim: et sw=2 sts=2

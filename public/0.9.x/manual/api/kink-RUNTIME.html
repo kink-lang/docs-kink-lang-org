@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.21. kink/RUNTIME &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.22. kink/STOPWATCH" href="kink-STOPWATCH.html" />
+    <link rel="prev" title="6.20. kink/REF" href="kink-REF.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.21. kink/RUNTIME</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-REF.html"><span class="section-number">6.20. </span>kink/REF</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-STOPWATCH.html"><span class="section-number">6.22. </span>kink/STOPWATCH</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-runtime">
+<h1><span class="section-number">6.21. </span>kink/RUNTIME<a class="headerlink" href="#kink-runtime" title="Link to this heading">¶</a></h1>
+<p>Information of the Kink runtime system.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#runtime-major-version" id="id1">RUNTIME.major_version</a></p></li>
+<li><p><a class="reference internal" href="#runtime-minor-version" id="id2">RUNTIME.minor_version</a></p></li>
+<li><p><a class="reference internal" href="#runtime-patch-version" id="id3">RUNTIME.patch_version</a></p></li>
+<li><p><a class="reference internal" href="#runtime-version-str" id="id4">RUNTIME.version_str</a></p></li>
+<li><p><a class="reference internal" href="#runtime-windows" id="id5">RUNTIME.windows?</a></p></li>
+<li><p><a class="reference internal" href="#runtime-unix" id="id6">RUNTIME.unix?</a></p></li>
+</ul>
+</nav>
+<section id="runtime-major-version">
+<span id="api-be564c1147fa5427b1bbfda95581f4ea"></span><h2><span class="section-number">6.21.1. </span>RUNTIME.major_version<a class="headerlink" href="#runtime-major-version" title="Link to this heading">¶</a></h2>
+<p>`major_version` returns the major version of the runtime as an int number.</p>
+<p>Versioning scheme of Kink follows Semantic Versioning 2.0.0. See:</p>
+<p>https://semver.org/</p>
+</section>
+<section id="runtime-minor-version">
+<span id="api-44da2e561eb2f91c82ff65f25897d449"></span><h2><span class="section-number">6.21.2. </span>RUNTIME.minor_version<a class="headerlink" href="#runtime-minor-version" title="Link to this heading">¶</a></h2>
+<p>`minor_version` returns the minor version of the runtime as an int number.</p>
+<p>Versioning scheme of Kink follows Semantic Versioning 2.0.0. See:</p>
+<p>https://semver.org/</p>
+</section>
+<section id="runtime-patch-version">
+<span id="api-8f3187892cdebdcb25dbed63205175df"></span><h2><span class="section-number">6.21.3. </span>RUNTIME.patch_version<a class="headerlink" href="#runtime-patch-version" title="Link to this heading">¶</a></h2>
+<p>`patch_version` returns the patch version of the runtime as an int number.</p>
+<p>Versioning scheme of Kink follows Semantic Versioning 2.0.0. See:</p>
+<p>https://semver.org/</p>
+</section>
+<section id="runtime-version-str">
+<span id="api-c3b4e8984181d2c52bd08edde07e831e"></span><h2><span class="section-number">6.21.4. </span>RUNTIME.version_str<a class="headerlink" href="#runtime-version-str" title="Link to this heading">¶</a></h2>
+<p>`version_str` returns the version string of the runtime such as '1.2.3'.</p>
+<p>Versioning scheme of Kink follows Semantic Versioning 2.0.0. See:</p>
+<p>https://semver.org/</p>
+</section>
+<section id="runtime-windows">
+<span id="api-42f866b44d9ffa6c0fe0ee50f9bbece6"></span><h2><span class="section-number">6.21.5. </span>RUNTIME.windows?<a class="headerlink" href="#runtime-windows" title="Link to this heading">¶</a></h2>
+<p>`windows?` returns whether the runtime is drectly running on a Windows system.</p>
+<p>It is assumed that if the runtime is running on Windows, it is not on Unix, and vice versa. Thus, only one of `windows?` and `unix?` returns true.</p>
+</section>
+<section id="runtime-unix">
+<span id="api-ffa01e6b6ca8b9566ae75de2a966c573"></span><h2><span class="section-number">6.21.6. </span>RUNTIME.unix?<a class="headerlink" href="#runtime-unix" title="Link to this heading">¶</a></h2>
+<p>`unix?` returns whether the runtime is drectly running on a Unix-like system.</p>
+<p>It is assumed that if the runtime is running on Windows, it is not on Unix-like, and vice versa. Thus, only one of `windows?` and `unix?` returns true.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-REF.html"><span class="section-number">6.20. </span>kink/REF</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-STOPWATCH.html"><span class="section-number">6.22. </span>kink/STOPWATCH</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,138 @@
+==========================
+kink\/container\/FLAT\_SET
+==========================
+
+Provides an \`ordered\_set\` implementation which stores all the elements in a sorted \`vec\`\.
+
+Flat set is a good choice when elements are rarely inserted or deleted\, or the size of the set is small\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-ed23cd8f93d19b85949851152938880a:
+
+FLAT\_SET\.new\(\.\.\.\[\$config\=\{\}\]\)
+==========================================
+
+\`new\` returns a new empty flat \`ordered\_set\`\.
+
+.. rubric:: Config method
+
+C\.order\(\$in\_order\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
+
+.. rubric:: Comparison of elements
+
+\$in\_order\? is used to compare elements\. \$in\_order\? must be a toal order which satisfies the following for all X\, Y\, and Z in the domain of elements\.
+
+\• reflexive\: in\_order\?\(X X\)
+
+\• transitive\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y Z\) then in\_order\?\(X Z\)
+
+\• antisymmetric\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y X\) then X is equivalent to Y
+
+\• strongly connected\: in\_order\?\(X Y\) \|\| in\_order\?\(Y X\)
+
+.. rubric:: Precondition
+
+\$in\_order\? must be a fun which takes two values and returns a \`bool\`\.
+
+.. rubric:: Example\: default order
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Map <- FLAT_SET.new
+    Map.push('foo')
+    Map.push('bar')
+    Map.push('baz')
+    stdout.print_line(Map.have?('foo').repr) # => true
+    stdout.print_line(Map.have?('FOO').repr) # => false
+    Map.each{(:Elem)
+      stdout.print_line(Elem.repr)
+    }
+    # Output:
+    #   "bar"
+    #   "baz"
+    #   "foo"
+
+.. rubric:: Example\: reversed order
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Map <- FLAT_SET.new{(:C)
+      C.order{(:X :Y) X >= Y }
+    }
+    Map.push('foo')
+    Map.push('bar')
+    Map.push('baz')
+    Map.each{(:Elem)
+      stdout.print_line(Elem.repr)
+    }
+    # Output:
+    #   "foo"
+    #   "baz"
+    #   "bar"
+
+.. _api-bd81478257c48cc2be0e4be4211b4108:
+
+FLAT\_SET\.of\(\.\.\.Elems\)
+============================
+
+\`of\` makes a new flat \`ordered\_set\` which contains the values of \`Elems\`\. The elements are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
+
+.. rubric:: Precondition
+
+The elements of \`Elems\` must be in the domain of the elements of the set\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Map <- FLAT_SET.of('foo' 'bar' 'baz')
+    stdout.print_line(Map.have?('foo').repr) # => true
+    stdout.print_line(Map.have?('FOO').repr) # => false
+    Map.each{(:Elem)
+      stdout.print_line(Elem.repr)
+    }
+    # Output:
+    #   "bar"
+    #   "baz"
+    #   "foo"
+
+.. _api-32b8bdf470bb6dab3ac8b930498743c4:
+
+FLAT\_SET\.from\_each\(Eacher\)
+===============================
+
+\`from\_each\` makes a flat \`ordered\_set\` containing the elements of \`Eacher\`\. The elements are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
+
+.. rubric:: Precondition
+
+\`Eacher\` must implement each\(\$consume\) method\, which calls \$consume for each element of \`Eacher\`\.
+
+The elements of \`Eacher\` must be in the domain of the elements of the set\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Iter <- ['foo' 'bar' 'baz'].iter
+    :Map <- FLAT_SET.from_each(Iter)
+    stdout.print_line(Map.have?('foo').repr) # => true
+    stdout.print_line(Map.have?('FOO').repr) # => false
+    Map.each{(:Elem)
+      stdout.print_line(Elem.repr)
+    }
+    # Output:
+    #   "bar"
+    #   "baz"
+    #   "foo"
+

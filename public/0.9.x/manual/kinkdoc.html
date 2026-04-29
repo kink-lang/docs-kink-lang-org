@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>8. Kinkdoc: API Documentation system &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="9. Testing" href="testing.html" />
+    <link rel="prev" title="7.8. Code style" href="patterns/style.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>8. Kinkdoc: API Documentation system</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="patterns/style.html"><span class="section-number">7.8. </span>Code style</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="testing.html"><span class="section-number">9. </span>Testing</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kinkdoc-api-documentation-system">
+<h1><span class="section-number">8. </span>Kinkdoc: API Documentation system<a class="headerlink" href="#kinkdoc-api-documentation-system" title="Link to this heading">¶</a></h1>
+<p><em class="dfn">Kinkdoc</em> is an API documentation system for Kink programs.
+Like Javadoc, godoc, and Doxygen, documentation texts for kinkdoc
+are written in program comments.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#tutorial" id="id1">Tutorial</a></p>
+<ul>
+<li><p><a class="reference internal" href="#function" id="id2">Function</a></p></li>
+<li><p><a class="reference internal" href="#type-and-methods" id="id3">Type and methods</a></p></li>
+<li><p><a class="reference internal" href="#module" id="id4">Module</a></p></li>
+<li><p><a class="reference internal" href="#kinkdoc-toolchain" id="id5">Kinkdoc toolchain</a></p></li>
+<li><p><a class="reference internal" href="#api-level-documentation" id="id6">API level documentation</a></p></li>
+<li><p><a class="reference internal" href="#vim-folding-support" id="id7">Vim folding support</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#kinkdoc-comment-specification" id="id8">Kinkdoc comment specification</a></p>
+<ul>
+<li><p><a class="reference internal" href="#definitions-of-terms-in-the-section" id="id9">Definitions of terms in the section</a></p></li>
+<li><p><a class="reference internal" href="#kinkdoc-comment-chunk" id="id10">Kinkdoc comment chunk</a></p></li>
+<li><p><a class="reference internal" href="#title" id="id11">Title</a></p></li>
+<li><p><a class="reference internal" href="#blocks" id="id12">Blocks</a></p>
+<ul>
+<li><p><a class="reference internal" href="#code-block" id="id13">Code block</a></p></li>
+<li><p><a class="reference internal" href="#heading-block" id="id14">Heading block</a></p></li>
+<li><p><a class="reference internal" href="#paragraph-block" id="id15">Paragraph block</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tree-structure-of-sections" id="id16">Tree structure of sections</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-toplevel-section" id="id17">The toplevel section</a></p></li>
+<li><p><a class="reference internal" href="#non-toplevel-sections" id="id18">Non toplevel sections</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#json-schema" id="id19">JSON Schema</a></p></li>
+</ul>
+</nav>
+<section id="tutorial">
+<h2><span class="section-number">8.1. </span>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading">¶</a></h2>
+<p>Let's make a set of modules, and write kinkdoc documentation for them.
+In this tutorial section, we will make following modules:</p>
+<ul class="simple">
+<li><p>math/RAT : for rational numbers.</p></li>
+<li><p>math/COMPLEX : for complex numbers.</p></li>
+</ul>
+<p>Here, asusme we implement have a library project
+as the following directory structure:</p>
+<ul class="simple">
+<li><p>mathlib/ : the project directory</p>
+<ul>
+<li><p>src/ : the root of modules</p>
+<ul>
+<li><p>math/</p>
+<ul>
+<li><p>RAT.kn : program file of math/RAT module</p></li>
+<li><p>COMPLEX.kn : program file of math/COMPLEX module</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>build/ : the directory of generated files</p></li>
+</ul>
+</li>
+</ul>
+<p>Let's start from src/math/RAT.kn as follows.
+We will add documentation to this module and the library as a whole.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  <span class="nv">:Desc</span> = <span class="s1">&#39;RAT.new(Numer Denom)&#39;</span>
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">Numer</span>) &amp;&amp; <span class="nv">Numer</span>.<span class="n">int?</span> || <span class="n">raise</span>(
+    <span class="s1">&#39;{}: Numer must be an int num, but was {}&#39;</span>.<span class="n">format</span>(<span class="nv">Desc</span> <span class="nv">Numer</span>.<span class="n">repr</span>))
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">Denom</span>) &amp;&amp; <span class="nv">Denom</span>.<span class="n">int?</span> &amp;&amp; <span class="nv">Denom</span> != <span class="m">0</span> || <span class="n">raise</span>(
+    <span class="s1">&#39;{}: Denom must be a non-zero int num, but was {}&#39;</span>.<span class="n">format</span>(<span class="nv">Desc</span> <span class="nv">Denom</span>.<span class="n">repr</span>))
+  <span class="n">new_val</span>(
+    .. <span class="nv">Rat_trait</span>
+    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
+    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
+  )
+}
+
+<span class="nv">:Rat_trait</span> &lt;- [
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Numer</span> }
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Denom</span> }
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>] <span class="s1">&#39;(rat {} {})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>) }
+]
+</pre></div>
+</div>
+<section id="function">
+<h3><span class="section-number">8.1.1. </span>Function<a class="headerlink" href="#function" title="Link to this heading">¶</a></h3>
+<p>First, add a short description of <code class="docutils literal notranslate"><span class="pre">new</span></code> function.
+The first line of a kinkdoc comment chunk starts with <code class="docutils literal notranslate"><span class="pre">##</span></code>,
+and subsequent lines start with <code class="docutils literal notranslate"><span class="pre">#</span></code>, as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1">## RAT.new(Numer Denom)</span>
+<span class="c1">#</span>
+<span class="c1"># `new` makes a `rat` value</span>
+<span class="c1"># which represents a rational number.</span>
+<span class="c1">#</span>
+<span class="c1"># `Numer` is the numerator, and `Denom` is the denominator.</span>
+<span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  ,,,
+}
+</pre></div>
+</div>
+<p>The text of the first line after <code class="docutils literal notranslate"><span class="pre">##</span></code> and a whitespace
+is treated as the title of the section.
+Following lines provide the body of the section.
+The text of the body starts after <code class="docutils literal notranslate"><span class="pre">#</span></code> and a whitespace,
+and it is separated to blocks or paragraphs by an empty comment line.
+So, the kinkdoc comment chunk above can be translated to HTML like this:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;</span>RAT.new(Numer Denom)<span class="p">&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>`new` makes a `rat` value which represents a rational number.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>`Numer` is the numerator, and `Denom` is the denominator.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Note that the backtick <code class="docutils literal notranslate"><span class="pre">`</span></code> is written to HTML verbatim.
+It is not a special character in kinkdoc format.
+Use of backticks to quote symbols or code fragments is just a convention.</p>
+<p>You may want to add an example code to the section.
+A code block is indented by two whitespaces.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1">## RAT.new(Numer Denom)</span>
+<span class="c1">#</span>
+<span class="c1"># `new` makes a `rat` value</span>
+<span class="c1"># which represents a rational number.</span>
+<span class="c1">#</span>
+<span class="c1"># `Numer` is the numerator, and `Denom` is the denominator.</span>
+<span class="c1">#</span>
+<span class="c1"># Usage:</span>
+<span class="c1">#</span>
+<span class="c1">#   :RAT.require_from(&#39;org/example/&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#   :Rat &lt;- RAT.new(1 2)</span>
+<span class="c1">#   stdout.print_line(Rat.repr)  # =&gt; (rat 1 2)</span>
+<span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  ,,,
+}
+</pre></div>
+</div>
+<p>The text after <code class="docutils literal notranslate"><span class="pre">Usage:</span></code> can be translated to HTML as follows:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Usage:<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">pre</span><span class="p">&gt;</span>
+:RAT.require_from(&#39;org/example/&#39;)
+
+:Rat <span class="ni">&amp;lt;</span>- RAT.new(1 2)
+stdout.print_line(Rat.repr)  # =<span class="ni">&amp;gt;</span> (rat 1 2)
+<span class="p">&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>You might want to insert a heading to separate contents in the section body.
+If the block starts with <code class="docutils literal notranslate"><span class="pre">==</span></code>, and ends with <code class="docutils literal notranslate"><span class="pre">==</span></code>,
+it is regarded as a heading.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1">## RAT.new(Numer Denom)</span>
+<span class="c1">#</span>
+<span class="c1"># `new` makes a `rat` value</span>
+<span class="c1"># which represents a rational number.</span>
+<span class="c1">#</span>
+<span class="c1"># `Numer` is the numerator, and `Denom` is the denominator.</span>
+<span class="c1">#</span>
+<span class="c1"># Usage:</span>
+<span class="c1">#</span>
+<span class="c1">#   :RAT.require_from(&#39;org/example/&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#   :Rat &lt;- RAT.new(1 2)</span>
+<span class="c1">#   stdout.print_line(Rat.repr)  # =&gt; (rat 1 2)</span>
+<span class="c1">#</span>
+<span class="c1"># == Preconditions: ==</span>
+<span class="c1">#</span>
+<span class="c1"># • `Numer` must be an int num.</span>
+<span class="c1">#</span>
+<span class="c1"># • `Denom` must be a non-zero int num.</span>
+<span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  ,,,
+}
+</pre></div>
+</div>
+<p>The text after <code class="docutils literal notranslate"><span class="pre">==</span> <span class="pre">Preconditions:</span> <span class="pre">==</span></code> can be translated to HTML as follows:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;</span><span class="nt">em</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;heading&quot;</span><span class="p">&gt;</span>Preconditions:<span class="p">&lt;/</span><span class="nt">em</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>• `Numer` must be an int num.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>• `Denom` must be a non-zero int num.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Note that the heading is not translated to <code class="docutils literal notranslate"><span class="pre">h3</span></code>, <code class="docutils literal notranslate"><span class="pre">h4</span></code>, or <code class="docutils literal notranslate"><span class="pre">h5</span></code> element,
+but just a <code class="docutils literal notranslate"><span class="pre">p</span></code> element with markups.
+It is because a heading does not affect the tree structure of the document.</p>
+<p>Also note that <code class="docutils literal notranslate"><span class="pre">•</span></code> is translated verbatim,
+because it is not a special character.</p>
+</section>
+<section id="type-and-methods">
+<h3><span class="section-number">8.1.2. </span>Type and methods<a class="headerlink" href="#type-and-methods" title="Link to this heading">¶</a></h3>
+<p>Second, add documentation of <code class="docutils literal notranslate"><span class="pre">rat</span></code> type.
+The best location is before the assignment of <code class="docutils literal notranslate"><span class="pre">Rat_trait</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1">## type rat</span>
+<span class="c1">#</span>
+<span class="c1"># `rat` is a type of rational numbers.</span>
+<span class="nv">:Rat_trait</span> &lt;- [
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Numer</span> }
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Denom</span> }
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>] <span class="s1">&#39;(rat {} {})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>) }
+]
+</pre></div>
+</div>
+<p>Then, add documentation of methods of <code class="docutils literal notranslate"><span class="pre">rat</span></code> type.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1">## type rat</span>
+<span class="c1">#</span>
+<span class="c1"># `rat` is a type of rational numbers.</span>
+<span class="nv">:Rat_trait</span> &lt;- [
+
+  <span class="c1">## R.numer</span>
+  <span class="c1">#</span>
+  <span class="c1"># `numer` returns the numerator of the rational number `R`.</span>
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Numer</span> }
+
+  <span class="c1">## R.denom</span>
+  <span class="c1">#</span>
+  <span class="c1"># `denom` returns the denominator of the rational number `R`.</span>
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Denom</span> }
+
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>] <span class="s1">&#39;(rat {} {})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>) }
+]
+</pre></div>
+</div>
+<p>Here, kinkdoc comment chunks of <code class="docutils literal notranslate"><span class="pre">R.numer</span></code> and <code class="docutils literal notranslate"><span class="pre">R.denom</span></code> methods are
+indented from one of <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">rat</span></code>.
+Thus, the sections of <code class="docutils literal notranslate"><span class="pre">R.numer</span></code> and <code class="docutils literal notranslate"><span class="pre">R.denom</span></code> are regarded as children of
+the section of <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">rat</span></code>.
+So the above fragment can be translated to HTML as follows.</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;</span>type rat<span class="p">&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>`rat` is a type of rational numbers.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">h4</span><span class="p">&gt;</span>R.numer<span class="p">&lt;/</span><span class="nt">h4</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>`numer` returns the numerator of the rational number `R`.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">h4</span><span class="p">&gt;</span>R.denom<span class="p">&lt;/</span><span class="nt">h4</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>`denom` returns the denominator of the rational number `R`.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="module">
+<h3><span class="section-number">8.1.3. </span>Module<a class="headerlink" href="#module" title="Link to this heading">¶</a></h3>
+<p>You can also add documentation of a module.
+If the first kinkdoc comment chunk in a program file
+does not have a title string, it is handled as documentation of the module.</p>
+<p>Thus, finally, src/math/RAT.kn can be as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1">##</span>
+<span class="c1"># This module provides calculation of rational numbers.</span>
+
+<span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="c1">## RAT.new(Numer Denom)</span>
+<span class="c1">#</span>
+<span class="c1"># `new` makes a `rat` value</span>
+<span class="c1"># which represents a rational number.</span>
+<span class="c1">#</span>
+<span class="c1"># `Numer` is the numerator, and `Denom` is the denominator.</span>
+<span class="c1">#</span>
+<span class="c1"># Usage:</span>
+<span class="c1">#</span>
+<span class="c1">#   :RAT.require_from(&#39;org/example/&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#   :Rat &lt;- RAT.new(1 2)</span>
+<span class="c1">#   stdout.print_line(Rat.repr)  # =&gt; (rat 1 2)</span>
+<span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  <span class="nv">:Desc</span> = <span class="s1">&#39;RAT.new(Numer Denom)&#39;</span>
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">Numer</span>) &amp;&amp; <span class="nv">Numer</span>.<span class="n">int?</span> || <span class="n">raise</span>(
+    <span class="s1">&#39;{}: Numer must be an int num, but was {}&#39;</span>.<span class="n">format</span>(<span class="nv">Desc</span> <span class="nv">Numer</span>.<span class="n">repr</span>))
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">Denom</span>) &amp;&amp; <span class="nv">Denom</span>.<span class="n">int?</span> &amp;&amp; <span class="nv">Denom</span> != <span class="m">0</span> || <span class="n">raise</span>(
+    <span class="s1">&#39;{}: Denom must be a non-zero int num, but was {}&#39;</span>.<span class="n">format</span>(<span class="nv">Desc</span> <span class="nv">Denom</span>.<span class="n">repr</span>))
+  <span class="n">new_val</span>(
+    .. <span class="nv">Rat_trait</span>
+    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
+    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
+  )
+}
+
+<span class="c1">## type rat</span>
+<span class="c1">#</span>
+<span class="c1"># `rat` is a type of rational numbers.</span>
+<span class="nv">:Rat_trait</span> &lt;- [
+
+  <span class="c1">## R.numer</span>
+  <span class="c1">#</span>
+  <span class="c1"># `numer` returns the numerator of the rational number `R`.</span>
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Numer</span> }
+
+  <span class="c1">## R.denom</span>
+  <span class="c1">#</span>
+  <span class="c1"># `denom` returns the denominator of the rational number `R`.</span>
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Denom</span> }
+
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>] <span class="s1">&#39;(rat {} {})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>) }
+]
+</pre></div>
+</div>
+</section>
+<section id="kinkdoc-toolchain">
+<h3><span class="section-number">8.1.4. </span>Kinkdoc toolchain<a class="headerlink" href="#kinkdoc-toolchain" title="Link to this heading">¶</a></h3>
+<p>Assume you wrote src/math/COMPLEX.kn as well with kinkdoc comments.
+How can we generate documentation from those program files?</p>
+<p>Documentation generation is done by two steps:</p>
+<ul class="simple">
+<li><p>Parsing: Generate a <a class="reference internal" href="#kinkdocjsonschema"><span class="std std-ref">JSON</span></a> file from program files.
+Done by <a class="reference internal" href="api/kink-doc-DOC_PARSE_TOOL.html"><span class="doc">DOC_PARSE_TOOL</span></a> module.</p></li>
+<li><p>Rendering: Generate an end result from the JSON file.
+For example, <a class="reference internal" href="api/kink-doc-render-html-HTML_RENDER_TOOL.html"><span class="doc">HTML_RENDER_TOOL</span></a> module for an HTML file,
+and <a class="reference internal" href="api/kink-doc-render-sphinx-SPHINX_RENDER_TOOL.html"><span class="doc">SPHINX_RENDER_TOOL</span></a> module
+for Sphinx source files.</p></li>
+</ul>
+<p>The toolchain can be described as the following dataflow diagram.</p>
+<div class="graphviz"><img src="_images/graphviz-7fba31796bd524390da530467c1fb560daf41d3b.png" alt="digraph kinkdocflow {
+  program [label = &quot;proram files&quot;, shape = box];
+  json [label = &quot;JSON&quot;, shape = box];
+  html [label = &quot;HTML file&quot;, shape = box];
+  sphinx [label = &quot;Sphinx files&quot;, shape = box];
+  other [label = &quot;Other format&quot;, shape = box];
+
+  parser [label = &quot;Parsing by DOC_PARSE_TOOL module&quot;];
+  htmlrender [label = &quot;HTML_RENDER_TOOL&quot;];
+  sphinxrender [label = &quot;SPHINX_RENDER_TOOL&quot;];
+  otherrender [label = &quot;Other renderer&quot;];
+
+  program -&gt; parser -&gt; json;
+  json -&gt; htmlrender -&gt; html;
+  json -&gt; sphinxrender -&gt; sphinx;
+  json -&gt; otherrender -&gt; other;
+}" class="graphviz" /></div>
+<p>If you want to generate an HTML file as the output,
+you can run a command chain like this:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink mod:kink/doc/DOC_PARSE_TOOL src | kink mod:kink/doc/render/html/HTML_RENDER_TOOL &gt; doc.html
+</pre></div>
+</div>
+<p><a class="reference internal" href="api/kink-doc-DOC_PARSE_TOOL.html"><span class="doc">DOC_PARSE_TOOL</span></a> module
+parses program files of public modules
+under the specified directory, <code class="docutils literal notranslate"><span class="pre">src</span></code>,
+and writes the JSON data to the standard output.
+<a class="reference internal" href="api/kink-doc-render-html-HTML_RENDER_TOOL.html"><span class="doc">HTML_RENDER_TOOL</span></a>
+module reads the <a class="reference internal" href="#kinkdocjsonschema"><span class="std std-ref">JSON</span></a> data from the standard input,
+then writes an HTML document to the standard output.
+The html can be like the following:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>API documentation<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>API documentation<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>math/COMPLEX<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>This module provides calculation of complex numbers.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+,,,
+
+<span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>math/RAT<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>This module provides calculation of rational numbers.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;</span>RAT.new(Numer Denom)<span class="p">&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+
+,,,
+
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="api-level-documentation">
+<h3><span class="section-number">8.1.5. </span>API level documentation<a class="headerlink" href="#api-level-documentation" title="Link to this heading">¶</a></h3>
+<p>You can give the title of the entire API documentation by <code class="docutils literal notranslate"><span class="pre">--title</span></code> option
+of <a class="reference internal" href="api/kink-doc-DOC_PARSE_TOOL.html"><span class="doc">DOC_PARSE_TOOL</span></a> module.
+If <code class="docutils literal notranslate"><span class="pre">--title</span></code> is not specified, “API documentation”
+is used as the default title.</p>
+<p>You can also give the overview text of the API documentation.
+It can be done by making a program file containing kinkdoc comment chunks,
+and specifying the file to <code class="docutils literal notranslate"><span class="pre">--overview</span></code> option
+of <a class="reference internal" href="api/kink-doc-DOC_PARSE_TOOL.html"><span class="doc">DOC_PARSE_TOOL</span></a> module.
+The toplevel section of the specified program file
+is used as the overview text.
+The second and lower level sections are used as as module-level
+and lower level sections.</p>
+<p>Let's make src/overview.kn as follows:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1">##</span>
+<span class="c1"># This library provides various systems of numbers.</span>
+</pre></div>
+</div>
+<p>The overview file can be specified as follows.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink mod:kink/doc/DOC_PARSE_TOOL src \
+    --title &#39;Math library&#39; \
+    --overview src/overview.kn \
+    | kink mod:kink/doc/render/html/HTML_RENDER_TOOL &gt; doc.html
+</pre></div>
+</div>
+<p>The end result can be as follows:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Math library<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Math library<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>This library provides various systems of numbers.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>math/COMPLEX<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+
+,,,
+
+<span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>math/RAT<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+
+,,,
+
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="vim-folding-support">
+<h3><span class="section-number">8.1.6. </span>Vim folding support<a class="headerlink" href="#vim-folding-support" title="Link to this heading">¶</a></h3>
+<p>If the title line contains <code class="docutils literal notranslate"><span class="pre">{{{</span></code>, the substring from it is ignored.
+So, it can be used as the start marker without changing the output.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1">## type rat {{{1</span>
+<span class="c1">#</span>
+<span class="c1"># `rat` is a type of rational numbers.</span>
+<span class="nv">:Rat_trait</span> &lt;- [
+
+  <span class="c1">## R.numer {{{</span>
+  <span class="c1">#</span>
+  <span class="c1"># `numer` returns the numerator of the rational number `R`.</span>
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Numer</span>
+  } <span class="c1"># }}}</span>
+
+  <span class="c1">## R.denom {{{</span>
+  <span class="c1">#</span>
+  <span class="c1"># `denom` returns the denominator of the rational number `R`.</span>
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Denom</span>
+  } <span class="c1"># }}}</span>
+
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>] <span class="s1">&#39;(rat {} {})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>) }
+
+] <span class="c1"># }}}1</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="kinkdoc-comment-specification">
+<h2><span class="section-number">8.2. </span>Kinkdoc comment specification<a class="headerlink" href="#kinkdoc-comment-specification" title="Link to this heading">¶</a></h2>
+<section id="definitions-of-terms-in-the-section">
+<h3><span class="section-number">8.2.1. </span>Definitions of terms in the section<a class="headerlink" href="#definitions-of-terms-in-the-section" title="Link to this heading">¶</a></h3>
+<p>The following are definitions of terms used in
+the “Kinkdoc comment specification” section.</p>
+<p class="rubric">Whitespace character</p>
+<p>The <em class="dfn">whitespace character</em> is the codepoint U+0020.</p>
+<p class="rubric">ASCII control characters</p>
+<p><em class="dfn">ASCII control characters</em> are the codepoints U+0000-U+001f and U+007f.</p>
+<p class="rubric">Space-like characters</p>
+<p><em class="dfn">Space-like characters</em> are the whitespace character
+or ASCII control characters.</p>
+<p class="rubric">Line feed character</p>
+<p><em class="dfn">Line feed character</em> is U+000a.</p>
+<p class="rubric">Line</p>
+<p>A <em class="dfn">line</em> is a range in a source program
+which meets one of the following conditions:</p>
+<ul class="simple">
+<li><p>If the source program includes one or more line feed characters:</p>
+<ul>
+<li><p>From the start of the source program,
+exclusively to the first line feed character.</p></li>
+<li><p>Exclusively from the last line feed character, to the end of the program.</p></li>
+<li><p>Exclusively from a line feed character,
+exclusively to the next line feed character.</p></li>
+</ul>
+</li>
+<li><p>If the source program does not include a line feed character:</p>
+<ul>
+<li><p>From the start of the source program, to the end of the source program.</p></li>
+</ul>
+</li>
+</ul>
+<p class="rubric">Number sign</p>
+<p>The <em class="dfn">number sign</em> is the codepoint <code class="docutils literal notranslate"><span class="pre">#</span></code> (U+0023).</p>
+<p class="rubric">Comment delimiter</p>
+<p>The <em class="dfn">comment delimiter</em> of a comment is the longest sequence
+of number signs inclusively from the number sign which starts the comment.</p>
+<p class="rubric">Comment only line</p>
+<p>A <em class="dfn">comment only line</em> is a line which meets the following conditions:</p>
+<ul class="simple">
+<li><p>The line contains a <a class="reference internal" href="language/syntax.html#comment"><span class="std std-ref">comment</span></a>.</p></li>
+<li><p>All the codepoints in the line before the comment delimiter
+are whitespace characters.</p></li>
+</ul>
+<p class="rubric">Comment text</p>
+<p>The <em class="dfn">comment text</em> of a comment is the codepoints of the range
+exclusively from the comment delimiter,
+exclusively to the sequence of space-like characters at the end of the line.</p>
+<p class="rubric">Empty comment line</p>
+<p>An <em class="dfn">empty comment line</em> is a comment only line the length
+of the comment text of which is zero.</p>
+<p class="rubric">Comment chunk</p>
+<p>A <em class="dfn">comment chunk</em> is a sequence of comment only lines,
+which is not preceded by a comment only line,
+and not followed by a comment only line.</p>
+</section>
+<section id="kinkdoc-comment-chunk">
+<h3><span class="section-number">8.2.2. </span>Kinkdoc comment chunk<a class="headerlink" href="#kinkdoc-comment-chunk" title="Link to this heading">¶</a></h3>
+<p>A documentation text is written in a comment chunk
+which meets the following conditions.
+Those chunks are called <em class="dfn">kinkdoc comment chunks</em>.</p>
+<ul class="simple">
+<li><p>Every line must be indented at the same level.
+In other words, the number of whitespace characters
+at the beginning of the line must be equal for each line.</p></li>
+<li><p>The comment delimiter of the first line
+must be exactly two number signs <code class="docutils literal notranslate"><span class="pre">##</span></code>.</p></li>
+<li><p>If the chunk consists of 2 or more lines,
+the comment delimiter of the second and following lines
+must be exactly one number sign <code class="docutils literal notranslate"><span class="pre">#</span></code>.</p></li>
+<li><p>If the comment text is not empty,
+the first codepoint after the comment delimiter must be a whitespace character.</p></li>
+</ul>
+</section>
+<section id="title">
+<h3><span class="section-number">8.2.3. </span>Title<a class="headerlink" href="#title" title="Link to this heading">¶</a></h3>
+<p>The title of the section is extracted from the comment text of the first line
+of the kinkdoc comment chunk.
+The comment text is first matched by the regex
+<code class="docutils literal notranslate"><span class="pre">[\u0000-\u0020\u007f]*(?&lt;RawText&gt;.*?)[\u0000-\u0020\u007f]*(\{\{\{.*)?</span></code>
+and the group <code class="docutils literal notranslate"><span class="pre">RawText</span></code> is extracted.</p>
+<p>The title is made from <code class="docutils literal notranslate"><span class="pre">RawText</span></code>, replacing ASCII control characters
+to a whitespace character.</p>
+</section>
+<section id="blocks">
+<h3><span class="section-number">8.2.4. </span>Blocks<a class="headerlink" href="#blocks" title="Link to this heading">¶</a></h3>
+<p>The second and following lines of the kinkdoc comment chunk
+are split to <em class="dfn">blocks</em> by empty comment lines.</p>
+<p>There are three types of blocks:</p>
+<ul class="simple">
+<li><p>Code block</p></li>
+<li><p>Heading block</p></li>
+<li><p>Paragraph block</p></li>
+</ul>
+<section id="code-block">
+<h4><span class="section-number">8.2.4.1. </span>Code block<a class="headerlink" href="#code-block" title="Link to this heading">¶</a></h4>
+<p>If the comment text of every line of a block
+has three or more whitespace characters,
+the block is a <em class="dfn">code block</em>.</p>
+<p>The text of the code block is generated from comment texts as follows.
+First, three whitespace characters are removed from the head
+of the comment text of each line.
+Second, a line feed character is added to the end of the comment text
+of each line.
+Third, comment texts of the code block are concatenated in order.</p>
+<p>If a code block is directly followed by another code block,
+those code blocks are combined into a single code block.
+The text of the code block is made by joining the texts
+of the combined code blocks with a line feed character.</p>
+</section>
+<section id="heading-block">
+<h4><span class="section-number">8.2.4.2. </span>Heading block<a class="headerlink" href="#heading-block" title="Link to this heading">¶</a></h4>
+<p>If a block meets following conditions, it is a <em class="dfn">heading block</em>.</p>
+<ul class="simple">
+<li><p>The comment text of the first line of the block
+starts with a white space character and two equals signs (U+003d),
+and a white space character.</p></li>
+<li><p>The comment text of the last line of the block
+ends with a white space character, and two equal signs (U+003d).</p></li>
+<li><p>One of the following conditions are met:</p>
+<ul>
+<li><p>The block consists of two or more lines.</p></li>
+<li><p>If the block consists of a single line,
+the comment text matches the regex <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">]==</span> <span class="pre">+[^</span> <span class="pre">](.*[^</span> <span class="pre">])</span> <span class="pre">+==</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+<p>The text of the heading block is generated as follows.
+First, comment texts of the lines are concatenated in order.
+Second, the text is matched with the regex
+<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">]==</span> <span class="pre">+(?&lt;Content&gt;[^</span> <span class="pre">](.*[^</span> <span class="pre">]))</span> <span class="pre">+==</span></code>,
+and the group <code class="docutils literal notranslate"><span class="pre">Content</span></code> is extracted as the text of the heading block.</p>
+</section>
+<section id="paragraph-block">
+<h4><span class="section-number">8.2.4.3. </span>Paragraph block<a class="headerlink" href="#paragraph-block" title="Link to this heading">¶</a></h4>
+<p>If a block does not meet the conditions
+of the <em class="dfn">code block</em> or the <em class="dfn">heading block</em>,
+it is a paragraph block.</p>
+<p>The text of the paragraph block is generated as follows.
+First, comment texts of the lines are concatenated in order.
+Second, whitespace characters at the head of the text are removed.</p>
+</section>
+</section>
+<section id="tree-structure-of-sections">
+<h3><span class="section-number">8.2.5. </span>Tree structure of sections<a class="headerlink" href="#tree-structure-of-sections" title="Link to this heading">¶</a></h3>
+<section id="the-toplevel-section">
+<h4><span class="section-number">8.2.5.1. </span>The toplevel section<a class="headerlink" href="#the-toplevel-section" title="Link to this heading">¶</a></h4>
+<p>If the first kinkdoc comment chunk has an empty title,
+the blocks of the chunk are used as the blocks of the toplevel section.</p>
+<p>If the program file does not have a kinkdoc comment chunk,
+or the first kinkdoc comment chunk has a nonempty title,
+the toplevel section is created with no blocks.</p>
+</section>
+<section id="non-toplevel-sections">
+<h4><span class="section-number">8.2.5.2. </span>Non toplevel sections<a class="headerlink" href="#non-toplevel-sections" title="Link to this heading">¶</a></h4>
+<p>The tree structure of non-toplevel sections are determined from
+indent levels of each kinkdoc comment chunk.
+Here, the indent level of a chunk is the number of whitespace characters
+before the comment delimiter.</p>
+<p>The tree structure is determined by the algorithm given
+by the pseudo code below.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>toplevel_section := «the top level section»
+chunks := «FIFO queue of non-toplevel kinkdoc comment chunks»
+
+read_children(toplevel_section, 0)
+
+def read_children(parent, min_indent) {
+  loop {
+    if empty?(chunks)
+      return
+
+    chunk := peek(chunks)
+    if chunk.indent_level &lt; min_indent
+      return
+
+    dequeue(chunks)
+    section := «generate section from chunk»
+    add(parent.subsections, section)
+    read_children(section, chunk.indent_level + 1)
+  }
+}
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="json-schema">
+<span id="kinkdocjsonschema"></span><h2><span class="section-number">8.3. </span>JSON Schema<a class="headerlink" href="#json-schema" title="Link to this heading">¶</a></h2>
+<p>The following is the JSON Schema of kinkdoc JSON data.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;blocks&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;subsections&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[^\\u0000-\\u0020\\u007f]([^\\u0000-\\u001f\\u007f]*[^\\u0000-\\u0020\\u007f])?&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;blocks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;paragraph&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;code&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;heading&quot;</span><span class="p">]</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;if&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;const&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;code&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;then&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;( *[^\\u0000-\\u0020\\u007f][^\\u0000-\\u001f\\u007f]*\\n)(([^\\u0000-\\u001f\\u007f]*\\n)*( *[^\\u0000-\\u0020\\u007f][^\\u0000-\\u001f\\u007f]*\\n))?&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;else&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[^\\u0000-\\u0020\\u007f]([^\\u0000-\\u001f\\u007f]*[^\\u0000-\\u0020\\u007f])?&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;subsections&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="patterns/style.html"><span class="section-number">7.8. </span>Code style</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="testing.html"><span class="section-number">9. </span>Testing</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

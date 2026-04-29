@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.56. kink/io/INPUT_SCANNER &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.57. kink/io/OUTPUT" href="kink-io-OUTPUT.html" />
+    <link rel="prev" title="6.55. kink/io/INPUT" href="kink-io-INPUT.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.56. kink/io/INPUT_SCANNER</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-INPUT.html"><span class="section-number">6.55. </span>kink/io/INPUT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-OUTPUT.html"><span class="section-number">6.57. </span>kink/io/OUTPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-io-input-scanner">
+<h1><span class="section-number">6.56. </span>kink/io/INPUT_SCANNER<a class="headerlink" href="#kink-io-input-scanner" title="Link to this heading">¶</a></h1>
+<p>Provides a `scanner` implementation wrapping `input`.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#input-scanner-new-input-charset-config" id="id1">INPUT_SCANNER.new(Input Charset ...[$config={}])</a></p></li>
+</ul>
+</nav>
+<section id="input-scanner-new-input-charset-config">
+<span id="api-d1e32a7edd5b3d1b05222e870e0f43de"></span><h2><span class="section-number">6.56.1. </span>INPUT_SCANNER.new(Input Charset ...[$config={}])<a class="headerlink" href="#input-scanner-new-input-charset-config" title="Link to this heading">¶</a></h2>
+<p>`new` makes a `scanner` which also support `input` methods. The created scanner reads bytes from `Input` and converts them to strings using `Charset`. Methods of `input` type are delegated to `Input`.</p>
+<p>Config method:</p>
+<p>• C.replace_conversion_error</p>
+<p>When `scan_line` or `scan` methods detect malformed byte sequence or a character which cannot be mapped to Unicode, those methods tail-call $error by default. If C.replace_conversion_error is called, `scan` and `scan_line` insert replacement character sequence into the string instead of calling $error.</p>
+<p class="rubric">Preconditions</p>
+<p>`Input` must be `input` type.</p>
+<p>`Charset` must be `charset` type.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:INPUT_SCANNER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:BIN_INPUT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:In</span> &lt;- <span class="nv">BIN_INPUT</span>.<span class="n">new</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">102</span> <span class="m">111</span> <span class="m">111</span> <span class="m">10</span>))
+<span class="nv">:S</span> &lt;- <span class="nv">INPUT_SCANNER</span>.<span class="n">new</span>(<span class="nv">In</span> <span class="nv">CHARSET</span>.<span class="n">utf8</span>)
+
+<span class="c1"># the result suppors input</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>.<span class="n">read</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x66)</span>
+
+<span class="c1"># the result suppors scanner</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>.<span class="n">scan_line</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;oo\n&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-INPUT.html"><span class="section-number">6.55. </span>kink/io/INPUT</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-OUTPUT.html"><span class="section-number">6.57. </span>kink/io/OUTPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

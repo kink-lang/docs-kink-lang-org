@@ -1,0 +1,44 @@
+===========================
+kink\/javahost\/JAVA\_THROW
+===========================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-831d0674b0a94021b344933b60eddc8c:
+
+type java\_throw
+================
+
+\`java\_throw\` is a wrapper of a java\.lang\.Throwable\.
+
+A \`java\_throw\` value is returned from a handler of a Java proxy to order that the Java procedure throw the throwable\.
+
+.. _api-84973c81a5112a0af9a1dc4f3ceb2b28:
+
+Java\_throw\.throwable
+----------------------
+
+\`throwable\` returns the wrapped instance of java\.lang\.Throwable\.
+
+The result of will be a \`java\` value \(th\, java\.lang\.Throwable\)\, where \`th\` is an instance of java\.lang\.Throwable\.
+
+.. _api-e64b901a5655eaad541d5782f3b15a1d:
+
+JAVA\_THROW\.new\(Throwable\)
+=============================
+
+\`new\` returns a \`java\_throw\` value which wraps \`Throwable\`\.
+
+.. rubric:: Precondition
+
+\`Throwable\` must be a \`java\` value \(th\, \*\)\, where \`th\` is an instance of java\.lang\.Throwable\.
+
+.. _api-086ead148cfbfac1dc36590ae4d085f0:
+
+JAVA\_THROW\.is\?\(Val\)
+========================
+
+\`is\?\` returns whether \`Val\` is a \`java\_throw\`\.
+

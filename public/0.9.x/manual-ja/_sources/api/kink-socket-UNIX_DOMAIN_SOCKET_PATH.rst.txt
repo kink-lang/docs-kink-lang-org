@@ -1,0 +1,102 @@
+========================================
+kink\/socket\/UNIX\_DOMAIN\_SOCKET\_PATH
+========================================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-aead5d16f7310b505971f63f94a888b5:
+
+type unix\_domain\_socket\_path
+===============================
+
+\`unix\_domain\_socket\_path\` is a path of a UNIX domain socket\.
+
+\`unix\_domain\_socket\_path\` is a subtype of \`socket\_address\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :UNIX_DOMAIN_SOCKET_PATH.require_from('kink/socket/')
+    :PROTOCOL_FAMILY.require_from('kink/socket/')
+    :TCP.require_from('kink/socket/')
+    :TCP_SERVER.require_from('kink/socket/')
+    :BIN.require_from('kink/')
+    :CONTROL.require_from('kink/')
+        
+    :Udsp <- UNIX_DOMAIN_SOCKET_PATH.new('foo.uds')
+        
+    :spawn_client <- {
+      CONTROL.with_finally{(:finally)
+        :Tcp = TCP.open(PROTOCOL_FAMILY.unix)
+        finally{ Tcp.close }
+        
+        Tcp.connect(Udsp)
+        :Out = Tcp.output
+        finally{ Out.close }
+        
+        Out.write(BIN.of(1 2 3))
+      }
+    }
+        
+    CONTROL.with_finally{(:finally)
+      :Serv = TCP_SERVER.open(PROTOCOL_FAMILY.unix)
+      finally{ Serv.close }
+        
+      Serv.bind_listen(Udsp)
+      spawn_client
+      :Tcp = Serv.accept
+      finally{ Tcp.close }
+        
+      :In = Tcp.input
+      finally{ In.close }
+        
+      :Bin = In.read_all
+      stdout.print_line(Bin.repr) # => (bin 0x01 0x02 0x03)
+    }
+
+.. _api-124ab68e12b2aa435e8adc8b8bc0f21c:
+
+Udsp\.path
+----------
+
+\`path\` returns the path on the file system of the UNIX domain socket as a \`str\` value\.
+
+.. _api-42d4508aa3fa3d0dc691e991226bf135:
+
+Udsp\.protocol\_family
+----------------------
+
+\`protocol\_family\` returns PROTOCOL\_FAMILY\.unix\.
+
+.. _api-3d0289cba4d6f554f52caf53d0508282:
+
+Udsp \=\= Addr
+--------------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns true if and only if \`Addr\` is a \`unix\_domain\_socket\_path\` value\, and the paths of \`Udsp\` and \`Addr\` are equal by \`\=\=\` operator of type \`str\`\.
+
+.. rubric:: Precondition
+
+\`Addr\` must be a \`socket\_address\`\.
+
+.. _api-adc2c7294b15ceed2fa49ccd0178f7f9:
+
+UNIX\_DOMAIN\_SOCKET\_PATH\.new\(Path\)
+=======================================
+
+\`new\` returns a \`unix\_domain\_socket\_path\` value\.
+
+.. rubric:: Precondition
+
+\`Path\` must be a \`str\`\.
+
+.. _api-efde51706c66c8a2906b43e505ad8338:
+
+UNIX\_DOMAIN\_SOCKET\_PATH\.is\?\(Val\)
+=======================================
+
+\`is\?\` returns whether \`Val\` is a \`unix\_domain\_socket\_path\` value\.
+

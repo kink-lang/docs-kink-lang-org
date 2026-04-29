@@ -1,0 +1,409 @@
+====================
+kink\/container\/SET
+====================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-98311a76df5bead2d41432f82bacb54f:
+
+type set
+========
+
+\`set\` is an abstract type of containers of unique elements\. Elements must be unique in the \`set\`\, in the equivalence relation defined by the implementation\.
+
+\`ordered\_set\` is a subtype of \`set\` which supports total ordering of elements\. See kink\/container\/ORDERED\_SET\.
+
+.. _api-2d702c4c238e10b4e1521da50bdf47fd:
+
+Set\.have\?\(Elem\)
+-------------------
+
+\`have\?\` returns whether \`Set\` has an element equivalent to \`Elem\`\.
+
+.. rubric:: Precondition
+
+\`Elem\` must be in the domain of the equivalence relation of elements\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of('foo' 'bar')
+    stdout.print_line(Set.have?('foo').repr)  # => true
+    stdout.print_line(Set.have?('xxx').repr)  # => false
+
+.. _api-f6a870e052111a171a3a51a7632e76d5:
+
+Set\.size
+---------
+
+\`size\` returns the number of elements of \`Set\` as an integer \`num\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :Set <- TREE_SET.of('foo' 'bar')
+    stdout.print_line(Set.size.repr)  # => 2
+
+.. _api-7b8e5aaed8d30a07260fcc20cd0dbdd8:
+
+Set\.push\(Elem\)
+-----------------
+
+\`push\` inserts \`Elem\` to \`Set\`\.
+
+If \`Set\` already has an element equivalent to \`Elem\`\, \`push\` might either do nothing\, or replace the element by \`Elem\`\.
+
+.. rubric:: Precondition
+
+\`Elem\` must be in the domain of the equivalence relation of elements\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :Set <- TREE_SET.of()
+    Set.push('foo')
+    Set.push('bar')
+    Set.push('foo')
+    stdout.print_line(Set.repr) # => (tree_set "bar" "foo")
+
+.. _api-81a0643d94216924bffb14257b663f13:
+
+Set\.append\(Eacher\)
+---------------------
+
+\`append\` inserts elements of \`Eacher\` to \`Set\`\.
+
+.. rubric:: Preconditions
+
+\`Eacher\` must support \.each\(\$consume\) method\, which calls \$consume for each element of \`Eacher\`\.
+
+The elements of \`Eacher\` must be in the domain of the elements of \`Set\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of('foo' 'bar')
+        
+    Set.append(['bar' 'baz'])
+    stdout.print_line(Set.repr) # => (flat_set "bar" "baz" "foo")
+
+.. _api-6fb354b113ac862b36172bcc5236e248:
+
+Set\.remove\(Elem\)
+-------------------
+
+\`remove\` deletes an element equivalent to \`Elem\`\. If \`Set\` does not have such an element\, \`remove\` does nothing\.
+
+.. rubric:: Precondition
+
+\`Elem\` must be in the domain of the equivalence relation of elements\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of('foo' 'bar' 'baz')
+    Set.remove('foo')
+    Set.remove('xxx')
+    stdout.print_line(Set.repr) # => (flat_set "bar" "baz")
+
+.. _api-d35965eee7349b5ff82ee7ea0a644037:
+
+Set\.clear
+----------
+
+\`clear\` removes all the elements\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of('foo' 'bar' 'baz')
+    Set.clear
+    stdout.print_line(Set.repr) # => (flat_set)
+
+.. _api-5af69d82af3645140f3d1b4ac8e22912:
+
+Set\.iter
+---------
+
+\`iter\` method returns an \`iter\` of the elements of \`Set\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :Set <- TREE_SET.of('foo' 'bar' 'baz')
+    Set.iter.each{(:E)
+      stdout.print_line(E.repr)
+    }
+    # Output:
+    #   "bar"
+    #   "baz"
+    #   "foo"
+
+.. _api-240a37b90bb8556a80d895e384f275b2:
+
+Set\.each\(\$consume\)
+----------------------
+
+\`each\` calls \$consume for each element of \`Set\`\.
+
+.. rubric:: Precondition
+
+\$consume must be a fun which takes a value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :Set <- TREE_SET.of('foo' 'bar' 'baz')
+    Set.each{(:E)
+      stdout.print_line(E.repr)
+    }
+    # Output:
+    #   "bar"
+    #   "baz"
+    #   "foo"
+
+.. _api-0b782d162b7df18b6126b90dd687eb70:
+
+Set\.all\?\(\$match\?\)
+-----------------------
+
+\`all\?\` returns whether all the elements of \`Set\` satisfy the predicate \$match\?\.
+
+.. rubric:: Precondition
+
+\$match\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of(1 2 3 4 5)
+    stdout.print_line(Set.all?{(:E) E % 2 == 0 }.repr)  # => false
+    stdout.print_line(Set.all?{(:E) E < 10 }.repr)    # => true
+    stdout.print_line(Set.all?{(:E) E >= 10 }.repr)   # => false
+
+.. _api-edeae5d88aa8bffb3dcd74e23424afb5:
+
+Set\.any\?\(\.\.\.\[\$match\?\=\{ true \}\]\)
+---------------------------------------------
+
+\`any\?\` returns whether one or more elements of \`Set\` satisfy the predicate \$match\?\.
+
+\$match\? is an optional arg with a default value \{ true \}\. So\, if \$match\? is not passed\, \`any\?\` returns whether \`Set\` is nonempty\.
+
+.. rubric:: Precondition
+
+\$match\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of(1 2 3 4 5)
+    stdout.print_line(Set.any?{(:E) E % 2 == 0 }.repr) # => true
+    stdout.print_line(Set.any?{(:E) E < 10 }.repr)     # => true
+    stdout.print_line(Set.any?{(:E) E >= 10 }.repr)    # => false
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    stdout.print_line(FLAT_SET.of().any?.repr)    # => false
+    stdout.print_line(FLAT_SET.of(1).any?.repr)   # => true
+    stdout.print_line(FLAT_SET.of(1 2).any?.repr) # => true
+
+.. _api-6d7bc24e8660964dfd50cf664e848b0f:
+
+Set\.count\(\$counted\?\)
+-------------------------
+
+\`count\` returns the number of elements of \`Set\` which satisfy the predicate \$counted\?\, as an integer \`num\`\.
+
+.. rubric:: Precondition
+
+\$counted\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of(1 2 3 4 5)
+    :Even_count <- Set.count{(:E) E % 2 == 0 }
+    stdout.print_line(Even_count.repr)  # => 2
+
+.. _api-5330fd16d1eaf8ab7d553fa260d12266:
+
+Set\.fold\(Init \$combine\)
+---------------------------
+
+\`fold\` folds elements of \`Set\` seeded by \`Init\`\.
+
+If \`Set\` has elements E1\, E2\, \,\,\, En\_1\, En\, \`fold\` returns combine\(combine\(\,\,\,combine\(combine\(Init E1\) E2\)\,\,\, En\_1\) En\)\. Elements can appear in any order\, unless \`Set\` is ordered\.
+
+If \`Set\` is empty\, \`fold\` returns \`Init\`\.
+
+.. rubric:: Precondition
+
+\$combine must be a fun which takes two values\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :Set <- TREE_SET.of(1 2 3 4 5)
+    :N <- Set.fold(100){(:X :Y) X + Y }
+    stdout.print_line(N.repr) # => 115
+
+.. _api-a156e903d680115467cce66891212378:
+
+Set\.reduce\(\$combine \.\.\.\[\$empty\_fallback\]\)
+----------------------------------------------------
+
+\`reduce\` folds elements of \`Set\` mutually\.
+
+If \`Set\` has elements E1\, E2\, E3\, \,\,\, En\_1\, En\, \`reduce\` returns combine\(combine\(\,\,\,combine\(combine\(E1 E2\) E3\)\,\,\, En\_1\) En\)\. Elements can appear in any order\, unless \`Set\` is ordered\.
+
+If \`Set\` has a single element \`E\`\, \`reduce\` returns \`E\`\.
+
+If \`Set\` is empty\, and \$empty\_fallback is given\, \`reduce\` tail\-calls \$empty\_fallback with no arg\.
+
+If \`Set\` is empty\, and \$empty\_fallback is not given\, \`reduce\` raises an exception\.
+
+.. rubric:: Preconditions
+
+\$combine must take two values\.
+
+\$empty\_fallback must be a thunk\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :Empty <- TREE_SET.of()
+    :Non_empty <- TREE_SET.of(1 2 3 4 5)
+        
+    stdout.print_line(Non_empty.reduce{(:X :Y) X + Y}.repr) # => 15
+    stdout.print_line(Empty.reduce({(:X :Y) X + Y} { 'empty' }).repr) # => "empty"
+
+.. _api-fbc71650f19e6cf3e5d5de8af6bb2a3a:
+
+Set\.have\_all\?\(Vals\)
+------------------------
+
+\`have\_all\?\` returns whether \`Set\` has all the elements of \`Vals\`\.
+
+.. rubric:: Preconditions
+
+\`Vals\` must implement \.all\?\(\$match\?\)\.
+
+The elements of \`Vals\` must be in the domain of the equivalence relation of elements of \`Set\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of('foo' 'bar' 'baz')
+        
+    stdout.print_line(Set.have_all?(['foo' 'bar']).repr)  # => true
+    stdout.print_line(Set.have_all?(['foo' 'X']).repr)    # => false
+    stdout.print_line(Set.have_all?(['X' 'Y' 'Z']).repr)  # => false
+
+.. _api-a3384489cc9874681c332297686f29d9:
+
+Set\.have\_any\?\(Vals\)
+------------------------
+
+\`have\_any\?\` returns whether \`Set\` has any element of \`Vals\`\.
+
+.. rubric:: Preconditions
+
+\`Vals\` must implement \.any\?\(\$match\?\)\.
+
+The elements of \`Vals\` must be in the domain of the equivalence relation of elements of \`Set\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_SET.require_from('kink/container/')
+        
+    :Set <- FLAT_SET.of('foo' 'bar' 'baz')
+        
+    stdout.print_line(Set.have_any?(['foo' 'bar']).repr)  # => true
+    stdout.print_line(Set.have_any?(['foo' 'X']).repr)    # => true
+    stdout.print_line(Set.have_any?(['X' 'Y' 'Z']).repr)  # => false
+
+.. _api-69f7e6fa1e8b35c831b29df075981948:
+
+Set1 \=\= Set2
+--------------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`Set1\` and \`Set2\` have equivalent collections of elements\.
+
+In other words\, \`op\_eq\` returns whether \`Set1\` has all the elements of \`Set2\`\, and \`Set2\` has all the elements of \`Set1\`\.
+
+.. rubric:: Preconditions
+
+\`Set2\` must be a \`set\`\.
+
+The equivalence relations of elements of \`Set1\` and \`Set2\` must be the same\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_SET.require_from('kink/container/')
+        
+    :X <- TREE_SET.of('foo' 'bar' 'baz')
+    :Y <- TREE_SET.of('foo' 'bar' 'baz')
+    :Z <- TREE_SET.of('A' 'B' 'C')
+    stdout.print_line((X == Y).repr)  # => true
+    stdout.print_line((X == Z).repr)  # => false
+
+.. _api-fbe09f5a1c8c097b4b22ec3c03804f84:
+
+SET\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a \`set\`\.
+

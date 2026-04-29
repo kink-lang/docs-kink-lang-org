@@ -1,0 +1,84 @@
+============
+kink\/LOCALE
+============
+
+Provides locale specific data\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-b62f7c0dcc02851f8a2c3df8a0d5d101:
+
+LOCALE\.for\(Lang\_tag\)
+========================
+
+LOCALE\.for returns a locale val which matches the language tag best\.
+
+It is not guaranteed that “lang\_tag” method of the result returns the same str as Lang\_tag\.
+
+.. _api-668468443c02606ede61892045a1c7de:
+
+type locale
+===========
+
+A locale is a set of parameters used for software internationalization specific to a combination of language\, region and other variants\.
+
+.. _api-a369b4ca326325eb726ec09caed16768:
+
+Locale\.lang\_tag
+-----------------
+
+“lang\_tag” method returns thes str of the language tag of the locale\.
+
+The result is a syntactically well\-formed IETF BCP47 language tag\. It is not guaranteed that subtags are registered in IANA Language Subtag Registry\.
+
+.. _api-6550bf2debc330d94f5de67a7e1d3a56:
+
+Locale\.group\_sep
+------------------
+
+“group\_sep” method returns a str which separates groups in the integral part in the locale\.
+
+.. _api-538083cade70126478498aa97f977062:
+
+Locale\.decimal\_sep
+--------------------
+
+“decimal\_sep” method returns a str which separates the integral part and the fractional part in the locale\.
+
+.. _api-22f1392dff60221d9dec0a9347c787bd:
+
+X \=\= Y
+--------
+
+Two locales are equal when the language tags of them are equal\.
+
+.. _api-189e4abdd3673713f89f17f654f2e4dd:
+
+Locale\.repr
+------------
+
+\`repr\` returns a str such as \"\(locale ja\-JP\)\"\.
+
+.. _api-04c22627cd06858f9c7782f39029ce59:
+
+LOCALE\.is\?\(Val\)
+===================
+
+LOCALE\.is\? returns whether Val is a locale val\.
+
+.. _api-e7a7d5a06abb5d89b27c5e327102744c:
+
+LOCALE\.root
+============
+
+LOCALE\.root returns the empty locale which is neutral to any language or region\.
+
+.. _api-88c19c9b9c54186143e27f84416444c1:
+
+LOCALE\.default
+===============
+
+LOCALE\.default returns the locale which is default for the runtime\.
+

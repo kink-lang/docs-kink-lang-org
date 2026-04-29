@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.25. kink/VAL &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.26. kink/VARREF" href="kink-VARREF.html" />
+    <link rel="prev" title="6.24. kink/TRACE" href="kink-TRACE.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.25. kink/VAL</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-TRACE.html"><span class="section-number">6.24. </span>kink/TRACE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-val">
+<h1><span class="section-number">6.25. </span>kink/VAL<a class="headerlink" href="#kink-val" title="Link to this heading">¶</a></h1>
+<p>値一般を扱う関数を提供する。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-val" id="id2">val型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#val-repr" id="id3">Val.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#val-id-hash-val" id="id4">VAL.id_hash(Val)</a></p></li>
+<li><p><a class="reference internal" href="#val-same-x-y" id="id5">VAL.same?(X Y)</a></p></li>
+<li><p><a class="reference internal" href="#val-var-syms-val" id="id6">VAL.var_syms(Val)</a></p></li>
+<li><p><a class="reference internal" href="#val-identity-val" id="id7">VAL.identity(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-val">
+<span id="api-68cc92efb7d516f5f1a8aebdb2e9cad8"></span><h2><span class="section-number">6.25.1. </span>val型<a class="headerlink" href="#type-val" title="Link to this heading">¶</a></h2>
+<p>valは普遍的な上位型、あるいはすべての型の上位型である。すべての値はval型のインスタンスである。</p>
+<p>val型はただひとつのメソッド、reprを持つ。これは、Kinkのすべての値がreprメソッドを持つことを意味する。</p>
+<section id="val-repr">
+<span id="api-7f7a08be81781b5fdb57b1bce9c6a4da"></span><h3><span class="section-number">6.25.1.1. </span>Val.repr<a class="headerlink" href="#val-repr" title="Link to this heading">¶</a></h3>
+<p>reprはValを表すstr値を、デバッグ目的のために戻す。</p>
+<p>結果の形式は型ごとに異なる:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">new_val</span>.<span class="n">repr</span>)         <span class="c1"># =&gt; (val id_hash=123)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>].<span class="n">repr</span>)         <span class="c1"># =&gt; [1 2 3]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; (bin 0x01 0x02 0x03)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot;hello world</span><span class="se">\n</span><span class="s2">&quot;</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;hello world\n&quot;</span>
+</pre></div>
+</div>
+<p>例として、reprの結果はエラーメッセージを構築するのに使える。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:to_int</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">N</span>) || <span class="n">raise</span>(
+    <span class="s1">&#39;to_int(N): N must be a num, but was {}&#39;</span>.<span class="n">format</span>(<span class="nv">N</span>.<span class="n">repr</span>))
+  <span class="nv">N</span> // <span class="m">1</span>
+}
+
+<span class="n">to_int</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   ...</span>
+<span class="c1">#   {(stdin) L4 C17 raise} NUM.is?(N) || --&gt;raise(</span>
+<span class="c1">#   to_int(N): N must be a num, but was &quot;foo&quot;</span>
+</pre></div>
+</div>
+<p>ランタイムも、reprの結果をエラーメッセージを構築するのに使う。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;foo&#39;</span>.<span class="n">bar</span>
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   ...</span>
+<span class="c1">#   [(stdin) L1 C7] &#39;foo&#39;.--&gt;bar</span>
+<span class="c1">#   no such var: bar not found in &quot;foo&quot;</span>
+</pre></div>
+</div>
+<p>エラーメッセージの他には、reprはログメッセージを構築するのにも使えるかも知れない。</p>
+<p>reprの実装にはいくつかの要件がある。</p>
+<p class="rubric">reprはstr値を戻さなければならない。</p>
+<p>上述したとおり、reprはエラーメッセージを構築するのに使われる。呼び出し元はreprがstr値を戻すことを期待している。もし仮にreprがstrでない値を戻したら、要件が満たされないので、結果ははちゃめちゃなものになる。</p>
+<p class="rubric">無限の長さ、深さを持つデータに対しても、reprは有限長のstr値を戻さなければならない</p>
+<p>コンテナ型を実装する場合、おそらくコンテナのreprメソッドは要素のreprメソッドを呼ぶことになる。無限の長さ、深さを持つデータに対しても、reprメソッドが有限長のstr値を戻すように注意せよ。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Y</span> &lt;- [<span class="m">4</span> <span class="m">5</span> <span class="m">6</span>]
+<span class="nv">:X</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="nv">Y</span>]
+<span class="nv">Y</span>.<span class="n">push_back</span>(<span class="nv">X</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [1 2 3 [4 5 6 [,,,]]]</span>
+</pre></div>
+</div>
+<p>再帰データのチェックはdyn値を使って行える。kink/container/FLAT_SETの実装を参照せよ。</p>
+<p class="rubric">結果は長すぎず</p>
+<p>reprの結果が長すぎると、デバッグ出力が使い物にならなくなるかも知れない。結果が長くなりすぎないように注意せよ。</p>
+</section>
+</section>
+<section id="val-id-hash-val">
+<span id="api-2d36b72d68d811f56ce0ba7352a8818a"></span><h2><span class="section-number">6.25.2. </span>VAL.id_hash(Val)<a class="headerlink" href="#val-id-hash-val" title="Link to this heading">¶</a></h2>
+<p>id_hashはValに割り当てられた整数のnum値を戻す。同じ値に対して、id_hashを複数回呼び出すと、毎回おなじ整数を戻す。</p>
+<p>結果は値の同一性のハッシュコードとして使える。</p>
+</section>
+<section id="val-same-x-y">
+<span id="api-4aa2adc68b7c0aa43a6373fdc23e61d3"></span><h2><span class="section-number">6.25.3. </span>VAL.same?(X Y)<a class="headerlink" href="#val-same-x-y" title="Link to this heading">¶</a></h2>
+<p>same?はふたつの引数XとYが、同じ値であるかどうかを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:test_identity</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)
+  <span class="n">if</span>(<span class="nv">VAL</span>.<span class="n">same?</span>(<span class="nv">X</span> <span class="nv">Y</span>)
+    { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;same&#39;</span>) }
+    { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;different&#39;</span>) }
+  )
+}
+<span class="nv">:V</span> &lt;- <span class="n">new_val</span>
+<span class="n">test_identity</span>(<span class="nv">V</span> <span class="nv">V</span>)        <span class="c1"># =&gt; same</span>
+<span class="n">test_identity</span>(<span class="nv">V</span> <span class="n">new_val</span>)  <span class="c1"># =&gt; different</span>
+</pre></div>
+</div>
+</section>
+<section id="val-var-syms-val">
+<span id="api-c65e133bba43714af029cba11754dd2b"></span><h2><span class="section-number">6.25.4. </span>VAL.var_syms(Val)<a class="headerlink" href="#val-var-syms-val" title="Link to this heading">¶</a></h2>
+<p>`var_syms` does variable-symbols operation, and returns the set of syms of the vars of `Val`.</p>
+<p>結果はstr値のsetである。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:V</span> &lt;- <span class="n">new_val</span>(<span class="s1">&#39;Data&#39;</span> <span class="m">42</span> <span class="s1">&#39;fun&#39;</span> {})
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">VAL</span>.<span class="n">var_syms</span>(<span class="nv">V</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (flat_set &quot;Data&quot; &quot;fun&quot; &quot;repr&quot;)</span>
+</pre></div>
+</div>
+</section>
+<section id="val-identity-val">
+<span id="api-ce30e92c8bb96e52425438471e4d64c8"></span><h2><span class="section-number">6.25.5. </span>VAL.identity(Val)<a class="headerlink" href="#val-identity-val" title="Link to this heading">¶</a></h2>
+<p>identityはValを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">VAL</span>.<span class="n">identity</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-TRACE.html"><span class="section-number">6.24. </span>kink/TRACE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

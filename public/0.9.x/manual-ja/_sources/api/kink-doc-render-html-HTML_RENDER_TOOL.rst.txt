@@ -1,0 +1,63 @@
+===========================================
+kink\/doc\/render\/html\/HTML\_RENDER\_TOOL
+===========================================
+
+Launcheable mod to render a kink doc to a single HTML file\.
+
+Usage\: kink \[Kink\_options\]\.\.\. mod\:kink\/doc\/render\/html\/HTML\_RENDER\_TOOL \[Mod\_options\] \<JSON \>HTML
+
+The command reads the kink doc JSON from the standard input\, converts it to a single HTML file\, and writes it to the standard output\.
+
+.. rubric:: Mod\_options
+
+\• \-\-style \{Style\_file\_path\} \: gives the file path of the alternative CSS file\.   The file content must be encoded by UTF\-8\.   It is inserted in the style element of the HTML file\.
+
+\• \-\-template \{Template\_file\_path\} \: gives the file path of the alternative   HTML template file\.   See the next section for details\.
+
+.. rubric:: HTML template content
+
+The HTML template must be encoded by UTF\-8\, and be a Str\.format template string\. It can contain placeholders \`\{Title\}\` for the HTML\-escaped document title\, \`\{Style\}\` for the CSS\, and \`\{Body\}\` for the content of \<body\> element\.
+
+The default template is as follows\:
+
+.. code:: kink
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8" />
+      <title>{Title}</title>
+      <style>
+    {Style}
+      </style>
+    </head>
+    <body>
+    {Body}
+    </body>
+    </html>
+
+.. rubric:: Exit statuses
+
+If the command generates an HTML file successfully\, it exits with 0 as the exit status\.
+
+If not\, the command exits with a non\-zero exit status\.
+
+.. rubric:: Usage example
+
+.. code:: kink
+
+    $ kink mod:kink/doc/DOC_PARSE_TOOL --title 'API reference' src >doc.json
+    ...
+    $ kink mod:kink/doc/render/html/HTML_RENDER_TOOL <doc.json >doc.html
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-ba2b9cdbcaad2987f13975bda140aac0:
+
+HTML\_RENDER\_TOOL\.main\(Argv\)
+================================
+
+Launcher of the mod\.
+

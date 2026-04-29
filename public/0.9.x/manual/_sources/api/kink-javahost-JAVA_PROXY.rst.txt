@@ -1,0 +1,151 @@
+===========================
+kink\/javahost\/JAVA\_PROXY
+===========================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-e983bebce8034ca135e11da64358ffed:
+
+JAVA\_PROXY\.new\(Interface \$handler \.\.\.\[\$config\=\{\}\]\)
+================================================================
+
+\`new\` makes a Java object which delegates actions of its methods to a Kink function \$handler\.
+
+Config methods\:
+
+\• C\.also\_implement\(Also\_implement\)\: default \= \[\]
+
+\• C\.override\_tostring
+
+\• C\.override\_equals
+
+\• C\.override\_hashcode
+
+\• C\.override\_default
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a function which raises an exception
+
+The created Java object will be an instance of java\.lang\.reflect\.Proxy\, which implements \`Interface\` and interfaces in \`Also\_implement\`\.
+
+If proxy creation succeeds\, \`new\` tail\-calls \$success with a \`java\` value \(proxy\, Interface\)\, where \`proxy\` is the created instance\.
+
+If proxy creation fails with IllegalArgumentException\, as described in the specification of Proxy\.newProxyInstance\, \`new\` tail\-calls \$error with a \`java\` value \(iae\, IllegalArgumentException\)\, where \`iae\` is the thrown IllegalArgumentException\.
+
+.. rubric:: Invocation
+
+Invocations of proxy methods\, except for those described later\, are delegated to \$handler\.
+
+When a method is invoked\, a new abstract stack machine is created\, then \$handler is called with the java\.lang\.reflect\.Method object\, and a \`vec\` of the arguments of the Java method\, in the abstract stack machine\.
+
+The first argument of \$handler is a \`java\` value \(method\, java\.lang\.reflect\.Method\)\, where \`method\` is the java\.lang\.reflect\.Method object of the invoked method\.
+
+The second argument of \$handler is a \`vec\` of \`java\` values \(arg\, argType\)\. Here\, \`argType\` is the corresponding parameter type of the method\. If \`argType\` is a reference type\, \`arg\` is the passed argument itself\. If \`argType\` is a primitive type\, \`arg\` is a wrapper instance which wraps the argument\.
+
+.. rubric:: Invocation of toString
+
+If C\.override\_tostring is not called\, Object\.toString\(\) method of the proxy returns a string like \"java\-kink\-proxy\(java\.lang\.Runnable\)\"\.
+
+If C\.override\_tostring is called\, the invocation of toString\(\) is delegated to \$handler\.
+
+.. rubric:: Invocation of equals
+
+If C\.override\_equals is not called\, Object\.equals\(Object\) method of the proxy tests the identity using Java references by Java \=\= operator\.
+
+If C\.override\_equals is called\, the invocation of equals\(Object\) is delegated to \$handler\.
+
+.. rubric:: Invocation of hashCode
+
+If C\.override\_hashcode is not called\, Object\.hashCode\(\) method of the proxy returns a result of System\.identityHashCode\(\)\.
+
+If C\.override\_hashcode is called\, the invocation of hashCode\(\) is delegated to \$handler\.
+
+.. rubric:: Invocation of interface default methods
+
+If C\.override\_default is not called\, interface default methods of the proxy delegate the invocations to the implementations of the default methods\.
+
+If C\.override\_default is called\, the invocations are delegated to \$handler\.
+
+.. rubric:: To return from the invocation
+
+If the return type of the method is a reference type\, to order that the invocation return a value \`ref\` of the reference type\, \$handler must return a \`java\` value \(ref\, \*\)\.
+
+If the return type of the method is char\, boolean\, byte\, short\, int\, long\, float\, or double\, to order that the invocation return a value \`primitive\`\, \$handler must return a \`java\` value \(wrapper\, \*\)\, where \`wrapper\` is a wrapper instance object which wraps \`primitive\`\.
+
+If the return type of the method is void\, to order that the invocation return\, \$handler must return any value other than \`java\_throw\`\.
+
+.. rubric:: To throw a Java Throwable from the invocation
+
+To order that the invocation throw a Java Throwable\, \$handler must return a \`java\_throw\`\.
+
+.. rubric:: Preconditions
+
+\`Interface\` must be a \`java\` value \(cl\, \*\)\, where \`cl\` is an instance of java\.lang\.Class\.
+
+\`Also\_implement\` must be a \`vec\` of \`java\` values \(cl\, \*\)\, where \`cl\` is an instance of java\.lang\.Class\.
+
+\$success must be a function which takes a \`java\` value\.
+
+\$error must be a function which takes a \`java\` value of an IllegalArgumentException\.
+
+.. rubric:: Example\: Make a proxy instance
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :JAVA_PROXY.require_from('kink/javahost/')
+        
+    :IntUnaryOperator_class <- JAVA.class('java.util.function.IntUnaryOperator')
+        
+    :Increment <- JAVA_PROXY.new(IntUnaryOperator_class){(:Method :Args)
+      Method.call_method('getName').to_kink_str == 'applyAsInt' || raise('unexpected method')
+      JAVA.int(Args.front.to_kink_num + 1)
+    }
+        
+    :Double <- JAVA_PROXY.new(IntUnaryOperator_class){(:Method :Args)
+      Method.call_method('getName').to_kink_str == 'applyAsInt' || raise('unexpected method')
+      JAVA.int(Args.front.to_kink_num * 2)
+    }
+        
+    :Increment_then_double <- Increment.call_method('andThen' Double) # call default implementation
+    :R <- Increment_then_double.call_method('applyAsInt' JAVA.int(3))
+    stdout.print_line(R.repr) # => (java "8" as int)
+
+.. rubric:: Example\: Override toString
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :JAVA_PROXY.require_from('kink/javahost/')
+        
+    :IntUnaryOperator_class <- JAVA.class('java.util.function.IntUnaryOperator')
+    :Object_class <- JAVA.class('java.lang.Object')
+        
+    :Increment <- JAVA_PROXY.new(IntUnaryOperator_class
+      {(:Method :Args)
+        :Method_name = Method.call_method('getName').to_kink_str
+        branch(
+          { Method_name == 'toString' } {
+            JAVA.string('IntUnaryOperator(increment the int)')
+          }
+          { Method_name == 'applyAsInt' } {
+            JAVA.int(Args.front.to_kink_num + 1)
+          }
+          { true } {
+            Method_name == 'applyAsInt' || raise('unexpected method')
+            JAVA.int(Args.front.to_kink_num + 1)
+          }
+        )
+      }
+      {(:C) C.override_tostring }
+    )
+        
+    stdout.print_line(Increment.call_method('applyAsInt' JAVA.int(3)).repr)
+    # => (java "4" as int)
+        
+    stdout.print_line(Increment.as(Object_class).call_method('toString').to_kink_str.repr)
+    # => "IntUnaryOperator(increment the int)"
+

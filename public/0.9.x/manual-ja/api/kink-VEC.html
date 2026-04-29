@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.27. kink/VEC &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.28. kink/container/FLAT_MAP" href="kink-container-FLAT_MAP.html" />
+    <link rel="prev" title="6.26. kink/VARREF" href="kink-VARREF.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.27. kink/VEC</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-FLAT_MAP.html"><span class="section-number">6.28. </span>kink/container/FLAT_MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-vec">
+<h1><span class="section-number">6.27. </span>kink/VEC<a class="headerlink" href="#kink-vec" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-vec" id="id4">vec型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#vec-get-ind" id="id5">Vec.get(Ind)</a></p></li>
+<li><p><a class="reference internal" href="#vec-size" id="id6">Vec.size</a></p></li>
+<li><p><a class="reference internal" href="#vec-front" id="id7">Vec.front</a></p></li>
+<li><p><a class="reference internal" href="#vec-back" id="id8">Vec.back</a></p></li>
+<li><p><a class="reference internal" href="#vec-take-front-n" id="id9">Vec.take_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-take-back-n" id="id10">Vec.take_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-drop-front-n" id="id11">Vec.drop_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-drop-back-n" id="id12">Vec.drop_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-slice-from-to" id="id13">Vec.slice(From To)</a></p></li>
+<li><p><a class="reference internal" href="#vec-set-ind-val" id="id14">Vec.set(Ind Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-push-front-val" id="id15">Vec.push_front(Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-push-back-val" id="id16">Vec.push_back(Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-push-at-pos-val" id="id17">Vec.push_at(Pos Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-append-front-eacher" id="id18">Vec.append_front(Eacher)</a></p></li>
+<li><p><a class="reference internal" href="#vec-append-back-eacher" id="id19">Vec.append_back(Eacher)</a></p></li>
+<li><p><a class="reference internal" href="#vec-append-at-pos-eacher" id="id20">Vec.append_at(Pos Eacher)</a></p></li>
+<li><p><a class="reference internal" href="#vec-pop-front" id="id21">Vec.pop_front</a></p></li>
+<li><p><a class="reference internal" href="#vec-pop-back" id="id22">Vec.pop_back</a></p></li>
+<li><p><a class="reference internal" href="#vec-pop-at-ind" id="id23">Vec.pop_at(Ind)</a></p></li>
+<li><p><a class="reference internal" href="#vec-clear-from-0-to-vec-size" id="id24">Vec.clear(...[From=0 To=Vec.size])</a></p></li>
+<li><p><a class="reference internal" href="#vec-dup" id="id25">Vec.dup</a></p></li>
+<li><p><a class="reference internal" href="#vec-reverse" id="id26">Vec.reverse</a></p></li>
+<li><p><a class="reference internal" href="#vec-concat" id="id27">Vec.concat</a></p></li>
+<li><p><a class="reference internal" href="#vec-unconcat-n" id="id28">Vec.unconcat(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-just-if-empty" id="id29">Vec.just(...[$if_empty])</a></p></li>
+<li><p><a class="reference internal" href="#vec-with-elems-with0-with1-with2" id="id30">Vec.with_elems(...[$with0 $with1 $with2 ,,,])</a></p></li>
+<li><p><a class="reference internal" href="#vec-each-consume" id="id31">Vec.each($consume)</a></p></li>
+<li><p><a class="reference internal" href="#vec-map-transform" id="id32">Vec.map($transform)</a></p></li>
+<li><p><a class="reference internal" href="#vec-concat-map-to-vec" id="id33">Vec.concat_map($to_vec)</a></p></li>
+<li><p><a class="reference internal" href="#vec-filter-include" id="id34">Vec.filter($include?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-count-counted" id="id35">Vec.count($counted?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-fold-init-combine" id="id36">Vec.fold(Init $combine)</a></p></li>
+<li><p><a class="reference internal" href="#vec-reduce-combine-empty-fallback" id="id37">Vec.reduce($combine ...[$empty_fallback])</a></p></li>
+<li><p><a class="reference internal" href="#vec-take-while-include" id="id38">Vec.take_while($include?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-drop-while-exclude" id="id39">Vec.drop_while($exclude?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-all-match" id="id40">Vec.all?($match?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-any-match-true" id="id41">Vec.any?(...[$match?={ true }])</a></p></li>
+<li><p><a class="reference internal" href="#vec-have-target" id="id42">Vec.have?(Target)</a></p></li>
+<li><p><a class="reference internal" href="#vec-have-all-vals" id="id43">Vec.have_all?(Vals)</a></p></li>
+<li><p><a class="reference internal" href="#vec-have-any-vals" id="id44">Vec.have_any?(Vals)</a></p></li>
+<li><p><a class="reference internal" href="#vec-sort-in-order-x-y-x-y" id="id45">Vec.sort(...[$in_order?={(:X :Y) X &lt;= Y }])</a></p></li>
+<li><p><a class="reference internal" href="#vec-iter-from-0-to-vec-size" id="id46">Vec.iter(...[From=0 To=Vec.size])</a></p></li>
+<li><p><a class="reference internal" href="#vec1-vec2" id="id47">Vec1 + Vec2</a></p></li>
+<li><p><a class="reference internal" href="#vec-n" id="id48">Vec * N</a></p></li>
+<li><p><a class="reference internal" href="#api-7b111e394601a5a4a97ab44892979c20" id="id49">Vec1 == Vec2</a></p></li>
+<li><p><a class="reference internal" href="#api-841e77748f0925e98ec50203bb9e02cf" id="id50">Vec1 &lt;= Vec2</a></p></li>
+<li><p><a class="reference internal" href="#lhs-rhs" id="id51">Lhs &lt;- Rhs</a></p></li>
+<li><p><a class="reference internal" href="#vec-repr" id="id52">Vec.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#vec-is-val" id="id53">VEC.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-from-each-eacher" id="id54">VEC.from_each(Eacher)</a></p></li>
+</ul>
+</nav>
+<section id="type-vec">
+<span id="api-8f14b909c07234a50b4b4c739ce19bcd"></span><h2><span class="section-number">6.27.1. </span>vec型<a class="headerlink" href="#type-vec" title="Link to this heading">¶</a></h2>
+<p>vecは、可変長で変更可能な値の列である。</p>
+<p>vecの要素の添字は、0から始まって連続する整数である。</p>
+<p>vecはplain_paramの部分型である。kink/param/PLAIN_PARAMを見よう。</p>
+<section id="vec-get-ind">
+<span id="api-39febd61d9157760a10685c5eb6d2166"></span><h3><span class="section-number">6.27.1.1. </span>Vec.get(Ind)<a class="headerlink" href="#vec-get-ind" title="Link to this heading">¶</a></h3>
+<p>getは、添字Indに位置する要素を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Indは、[0, Vec.size)の範囲内の整数のnumでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">0</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;bar&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;baz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-size">
+<span id="api-c63033490c55d6d5fa1ce68e3419f391"></span><h3><span class="section-number">6.27.1.2. </span>Vec.size<a class="headerlink" href="#vec-size" title="Link to this heading">¶</a></h3>
+<p>sizeは、Vecの要素の数を整数のnum値として戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">size</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 3</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-front">
+<span id="api-c1940fa5642a8c3bde6e9d410f1689d6"></span><h3><span class="section-number">6.27.1.3. </span>Vec.front<a class="headerlink" href="#vec-front" title="Link to this heading">¶</a></h3>
+<p>frontは、Vecの最初の要素を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Vecは空であってはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>].<span class="n">front</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-back">
+<span id="api-01fe1f1275f57ef5cfa7b05ea19d6043"></span><h3><span class="section-number">6.27.1.4. </span>Vec.back<a class="headerlink" href="#vec-back" title="Link to this heading">¶</a></h3>
+<p>backは、Vecの最後の要素を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Vecは空であってはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>].<span class="n">back</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;baz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-take-front-n">
+<span id="api-bbbc267c848faf3a7d1fc36ed207d7f1"></span><h3><span class="section-number">6.27.1.5. </span>Vec.take_front(N)<a class="headerlink" href="#vec-take-front-n" title="Link to this heading">¶</a></h3>
+<p>take_frontは、Vecの最初のN個の要素を含む新しいvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Nは、[0, Vec.size)の範囲内の整数のnumでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">take_front</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-take-back-n">
+<span id="api-21b6e0437ef2762f3201094349a083cd"></span><h3><span class="section-number">6.27.1.6. </span>Vec.take_back(N)<a class="headerlink" href="#vec-take-back-n" title="Link to this heading">¶</a></h3>
+<p>take_backは、Vecの最後のN個の要素を含む新しいvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Nは、[0, Vec.size)の範囲内の整数のnumでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">take_back</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;5&quot; &quot;6&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-drop-front-n">
+<span id="api-9d17792a30d8532e1435543378fb5afd"></span><h3><span class="section-number">6.27.1.7. </span>Vec.drop_front(N)<a class="headerlink" href="#vec-drop-front-n" title="Link to this heading">¶</a></h3>
+<p>drop_frontは、[N, Vec.size)の範囲のVecのスライスの要素を含む新しいvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Nは、[0, Vec.size)の範囲内の整数のnumでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">drop_front</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot; &quot;6&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-drop-back-n">
+<span id="api-94b4b974000567ab055baa5f53f03f7f"></span><h3><span class="section-number">6.27.1.8. </span>Vec.drop_back(N)<a class="headerlink" href="#vec-drop-back-n" title="Link to this heading">¶</a></h3>
+<p>drop_backは、[0, Vec.size - N)の範囲のVecのスライスの要素を含む新しいvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Nは、[0, Vec.size)の範囲内の整数のnumでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">drop_back</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-slice-from-to">
+<span id="api-dbe3126411fadcf06a56bf9a663c4c20"></span><h3><span class="section-number">6.27.1.9. </span>Vec.slice(From To)<a class="headerlink" href="#vec-slice-from-to" title="Link to this heading">¶</a></h3>
+<p>sliceは、[From, To)の範囲のVecのスライスの要素を含む新しいvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>FromとToは整数のnum値でなければならない。</p>
+<p>0 &lt;= From &lt;= To &lt;= Vec.size</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">slice</span>(<span class="m">1</span> <span class="m">4</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-set-ind-val">
+<span id="api-091c481b61c349802ef8cd43a160033a"></span><h3><span class="section-number">6.27.1.10. </span>Vec.set(Ind Val)<a class="headerlink" href="#vec-set-ind-val" title="Link to this heading">¶</a></h3>
+<p>setは、添字Indの位置にValを書き込む。</p>
+<p>Vecのサイズは変わらない。</p>
+<p class="rubric">事前条件</p>
+<p>Indは、[0, Vec.size)の範囲内の整数のnumでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">set</span>(<span class="m">1</span> <span class="s1">&#39;X&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;X&quot; &quot;baz&#39;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-push-front-val">
+<span id="api-9983ea50c85218def5676d4517601c64"></span><h3><span class="section-number">6.27.1.11. </span>Vec.push_front(Val)<a class="headerlink" href="#vec-push-front-val" title="Link to this heading">¶</a></h3>
+<p>push_frontは、ValをVecの最初の要素として挿入する。</p>
+<p>Vecのサイズは1だけ伸びる。既存の要素は後方に1だけコピーされる。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">push_front</span>(<span class="s1">&#39;X&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;X&quot; &quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-push-back-val">
+<span id="api-59a3c11fa64d87267cfc7f2ebb6bc355"></span><h3><span class="section-number">6.27.1.12. </span>Vec.push_back(Val)<a class="headerlink" href="#vec-push-back-val" title="Link to this heading">¶</a></h3>
+<p>push_backはValをVecの最後の要素として挿入する。</p>
+<p>Vecのサイズは1だけ伸びる。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">push_back</span>(<span class="s1">&#39;X&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;X&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-push-at-pos-val">
+<span id="api-762d2ba5aa201bf23bbe57140ffb1aa9"></span><h3><span class="section-number">6.27.1.13. </span>Vec.push_at(Pos Val)<a class="headerlink" href="#vec-push-at-pos-val" title="Link to this heading">¶</a></h3>
+<p>push_atはValを添字Posの位置に挿入する。</p>
+<p>Vecのサイズは1だけ伸びる。Posの位置以降の既存の要素は、後方に1だけコピーされる。</p>
+<p class="rubric">事前条件</p>
+<p>Posは整数のnum値でなければならない。</p>
+<p>0 &lt;= Pos &lt;= Vec.size</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">push_at</span>(<span class="m">2</span> <span class="s1">&#39;X&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;X&quot; &quot;baz&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-append-front-eacher">
+<span id="api-8c643c34b93d0b83914505087687119e"></span><h3><span class="section-number">6.27.1.14. </span>Vec.append_front(Eacher)<a class="headerlink" href="#vec-append-front-eacher" title="Link to this heading">¶</a></h3>
+<p>append_frontは、Eacherのすべての要素をVecの先頭に挿入する。</p>
+<p>Eacher.eachが、それぞれの$consumeの呼び出しでE(0), E(1) ,,, E(n-1)を渡すとき、またVecの現在の要素がV(0), V(1) ,,, V(m-1)であるとき、append_frontの呼び出し後に、Vecの要素はE(0), E(1) ,,, E(n-1), V(0), V(1) ,,, V(m-1)になる。</p>
+<p class="rubric">事前条件</p>
+<p>Eacherは each($consume) メソッドを持っていなければならない。eachは$consumeをEacherのそれぞれの要素について呼び出すものでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">append_front</span>([<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;X&quot; &quot;Y&quot; &quot;Z&quot; &quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-append-back-eacher">
+<span id="api-ed2ad30dff9f91964619d0e93b5f71bb"></span><h3><span class="section-number">6.27.1.15. </span>Vec.append_back(Eacher)<a class="headerlink" href="#vec-append-back-eacher" title="Link to this heading">¶</a></h3>
+<p>append_backは、Eacherのすべての要素をVecの末尾に挿入する。</p>
+<p>Eacher.eachが、それぞれの$consumeの呼び出しでE(0), E(1) ,,, E(n-1)を渡すとき、またVecの現在の要素がV(0), V(1) ,,, V(m-1)であるとき、append_backの呼び出し後に、Vecの要素はV(0), V(1) ,,, V(m-1), E(0), E(1) ,,, E(n-1)になる。</p>
+<p class="rubric">事前条件</p>
+<p>Eacherは each($consume) メソッドを持っていなければならない。eachは$consumeをEacherのそれぞれの要素について呼び出すものでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">append_back</span>([<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-append-at-pos-eacher">
+<span id="api-755dd9c94f5fe42fa51a80bc1d86105f"></span><h3><span class="section-number">6.27.1.16. </span>Vec.append_at(Pos Eacher)<a class="headerlink" href="#vec-append-at-pos-eacher" title="Link to this heading">¶</a></h3>
+<p>append_atは、Eacherのすべての要素を、Vecの添字Posの位置に挿入する。</p>
+<p>Eacher.eachが、それぞれの$consumeの呼び出しでE(0), E(1) ,,, E(n-1)を渡すとき、またVecの現在の要素がV(0), V(1) ,,, V(m-1)であるときappend_atの呼び出し後に、Vecの要素はV(0), V(1) ,,, V(Pos-1), E(0), E(1) ,,, E(n-1), V(Pos) ,,, V(m-1)になる。</p>
+<p class="rubric">事前条件</p>
+<p>Posは整数のnum値でなければならない。</p>
+<p>0 &lt;= Pos &lt;= Vec.size</p>
+<p>Eacherは each($consume) メソッドを持っていなければならない。eachは$consumeをEacherのそれぞれの要素について呼び出すものでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">append_at</span>(<span class="m">2</span> [<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-pop-front">
+<span id="api-475416d7bb5a9d04284bee414492ac45"></span><h3><span class="section-number">6.27.1.17. </span>Vec.pop_front<a class="headerlink" href="#vec-pop-front" title="Link to this heading">¶</a></h3>
+<p>pop_frontは、Vecの最初の要素を削除して、その要素を戻す。</p>
+<p>削除された要素の後ろの要素は、先頭の方へ1ずつコピーされる。Vecのサイズは1だけ切り詰められる。</p>
+<p class="rubric">事前条件</p>
+<p>Vecは空であってはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">:Result</span> &lt;- <span class="nv">Vec</span>.<span class="n">pop_front</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; [&quot;bar&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-pop-back">
+<span id="api-c76eb65950d9561ff7b81af8cf856928"></span><h3><span class="section-number">6.27.1.18. </span>Vec.pop_back<a class="headerlink" href="#vec-pop-back" title="Link to this heading">¶</a></h3>
+<p>pop_backは、Vecの最後の要素を削除して、その要素を戻す。</p>
+<p>Vecのサイズは1だけ切り詰められる。</p>
+<p class="rubric">事前条件</p>
+<p>Vecは空であってはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">:Result</span> &lt;- <span class="nv">Vec</span>.<span class="n">pop_back</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;grault&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-pop-at-ind">
+<span id="api-0b77840d3b7bb661b0e01cb492e4187f"></span><h3><span class="section-number">6.27.1.19. </span>Vec.pop_at(Ind)<a class="headerlink" href="#vec-pop-at-ind" title="Link to this heading">¶</a></h3>
+<p>pop_atは、添字Indの位置の要素を削除して、その要素を戻す。</p>
+<p>削除された要素の後ろの要素は、先頭の方へ1ずつコピーされる。Vecのサイズは1だけ切り詰められる。</p>
+<p class="rubric">事前条件</p>
+<p>Indは整数のnum値でなければならない。</p>
+<p>0 &lt;= Ind &lt; Vec.size</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<span class="nv">:Result</span> &lt;- <span class="nv">Vec</span>.<span class="n">pop_at</span>(<span class="m">1</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>)   <span class="c1"># =&gt; &quot;bar&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-clear-from-0-to-vec-size">
+<span id="api-ad3ac9a2915cdc73f1eb27dfbe1f0ef2"></span><h3><span class="section-number">6.27.1.20. </span>Vec.clear(...[From=0 To=Vec.size])<a class="headerlink" href="#vec-clear-from-0-to-vec-size" title="Link to this heading">¶</a></h3>
+<p>clearは、Vecの要素から[From, To)の範囲のスライスを削除する。</p>
+<p>削除されたスライスの後の要素は、(To - From)ずつ先頭の方にコピーされる。VecのサイズはVec.size - (To - From)に切り詰められる。</p>
+<p class="rubric">事前条件</p>
+<p>FromとToは整数のnum値でなければならない。</p>
+<p>0 &lt;= From &lt;= To &lt;= Vec.size</p>
+<p class="rubric">例: 引数なし</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">clear</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; []</span>
+</pre></div>
+</div>
+<p class="rubric">例: Fromを指定</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">clear</span>(<span class="m">3</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot;]</span>
+</pre></div>
+</div>
+<p class="rubric">例: FromとToを指定</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">clear</span>(<span class="m">3</span> <span class="m">5</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;5&quot; &quot;6&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-dup">
+<span id="api-4f175b876e19fc10c267f6fce74d5315"></span><h3><span class="section-number">6.27.1.21. </span>Vec.dup<a class="headerlink" href="#vec-dup" title="Link to this heading">¶</a></h3>
+<p>dupは、Vecと同じ要素の列を持つ新しいvecを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Orig</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="nv">:Dup</span> &lt;- <span class="nv">Orig</span>.<span class="n">dup</span>
+<span class="nv">Orig</span>.<span class="n">set</span>(<span class="m">0</span> <span class="s1">&#39;X&#39;</span>)
+<span class="nv">Dup</span>.<span class="n">set</span>(<span class="m">1</span> <span class="s1">&#39;Y&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Orig</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;X&quot; &#39;bar&quot; &quot;baz&quot;]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dup</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; [&quot;foo&quot; &#39;Y&quot; &quot;baz&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-reverse">
+<span id="api-935ab420e28fb248fb8aae6d385b54a0"></span><h3><span class="section-number">6.27.1.22. </span>Vec.reverse<a class="headerlink" href="#vec-reverse" title="Link to this heading">¶</a></h3>
+<p>reverseは、Vecと同じ要素を逆順で持つ新しいvecを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">reverse</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;3&quot; &quot;2&quot; &quot;1&quot; &quot;0&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-concat">
+<span id="api-108bdfb6645391be0ad2571c52e1d70b"></span><h3><span class="section-number">6.27.1.23. </span>Vec.concat<a class="headerlink" href="#vec-concat" title="Link to this heading">¶</a></h3>
+<p>concatは、Vecの中のvecをつなぎ合わせる。</p>
+<p>concatは、Vecの要素がすべてvecであると想定する。concatは、これらのvecの要素をすべて持つ新しいvecを戻す。要素は、これらのvecの順番で、またvecの中の要素の順番で現れる。</p>
+<p class="rubric">事前条件</p>
+<p>Vecの要素はすべてvecでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vecs</span> &lt;- [[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span>] [<span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>] [<span class="s1">&#39;4&#39;</span>]]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vecs</span>.<span class="n">concat</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-unconcat-n">
+<span id="api-aa4ccd1dae957de037c5a4795fcc7df5"></span><h3><span class="section-number">6.27.1.24. </span>Vec.unconcat(N)<a class="headerlink" href="#vec-unconcat-n" title="Link to this heading">¶</a></h3>
+<p>unconcatは、Vecの要素をN個ずつに分割して、それらN個の要素を含むvecのを要素とするvecをもどす。</p>
+<p>Vecの要素がE(0), E(1) ,,, E(N-1), E(N), E(N+1) ,,, E(N+(N-1)) ,,, E(m*N), E(m*N+1) ,,, E(m*N+(N-1))のとき、結果のvecは、[E(0) E(1) ,,, E(N-1)], [E(N) E(N+1) ,,, E(N+(N-1))] ,,, [E(m*N) E(m*N+1) ,,, E(m*N+(N-1))]を含む。</p>
+<p class="rubric">事前条件</p>
+<p>Nは、正の整数のnumでなければならない。</p>
+<p>Vec.size % N == 0</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">unconcat</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [[&quot;0&quot; &quot;1&quot;] [&quot;2&quot; &quot;3&quot;] [&quot;4&quot; &quot;5&quot;]]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-just-if-empty">
+<span id="api-6523915a7e48a2c692e24abff5a9a9f1"></span><h3><span class="section-number">6.27.1.25. </span>Vec.just(...[$if_empty])<a class="headerlink" href="#vec-just-if-empty" title="Link to this heading">¶</a></h3>
+<p>justはVecが1要素であるとき、その要素を戻す。</p>
+<p>Vecが空で、$if_emptyが渡されているとき、justは$if_emptyを末尾呼び出しする。</p>
+<p>それ以外の場合、justは例外を投げる。</p>
+<p class="rubric">事前条件</p>
+<p>$if_emptyはサンクでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">42</span>].<span class="n">just</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([].<span class="n">just</span>{ <span class="s1">&#39;empty&#39;</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;empty&quot;</span>
+
+[].<span class="n">just</span>
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   {(stdin) L4 C4 just} [].--&gt;just</span>
+<span class="c1">#   Vec.just(...[$if_empty]): Vec must be a 1-elem vec, but the number of elems was 0</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-with-elems-with0-with1-with2">
+<span id="api-9c1a3a7b764fa70187afe30654617332"></span><h3><span class="section-number">6.27.1.26. </span>Vec.with_elems(...[$with0 $with1 $with2 ,,,])<a class="headerlink" href="#vec-with-elems-with0-with1-with2" title="Link to this heading">¶</a></h3>
+<p>with_elemsは、Vecの要素を引数として関数を末尾呼び出しする。</p>
+<p>with_elemsは任意個数の関数を取る。これらを順番に、$with0, $with1, $with2, ,,, と呼ぶ。VecのサイズがNのとき、with_elemsは、Vecの要素を引数として$withNを末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>Vecのサイズは、引数の数よりも小さくなければならない。</p>
+<p>$withK (k = 0, 1, 2, ,,,) はK個の引数を取らなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:print_num</span> &lt;- {(<span class="nv">:Num</span> <span class="nv">:Lang_tag</span>.<span class="n">opt</span>)
+  <span class="nv">:Locale</span> = <span class="nv">Lang_tag</span>.<span class="n">with_elems</span>(
+    { <span class="nv">LOCALE</span>.<span class="n">root</span> }
+    {(<span class="nv">:Lt</span>) <span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="nv">Lt</span>) }
+  )
+  <span class="n">stdout</span>.<span class="n">print_line</span>(
+    <span class="nv">Num</span>.<span class="n">show</span>{(<span class="nv">:C</span>)
+      <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">Locale</span>)
+      <span class="nv">C</span>.<span class="n">group_len</span>(<span class="m">3</span>)
+    }
+  )
+}
+
+<span class="n">print_num</span>(<span class="m">1234</span>)       <span class="c1"># =&gt; 1,234</span>
+<span class="n">print_num</span>(<span class="m">1234</span> <span class="s1">&#39;fr&#39;</span>)  <span class="c1"># =&gt; 1 234</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-each-consume">
+<span id="api-5522a3bd9e69a4a66469992a7f5e0386"></span><h3><span class="section-number">6.27.1.27. </span>Vec.each($consume)<a class="headerlink" href="#vec-each-consume" title="Link to this heading">¶</a></h3>
+<p>eachは、先頭から末尾に向けて、それぞれの要素について$consumeを呼び出す。</p>
+<p>Vecが空でない場合、eachは最後の要素について$consumeを末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>$consumeは、ひとつの値を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<span class="nv">Vec</span>.<span class="n">each</span>{(<span class="nv">:E</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;foo&quot;</span>
+<span class="c1">#   &quot;bar&quot;</span>
+<span class="c1">#   &quot;baz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-map-transform">
+<span id="api-3448e5bbbf0c59ea44e4ff57a9c9a131"></span><h3><span class="section-number">6.27.1.28. </span>Vec.map($transform)<a class="headerlink" href="#vec-map-transform" title="Link to this heading">¶</a></h3>
+<p>mapは、Vecの要素を$transformで変換した要素を含むvecを戻す。</p>
+<p>Vecの要素がE(0), E(1) ,,, E(n-1)のとき、結果のvecの要素はtransform(E(0)) transform(E(1)) ,,, transform(E(n-1))になる。</p>
+<p class="rubric">事前条件</p>
+<p>$transformは、ひとつの値を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>]
+<span class="nv">:Mapped</span> &lt;- <span class="nv">Vec</span>.<span class="n">map</span>{(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">10</span> }
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Mapped</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [0 10 20 30 40]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-concat-map-to-vec">
+<span id="api-30daf5213e59651e3c34aed6a56eb4da"></span><h3><span class="section-number">6.27.1.29. </span>Vec.concat_map($to_vec)<a class="headerlink" href="#vec-concat-map-to-vec" title="Link to this heading">¶</a></h3>
+<p>concat_mapは、to_vec(Vecの要素)の結果であるvecを結合したvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$to_vecは、ひとつの値を取ってvecを戻す関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># extracts codepoints from the strs</span>
+<span class="nv">:to_codepoints</span> &lt;- {(<span class="nv">:Strs</span>)
+  <span class="nv">Strs</span>.<span class="n">concat_map</span>{(<span class="nv">:S</span>)
+    <span class="nv">S</span>.<span class="n">codepoints</span>
+  }
+}
+<span class="nv">:Codepoints</span> &lt;- <span class="n">to_codepoints</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Codepoints</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [102 111 111 98 97 114 98 97 122]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-filter-include">
+<span id="api-2c58ef95f8a75a29db05a46de52c8967"></span><h3><span class="section-number">6.27.1.30. </span>Vec.filter($include?)<a class="headerlink" href="#vec-filter-include" title="Link to this heading">¶</a></h3>
+<p>filterは、述語$include?を満たすすべての要素を含むvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$include?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">13</span> <span class="m">21</span> <span class="m">34</span> <span class="m">55</span> <span class="m">89</span>]
+<span class="nv">:Evens</span> &lt;- <span class="nv">Nums</span>.<span class="n">filter</span>{(<span class="nv">:N</span>)
+  <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Evens</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [2 8 34]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-count-counted">
+<span id="api-c7cf80a654694c883ad4d6be8135c023"></span><h3><span class="section-number">6.27.1.31. </span>Vec.count($counted?)<a class="headerlink" href="#vec-count-counted" title="Link to this heading">¶</a></h3>
+<p>countは、述語$counted?を満たす要素の数を整数のnumとして戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$counted?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">13</span> <span class="m">21</span> <span class="m">34</span> <span class="m">55</span> <span class="m">89</span>]
+<span class="nv">:Even_count</span> &lt;- <span class="nv">Nums</span>.<span class="n">count</span>{(<span class="nv">:N</span>)
+  <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Even_count</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 3</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-fold-init-combine">
+<span id="api-f7a2d4cc94155596c0b63f9e7d2a847c"></span><h3><span class="section-number">6.27.1.32. </span>Vec.fold(Init $combine)<a class="headerlink" href="#vec-fold-init-combine" title="Link to this heading">¶</a></h3>
+<p>foldは、Initを種として要素を畳み込む。</p>
+<p>Vecの要素がE(0) E(1) ,,, E(n-1)のとき、結果はcombine(combine(,,, combine(combine(Init E(0)) E(1)) ,,,) E(n-1))になる。</p>
+<p class="rubric">事前条件</p>
+<p>$combineは、ふたつの値を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:to_quote_line</span> &lt;- {(<span class="nv">:Words</span>)
+  <span class="nv">Words</span>.<span class="n">fold</span>(<span class="s1">&#39;%&#39;</span>){(<span class="nv">:Accum</span> <span class="nv">:Word</span>)
+    <span class="nv">Accum</span> + <span class="s1">&#39; &#39;</span> + <span class="nv">Word</span>
+  }
+}
+<span class="nv">:Quote</span> &lt;- <span class="n">to_quote_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Quote</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;% foo bar baz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-reduce-combine-empty-fallback">
+<span id="api-2df32705c7bfd54f55ac6f4e6b827746"></span><h3><span class="section-number">6.27.1.33. </span>Vec.reduce($combine ...[$empty_fallback])<a class="headerlink" href="#vec-reduce-combine-empty-fallback" title="Link to this heading">¶</a></h3>
+<p>reduceは、Vecの要素を相互に畳み込む。</p>
+<p>Vecが1個以上の要素を持っているとき、reduceはVec.drop_front(1).fold(Vec.front $combine)を末尾呼び出しする。</p>
+<p>Vecが空で、$empty_fallbackが与えられているとき、reduceは$empty_fallbackを引数なしで末尾呼び出しする。</p>
+<p>Vecが空で、$empty_fallbackが与えられなかったとき、reduceは例外を投げる。</p>
+<p class="rubric">事前条件</p>
+<p>$combineは、ふたつの値を取る関数でなければならない。</p>
+<p>$empty_fallbackはサンクでなければならない。</p>
+<p class="rubric">例: フォールバックなし</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:COMPARE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">31</span> <span class="m">41</span> <span class="m">59</span> <span class="m">26</span> <span class="m">53</span>].<span class="n">reduce</span>(<span class="nv">COMPARE$max</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 59</span>
+</pre></div>
+</div>
+<p class="rubric">例: フォールバックあり</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:separate_by_commas</span> &lt;- {(<span class="nv">:Args</span>)
+  <span class="nv">Args</span>.<span class="n">reduce</span>(
+    {(<span class="nv">:Accum</span> <span class="nv">:Arg</span>) <span class="nv">Accum</span> + <span class="s1">&#39;, &#39;</span> + <span class="nv">Arg</span> }
+    { <span class="s1">&#39;&#39;</span> }
+  )
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">separate_by_commas</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]).<span class="n">repr</span>)
+<span class="c1"># =&gt; &quot;foo, bar, baz&quot;</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">separate_by_commas</span>([]).<span class="n">repr</span>)
+<span class="c1"># =&gt; &quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-take-while-include">
+<span id="api-1f796154aaac67db79b07366b975faec"></span><h3><span class="section-number">6.27.1.34. </span>Vec.take_while($include?)<a class="headerlink" href="#vec-take-while-include" title="Link to this heading">¶</a></h3>
+<p>take_whileは、要素が述語$include?を満たすような最長の先頭部分のvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$include?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> (-<span class="m">2</span>) <span class="m">3</span> (-<span class="m">4</span>) <span class="m">5</span> (-<span class="m">6</span>) <span class="m">7</span> (-<span class="m">8</span>)]
+<span class="nv">:Prefix</span> &lt;- <span class="nv">Nums</span>.<span class="n">take_while</span>{(<span class="nv">:N</span>)
+  <span class="nv">N</span> &lt; <span class="m">5</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Prefix</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [1 (-2) 3 (-4)]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-drop-while-exclude">
+<span id="api-d49548ba6040babf6593fdac6a64f369"></span><h3><span class="section-number">6.27.1.35. </span>Vec.drop_while($exclude?)<a class="headerlink" href="#vec-drop-while-exclude" title="Link to this heading">¶</a></h3>
+<p>drop_whileは、要素が述語$exclude?を満たすような最長の先頭部分の後の要素のvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$exclude?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> (-<span class="m">2</span>) <span class="m">3</span> (-<span class="m">4</span>) <span class="m">5</span> (-<span class="m">6</span>) <span class="m">7</span> (-<span class="m">8</span>)]
+<span class="nv">:Suffix</span> &lt;- <span class="nv">Nums</span>.<span class="n">drop_while</span>{(<span class="nv">:N</span>)
+  <span class="nv">N</span> &lt; <span class="m">5</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Suffix</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [5 (-6) 7 (-8)]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-all-match">
+<span id="api-3a663d57656e686d8ee0bfe5a9ea6c1e"></span><h3><span class="section-number">6.27.1.36. </span>Vec.all?($match?)<a class="headerlink" href="#vec-all-match" title="Link to this heading">¶</a></h3>
+<p>all?は、Vecのすべての要素が述語$match?を満たすかどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$match?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:all_even?</span> &lt;- {(<span class="nv">:Nums</span>)
+  <span class="nv">Nums</span>.<span class="n">all?</span>{(<span class="nv">:N</span>)
+    <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
+  }
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">all_even?</span>([<span class="m">0</span> <span class="m">2</span> <span class="m">4</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">all_even?</span>([<span class="m">6</span> <span class="m">7</span> <span class="m">9</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">all_even?</span>([<span class="m">1</span> <span class="m">3</span> <span class="m">5</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-any-match-true">
+<span id="api-11af723e0870efb38f34d5275664b3f9"></span><h3><span class="section-number">6.27.1.37. </span>Vec.any?(...[$match?={ true }])<a class="headerlink" href="#vec-any-match-true" title="Link to this heading">¶</a></h3>
+<p>any?は、Vecの要素のひとつ以上が述語$match?を満たすかどうかを戻す。</p>
+<p>$match?はオプショナル引数であり、そのデフォルト値は{ true }である。したがって、$match?が渡されなければ、any?はVecが空でないかどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>$match?は述語でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:any_even?</span> &lt;- {(<span class="nv">:Nums</span>)
+  <span class="nv">Nums</span>.<span class="n">any?</span>{(<span class="nv">:N</span>)
+    <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
+  }
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">any_even?</span>([<span class="m">0</span> <span class="m">2</span> <span class="m">4</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">any_even?</span>([<span class="m">6</span> <span class="m">7</span> <span class="m">9</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">any_even?</span>([<span class="m">1</span> <span class="m">3</span> <span class="m">5</span>]).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span>].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-have-target">
+<span id="api-0cf79cfaf2d21da7624ed9357e09d981"></span><h3><span class="section-number">6.27.1.38. </span>Vec.have?(Target)<a class="headerlink" href="#vec-have-target" title="Link to this heading">¶</a></h3>
+<p>have?は、 == 演算子、つまりop_eqメソッドにおいて、Targetと等しい要素をVecが持っているかどうかを戻す。</p>
+<p>Vec.have?(Target)を呼ぶことは、Vec.any?{(:E) Target == E }を呼ぶことと等しい。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">1</span> <span class="m">3</span> <span class="m">5</span>].<span class="n">have?</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">2</span> <span class="m">4</span> <span class="m">6</span>].<span class="n">have?</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-have-all-vals">
+<span id="api-82b1d65bfeb4515918b278ec71879256"></span><h3><span class="section-number">6.27.1.39. </span>Vec.have_all?(Vals)<a class="headerlink" href="#vec-have-all-vals" title="Link to this heading">¶</a></h3>
+<p>have_all?は、Valsのすべての要素をVecが持っているかどうかを戻す。</p>
+<p>Vec.have_all?(Vals)を呼ぶことは、Vals.all?{(:T) Vec.have?(T) }を呼ぶことと等しい。</p>
+<p class="rubric">事前条件</p>
+<p>Valsは、all?($match?)メソッドを持っていなければならない。</p>
+<p>== 演算子、つまりop_eqメソッドで、Vecの要素とValsの要素が比較できなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Vec</span> &lt;- [<span class="m">2</span> <span class="m">4</span> <span class="m">6</span> <span class="m">8</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_all?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">2</span> <span class="m">4</span>)).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_all?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">6</span> <span class="m">7</span>)).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-have-any-vals">
+<span id="api-2f9fb22ebdbc1305055535e3563e3211"></span><h3><span class="section-number">6.27.1.40. </span>Vec.have_any?(Vals)<a class="headerlink" href="#vec-have-any-vals" title="Link to this heading">¶</a></h3>
+<p>have_any?は、Valsのひとつ以上の要素をVecが持っているかどうかを戻す。</p>
+<p>Vec.have_any?(Vals)を呼ぶことは、Vals.any?{(:T) Vec.have?(T) }を呼ぶことと等しい。</p>
+<p class="rubric">事前条件</p>
+<p>Valsは、any?($match?)メソッドを持っていなければならない。</p>
+<p>== 演算子、つまりop_eqメソッドで、Vecの要素とValsの要素が比較できなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Vec</span> &lt;- [<span class="m">2</span> <span class="m">4</span> <span class="m">6</span> <span class="m">8</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_any?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">2</span> <span class="m">4</span>)).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_any?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">6</span> <span class="m">7</span>)).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_any?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">10</span> <span class="m">20</span>)).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-sort-in-order-x-y-x-y">
+<span id="api-db860e884a84e1827982b48eee6be98f"></span><h3><span class="section-number">6.27.1.41. </span>Vec.sort(...[$in_order?={(:X :Y) X &lt;= Y }])<a class="headerlink" href="#vec-sort-in-order-x-y-x-y" title="Link to this heading">¶</a></h3>
+<p>sortは、要素をVecからコピーして、$in_order?によって昇順に整列したvecを戻す。</p>
+<p class="rubric">比較</p>
+<p>要素の比較は$in_order?によって行う。</p>
+<p>$in_order?はVecの要素についての全順序関係でなければならない。Vecの要素中のすべてのX, Y, Zについて、$in_order?は次を満たさなければならない。</p>
+<p>• 反射律: in_order?(X X)</p>
+<p>• 推移律: if in_order?(X Y) &amp;&amp; in_order?(Y Z) then in_order?(X Z)</p>
+<p>• 反対称律: if in_order?(X Y) &amp;&amp; in_order?(Y X) then X is equivalent to Y</p>
+<p>• 狭義の連結律: in_order?(X Y) || in_order?(Y X)</p>
+<p class="rubric">安定ソート</p>
+<p>sortは安定ソートを行う。Vecの要素E1, E2についてin_order?(E1 E2) &amp;&amp; in_order(E2 E1)のとき、E1とE2はVecの中と同じ順番で結果のvecに現れる。</p>
+<p class="rubric">事前条件</p>
+<p>$in_order?は、ふたつの値を取ってboolを戻す関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;FOO&#39;</span> <span class="s1">&#39;BAR&#39;</span> <span class="s1">&#39;BAZ&#39;</span>]
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">sort</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;BAR&quot; &quot;BAZ&quot; &quot;FOO&quot; &quot;bar&quot; &quot;baz&quot; &quot;foo&quot;]</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">sort</span>{(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span>.<span class="n">ascii_downcase</span> &lt;= <span class="nv">Y</span>.<span class="n">ascii_downcase</span> }.<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;bar&quot; &quot;BAR&quot; &quot;baz&quot; &quot;BAZ&quot; &quot;foo&quot; &quot;FOO&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-iter-from-0-to-vec-size">
+<span id="api-c31469da21f944429a8cf92a5403ec4f"></span><h3><span class="section-number">6.27.1.42. </span>Vec.iter(...[From=0 To=Vec.size])<a class="headerlink" href="#vec-iter-from-0-to-vec-size" title="Link to this heading">¶</a></h3>
+<p>iterメソッドは、[From, To)の範囲のスライスの要素を含むiterを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>FromとToは整数のnum値でなければならない。</p>
+<p>0 &lt;= From &lt;= To &lt;= Vec.size</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>].<span class="n">iter</span>.<span class="n">each</span>{(<span class="nv">:S</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;0&quot;</span>
+<span class="c1">#   &quot;1&quot;</span>
+<span class="c1">#   &quot;2&quot;</span>
+<span class="c1">#   &quot;3&quot;</span>
+<span class="c1">#   &quot;4&quot;</span>
+
+[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>].<span class="n">iter</span>(<span class="m">2</span>).<span class="n">each</span>{(<span class="nv">:S</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;2&quot;</span>
+<span class="c1">#   &quot;3&quot;</span>
+<span class="c1">#   &quot;4&quot;</span>
+
+[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>].<span class="n">iter</span>(<span class="m">2</span> <span class="m">4</span>).<span class="n">each</span>{(<span class="nv">:S</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;2&quot;</span>
+<span class="c1">#   &quot;3&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="vec1-vec2">
+<span id="api-d97345411758603e5d72d2026abceeea"></span><h3><span class="section-number">6.27.1.43. </span>Vec1 + Vec2<a class="headerlink" href="#vec1-vec2" title="Link to this heading">¶</a></h3>
+<p>+ 演算子、つまりop_addメソッドは、Vec1のすべての要素を先頭に、Vec2のすべての要素を末尾に置いたvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Vec2はvec値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(([<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span>] + [<span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-n">
+<span id="api-61e61615143dade9dabbd34bcb5d4d16"></span><h3><span class="section-number">6.27.1.44. </span>Vec * N<a class="headerlink" href="#vec-n" title="Link to this heading">¶</a></h3>
+<p>* 演算子、つまりop_mulメソッドは、Vecの要素をN回繰り返したvecを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Nは、非負の整数のnumでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(([<span class="m">1</span> <span class="m">2</span>] * <span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [1 2 1 2 1 2]</span>
+</pre></div>
+</div>
+</section>
+<section id="api-7b111e394601a5a4a97ab44892979c20">
+<span id="id2"></span><h3><span class="section-number">6.27.1.45. </span>Vec1 == Vec2<a class="headerlink" href="#api-7b111e394601a5a4a97ab44892979c20" title="Link to this heading">¶</a></h3>
+<p>== 演算子、つまりop_eqメソッドは、Vec1とVec2が等しいか、つまり、ふたつのvecが同じ順番で同値の要素を持っているかどうかを戻す。</p>
+<p>ふたつのvecは次の場合に等しい:</p>
+<p>1)  Vec1.size == Vec2.size</p>
+<p>2) [0, Vec1.size]の範囲のすべてのiについて、Vec1.get(i) == Vec2.get(i)</p>
+<p>上記の条件は順番に評価される。また、小さい i から大きい i にかけて評価される。どこかで比較がfalseを戻したら、以降の比較は評価されず、ふたつのvecは等しくないと決まる。</p>
+<p class="rubric">事前条件</p>
+<p>Vec1とVec2はvec値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:test_equality</span> &lt;- {(<span class="nv">:Vec1</span> <span class="nv">:Vec2</span>)
+  <span class="nv">CONTROL</span>.<span class="n">try</span>(
+    { <span class="nv">Vec1</span> == <span class="nv">Vec2</span> }
+    {(<span class="nv">:Result</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>) }
+    {(<span class="nv">:Exc</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;op_eq: exception: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Exc</span>.<span class="n">message</span>))
+    }
+  )
+}
+
+<span class="c1"># equal</span>
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>])
+<span class="c1"># Output: true</span>
+
+<span class="c1"># not equal because sizes differ</span>
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;foo&#39;</span> <span class="m">42</span> <span class="s1">&#39;bar&#39;</span>])
+<span class="c1"># Output: false</span>
+
+<span class="c1"># not equal because the first elemenets differ</span>
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;bar&#39;</span> <span class="m">42</span>])
+<span class="c1"># Output: false</span>
+
+<span class="c1"># not equal because the first elemenets differ;</span>
+<span class="c1"># the second elements are not tested</span>
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;***&#39;</span>])
+<span class="c1"># Output: false</span>
+
+<span class="n">test_equality</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;***&#39;</span>])
+<span class="c1"># Output:</span>
+<span class="c1">#   op_eq: exception: Num1.op_eq(Num2): the arg must be an int num, but got &quot;***&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="api-841e77748f0925e98ec50203bb9e02cf">
+<span id="id3"></span><h3><span class="section-number">6.27.1.46. </span>Vec1 &lt;= Vec2<a class="headerlink" href="#api-841e77748f0925e98ec50203bb9e02cf" title="Link to this heading">¶</a></h3>
+<p>&lt;= 演算子、つまりop_leメソッドは、要素同士の &lt;= 演算子で定義される順序で、Vec1がVec2以下であるかどうかを戻す。</p>
+<p>Vec1は、次の場合にVec2以下である。</p>
+<p>1) [0, k) 内のすべてのiについて、Vec1.get(i) &lt;= Vec2.get(i) &amp;&amp; Vec2.get(i) &lt;= Vec1.get(i)かつ、! (Vec2.get(k) &lt;= Vec1.get(k))となる非負の整数k (k &lt; min(Vec1.size Vec2.size))が存在する場合、または</p>
+<p>2) Vec1.size &lt;= Vec2.sizeであり、[0, Vec1.size)内のすべてのiについて、Vec1.get(i) &lt;= Vec2.get(i) &amp;&amp; Vec2.get(i) &lt;= Vec1.get(i)である場合。</p>
+<p>比較は小さい添字から大きい添字に向けて行われる。結果が途中で判明した場合、後続する比較は行われない。</p>
+<p class="rubric">事前条件</p>
+<p>Vec2はvec値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:compare</span> &lt;- {(<span class="nv">:Vec1</span> <span class="nv">:Vec2</span>)
+  [<span class="nv">:Lt?</span> <span class="nv">:Le?</span> <span class="nv">:Gt?</span> <span class="nv">:Ge?</span>] = [
+    <span class="nv">Vec1</span> &lt; <span class="nv">Vec2</span>
+    <span class="nv">Vec1</span> &lt;= <span class="nv">Vec2</span>
+    <span class="nv">Vec1</span> &gt; <span class="nv">Vec2</span>
+    <span class="nv">Vec1</span> &gt;= <span class="nv">Vec2</span>
+  ]
+  <span class="n">stdout</span>.<span class="n">print_line</span>(
+    <span class="s1">&#39;Lt?={} Le?={} Gt?={} Ge?={}&#39;</span>.<span class="n">format</span>(<span class="nv">Lt?</span>.<span class="n">repr</span> <span class="nv">Le?</span>.<span class="n">repr</span> <span class="nv">Gt?</span>.<span class="n">repr</span> <span class="nv">Ge?</span>.<span class="n">repr</span>))
+}
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;A&#39;</span> <span class="m">42</span>])
+<span class="c1"># =&gt; Lt?=false Le?=true Gt?=false Ge?=true</span>
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;A&#39;</span> <span class="m">42</span> <span class="s1">&#39;foo&#39;</span>])
+<span class="c1"># =&gt; Lt?=true Le?=true Gt?=false Ge?=false</span>
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;A&#39;</span>])
+<span class="c1"># =&gt; Lt?=false Le?=false Gt?=true Ge?=true</span>
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;B&#39;</span> <span class="m">42</span>])
+<span class="c1"># =&gt; Lt?=true Le?=true Gt?=false Ge?=false</span>
+
+<span class="n">compare</span>([<span class="s1">&#39;A&#39;</span> <span class="m">42</span>] [<span class="s1">&#39;A&#39;</span> <span class="m">84</span>])
+<span class="c1"># =&gt; Lt?=true Le?=true Gt?=false Ge?=false</span>
+</pre></div>
+</div>
+</section>
+<section id="lhs-rhs">
+<span id="api-6573895cd5761f6c138e0b1ce561a7e6"></span><h3><span class="section-number">6.27.1.47. </span>Lhs &lt;- Rhs<a class="headerlink" href="#lhs-rhs" title="Link to this heading">¶</a></h3>
+<p>&lt;- 演算子、つまりop_storeメソッドは、左辺のvecであるLhsと、右辺のvecであるRhsの間で多重代入を行う。</p>
+<p>ここで、Lhsの要素はパラメータと、Rhsの要素は引数と呼ぶ。</p>
+<p class="rubric">パラメータと引数</p>
+<p>パラメータには三つの種類がある。</p>
+<p>• plain_param: ex. varref, vec. 1個の引数が受け取れる。</p>
+<p>• opt_param: ex. Varref.opt. 0個か1個の引数が受け取れる。</p>
+<p>• rest_param: ex. Varref.rest. 任意の数の引数が受け取れる。</p>
+<p>plain_paramとopt_paramは、Lhsの中で任意の回数現れられる。opt_paramが、plain_paramの前に現れてはならない。</p>
+<p>Lhsは、末尾に0個か1個のrest_paramが持てる。</p>
+<p>NPをplain_paramの数、NOをopt_paramの数とする。ここで、P(0), P(1) ,,, P(NP-1), O(0), O(1) ,,, O(NO-1)がパラメータである。(0 &lt;= i &lt; NP)のそれぞれのiについてP(i)はplain_param、(0 &lt;= j &lt; NO)のそれぞれのjについてO(j)はopt_paramである。</p>
+<p>加えて、NAを引数の数、(0 &lt;= k &lt; NA)のそれぞれのkについて、A(k)を引数とする。</p>
+<p>Lhsがrest_paramを持つかどうかによって、op_storeのふるまいは変わる。</p>
+<p class="rubric">Lhsがrest_paramを持たない場合</p>
+<p>この場合、引数の数NAは、NP &lt;= NA &lt;= NP+NOのときに正しい。</p>
+<p>引数の数が正しくないとき、op_storeは例外を投げる。</p>
+<p>引数の数が正しいとき、op_storeは、それぞれのパラメータについて次のようにメソッドを呼ぶ。</p>
+<p>• P(k).op_store(A(k)) for each k (0 &lt;= k &lt; NP)</p>
+<p>• O(k - NP).pass_arg(A(k)) for each k (NP &lt;= k &lt; NA)</p>
+<p>• O(k - NP).pass_nothing for each k (NA &lt;= k &lt; NP+NO)</p>
+<p class="rubric">Lhsがrest_param、Rを持つ場合</p>
+<p>この場合、引数の数NAは、NP &lt;= NAのときに正しい。</p>
+<p>引数の数が正しくないとき、op_storeは例外を投げる。</p>
+<p>引数の数が正しいとき、op_storeは、それぞれのパラメータについて次のようにメソッドを呼ぶ。</p>
+<p>• P(k).op_store(A(k)) for each k (0 &lt;= k &lt; NP)</p>
+<p>• O(k - NP).pass_arg(A(k)) for each k (NP &lt;= k &lt; NA)</p>
+<p>• O(k - NP).pass_nothing for each k (NA &lt;= k &lt; NP+NO)</p>
+<p>• R.pass_rest(vec of A(k) for each k (NP+NO &lt;= k &lt; NA))</p>
+<p class="rubric">事前条件</p>
+<p>Rhsはvecでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+[<span class="nv">:X</span> <span class="nv">:Y</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot;</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y Z=[] W=[]&quot;</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y Z=[&quot;z&quot;] W=[]&quot;</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span> <span class="s1">&#39;w&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y Z=[&quot;z&quot;] W=[&quot;w&quot;]&quot;</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; R=[]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;r1&#39;</span> <span class="s1">&#39;r2&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; R=[&quot;r1&quot; &quot;r2&quot;]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; Z=[] W=[] R=[]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; Z=[&quot;z&quot;] W=[] R=[]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span> <span class="s1">&#39;w&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; Z=[&quot;z&quot;] W=[&quot;w&quot;] R=[]</span>
+
+[<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Z</span>.<span class="n">opt</span> <span class="nv">:W</span>.<span class="n">opt</span> <span class="nv">:R</span>.<span class="n">rest</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span> <span class="s1">&#39;w&#39;</span> <span class="s1">&#39;r1&#39;</span> <span class="s1">&#39;r2&#39;</span>]
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={} Z={} W={} R={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Z</span>.<span class="n">repr</span> <span class="nv">W</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
+<span class="c1"># =&gt; X=&quot;x&quot; Y=&quot;y&quot; Z=[&quot;z&quot;] W=[&quot;w&quot;] R=[&quot;r1&quot; &quot;r2&quot;]</span>
+
+<span class="c1"># Invalid numbers of right-hand-side vals:</span>
+<span class="nv">CONTROL</span>.<span class="n">try</span>(
+  { [<span class="nv">:X</span> <span class="nv">:Y</span>] &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>] }
+  { <span class="n">raise</span>(<span class="s1">&#39;must not reach here&#39;</span>) }
+  {(<span class="nv">:Exc</span>)
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;exception: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Exc</span>.<span class="n">message</span>))
+  }
+)
+<span class="c1"># =&gt; exception: too many args: for [:X :Y], got [1 2 3]</span>
+
+<span class="nv">CONTROL</span>.<span class="n">try</span>(
+  { [<span class="nv">:X</span> <span class="nv">:Y</span>] &lt;- [<span class="m">1</span>] }
+  { <span class="n">raise</span>(<span class="s1">&#39;must not reach here&#39;</span>) }
+  {(<span class="nv">:Exc</span>)
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;exception: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Exc</span>.<span class="n">message</span>))
+  }
+)
+<span class="c1"># =&gt; exception: too few args: for [:X :Y], got [1]</span>
+</pre></div>
+</div>
+</section>
+<section id="vec-repr">
+<span id="api-97b5493e30b9b5d7d421ed0d4c007f3e"></span><h3><span class="section-number">6.27.1.48. </span>Vec.repr<a class="headerlink" href="#vec-repr" title="Link to this heading">¶</a></h3>
+<p>reprは、Vecのstr表現を戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>].<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;foo&quot; 42]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="vec-is-val">
+<span id="api-86a15de152657a3ba0b61d095050256c"></span><h2><span class="section-number">6.27.2. </span>VEC.is?(Val)<a class="headerlink" href="#vec-is-val" title="Link to this heading">¶</a></h2>
+<p>is?は、Valがvecであるかどうかを戻す。</p>
+</section>
+<section id="vec-from-each-eacher">
+<span id="api-9f0ca3a3c6cc97f50656aa977d61bbe5"></span><h2><span class="section-number">6.27.3. </span>VEC.from_each(Eacher)<a class="headerlink" href="#vec-from-each-eacher" title="Link to this heading">¶</a></h2>
+<p>from_eachは、Eacherの要素をすべて含むvecを新しく作って戻す。</p>
+<p>Eacherは、.each($consume)メソッドを持っていなければならない。eachは、それぞれの要素について$consumeを呼び出すものでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VEC</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">VEC</span>.<span class="n">from_each</span>(<span class="nv">Set</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; [&quot;bar&quot; &quot;baz&quot; &quot;foo&quot;]</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-FLAT_MAP.html"><span class="section-number">6.28. </span>kink/container/FLAT_MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

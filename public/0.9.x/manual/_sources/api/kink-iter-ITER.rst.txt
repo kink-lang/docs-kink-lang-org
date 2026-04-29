@@ -1,0 +1,683 @@
+================
+kink\/iter\/ITER
+================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-9abfd993fe72b66de6733a6b4358a25e:
+
+type iter
+=========
+
+“iter” is an abbreviation of “iterator\.” An \`iter\` is a finite\-length or infinite\-length stream of values\.
+
+An \`iter\` is just a wrapper of an ifun\. See kink\/iter\/IFUN for ifuns\.
+
+.. _api-44ca02d34d982234fa48658bbea8b4be:
+
+Iter\.ifun
+----------
+
+\`ifun\` returns the ifun wrapped by \`Iter\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :IFUN.require_from('kink/iter/')
+        
+    :Num_iter <- 5.times
+        
+    Num_iter.each{(:N) stdout.print_line(N.repr) }
+    # => 0 1 2 3 4
+        
+    :nums <- Num_iter.ifun
+    IFUN.each($nums){(:N) stdout.print_line(N.repr) }
+    # => 0 1 2 3 4
+
+.. _api-5ca6b279a4095243180a754558cda613:
+
+Iter\.each\(\$consume\)
+-----------------------
+
+\`each\` calls \$consume for each element of \`Iter\`\, then returns the last result of \$consume\.
+
+If \`Iter\` has no elements\, \`each\` returns nada\.
+
+.. rubric:: Precondition
+
+\$consume must be a fun which takes an arg\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    3.times.each{(:E)
+      stdout.print_line(E.repr)
+    }
+    # Output:
+    #   0
+    #   1
+    #   2
+
+.. _api-cf1f5bd88c8cdc6d6b9ead27503cc7bc:
+
+Iter\.map\(\$transform\)
+------------------------
+
+\`map\` returns an \`iter\` whose nth element is transform\(nth\-element\-of\-Iter\)\.
+
+.. rubric:: Precondition
+
+\$transform must take an arg\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Ns <- ITER.of(1 2 3 4)
+    :Doubles <- Ns.map{(:N) N * 2 }
+    Doubles.each{(:D)
+      stdout.print_line(D.repr)
+    }
+    # Output:
+    #   2
+    #   4
+    #   6
+    #   8
+
+.. _api-2357c11b5c9a00ae2a5fd3b348ab7982:
+
+Iter\.concat\_map\(\$to\_iter\)
+-------------------------------
+
+\`concat\_map\` returns an \`iter\` which concatenates iters which are results of to\_iter\(element\-of\-Iter\)\.
+
+.. rubric:: Precondition
+
+\$to\_iter must take an arg\, and returns an \`iter\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Ns <- ITER.of(1 2 3 4)
+    :Mapped <- Ns.concat_map{(:N)
+      N.times
+    }
+    Mapped.each{(:M) stdout.print_line(M.repr) }
+    # => 0 0 1 0 1 2 0 1 2 3
+
+.. _api-22a957d51df6fc7b9a98a7a39eb022db:
+
+Iter\.filter\(\$include\?\)
+---------------------------
+
+\`filter\` returns all the elements of \`Iter\` which satisfy \$include\?\, as an \`iter\`\. The order of elements is not changed\.
+
+.. rubric:: Precondition
+
+\$include\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Orig <- ITER.of(1 2 3 4 5 6 7 8 9)
+    :Evens <- Orig.filter{(:N) N % 2 == 0 }
+    Evens.each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # Output:
+    #   2
+    #   4
+    #   6
+    #   8
+
+.. _api-ebce81e09608ea510108606ee45bdaea:
+
+Iter\.count\(\$counted\?\)
+--------------------------
+
+\`count\` returns the number of elements of \`Iter\`\, which satisfy \$counted\?\.
+
+The result is an int \`num\`\.
+
+.. rubric:: Preconditions
+
+\$counted\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Nums <- ITER.of(1 2 3 4 5 6 7 8 9)
+    :Count <- Nums.count{(:N) N % 2 == 0 }
+    stdout.print_line(Count.repr) # => 4
+
+.. _api-bc375652e17b94c11dc57ff94cd1e1b3:
+
+Iter\.fold\(Init \$combine\)
+----------------------------
+
+\`fold\` folds elements of \`Iter\` seeded by \`Init\`\.
+
+If the elements of \`Iter\` are E1\, E2\, \,\,\, En\_1\, En\, \`fold\` returns combine\(combine\(\,\,\,combine\(combine\(Init E1\) E2\)\,\,\, En\_1\) En\)\.
+
+If \`Iter\` is empty\, \`fold\` returns \`Init\`\.
+
+.. rubric:: Precondition
+
+\$combine must takes two args\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Ns <- ITER.of(1 2 3 4 5)
+    stdout.print_line(Ns.fold(100){(:X :Y) X + Y }.repr)  # => 115
+
+.. _api-c526cd87bc4f759440d84519e4eab1b6:
+
+Iter\.reduce\(\$combine \.\.\.\[\$empty\_fallback\]\)
+-----------------------------------------------------
+
+\`reduce\` folds elements of \`Iter\` mutually\.
+
+If \`Iter\` has elements E1\, E2\, E3\, \,\,\, En\_1\, En\, \`reduce\` returns combine\(combine\(\,\,\,combine\(combine\(E1 E2\) E3\)\,\,\, En\_1\) En\)\.
+
+If \`Iter\` has a single element \`E\`\, \`reduce\` returns \`E\`\.
+
+If \`Iter\` has no element\, and \$empty\_fallback is given\, \`reduce\` tail\-calls \$empty\_fallback with no arg\.
+
+If \`Iter\` has no element\, and \$empty\_fallback is not given\, \`reduce\` raises an exception\.
+
+.. rubric:: Preconditions
+
+\$combine must take two args\.
+
+\$empty\_fallback must be a thunk\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Ns <- ITER.of(1 2 3 4 5)
+    stdout.print_line(Ns.reduce{(:X :Y) X + Y }.repr)  # => 15
+
+.. _api-b1563edccd37cdc15b3c7380dbf26918:
+
+Iter\.take\_front\(N\)
+----------------------
+
+take\_front returns the first N elements of \`Iter\` as an \`iter\`\. If \`Iter\` has less than N elements\, take\_front returns an \`iter\` which has all the elements of \`Iter\`\.
+
+.. rubric:: Preconditions
+
+N must be an int \`num\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    1.up.take_front(5).each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # => 1 2 3 4 5
+        
+    ITER.of(1 2 3).take_front(5).each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # => 1 2 3
+
+.. _api-9bd8ea3024d6d0c967a77b90ad08af22:
+
+Iter\.drop\_front\(N\)
+----------------------
+
+drop\_front returns elements of \`Iter\` excluding the first N elements\, as an \`iter\`\. If \`Iter\` has less than N elements\, drop\_front returns an empty \`iter\`\.
+
+.. rubric:: Preconditions
+
+N must be an int \`num\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    10.times.drop_front(5).each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # => 5 6 7 8 9
+        
+    10.times.drop_front(20).each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # Output: nothing
+
+.. _api-b493d9f845fa83eb64817f5ccbd89ef7:
+
+Iter\.take\_while\(\$include\?\)
+--------------------------------
+
+take\_while returns the longest prefix of \`Iter\`\, whose elements all satisfy \$include\?\, as an \`iter\`\.
+
+.. rubric:: Preconditions
+
+\$include\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Ns <- ITER.of(1000 500 250 125 62 31 15 7 3 1 0)
+    :Front <- Ns.take_while{(:N) N % 2 == 0 }
+    Front.each{(:N) stdout.print_line(N.repr) }
+    # => 1000 500 250
+
+.. _api-63fed9fb4e94d7836fcadae879903925:
+
+Iter\.drop\_while\(\$exclude\?\)
+--------------------------------
+
+drop\_while excludes the longest prefix of \`Iter\` whose elements all satisfy \$exclude\?\, and returns the rest as an \`iter\`\.
+
+.. rubric:: Preconditions
+
+\$exclude\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Ns <- ITER.of(1000 500 250 125 62 31 15 7 3 1 0)
+    :Back <- Ns.drop_while{(:N) N % 2 == 0 }
+    Back.each{(:N) stdout.print_line(N.repr) }
+    # => 125 62 31 15 7 3 1 0
+
+.. _api-a6526a6ff8ceb0cd8eb239893498391e:
+
+Iter\.all\?\(\$match\?\)
+------------------------
+
+\`all\?\` returns true if all the elements of \`Iter\` satisfy \$match\?\, otherwise returns false\.
+
+If \`Iter\` is infinite\-length\, \`all\?\` is not guaranteed to return\.
+
+.. rubric:: Preconditions
+
+\$match\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Ns <- ITER.of(1 2 3 4 5)
+    stdout.print_line(Ns.all?{(:N) N < 10 }.repr)      # => true
+    stdout.print_line(Ns.all?{(:N) N % 2 == 0 }.repr)  # => false
+
+.. _api-fe630704531294ad4f5249c4176fa990:
+
+Iter\.any\?\(\.\.\.\[\$match\?\=\{ true \}\]\)
+----------------------------------------------
+
+\`any\?\` returns true if one or more elements of \`Iter\` satisfy \$match\?\, otherwise returns false\.
+
+If \`Iter\` is infinite\-length\, \`any\?\` is not guaranteed to return\.
+
+The default value of \$match\? is \{ true \}\. So\, if \$match\? is not passed\, \`any\?\` returns whether \`Iter\` is nonempty\.
+
+.. rubric:: Preconditions
+
+\$match\? must be a predicate\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Ns <- ITER.of(1 2 3 4 5)
+    stdout.print_line(Ns.any?{(:N) N % 2 == 0 }.repr)  # => true
+    stdout.print_line(Ns.any?{(:N) N > 10 }.repr)      # => false
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    stdout.print_line(ITER.of().any?.repr)    # => false
+    stdout.print_line(ITER.of(1).any?.repr)   # => true
+    stdout.print_line(ITER.of(1 2).any?.repr) # => true
+
+.. _api-ad67ea4f07bdd8c22100af4b7b4ff72d:
+
+Iter\.concat
+------------
+
+\`concat\` returns an iter\, which concatenates the elements of iters in \`Iter\`\.
+
+.. rubric:: Precondition
+
+\`Iter\` must be an \`iter\` of iters\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Nums <- ITER.of(1 2 3)
+    :Strs <- ITER.of('foo' 'bar')
+    :Bools <- ITER.of(true false)
+    ITER.of(Nums Strs Bools).concat.each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # => 1 2 3 "foo" "bar" true false
+
+.. _api-41349a38ad9d63c669bd8df6ff4dcb15:
+
+Iter\.unconcat\(Chunk\_size\)
+-----------------------------
+
+\`unconcat\` splits \`Iter\` into vecs whose size is \`Chunk\_size\`\, and returns an \`iter\` of those vecs\.
+
+If the size of \`Iter\` is a finite number Chunk\_size \* N \+ R\, where N and R are non\-negative integers\, the last R elements of \`Iter\` will be discarded\.
+
+.. rubric:: Precondition
+
+\`Chunk\_size\` must be a positive int num\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Ns <- ITER.of(1 2 3 4 5 6 7)
+    :Chunks <- Ns.unconcat(2)
+    Chunks.each{(:Chunk)
+      stdout.print_line(Chunk.repr)
+    }
+    # Output:
+    #   [1 2]
+    #   [3 4]
+    #   [5 6]
+
+.. _api-d615ac9b98458a6f872ab3b3a232b69e:
+
+Iter\.cycle
+-----------
+
+\`cycle\` returns an \`iter\` which infinitely repeats the elements of \`Iter\`\.
+
+If \`Iter\` is empty\, the result \`iter\` will be also empty\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    3.times.cycle.take_front(10).each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # => 0 1 2 0 1 2 0 1 2 0
+        
+    ITER.of().cycle.each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # Output: nothing
+
+.. _api-3ab44720e374a52836fdd24ac39db2d1:
+
+Front \+ Back
+-------------
+
+\`\+\` operator\, or \`op\_add\` method\, concatenates two iters \`Front\` and \`Back\` into a single \`iter\`\.
+
+.. rubric:: Precondition
+
+\`Front\` and \`Back\` must be \`iter\` vals\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Iter <- 1.up.take_front(3) + 11.up.take_front(3)
+    Iter.each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # => 1 2 3 11 12 13
+
+.. _api-d066e06acb9a4ab66dd1fd2be7d0acac:
+
+ITER\.new\(\$ifun\)
+===================
+
+\`new\` makes an \`iter\` wrapping \$ifun\.
+
+.. rubric:: Precondition
+
+\$ifun must be an ifun\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :make_vec_ifun <- {(:Vec)
+      {(:proc :fin)
+        if(Vec.any?
+          { :Head = Vec.get(0)
+            :tail = make_vec_ifun(Vec.drop_front(1))
+            proc(Head $tail)
+          }
+          { fin }
+        )
+      }
+    }
+    :Iter <- ITER.new(make_vec_ifun(['foo' 'bar' 'baz']))
+    Iter.each{(:S)
+      stdout.print_line(S)
+    }
+    # Output:
+    #   foo
+    #   bar
+    #   baz
+
+.. _api-8c1a46c592a1d9c1f7ace086f70ab264:
+
+ITER\.is\?\(Val\)
+=================
+
+\`is\?\` returns whether \`Val\` is an \`iter\`\.
+
+.. _api-119705136739da62d44434cd2e92f10f:
+
+ITER\.of\(\.\.\.Elems\)
+=======================
+
+\`of\` returns an \`iter\` containing \`Elems\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Iter <- ITER.of('foo' 'bar' 'baz')
+    Iter.each{(:S)
+      stdout.print_line(S)
+    }
+    # Output:
+    #   foo
+    #   bar
+    #   baz
+
+.. _api-f5462f020e129f9b0c0ffcc5c58d7f7a:
+
+ITER\.zip\(First\_iter \.\.\.Other\_iters\)
+===========================================
+
+If \`zip\` is passed N iters\, \`zip\` returns an \`iter\` as long as the shortest of these iters\, each element of which is an N\-element vec comprised of the corresponding elements from the passed iters\.
+
+For example\, if an iter X has elements X1\, X2\, X3\, \,\,\, \, an iter Y has elements Y1\, Y2\, Y3\, \,\,\, \, and an iter Z has elements Z1\, Z2\, Z3\, \,\,\, \, zip\(X Y Z\) returns an iter containing \[X1 Y1 Z1\]\, \[X2 Y2 Z2\]\, \[X3 Y3 Z3\]\, \,\,\, \.
+
+.. rubric:: Preconditions
+
+Each element of \`Other\_iters\` must be an \`iter\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Zipped <- ITER.zip(
+      ITER.of(1 2 3 4 5)
+      ITER.of('foo' 'bar' 'baz')
+      ITER.of(true false true)
+    )
+    Zipped.each{(:Triple)
+      stdout.print_line(Triple.repr)
+    }
+    # Output:
+    #   [1 "foo" true]
+    #   [2 "bar" false]
+    #   [3 "baz" true]
+
+.. _api-1df041f9a86a08a6505e194659fc56dc:
+
+ITER\.lazy\(\$make\_iter\)
+==========================
+
+\`lazy\` makes an \`iter\` which delegates production of the elements to an \`iter\` returned by \$make\_iter\.
+
+The thunk \$make\_iter is called when the contents of the result \`iter\` is needed\.
+
+.. rubric:: Precondition
+
+\$make\_iter must be a thunk which returns an \`iter\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :count_down <- {(:N)
+      if(N < 0
+        { ITER.of() }
+        { ITER.of(N) + ITER.lazy{ count_down(N - 1) } }
+      )
+    }
+    count_down(5).each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # => 5 4 3 2 1 0
+
+.. _api-6d0602cb3762becfd16f81f49dc8de8a:
+
+ITER\.from\_generator\(\$generator\)
+====================================
+
+\`from\_generator\` makes an \`iter\` of elements yielded in \$generator\.
+
+\$generator must take an unary fun \$yield as the arg\, When \$yield is called with a val in invocation of \$generator\, that val will be an element of the result \`iter\`\. When the invocation of \$generator returns\, it is the end of the \`iter\`\.
+
+\$generator is called when the contents of the result \`iter\` is needed\. The invocation of \$generator is suspended when \$yield is called\. The invocation is resumed when the contents of the trailing \`iter\` is needed\.
+
+.. rubric:: Example\: make a finite length iter
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Iter <- ITER.from_generator{(:yield)
+      yield('foo')
+      yield('bar')
+      yield('baz')
+    }
+    Iter.each{(:Str)
+      stdout.print_line(Str)
+    }
+    # Output:
+    #   foo
+    #   bar
+    #   baz
+
+.. rubric:: Example\: make an infinite length iter
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Iter <- ITER.from_generator{(:yield)
+      :loop <- {(:N)
+        yield(N)
+        loop(N + 1)
+      }
+      loop(1)
+    }
+    Iter.take_front(5).each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # Output:
+    #   1
+    #   2
+    #   3
+    #   4
+    #   5
+
+.. _api-060f01bac524d4d22a6955298623867d:
+
+ITER\.from\_each\(Eacher\)
+==========================
+
+\`from\_each\` makes an \`iter\` of values which are enumerated in Eacher\.each\.
+
+The invocation of \`each\` is suspended and resumed for evaluation of each element of the \`iter\`\.
+
+.. rubric:: Precondition
+
+\`Eacher\` must support each\(\$consume\) method\, which is called to enumerate each element of \`Eacher\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ITER.require_from('kink/iter/')
+        
+    :Take_five <- ITER.from_each([1 2 3 4 5])
+    Take_five.each{(:N)
+      stdout.print_line(N.repr)
+    }
+    # => 1 2 3 4 5
+

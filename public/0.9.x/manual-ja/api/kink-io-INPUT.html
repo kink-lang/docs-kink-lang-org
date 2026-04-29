@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.55. kink/io/INPUT &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.56. kink/io/INPUT_SCANNER" href="kink-io-INPUT_SCANNER.html" />
+    <link rel="prev" title="6.54. kink/io/FILE" href="kink-io-FILE.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.55. kink/io/INPUT</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-FILE.html"><span class="section-number">6.54. </span>kink/io/FILE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-INPUT_SCANNER.html"><span class="section-number">6.56. </span>kink/io/INPUT_SCANNER</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-io-input">
+<h1><span class="section-number">6.55. </span>kink/io/INPUT<a class="headerlink" href="#kink-io-input" title="Link to this heading">¶</a></h1>
+<p>input 型のコンパニオンモジュール。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-input" id="id2">input 型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#input-read-max-size-config" id="id3">Input.read(Max_size ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#input-read-all-config" id="id4">Input.read_all(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#input-close-config" id="id5">Input.close(...[$config={}])</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#input-is-val" id="id6">INPUT.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#input-mixin" id="id7">INPUT.mixin</a></p></li>
+</ul>
+</nav>
+<section id="type-input">
+<span id="api-0edb5d0790c366443607931bec431fe4"></span><h2><span class="section-number">6.55.1. </span>input 型<a class="headerlink" href="#type-input" title="Link to this heading">¶</a></h2>
+<p>input はファイルなど下層にあるソースからのバイト列の入力ポートである。</p>
+<p>input は下層にあるソースへのシーケンシャルなアクセスを提供する。シークなどのランダムアクセス操作は提供しない。</p>
+<section id="input-read-max-size-config">
+<span id="api-e8341e8b849b1926919895693dc3c07e"></span><h3><span class="section-number">6.55.1.1. </span>Input.read(Max_size ...[$config={}])<a class="headerlink" href="#input-read-max-size-config" title="Link to this heading">¶</a></h3>
+<p>read はストリームからバイト列を読み込む。 read は最低1バイトが読まれるか、end-of-fileが検出されるか、IOエラーが発生するまでブロックする。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_eof($eof): default = 例外を投げる関数</p>
+<p>• C.on_error($error): default = 例外を投げる関数</p>
+<p>1バイト以上が読み込まれた場合、 read は$successに読み込まれた bin を渡して末尾呼び出しする。 bin の長さは Max_size を超えない。</p>
+<p>end-of-fileが検出された場合、 read は$eofを引数なしで末尾呼び出しする。</p>
+<p>IOエラーが起きた場合、 read は$errorに exception を渡して末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>Max_size は1以上の整数の num 値でなければならない。</p>
+<p>$successは bin を取る関数でなければならない。</p>
+<p>$eofは引数を取らない関数でなければならない。</p>
+<p>$errorは exception を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:BIN_INPUT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+
+<span class="nv">:In</span> &lt;- <span class="nv">BIN_INPUT</span>.<span class="n">new</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>))
+<span class="nv">:loop</span> &lt;- {(<span class="nv">:Vec</span>)
+  <span class="nv">In</span>.<span class="n">read</span>(<span class="m">2</span>){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Bin</span>) <span class="n">loop</span>(<span class="nv">Vec</span> + [<span class="nv">Bin</span>]) }
+    <span class="nv">C</span>.<span class="n">on_eof</span>{ <span class="nv">Vec</span> }
+  }
+}
+<span class="nv">:Result</span> &lt;- <span class="n">loop</span>([])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [(bin 0x01 0x02) (bin 0x03)]</span>
+</pre></div>
+</div>
+<p class="rubric">例: IOエラー</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FILE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:In</span> &lt;- <span class="nv">FILE</span>.<span class="n">open_to_read</span>(<span class="s1">&#39;/etc/passwd&#39;</span>)
+<span class="nv">In</span>.<span class="n">close</span>
+<span class="nv">In</span>.<span class="n">read</span>(<span class="m">10</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Exc</span>)
+    <span class="n">stderr</span>.<span class="n">print_line</span>(<span class="nv">Exc</span>.<span class="n">message</span>)
+  }
+}
+<span class="c1"># =&gt; already closed</span>
+
+<span class="nv">In</span>.<span class="n">read</span>(<span class="m">10</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [..root..]</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   {builtin:kink-mods/kink/EXCEPTION.kn L117 C13 current_traces} { TRACE.--&gt;current_traces }</span>
+<span class="c1">#   already closed</span>
+</pre></div>
+</div>
+</section>
+<section id="input-read-all-config">
+<span id="api-552f89408e13a7762490240f149a03c9"></span><h3><span class="section-number">6.55.1.2. </span>Input.read_all(...[$config={}])<a class="headerlink" href="#input-read-all-config" title="Link to this heading">¶</a></h3>
+<p>read_all はend-of-fileに達するか、IOエラーが起きるまでバイト列を読み込む。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>IOエラーなしに1バイト以上読み込まれた場合、 read_all は$successを bin を渡して末尾呼び出しする。</p>
+<p>1バイトも読み込まれなかった場合、 read_all は$successを、空の bin を渡して末尾呼び出しする。</p>
+<p>IOエラーが起きた場合、 read_all は$errorを、 exception を渡して末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>$successは bin を取る関数でなければならない。</p>
+<p>$errorは exception を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:BIN_INPUT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:INPUT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+
+<span class="nv">:In</span> &lt;- <span class="nv">BIN_INPUT</span>.<span class="n">new</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">In</span>.<span class="n">read_all</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (bin 0x01 0x02 0x03)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">In</span>.<span class="n">read_all</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (bin)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">In</span>.<span class="n">read_all</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (bin)</span>
+</pre></div>
+</div>
+<p class="rubric">参照</p>
+<p>INPUT.mixin: read_all の一般的な実装を提供している。</p>
+</section>
+<section id="input-close-config">
+<span id="api-f850ccaacee17b4202dd82bada9bca0c"></span><h3><span class="section-number">6.55.1.3. </span>Input.close(...[$config={}])<a class="headerlink" href="#input-close-config" title="Link to this heading">¶</a></h3>
+<p>close はバイト列のソースであるリソースを閉じる。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = 例外を投げる関数</p>
+<p>リソースがエラーなしに閉じられた場合、 close は$successを引数なしで末尾呼び出しする。</p>
+<p>IOエラーが起きた場合、 close は$errorを exception を渡して末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>$successは引数を取らない関数でなければならない。</p>
+<p>$errorは exception を取る関数でなければならない。</p>
+</section>
+</section>
+<section id="input-is-val">
+<span id="api-161c98da8425416c2a48d966f1993a38"></span><h2><span class="section-number">6.55.2. </span>INPUT.is?(Val)<a class="headerlink" href="#input-is-val" title="Link to this heading">¶</a></h2>
+<p>is? は Val が input かどうかを戻す。</p>
+</section>
+<section id="input-mixin">
+<span id="api-701d0017014c8634ab5f96fdf34d53f1"></span><h2><span class="section-number">6.55.3. </span>INPUT.mixin<a class="headerlink" href="#input-mixin" title="Link to this heading">¶</a></h2>
+<p>mixin はInput.read_allの実装を提供するミックスイントレイトを戻す。 read_all は read メソッドを用いて実装される。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:INPUT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:FILE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+
+<span class="nv">:Trait</span> &lt;- [
+  ... <span class="nv">INPUT</span>.<span class="n">mixin</span>
+
+  <span class="s1">&#39;read&#39;</span> {[<span class="nv">:In</span>](<span class="nv">:Args</span>.<span class="n">rest</span>)
+    <span class="n">stderr</span>.<span class="n">print_line</span>(<span class="s1">&#39;Called: read&#39;</span>)
+    <span class="nv">In</span>.<span class="nv">Wrapped</span>.<span class="n">read</span>(... <span class="nv">Args</span>)
+  }
+
+  <span class="s1">&#39;close&#39;</span> {[<span class="nv">:In</span>](<span class="nv">:Args</span>.<span class="n">rest</span>)
+    <span class="n">stderr</span>.<span class="n">print_line</span>(<span class="s1">&#39;Called: close&#39;</span>)
+    <span class="nv">In</span>.<span class="nv">Wrapped</span>.<span class="n">close</span>(... <span class="nv">Args</span>)
+  }
+]
+
+<span class="nv">:new_logging_input</span> &lt;- {(<span class="nv">:Wrapped</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Trait</span>
+    <span class="s1">&#39;Wrapped&#39;</span> <span class="nv">Wrapped</span>
+  )
+}
+
+<span class="nv">:main</span> &lt;- {
+  <span class="nv">:Bin</span> = <span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+    <span class="nv">:In</span> = <span class="n">new_logging_input</span>(<span class="nv">FILE</span>.<span class="n">open_to_read</span>(<span class="s1">&#39;/etc/passwd&#39;</span>))
+    <span class="n">finally</span>{ <span class="nv">In</span>.<span class="n">close</span> }
+    <span class="nv">In</span>.<span class="n">read_all</span>
+  }
+  <span class="n">stdout</span>.<span class="n">write</span>(<span class="nv">Bin</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   Called: read</span>
+<span class="c1">#   Called: read</span>
+<span class="c1">#   Called: close</span>
+<span class="c1">#   root:x:0:0:root:/root:/bin/bash</span>
+<span class="c1">#   daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin</span>
+<span class="c1">#   bin:x:2:2:bin:/bin:/usr/sbin/nologin</span>
+<span class="c1">#   sys:x:3:3:sys:/dev:/usr/sbin/nologin</span>
+<span class="c1">#   ,,,</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-FILE.html"><span class="section-number">6.54. </span>kink/io/FILE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-INPUT_SCANNER.html"><span class="section-number">6.56. </span>kink/io/INPUT_SCANNER</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,302 @@
+=============
+kink\/CONTROL
+=============
+
+The mod which provides various control funs\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-a6e09ce11834a45ca32157ca739083ee:
+
+CONTROL\.try\(\$body \$cont\_returned \$cont\_raised\)
+======================================================
+
+\`try\` traps an exception raised within invocation of \$body\.
+
+Preconditions\:
+
+\• \$body must be a thunk fun
+
+\• \$cont\_returned must be a fun which takes an argument\, which is the result of \$body
+
+\• \$cont\_raised must be a fun which takes an exception raised in the invocation of \$body
+
+\`try\` invokes \$body with no args\.
+
+If the invocation of \$body terminates without raising an exception\, \`try\` tail\-calls \$cont\_returned with the result of the invocation of \$body\.
+
+If the invocation of \$body terminates raising an exception\, \`try\` tail\-calls \$cont\_raised with the exception\.
+
+Example\:
+
+.. code:: kink
+
+    :TRACE.require_from('kink/')
+    :CONTROL.require_from('kink/')
+        
+    :attempt_divide_10_by <- {(:Divisor)
+      CONTROL.try(
+        { 10 // Divisor }
+        {(:Result)
+          stdout.print_line('result: {}'.format(Result))
+        }
+        {(:Exc)
+          Exc.desc_iter.each{(:Line)
+            stdout.print_line(Line)
+          }
+        }
+      )
+    }
+        
+    attempt_divide_10_by(2)
+    # Output:
+    #   result: 5
+        
+    attempt_divide_10_by(0)
+    # Output:
+    #   -- main exception
+    #   [..root..]
+    #   {..call by host..}
+    #   {..call by host..}
+    #   {startup}
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L260 C3 _startup_aux} -->_startup_aux(Args Dep)
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L243 C11 try} CONTROL.-->try(
+    #   [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.-->reset{
+    #   {..call by host..}
+    #   [..kont tag..]
+    #   [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = -->body
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L245 C7 _start} -->_start(Non_opts Dep)
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L137 C3 if} -->if(Non_opts == []
+    #   {..call by host..}
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L152 C20 call} { :Source_spec -->= Non_opts.front
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L153 C20 call} :Script_args -->= Non_opts.drop_front(1)
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L154 C7 branch} -->branch(
+    #   {..call by host..}
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L180 C34 call} [:Source_desc :Script] -->= _scan_from(Source_spec Dep)
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L182 C20 call} :Binding -->= BINDING.new
+    #   {builtin:kink-mods/kink/_startup/STARTUP.kn L184 C11 _run_script} -->_run_script(Binding $script_fun Script_args)
+    #   [builtin:kink-mods/kink/_startup/STARTUP.kn L128 C3 script_fun] -->script_fun
+    #   {(stdin) L22 C1 attempt_divide_10_by} -->attempt_divide_10_by(0)
+    #   {(stdin) L5 C11 try} CONTROL.-->try(
+    #   [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.-->reset{
+    #   {..call by host..}
+    #   [..kont tag..]
+    #   [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = -->body
+    #   {(stdin) L6 C10 op_intdiv} { 10 -->// Divisor }
+    #   Num.op_intdiv(Divisor): zero division: 10 is divided by 0
+
+\`try\` internally uses kink\/KONT\_TAG\.escape\_tag to trap an exception\.
+
+.. _api-a9b17d47fee600f79293b1bfa745e1e9:
+
+CONTROL\.while\(\$cond \$body\)
+===============================
+
+CONTROL\.while calls \$body repeatedly while \$cond returns true\.
+
+Preconditions\:
+
+\• \$cond must be a thunk fun which returns a bool
+
+\• \$body must be a thunk fun
+
+CONTROL\.while first calls \$cond with no args\. If \$cond returns true\, CONTROL\.while calls \$body with no args\. It repeats until Fun returns false\.
+
+Example\:
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+        
+    :Vec <- [1 2 3]
+    CONTROL.while{ Vec.any? }{
+      :N = Vec.pop_front
+      stdout.print_line(N.repr)
+    }
+    # Output:
+    #   1
+    #   2
+    #   3
+
+.. _api-29c676e2986aaddd539609b493b6faaf:
+
+CONTROL\.with\_finally\(\$body\)
+================================
+
+\`with\_finally\` provides functionality of resource releases at the end of the procedure which uses the resources\.
+
+\`with\_finally\` calls \$body with \$finally fun\, and returns the result of \$body\. Within the invocation of \$body\, \$finally can be called with \$cleanup thunk\.
+
+\$cleanup thunk is ensured to be called after the invocation of \$body ends in the following ways\:
+
+\(1\) When the invocation of \$body returns a val\,
+
+\(2\) When the invocation of \$body is terminated by \$return fun of CONTROL\.with\_return\, or
+
+\(3\) When the invocation of \$body raises an exception\.
+
+Example\:
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+    :CHARSET.require_from('kink/')
+    :FILE.require_from('kink/io/')
+        
+    :Text <- CONTROL.with_finally{(:finally)
+      :In = FILE.open_to_read('/path/to/file')
+      finally{ In.close }
+      CHARSET.utf8.bin_to_str(In.read_all)
+    }
+    stdout.print(Text)  # prints the text in /path/to/file
+
+In the example above\, \`In\` is closed when exiting from \`with\_finally\`\, no matter whether \`read\_all\` raises an exception or not\.
+
+\$finally can be called multiple times\. If \$finally is called with thunks \`T1\`\, \`T2\`\, \,\,\, \`Tn\` respectively in that order\, the thunks are called at the end of the invocation of \$body in the order \`Tn\` \,\,\, \`T2\`\, \`T1\`\.
+
+Example\:
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+        
+    CONTROL.with_finally{(:finally)
+      finally{ stdout.print_line('T1') }
+      finally{ stdout.print_line('T2') }
+      finally{ stdout.print_line('T3') }
+    }
+    # Output:
+    #   T3
+    #   T2
+    #   T1
+
+\`with\_finally\` traps only KONT\_TAG\.escape\_tag\. Thus\, when invocation of \$body is aborted by \`shift\` operation of any other kont tags\, \$cleanup thunks are not invoked\.
+
+Example\:
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+    :KONT_TAG.require_from('kink/')
+        
+    :cleanup_not_called <- {
+      :Tag = KONT_TAG.new
+      Tag.reset{
+        CONTROL.with_finally{(:finally)
+          finally{ stdout.print_line('does not reach here') }
+          Tag.shift{ nada }
+        }
+      }
+      stdout.print_line('done')
+    }
+        
+    cleanup_not_called # => done
+
+.. rubric:: Detailed semantics
+
+Invocation of \$finally guards the delimited continuation of the invocation of \$body by hypothetical \_\_rest\_\_ fun\. For example\:
+
+.. code:: kink
+
+    CONTROL.with_finally{(:finally)
+      __leading__
+      finally($cleanup)
+      __rest__
+    }
+
+The program above is equivalent to the following\:
+
+.. code:: kink
+
+    CONTROL.with_finally{(:finally)
+      __leading__
+      __ensure__(
+        { __rest__ }
+        $cleanup
+      )
+    }
+
+Here\, \_\_ensure\_\_ does the following\:
+
+\• Executes \_\_rest\_\_\.
+
+\• If \_\_rest\_\_ returns a val\, \_\_ensure\_\_ calls \$cleanup\.
+
+\• If \_\_rest\_\_ is terminated by \$return fun of CONTROL\.with\_return with a thunk \`T\`\,   \_\_ensure\_\_ calls \$cleanup and calls return\(T\)\.
+
+\• If \_\_rest\_\_ raises an exception \`E\`\,   \_\_ensure\_\_ calls \$cleanup within a guard of CONTROL\.try\.   If \$cleanup returns a val\, \_\_ensure\_\_ raises \`E\`\.   If \$cleanup raises an exception \`F\`\, \_\_ensure\_\_raises \`E\+F\`\.
+
+.. _api-a4599f5bf37ae1ee2080db91914c982f:
+
+CONTROL\.with\_return\(\$body\)
+===============================
+
+\`with\_return\` provides functionality of early\-return\.
+
+\`with\_return\` calls \$body with a fun\. Here we call the fun as \$return\. You can call \$return with a thunk\, \$cont\, to end the invocation of \`with\_return\`\. \`with\_return\` tail\-calls \$cont\. Thus\, the result of the thunk will be the result of \`with\_return\`\.
+
+Example\:
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+        
+    :to_fizz_buzz <- {(:Num)
+      CONTROL.with_return{(:return)
+        if(Num % 15 == 0){ return{ 'fizzbuzz' } }
+        if(Num % 3 == 0){ return{ 'fizz' } }
+        if(Num % 5 == 0){ return{ 'buzz' } }
+        return{ Num.show }
+      }
+    }
+        
+    1.up.take_front(20)
+    .map{(:N) to_fizz_buzz(N) }
+    .each{(:S) stdout.print(S + ' ') }
+    # => 1 2 fizz 4 buzz fizz 7 8 fizz buzz 11 fizz 13 14 fizzbuzz 16 17 fizz 19 buzz
+
+Invocation of \$body must end by calling \$return or by raising an exception\.
+
+.. rubric:: \$cont is tail\-called
+
+\`with\_return\` tail\-calls \$cont passed to \$return\. Thus\, you can safely implement a loop using \`with\_return\`\.
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+        
+    :gcd <- {(:X :Y)
+      CONTROL.with_return{(:return)
+        :R = X % Y
+        if(R == 0){ return{ Y } }
+        
+        return{ gcd(Y R) }
+      }
+    }
+        
+    stdout.print_line(gcd(1071 462).repr) # => 21
+
+.. rubric:: Nested invocation
+
+Invocation of \`with\_return\` can be nested like below\:
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+        
+    :R <- CONTROL.with_return{(:return)
+      CONTROL.with_return{(:inner_return)
+        return{ 42 }
+        raise('does not reach here')
+      }
+      raise('does not reach here either')
+    }
+        
+    stdout.print_line(R.repr) # => 42
+
+.. rubric:: Note
+
+\`with\_return\` internally uses KONT\_TAG\.escape\_tag to implement non local exit\.
+

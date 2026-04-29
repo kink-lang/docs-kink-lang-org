@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.65. kink/javahost/JAVA &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.66. kink/javahost/JAVA_CHANNEL_INPUT" href="kink-javahost-JAVA_CHANNEL_INPUT.html" />
+    <link rel="prev" title="6.64. kink/iter/ITER" href="kink-iter-ITER.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.65. kink/javahost/JAVA</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-iter-ITER.html"><span class="section-number">6.64. </span>kink/iter/ITER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-JAVA_CHANNEL_INPUT.html"><span class="section-number">6.66. </span>kink/javahost/JAVA_CHANNEL_INPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-javahost-java">
+<h1><span class="section-number">6.65. </span>kink/javahost/JAVA<a class="headerlink" href="#kink-javahost-java" title="Link to this heading">¶</a></h1>
+<p>Javaオブジェクト、値、クラス、メソッドを操作する方法を提供する。</p>
+<p>JAVAモジュールは、ホストシステムとの、境界のはっきりした統合を提供する意図で設計されている。Kinkの世界とJavaの世界の間には、明確な境界がある。たとえば、JavaのメソッドをKinkの関数として直接呼び出すことはできない。その代わりに、 .call_method を通して呼び出さなければならない。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">Java_obj</span>.<span class="n">call_method</span>(<span class="s1">&#39;toString&#39;</span>)
+</pre></div>
+</div>
+<p>この設計にはいくつかの理由がある。</p>
+<p>1)  オブジェクトシステムと、実行の意味論の両方で、KinkとJavaは根本的に異なる。したがって、シームレスな統合を実現することは難しい。</p>
+<p>2)  一般的に、規模の大きなアプリケーションは、異なるシステム間に境界がある方が簡潔に設計できる。</p>
+<p>3)  明確な境界があることで、KinkはJavaと独立に改善できる。</p>
+<p class="rubric">型付け可能</p>
+<p>ここでは、Javaのオブジェクト参照とJavaの型の間の二項関係、「型付け可能」を定義する。</p>
+<p>オブジェクト参照RがクラスオブジェクトTで型付け可能であるとき、次の条件のうちひとつが成り立つ。</p>
+<p>• Tが参照型を表すクラスオブジェクトで、かつRがその参照型のインスタンスである。</p>
+<p>• Tが参照型を表すクラスオブジェクトで、かつRがnullである。</p>
+<p>• RがBoolean, Character, Byte, Short, Integer, Long, Float, Doubleのいずれかのインスタンスであり、かつTが対応するプリミティブ型を表すクラスオブジェクトである。</p>
+<p>以降では、クラスオブジェクトと、そのクラスオブジェクトが表す型を、区別せずに言及する。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-java" id="id2">java型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#j-type" id="id3">J.type</a></p></li>
+<li><p><a class="reference internal" href="#j-as-new-type" id="id4">J.as(New_type)</a></p></li>
+<li><p><a class="reference internal" href="#j-instance-of-klass" id="id5">J.instance_of?(Klass)</a></p></li>
+<li><p><a class="reference internal" href="#j-eq-eq-another" id="id6">J.eq_eq?(Another)</a></p></li>
+<li><p><a class="reference internal" href="#j-null" id="id7">J.null?</a></p></li>
+<li><p><a class="reference internal" href="#j-to-kink-str" id="id8">J.to_kink_str</a></p></li>
+<li><p><a class="reference internal" href="#j-to-kink-bool" id="id9">J.to_kink_bool</a></p></li>
+<li><p><a class="reference internal" href="#j-to-kink-num" id="id10">J.to_kink_num</a></p></li>
+<li><p><a class="reference internal" href="#j-to-kink-bin-from-to" id="id11">J.to_kink_bin(...[From To])</a></p></li>
+<li><p><a class="reference internal" href="#j-to-kink-exception" id="id12">J.to_kink_exception</a></p></li>
+<li><p><a class="reference internal" href="#j-unwrap" id="id13">J.unwrap</a></p></li>
+<li><p><a class="reference internal" href="#j-array-class" id="id14">J.array_class</a></p></li>
+<li><p><a class="reference internal" href="#j-array-new-size" id="id15">J.array_new(Size)</a></p></li>
+<li><p><a class="reference internal" href="#j-array-of-e0-e1" id="id16">J.array_of(...[E0 E1 ,,,])</a></p></li>
+<li><p><a class="reference internal" href="#j-array-length" id="id17">J.array_length</a></p></li>
+<li><p><a class="reference internal" href="#j-array-get-ind" id="id18">J.array_get(Ind)</a></p></li>
+<li><p><a class="reference internal" href="#j-array-set-ind-elem" id="id19">J.array_set(Ind Elem)</a></p></li>
+<li><p><a class="reference internal" href="#j-get-field-field-name" id="id20">J.get_field(Field_name)</a></p></li>
+<li><p><a class="reference internal" href="#j-set-field-field-name-content" id="id21">J.set_field(Field_name Content)</a></p></li>
+<li><p><a class="reference internal" href="#j-get-static-field-name" id="id22">J.get_static(Field_name)</a></p></li>
+<li><p><a class="reference internal" href="#j-set-static-field-name-content" id="id23">J.set_static(Field_name Content)</a></p></li>
+<li><p><a class="reference internal" href="#j-call-method-method-name-a0-a1-config" id="id24">J.call_method(Method_name ...[A0 A1 ,,,] ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#j-call-static-method-name-a0-a1-config" id="id25">J.call_static(Method_name ...[A0 A1 ,,,] ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#j-new-a0-a1-config" id="id26">J.new(...[A0 A1 ,,,] ...[$config={}])</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#type-java-call-config" id="id27">java_call_config型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#c-on-success-success" id="id28">C.on_success($success)</a></p></li>
+<li><p><a class="reference internal" href="#c-catch-exception-class-error" id="id29">C.catch(Exception_class $error)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#java-is-val" id="id30">JAVA.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#java-string-str" id="id31">JAVA.string(Str)</a></p></li>
+<li><p><a class="reference internal" href="#java-bytes-bin-from-0-to-bin-size" id="id32">JAVA.bytes(Bin ...[From=0 To=Bin.size])</a></p></li>
+<li><p><a class="reference internal" href="#java-byte-buffer-bin" id="id33">JAVA.byte_buffer(Bin)</a></p></li>
+<li><p><a class="reference internal" href="#java-boolean-bool" id="id34">JAVA.boolean(Bool)</a></p></li>
+<li><p><a class="reference internal" href="#java-char-num" id="id35">JAVA.char(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-byte-num" id="id36">JAVA.byte(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-short-num" id="id37">JAVA.short(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-int-num" id="id38">JAVA.int(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-long-num" id="id39">JAVA.long(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-float-num" id="id40">JAVA.float(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-double-num" id="id41">JAVA.double(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-big-integer-num" id="id42">JAVA.big_integer(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-big-decimal-num" id="id43">JAVA.big_decimal(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-wrap-wrapped" id="id44">JAVA.wrap(Wrapped)</a></p></li>
+<li><p><a class="reference internal" href="#java-true" id="id45">JAVA.true</a></p></li>
+<li><p><a class="reference internal" href="#java-false" id="id46">JAVA.false</a></p></li>
+<li><p><a class="reference internal" href="#java-null" id="id47">JAVA.null</a></p></li>
+<li><p><a class="reference internal" href="#java-runtime" id="id48">JAVA.runtime</a></p></li>
+<li><p><a class="reference internal" href="#java-boolean-class" id="id49">JAVA.boolean_class</a></p></li>
+<li><p><a class="reference internal" href="#java-char-class" id="id50">JAVA.char_class</a></p></li>
+<li><p><a class="reference internal" href="#java-byte-class" id="id51">JAVA.byte_class</a></p></li>
+<li><p><a class="reference internal" href="#java-short-class" id="id52">JAVA.short_class</a></p></li>
+<li><p><a class="reference internal" href="#java-int-class" id="id53">JAVA.int_class</a></p></li>
+<li><p><a class="reference internal" href="#java-long-class" id="id54">JAVA.long_class</a></p></li>
+<li><p><a class="reference internal" href="#java-float-class" id="id55">JAVA.float_class</a></p></li>
+<li><p><a class="reference internal" href="#java-double-class" id="id56">JAVA.double_class</a></p></li>
+<li><p><a class="reference internal" href="#java-void-class" id="id57">JAVA.void_class</a></p></li>
+<li><p><a class="reference internal" href="#java-class-class-name-config" id="id58">JAVA.class(Class_name ...[$config={}])</a></p></li>
+</ul>
+</nav>
+<section id="type-java">
+<span id="api-bdcf8aa519e365f452da2436eacd19e7"></span><h2><span class="section-number">6.65.1. </span>java型<a class="headerlink" href="#type-java" title="Link to this heading">¶</a></h2>
+<p>java値は、(objectReference, type)の対である。ここで、objectReferenceはJavaのオブジェクトの参照であり、typeはクラスオブジェクトである。</p>
+<p>typeは、Javaのインスタンスメソッド、インスタンスフィールドを検索するために使われる。</p>
+<p class="rubric">不変条件</p>
+<p>objectReferenceはtypeで型付け可能でなければならない。</p>
+<section id="j-type">
+<span id="api-deb3eecb723aef46d1abb40358fe6b6e"></span><h3><span class="section-number">6.65.1.1. </span>J.type<a class="headerlink" href="#j-type" title="Link to this heading">¶</a></h3>
+<p>typeメソッドは、Jのtype属性を戻す。</p>
+<p>typeメソッドの結果は、java値(t, java.lang.Class)になる。ここでtは、Jのtype属性である。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Comparable_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Comparable&#39;</span>)
+<span class="nv">:Type</span> &lt;- <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">as</span>(<span class="nv">Comparable_class</span>).<span class="n">type</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Type</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (java &quot;interface java.lang.Comparable&quot; as java.lang.Class)</span>
+</pre></div>
+</div>
+</section>
+<section id="j-as-new-type">
+<span id="api-9fea7a59909457f8d4eec2ebda67a83b"></span><h3><span class="section-number">6.65.1.2. </span>J.as(New_type)<a class="headerlink" href="#j-as-new-type" title="Link to this heading">¶</a></h3>
+<p>asは、typeをNew_typeに変える。</p>
+<p>asの結果は、(ref, nt)のjava値になる。ここで、refはJのobjectReferenceであり、ntはNew_typeのobjectReferenceである。</p>
+<p class="rubric">事前条件</p>
+<p>New_typeはjava値(nt, *)でなければならない。ここで、ntはクラスオブジェクトであり、JのobjectReferenceはntで型付け可能でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:Integer_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Integer&#39;</span>)
+
+<span class="nv">:Int</span> &lt;- <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">42</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Int</span>.<span class="n">repr</span>)                   <span class="c1"># =&gt; (java &quot;42&quot; as int)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Int</span>.<span class="n">as</span>(<span class="nv">Integer_class</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (java &quot;42&quot; as java.lang.Integer)</span>
+</pre></div>
+</div>
+</section>
+<section id="j-instance-of-klass">
+<span id="api-8085cbddb5f1d7cdeaa5f59d3dd704a8"></span><h3><span class="section-number">6.65.1.3. </span>J.instance_of?(Klass)<a class="headerlink" href="#j-instance-of-klass" title="Link to this heading">¶</a></h3>
+<p>instance_of?は、JのobjectReferenceがKlassのインスタンスであるかどうかを戻す。このチェックは、Java言語のinstanceof演算子と同値である。</p>
+<p class="rubric">事前条件</p>
+<p>Klassはjava値(klass, *)でなければならない。ここでklassは、java.lang.Classのインスタンスでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:Integer_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Integer&#39;</span>)
+<span class="nv">:String_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.String&#39;</span>)
+<span class="nv">:Object_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Object&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">instance_of?</span>(<span class="nv">String_class</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">instance_of?</span>(<span class="nv">Object_class</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">instance_of?</span>(<span class="nv">Integer_class</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">42</span>).<span class="n">instance_of?</span>(<span class="nv">Integer_class</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">42</span>).<span class="n">instance_of?</span>(<span class="nv">Object_class</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">42</span>).<span class="n">instance_of?</span>(<span class="nv">JAVA</span>.<span class="n">int_class</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="j-eq-eq-another">
+<span id="api-6fe23ab75cf9d4904597bab2866784db"></span><h3><span class="section-number">6.65.1.4. </span>J.eq_eq?(Another)<a class="headerlink" href="#j-eq-eq-another" title="Link to this heading">¶</a></h3>
+<p>eq_eq?は、JとAnotherのobjectReference属性が、Java言語の == の意味で同一かどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Anotherはjava値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="c1"># null is eq_eq? null, irrespective of their types</span>
+<span class="nv">:Null_string</span> &lt;- <span class="nv">JAVA</span>.<span class="n">null</span>.<span class="n">as</span>(<span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.String&#39;</span>))
+<span class="nv">:Null_integer</span> &lt;- <span class="nv">JAVA</span>.<span class="n">null</span>.<span class="n">as</span>(<span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Integer&#39;</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Null_string</span>.<span class="n">eq_eq?</span>(<span class="nv">Null_integer</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+
+<span class="nv">:Object_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Object&#39;</span>)
+<span class="nv">:Str</span> &lt;- <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;foobar&#39;</span>)
+<span class="nv">:Str_as_obj</span> &lt;- <span class="nv">Str</span>.<span class="n">as</span>(<span class="nv">Object_class</span>)
+
+<span class="c1"># object is eq_eq? itself, irrespective their types</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">eq_eq?</span>(<span class="nv">Str_as_obj</span>).<span class="n">repr</span>)        <span class="c1"># =&gt; true</span>
+
+<span class="c1"># object is not eq_eq? another object</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">eq_eq?</span>(<span class="nv">Object_class</span>.<span class="n">new</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="j-null">
+<span id="api-7df137b3d7bea8013ea10354edda1eee"></span><h3><span class="section-number">6.65.1.5. </span>J.null?<a class="headerlink" href="#j-null" title="Link to this heading">¶</a></h3>
+<p>null?は、JのobjectReference属性がnullであるかどうかを戻す。</p>
+</section>
+<section id="j-to-kink-str">
+<span id="api-a83080dd5930eac4ff25a8e518102cd9"></span><h3><span class="section-number">6.65.1.6. </span>J.to_kink_str<a class="headerlink" href="#j-to-kink-str" title="Link to this heading">¶</a></h3>
+<p>to_kink_strは、Java文字列からstr値を作って戻す。</p>
+<p class="rubric">事前条件</p>
+<p>JのobjectReferenceはjava.lang.Stringのインスタンスでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Java_string</span> &lt;- <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;foobar&#39;</span>)
+<span class="nv">:Kink_str</span> &lt;- <span class="nv">Java_string</span>.<span class="n">to_kink_str</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Kink_str</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foobar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="j-to-kink-bool">
+<span id="api-a0a53bf876b1d8e99a06d54243a5982f"></span><h3><span class="section-number">6.65.1.7. </span>J.to_kink_bool<a class="headerlink" href="#j-to-kink-bool" title="Link to this heading">¶</a></h3>
+<p>to_kink_boolは、Javaのbooleanからbool値を作って戻す。</p>
+<p class="rubric">事前条件</p>
+<p>JのobjectReferenceはjava.lang.Booleanのインスタンスでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Empty</span> &lt;- <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;&#39;</span>)
+<span class="nv">:Non_empty</span> &lt;- <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Empty</span>.<span class="n">call_method</span>(<span class="s1">&#39;isEmpty&#39;</span>).<span class="n">to_kink_bool</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Non_empty</span>.<span class="n">call_method</span>(<span class="s1">&#39;isEmpty&#39;</span>).<span class="n">to_kink_bool</span>.<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="j-to-kink-num">
+<span id="api-24c55d5665df90acc6503d2a9479ddd6"></span><h3><span class="section-number">6.65.1.8. </span>J.to_kink_num<a class="headerlink" href="#j-to-kink-num" title="Link to this heading">¶</a></h3>
+<p>to_kink_numは、Javaの数値からnum値を作って戻す。</p>
+<p class="rubric">Character, Byte, Short, Integer, Long, BigIntegerからの変換</p>
+<p>JのobjectReferenceがCharacter, Byte, Short, Integer, Long, BigIntegerのいずれかの場合、結果のnumのScaleは0になる。また、結果のnumのMantissaは元の整数になる。</p>
+<p class="rubric">Float, Doubleからの変換</p>
+<p>JのobjectReferenceがFloatかDoubleの場合、結果のnumのScaleは、数値が正確に表現できる最小の非負の整数になる。また、Mantissaは `J * (10 ^ Scale)` になる。</p>
+<p>0の符号は結果に保存されない。</p>
+<p class="rubric">BigDecimalからの変換</p>
+<p>JのobjectReferenceがBigDecimalの場合、結果のnumのScaleはBigDecimal.scale()の結果と等しくなり、MantissaはBigDecimal.unscaledValue()の結果と等しくなる。</p>
+<p class="rubric">事前条件</p>
+<p>JのobjectReferenceは、Character, Byte, Short, Integer, Long, Float, Double, BigInteger, BigDecimalのいずれかのインスタンスでなければならない。</p>
+<p>参照がFloatかDoubleのとき、それはNaNや正負の無限大であってはならない。</p>
+<p>参照がBigIntegerのとき、それはnum値のサポートされているMantissaの範囲になければならない。</p>
+<p>参照がBigDecimalのとき、そのスケールはnum値のサポートされているScaleの範囲にあり、またスケールされない値はnum値のサポートされているMantissaの範囲になければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Ans</span> &lt;- <span class="nv">JAVA</span>.<span class="n">byte</span>(<span class="m">42</span>).<span class="n">to_kink_num</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ans</span>.<span class="n">repr</span>)           <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ans</span>.<span class="n">scale</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; 0</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ans</span>.<span class="n">mantissa</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+
+<span class="nv">:Pi</span> &lt;- <span class="nv">JAVA</span>.<span class="n">float</span>(<span class="m">3.14</span>).<span class="n">to_kink_num</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Pi</span>.<span class="n">repr</span>)          <span class="c1"># =&gt; 3.1400001049041748046875</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Pi</span>.<span class="n">scale</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 22</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Pi</span>.<span class="n">mantissa</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 31400001049041748046875</span>
+</pre></div>
+</div>
+</section>
+<section id="j-to-kink-bin-from-to">
+<span id="api-55761176379e983faa180bb9f5c6ccf1"></span><h3><span class="section-number">6.65.1.9. </span>J.to_kink_bin(...[From To])<a class="headerlink" href="#j-to-kink-bin-from-to" title="Link to this heading">¶</a></h3>
+<p>to_kink_binは、Javaのバイト配列からbin値を作って戻す。</p>
+<p>Fromのデフォルト値は0である。Toのデフォルト値はバイト配列の長さである。</p>
+<p>結果のbinの長さは `To - From` になる。binは、Jの[From, To)の範囲のスライスのバイトを含む。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(bytes, *)でなければならない。ここでbytesはbyte[]のインスタンスでなければならない。</p>
+<p>FromとToは整数のnum値でなければならない。</p>
+<p>0 &lt;= From &lt;= To &lt;= bytes.length</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Bytes</span> &lt;- <span class="nv">JAVA</span>.<span class="n">byte_class</span>.<span class="n">array_of</span>(
+  <span class="nv">JAVA</span>.<span class="n">byte</span>(<span class="m">0</span>) <span class="nv">JAVA</span>.<span class="n">byte</span>(<span class="m">1</span>) <span class="nv">JAVA</span>.<span class="n">byte</span>(<span class="m">2</span>) <span class="nv">JAVA</span>.<span class="n">byte</span>(<span class="m">3</span>) <span class="nv">JAVA</span>.<span class="n">byte</span>(<span class="m">4</span>))
+<span class="nv">:Copy</span> &lt;- <span class="nv">Bytes</span>.<span class="n">to_kink_bin</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Copy</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x00 0x01 0x02 0x03 0x04)</span>
+
+<span class="nv">:Slice</span> &lt;- <span class="nv">Bytes</span>.<span class="n">to_kink_bin</span>(<span class="m">1</span> <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x01 0x02 0x03)</span>
+</pre></div>
+</div>
+</section>
+<section id="j-to-kink-exception">
+<span id="api-19473767f080757f7c71139694d97b84"></span><h3><span class="section-number">6.65.1.10. </span>J.to_kink_exception<a class="headerlink" href="#j-to-kink-exception" title="Link to this heading">¶</a></h3>
+<p>to_kink_exceptionは、JavaのThrowableからexception値を作って戻す。</p>
+<p>to_kink_exceptionはThrowable.toStringをMessageに、Throwable.getStackTraceをTracesに、Throwable.getCauseとgetSuppressedをNextに、それぞれexception値の属性としてエンコードする。</p>
+<p>他のthrowableの属性、たとえばSQLException.getErrorCodeなどは保存されない。</p>
+<p class="rubric">事前条件</p>
+<p>JのobjectReferenceはjava.lang.Throwableのインスタンスでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">JAVA</span>.<span class="n">big_integer</span>(<span class="m">42</span>).<span class="n">call_method</span>(<span class="s1">&#39;divide&#39;</span> <span class="nv">JAVA</span>.<span class="n">big_integer</span>(<span class="m">0</span>)){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">catch</span>(<span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.ArithmeticException&#39;</span>)){(<span class="nv">:Java_exc</span>)
+    <span class="nv">:Exc</span> = <span class="nv">Java_exc</span>.<span class="n">to_kink_exception</span>
+    <span class="nv">Exc</span>.<span class="n">desc_iter</span>.<span class="n">each</span>{(<span class="nv">:Str</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>)
+    }
+  }
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [org.kink_lang.kink/org.kink_lang.kink.internal.startup.Kink.main(Kink.java:34)]</span>
+<span class="c1">#   [org.kink_lang.kink/org.kink_lang.kink.Vm.run(Vm.java:217)]</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   [java.base/java.math.BigInteger.divideKnuth(BigInteger.java:2447)]</span>
+<span class="c1">#   [java.base/java.math.MutableBigInteger.divideKnuth(MutableBigInteger.java:1184)]</span>
+<span class="c1">#   java.lang.ArithmeticException: BigInteger divide by zero</span>
+</pre></div>
+</div>
+</section>
+<section id="j-unwrap">
+<span id="api-c25b08a4c49c79bb41fe6844b5835ae8"></span><h3><span class="section-number">6.65.1.11. </span>J.unwrap<a class="headerlink" href="#j-unwrap" title="Link to this heading">¶</a></h3>
+<p>unwrapは、JAVA.wrapでラップされたKinkの値を抜き出す。</p>
+<p>Jがjava値(Wrapped, ? super org.kink_lang.kink.Val)のとき、unwrapはWrappedを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(Wrapped, *)でなければならない。ここで、Wrappedはorg.kink_lang.kink.Valのインスタンスで、かつWrappedのランタイムは現在のランタイムと同じでなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Str</span> &lt;- <span class="s1">&#39;foo&#39;</span>
+<span class="nv">:Wrapped_str</span> &lt;- <span class="nv">JAVA</span>.<span class="n">wrap</span>(<span class="nv">Str</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Wrapped_str</span>.<span class="n">repr</span>)  <span class="c1"># (java &quot;StrVal(foo)&quot; as org.kink_lang.kink.Val)</span>
+
+<span class="nv">:Unwrapped_str</span> &lt;- <span class="nv">Wrapped_str</span>.<span class="n">unwrap</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Unwrapped_str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">VAL</span>.<span class="n">same?</span>(<span class="nv">Unwrapped_str</span> <span class="nv">Str</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="j-array-class">
+<span id="api-20b25eef6973f24f70edfdc23b7b54d7"></span><h3><span class="section-number">6.65.1.12. </span>J.array_class<a class="headerlink" href="#j-array-class" title="Link to this heading">¶</a></h3>
+<p>array_classは、与えられた要素型の配列クラスのクラスオブジェクトを戻す。</p>
+<p>JのobjectReferenceがCのとき、array_classはjava値(C[], java.lang.Class)を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(C, *)でなければならない。ここでCはクラスオブジェクトでなければならない。</p>
+<p>Cはvoidであってはならない。</p>
+<p>Cが配列クラスのとき、その次元は254を超えてはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Array_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">int_class</span>.<span class="n">array_class</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Array_class</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (java &quot;class [I&quot; as java.lang.Class)</span>
+</pre></div>
+</div>
+</section>
+<section id="j-array-new-size">
+<span id="api-04851e8fc772947f8b966398b8a8be35"></span><h3><span class="section-number">6.65.1.13. </span>J.array_new(Size)<a class="headerlink" href="#j-array-new-size" title="Link to this heading">¶</a></h3>
+<p>array_newは、与えられた要素型とサイズの配列を戻す。</p>
+<p>JのobjectReferenceがCのとき、array_newはjava値(Array, C[])を戻す。ここで、Arrayは長さがSizeの配列である。</p>
+<p>Arrayの要素はCのゼロ値で初期化される。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(C, *)でなければならない。ここでCはクラスオブジェクトでなければならない。</p>
+<p>Cはvoidであってはならない。</p>
+<p>Cが配列クラスのとき、その次元は254を超えてはならない。</p>
+<p>Sizeは非負の整数のnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Array</span> &lt;- <span class="nv">JAVA</span>.<span class="n">int_class</span>.<span class="n">array_new</span>(<span class="m">2</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Array</span>.<span class="n">repr</span>)               <span class="c1"># =&gt; (java &quot;[I@4722ef0c&quot; as [I)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Array</span>.<span class="n">array_length</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 2</span>
+</pre></div>
+</div>
+</section>
+<section id="j-array-of-e0-e1">
+<span id="api-769448fbe4a33788552d0427d9664b14"></span><h3><span class="section-number">6.65.1.14. </span>J.array_of(...[E0 E1 ,,,])<a class="headerlink" href="#j-array-of-e0-e1" title="Link to this heading">¶</a></h3>
+<p>array_ofは、与えられた要素を含む配列を戻す。</p>
+<p>JのobjectReferenceがCのとき、array_ofはjava値(Array, C[])を戻す。ここで、ArrayはE0, E1, ,,, を要素として持つ配列である。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(C, *)でなければならない。ここでCはクラスオブジェクトでなければならない。</p>
+<p>Cはvoidであってはならない。</p>
+<p>Cが配列クラスのとき、その次元は254を超えてはならない。</p>
+<p>E0, E1, ,,, はjava値であり、そのobjectReference属性は、JのobjectReferenceで型付け可能でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Array</span> &lt;- <span class="nv">JAVA</span>.<span class="n">int_class</span>.<span class="n">array_of</span>(<span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">10</span>) <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">20</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Array</span>.<span class="n">repr</span>)               <span class="c1"># =&gt; (java &quot;[I@4722ef0c&quot; as [I)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Array</span>.<span class="n">array_get</span>(<span class="m">0</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (java &quot;10&quot; as int)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Array</span>.<span class="n">array_get</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (java &quot;20&quot; as int)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Array</span>.<span class="n">array_length</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 2</span>
+</pre></div>
+</div>
+</section>
+<section id="j-array-length">
+<span id="api-c049f691d199541f42fece1688810b8d"></span><h3><span class="section-number">6.65.1.15. </span>J.array_length<a class="headerlink" href="#j-array-length" title="Link to this heading">¶</a></h3>
+<p>array_lengthは、配列の長さを整数のnum値として戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(array, *)でなければならない。ここでarrayは配列でなければならない。</p>
+</section>
+<section id="j-array-get-ind">
+<span id="api-6707f6ec517186fb30c5f783ac70e012"></span><h3><span class="section-number">6.65.1.16. </span>J.array_get(Ind)<a class="headerlink" href="#j-array-get-ind" title="Link to this heading">¶</a></h3>
+<p>array_getは、配列Jの添字Indにおける要素を戻す。</p>
+<p>配列の要素型が参照型rtのとき、array_getは、java値(element, rt)を戻す。ここでelementは配列の要素である。</p>
+<p>配列の要素型がプリミティブ型ptのとき、array_getはjava値(box, pt)を戻す。ここでboxは、対応するラッパ型のインスタンスであり、その中身として配列の要素を持つ。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(array, *)でなければならない。ここでarrayは配列でなければならない。</p>
+<p>Indは、[0, length)の範囲の整数のnumでなければならない。ここでlengthは配列の長さである。</p>
+</section>
+<section id="j-array-set-ind-elem">
+<span id="api-a0987ed8cb63182c4067407a3c5e026d"></span><h3><span class="section-number">6.65.1.17. </span>J.array_set(Ind Elem)<a class="headerlink" href="#j-array-set-ind-elem" title="Link to this heading">¶</a></h3>
+<p>array_setは、値Elemを配列Jの添字Indの場所に書き込む。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(array, *)でなければならない。ここでarrayは配列でなければならない。</p>
+<p>Indは、[0, length)の範囲の整数のnumでなければならない。ここでlengthは配列の長さである。</p>
+<p>Elemはjava値(elem, *)でなければならない。ここでelemは配列の要素型で型付け可能でなければならない。</p>
+</section>
+<section id="j-get-field-field-name">
+<span id="api-4d770acd5c9652a775a07b8989b8f602"></span><h3><span class="section-number">6.65.1.18. </span>J.get_field(Field_name)<a class="headerlink" href="#j-get-field-field-name" title="Link to this heading">¶</a></h3>
+<p>get_fieldは、publicなインスタンスフィールドの内容を戻す。</p>
+<p>フィールドは、Jのtypeから、Class.getField(String)を使って検索される。</p>
+<p>フィールドの宣言型が参照型rtのとき、結果はjava値(contentObj, rt)になる。ここでcontentObjはフィールドの内容である。</p>
+<p>フィールドの宣言型がプリミティブ型ptのとき、結果はjava値(box, pt)になる。ここでboxは、対応するラッパ型のインスタンスであり、その中身としてフィールドの内容を持つ。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値でなければならない。</p>
+<p>Field_nameはstrでなければならない。</p>
+<p>Jのtypeは、Field_nameの名前の、publicなインスタンスフィールドを持っていなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:True</span> &lt;- <span class="nv">JAVA</span>.<span class="n">runtime</span>.<span class="n">get_field</span>(<span class="s1">&#39;bool&#39;</span>).<span class="n">get_field</span>(<span class="s1">&#39;trueVal&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">True</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (java &quot;trueVal&quot; as org.kink_lang.kink.Val)</span>
+</pre></div>
+</div>
+</section>
+<section id="j-set-field-field-name-content">
+<span id="api-ebb499209518eb119dd6c6b6ef367c40"></span><h3><span class="section-number">6.65.1.19. </span>J.set_field(Field_name Content)<a class="headerlink" href="#j-set-field-field-name-content" title="Link to this heading">¶</a></h3>
+<p>set_fieldは、Contentをpublicなインスタンスフィールドに書き込む。</p>
+<p>フィールドは、Jのtypeから、Class.getField(String)を使って検索される。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値でなければならない。</p>
+<p>Field_nameはstrでなければならない。</p>
+<p>Jのtypeは、Field_nameの名前の、publicなインスタンスフィールドを持っていなければならない。</p>
+<p>フィールドはfinalであってはならない。</p>
+<p>Contentはjava値(contentObj, *)でなければならない。ここでcontentObjは、フィールドの宣言型で型付け可能でなければならない。</p>
+</section>
+<section id="j-get-static-field-name">
+<span id="api-5cb44d97a98cb538ebbd1875ae977959"></span><h3><span class="section-number">6.65.1.20. </span>J.get_static(Field_name)<a class="headerlink" href="#j-get-static-field-name" title="Link to this heading">¶</a></h3>
+<p>get_staticは、クラスJのpublic staticフィールドの内容を戻す。</p>
+<p>JのobjectReferenceがクラスオブジェクトownerClassのとき、フィールドはownerClassから、Class.getField(String)を使って検索される。</p>
+<p>フィールドの宣言型が参照型rtのとき、結果はjava値(contentObj, rt)になる。ここでcontentObjはフィールドの内容である。</p>
+<p>フィールドの宣言型がプリミティブ型ptのとき、結果はjava値(box, pt)になる。ここでboxは、対応するラッパ型のインスタンスであり、その中身としてフィールドの内容を持つ。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(ownerClass, *)でなければならない。ここで、ownerClassはjava.lang.Classのインスタンスでなければならない。</p>
+<p>Field_nameはstrでなければならない。</p>
+<p>ownerClassは、Field_nameの名前を持つpublic staticフィールドを持っていなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Byte_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Byte&#39;</span>)
+<span class="nv">:Byte_max</span> &lt;- <span class="nv">Byte_class</span>.<span class="n">get_static</span>(<span class="s1">&#39;MAX_VALUE&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Byte_max</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (java &quot;127&quot; as byte)</span>
+</pre></div>
+</div>
+</section>
+<section id="j-set-static-field-name-content">
+<span id="api-19da60ec93f3279a1f7f8ffe305fda90"></span><h3><span class="section-number">6.65.1.21. </span>J.set_static(Field_name Content)<a class="headerlink" href="#j-set-static-field-name-content" title="Link to this heading">¶</a></h3>
+<p>set_staticは、クラスJのpublic staticフィールドにContentを書き込む。</p>
+<p>JのobjectReferenceがクラスオブジェクトownerClassのとき、フィールドはownerClassから、Class.getField(String)を使って検索される。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(ownerClass, *)でなければならない。ここで、ownerClassはjava.lang.Classのインスタンスでなければならない。</p>
+<p>Field_nameはstrでなければならない。</p>
+<p>ownerClassは、Field_nameの名前を持つpublic staticフィールドを持っていなければならない。</p>
+<p>フィールドはfinalであってはならない。</p>
+<p>Contentはjava値(contentObj, *)でなければならない。ここでcontentObjは、フィールドの宣言型で型付け可能でなければならない。</p>
+</section>
+<section id="j-call-method-method-name-a0-a1-config">
+<span id="api-a88a85d17e6737f382eaec6f6cf284de"></span><h3><span class="section-number">6.65.1.22. </span>J.call_method(Method_name ...[A0 A1 ,,,] ...[$config={}])<a class="headerlink" href="#j-call-method-method-name-a0-a1-config" title="Link to this heading">¶</a></h3>
+<p>call_methodは、オブジェクトJのpublicなインスタンスメソッドを呼び出す。</p>
+<p class="rubric">検索</p>
+<p>インスタンスメソッドは `J.type.getMethod(Method_name, A0.type, A1.type, ,,,)` で検索される。</p>
+<p class="rubric">結果</p>
+<p>1) メソッドの宣言された戻り型が参照型rtで、メソッドが例外を投げずに終わったとき、call_methodは、java値(resultObj, rt)を引数として成功時継続を末尾呼び出しする。ここでresultObjはメソッドの戻り値である。</p>
+<p>2) メソッドの宣言された戻り型ptがchar, boolean, byte, short, int, long, float, doubleのいずれかで、メソッドが例外を投げずに終わったとき、call_methodは、java値(resultObj, pt)を引数として成功時継続を末尾呼び出しする。ここでresultObjは戻り値のラッパインスタンスである。</p>
+<p>3) メソッドの宣言された戻り型がvoidで、メソッドが例外を投げずに終わったとき、call_methodは、引数なしで成功時継続を末尾呼び出しする。</p>
+<p>4) メソッドがJavaの例外exceptionObjを投げて終わり、その例外がC.catchの呼び出しで指定されたひとつ以上の例外型のインスタンスであるとき、call_methodは、最も狭い型etに対応するエラー時継続を、java値(exceptionObj, et)を引数として末尾呼び出しする。</p>
+<p>5) メソッドがJavaの例外を投げて終わり、C.catchに渡された例外型のどれもが投げられた例外に合致しなかったとき、call_methodはKinkの例外を投げる。</p>
+<p>コンフィグ値のC.on_successが呼ばれず、メソッドの宣言された戻り型がvoidのときは、{ nada }がデフォルトの成功時継続として使われる。</p>
+<p>コンフィグ値のC.on_successが呼ばれず、メソッドの宣言された戻り型がvoidでないときは、VAL.identityがデフォルトの成功時継続として使われる。</p>
+<p class="rubric">事前条件</p>
+<p>Method_nameはstrでなければならない。</p>
+<p>A0, A1 ,,, はjava値でなければならない。</p>
+<p>Jのtypeは、指定されたpublicインスタンスメソッドを持っていなければならない。</p>
+<p>$configは、java_call_config値を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:ArrayList_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.util.ArrayList&#39;</span>)
+<span class="nv">:Object_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Object&#39;</span>)
+<span class="nv">:Lst</span> &lt;- <span class="nv">ArrayList_class</span>.<span class="n">new</span>
+
+<span class="c1"># .as(Object_class) is required,</span>
+<span class="c1"># because the method is looked up using static types of the args</span>
+<span class="nv">Lst</span>.<span class="n">call_method</span>(<span class="s1">&#39;add&#39;</span> <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">as</span>(<span class="nv">Object_class</span>))
+<span class="nv">Lst</span>.<span class="n">call_method</span>(<span class="s1">&#39;add&#39;</span> <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">42</span>).<span class="n">as</span>(<span class="nv">Object_class</span>))
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Lst</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (java &quot;[foo, 42]&quot; as java.util.ArrayList)</span>
+
+<span class="c1"># call ArrayList.remove(int)</span>
+<span class="nv">:Removed</span> &lt;- <span class="nv">Lst</span>.<span class="n">call_method</span>(<span class="s1">&#39;remove&#39;</span> <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">0</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Removed</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (java &quot;foo&quot; as java.lang.Object)</span>
+
+<span class="c1"># call ArrayList.remove(java.lang.Object)</span>
+<span class="nv">:Success</span> &lt;- <span class="nv">Lst</span>.<span class="n">call_method</span>(<span class="s1">&#39;remove&#39;</span> <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">42</span>).<span class="n">as</span>(<span class="nv">Object_class</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Success</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (java &quot;true&quot; as boolean)</span>
+</pre></div>
+</div>
+<p>デフォルトでは、Javaの例外はKinkの例外として投げられる。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:ArrayList_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.util.ArrayList&#39;</span>)
+<span class="nv">:Lst</span> &lt;- <span class="nv">ArrayList_class</span>.<span class="n">new</span>
+
+<span class="nv">CONTROL</span>.<span class="n">try</span>(
+  { <span class="nv">Lst</span>.<span class="n">call_method</span>(<span class="s1">&#39;get&#39;</span> <span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">42</span>)) }
+  {(<span class="nv">:R</span>) <span class="n">raise</span>(<span class="s1">&#39;must not reach here&#39;</span>) }
+  {(<span class="nv">:Exc</span>)
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Exc</span>.<span class="n">message</span>)
+  }
+)
+<span class="c1"># =&gt; java exception: java.lang.IndexOutOfBoundsException: Index 42 out of bounds for length 0</span>
+</pre></div>
+</div>
+<p>成功、エラーの継続は、コンフィグ関数で設定できる。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:BigInteger_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.math.BigInteger&#39;</span>)
+
+<span class="nv">:divide_10_by</span> &lt;- {(<span class="nv">:Divisor</span>)
+  <span class="nv">BigInteger_class</span>.<span class="n">get_static</span>(<span class="s1">&#39;TEN&#39;</span>).<span class="n">call_method</span>(<span class="s1">&#39;divide&#39;</span> <span class="nv">Divisor</span>){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:R</span>)
+      <span class="s1">&#39;result: {}&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">repr</span>)
+    }
+    <span class="nv">C</span>.<span class="n">catch</span>(<span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.RuntimeException&#39;</span>)){(<span class="nv">:Exc</span>)
+      <span class="s1">&#39;rte: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Exc</span>.<span class="n">repr</span>)
+    }
+    <span class="nv">C</span>.<span class="n">catch</span>(<span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Exception&#39;</span>)){(<span class="nv">:Exc</span>)
+      <span class="s1">&#39;exception: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Exc</span>.<span class="n">repr</span>)
+    }
+  }
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">divide_10_by</span>(<span class="nv">JAVA</span>.<span class="n">big_integer</span>(<span class="m">2</span>)))
+<span class="c1"># =&gt; result: (java &quot;5&quot; as java.math.BigInteger)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">divide_10_by</span>(<span class="nv">JAVA</span>.<span class="n">big_integer</span>(<span class="m">0</span>)))
+<span class="c1"># =&gt; rte: (java &quot;java.lang.ArithmeticException: BigInteger divide by zero&quot; as java.lang.RuntimeException)</span>
+</pre></div>
+</div>
+<p>Javaメソッドの戻り型がvoidのとき、成功時継続は引数なしで末尾呼び出しされる。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:ArrayList_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.util.ArrayList&#39;</span>)
+<span class="nv">:Object_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Object&#39;</span>)
+
+<span class="nv">:Lst</span> &lt;- <span class="nv">ArrayList_class</span>.<span class="n">new</span>
+<span class="nv">Lst</span>.<span class="n">call_method</span>(<span class="s1">&#39;add&#39;</span> <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">as</span>(<span class="nv">Object_class</span>))
+<span class="nv">Lst</span>.<span class="n">call_method</span>(<span class="s1">&#39;add&#39;</span> <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;bar&#39;</span>).<span class="n">as</span>(<span class="nv">Object_class</span>))
+
+<span class="nv">Lst</span>.<span class="n">call_method</span>(<span class="s1">&#39;clear&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_success</span>{()
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;cleared!&#39;</span>)
+  }
+}
+<span class="c1"># =&gt; cleared!</span>
+</pre></div>
+</div>
+</section>
+<section id="j-call-static-method-name-a0-a1-config">
+<span id="api-c29cebd9582aa314d0da77584f52883c"></span><h3><span class="section-number">6.65.1.23. </span>J.call_static(Method_name ...[A0 A1 ,,,] ...[$config={}])<a class="headerlink" href="#j-call-static-method-name-a0-a1-config" title="Link to this heading">¶</a></h3>
+<p>call_staticは、クラスJのpublicなstaticメソッドを呼び出す。</p>
+<p class="rubric">検索</p>
+<p>JのobjectReferenceがownerClassのとき、staticメソッドは `ownerClass.getMethod(Method_name, A0.type, A1.type, ,,,)` で検索される。</p>
+<p class="rubric">結果</p>
+<p>J.call_methodと同じ。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(ownerClass, *)でなければならない。ここでownerClassはクラスオブジェクトでなければならない。</p>
+<p>Method_nameはstrでなければならない。</p>
+<p>A0, A1 ,,, はjava値でなければならない。</p>
+<p>ownerClassは指定されたpublicなstaticメソッドを持っていなければならない。</p>
+<p>$configは、java_call_config値を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:String_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.String&#39;</span>)
+<span class="nv">:Object_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.lang.Object&#39;</span>)
+<span class="nv">:Java_str</span> &lt;- <span class="nv">String_class</span>.<span class="n">call_static</span>(
+  <span class="s1">&#39;format&#39;</span> <span class="nv">JAVA</span>.<span class="n">string</span>(<span class="s1">&#39;ans=%d&#39;</span>) <span class="nv">Object_class</span>.<span class="n">array_of</span>(<span class="nv">JAVA</span>.<span class="n">int</span>(<span class="m">42</span>)))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Java_str</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (java &quot;ans=42&quot; as java.lang.String)</span>
+</pre></div>
+</div>
+</section>
+<section id="j-new-a0-a1-config">
+<span id="api-cb58bf3938ed2a294fe6d9cdadd912a2"></span><h3><span class="section-number">6.65.1.24. </span>J.new(...[A0 A1 ,,,] ...[$config={}])<a class="headerlink" href="#j-new-a0-a1-config" title="Link to this heading">¶</a></h3>
+<p>newは、Jのpublicなコンストラクタを呼んで、新しいインスタンスを戻す。</p>
+<p class="rubric">検索</p>
+<p>JのobjectReferenceがクラスオブジェクトownerClassのとき、publicコンストラクタは、 `ownerClass.getConstructor(A0.type, A1.type, ,,,)` で検索される。</p>
+<p class="rubric">結果</p>
+<p>1) 新しいインスタンスresultObjが作られたとき、newは、java値(resultObj, ownerClass)を引数として成功時継続を末尾呼び出しする。</p>
+<p>2) コンストラクタがJavaの例外exceptionObjを投げて終わり、その例外がC.catchの呼び出しで指定されたひとつ以上の例外型のインスタンスであるとき、newは、最も狭い型etに対応するエラー時継続を、java値(exceptionObj, et)を引数として末尾呼び出しする。</p>
+<p>3) コンストラクタがJavaの例外を投げて終わり、C.catchに渡された例外型のどれもが投げられた例外に合致しなかったとき、newはKinkの例外を投げる。</p>
+<p>コンフィグ値のC.on_successが呼ばれないときは、VAL.identityがデフォルトの成功時継続として使われる。</p>
+<p class="rubric">事前条件</p>
+<p>Jはjava値(ownerClass, *)でなければならない。ここでownerClassはクラスオブジェクトでなければならない。</p>
+<p>A0, A1 ,,, はjava値でなければならない。</p>
+<p>ownerClassは指定されたpublicなコンストラクタを持っていなければならない。</p>
+<p>$configは、java_call_config値を取る関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:BigDecimal_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.math.BigDecimal&#39;</span>)
+
+<span class="nv">:make_big_decimal</span> &lt;- {(<span class="nv">:Str</span>)
+  <span class="nv">BigDecimal_class</span>.<span class="n">new</span>(<span class="nv">JAVA</span>.<span class="n">string</span>(<span class="nv">Str</span>))
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">make_big_decimal</span>(<span class="s1">&#39;12.3&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (java &quot;12.3&quot; as java.math.BigDecimal)</span>
+
+<span class="nv">CONTROL</span>.<span class="n">try</span>(
+  { <span class="n">make_big_decimal</span>(<span class="s1">&#39;xxx&#39;</span>) }
+  {(<span class="nv">:R</span>) <span class="n">raise</span>(<span class="s1">&#39;must not reach here&#39;</span>) }
+  {(<span class="nv">:Exc</span>)
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Exc</span>.<span class="n">message</span>)
+  }
+)
+<span class="c1"># =&gt; java exception: java.lang.NumberFormatException: Character x is neither a decimal digit number, decimal point, nor &quot;e&quot; notation exponential mark.</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="type-java-call-config">
+<span id="api-1a06ea9468b89c20d92b26d8c3e7ac25"></span><h2><span class="section-number">6.65.2. </span>java_call_config型<a class="headerlink" href="#type-java-call-config" title="Link to this heading">¶</a></h2>
+<p>java_call_configは、J.call_method, J.call_static, J.newのコンフィグ値である。</p>
+<section id="c-on-success-success">
+<span id="api-4c9620a4e105b451cad76eb0b32bb671"></span><h3><span class="section-number">6.65.2.1. </span>C.on_success($success)<a class="headerlink" href="#c-on-success-success" title="Link to this heading">¶</a></h3>
+<p>on_successは、$successを成功時継続として指定する。</p>
+</section>
+<section id="c-catch-exception-class-error">
+<span id="api-ad8c769ad8e7396b95aa92590571fb68"></span><h3><span class="section-number">6.65.2.2. </span>C.catch(Exception_class $error)<a class="headerlink" href="#c-catch-exception-class-error" title="Link to this heading">¶</a></h3>
+<p>catchは、例外型Exception_classに対応するエラー時継続として$errorを指定する。</p>
+<p>catchは、異なる例外型に対応するエラー時継続を指定するために、複数回呼び出せる。</p>
+<p class="rubric">事前条件</p>
+<p>Exception_classはjava値(et, *)でなければならない。ここでetは、java.lang.Throwableのサブクラスでなければならない。</p>
+<p>Exception_classは、先行するcatchの呼び出しで指定された例外型の部分型であってはならない。</p>
+<p>$errorはjava値を取る関数でなければならない。</p>
+</section>
+</section>
+<section id="java-is-val">
+<span id="api-01b2e16345130933f93fe63167e15c32"></span><h2><span class="section-number">6.65.3. </span>JAVA.is?(Val)<a class="headerlink" href="#java-is-val" title="Link to this heading">¶</a></h2>
+<p>is?は、Valがjava値であるかどうかを戻す。</p>
+</section>
+<section id="java-string-str">
+<span id="api-a17414dab3a705ea1673aefb4572a9cc"></span><h2><span class="section-number">6.65.4. </span>JAVA.string(Str)<a class="headerlink" href="#java-string-str" title="Link to this heading">¶</a></h2>
+<p>stringは、Strと同じ文字列を持つJava文字列を戻す。</p>
+<p>結果はjava値(string, java.lang.String)になる。ここでstringはStringのインスタンスであり、Strと同じ文字列を持つ。</p>
+<p class="rubric">事前条件</p>
+<p>Strはstr値でなければならない。</p>
+</section>
+<section id="java-bytes-bin-from-0-to-bin-size">
+<span id="api-38409f4b7fe4b8cdb7e3145c4934dcd8"></span><h2><span class="section-number">6.65.5. </span>JAVA.bytes(Bin ...[From=0 To=Bin.size])<a class="headerlink" href="#java-bytes-bin-from-0-to-bin-size" title="Link to this heading">¶</a></h2>
+<p>bytesは、Binの範囲[From, To)のスライスからJavaのバイト配列を作って戻す。</p>
+<p>結果はjava値(byteArray, byte[])になる。ここでbyteArrayはbyte配列であり、その要素はBinの範囲[From, To)のスライスからコピーされる。</p>
+<p class="rubric">事前条件</p>
+<p>Binはbin値でなければならない。</p>
+<p>FromとToは整数のnum値でなければならない。</p>
+<p>0 &lt;= From &lt;= To &lt;= Bin.size</p>
+</section>
+<section id="java-byte-buffer-bin">
+<span id="api-94d74e84a15500dacc000e8516b4c999"></span><h2><span class="section-number">6.65.6. </span>JAVA.byte_buffer(Bin)<a class="headerlink" href="#java-byte-buffer-bin" title="Link to this heading">¶</a></h2>
+<p>byte_bufferは、Binのバイト列を持つ読み込み専用のByteBufferを戻す。</p>
+<p>結果はjava値(byteBuffer, java.nio.ByteBuffer)になる。ここでbyteBufferは次の属性を持つ。</p>
+<p>• capacityと、limitの初期値はBin.sizeになる。</p>
+<p>• positionお初期値は0になる。</p>
+<p class="rubric">事前条件</p>
+<p>Binはbin値でなければならない。</p>
+</section>
+<section id="java-boolean-bool">
+<span id="api-573e951a5ce4533f3e960a19340cc367"></span><h2><span class="section-number">6.65.7. </span>JAVA.boolean(Bool)<a class="headerlink" href="#java-boolean-bool" title="Link to this heading">¶</a></h2>
+<p>booleanは、Boolに対応するJavaのboolean値を戻す。</p>
+<p>Boolがtrueのとき、booleanはjava値(Boolean.TRUE, boolean)を戻す。</p>
+<p>Boolがfalseのとき、booleanはjava値(Boolean.FALSE, boolean)を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Boolはbool値でなければならない。</p>
+</section>
+<section id="java-char-num">
+<span id="api-03ee2ace909fd91eacc651a9ad79897a"></span><h2><span class="section-number">6.65.8. </span>JAVA.char(Num)<a class="headerlink" href="#java-char-num" title="Link to this heading">¶</a></h2>
+<p>charはNumに対応するJavaのchar値を戻す。</p>
+<p>結果は(objectReference=ch, type=char)というjava値になる。chはjava.lang.Characterのインスタンスである。</p>
+<p class="rubric">事前条件</p>
+<p>Numは[0, 0xffff]の範囲内の整数のnum値でなければならない。</p>
+</section>
+<section id="java-byte-num">
+<span id="api-d1e5a7af107a5cb61b33feacd980c2d5"></span><h2><span class="section-number">6.65.9. </span>JAVA.byte(Num)<a class="headerlink" href="#java-byte-num" title="Link to this heading">¶</a></h2>
+<p>byteはNumに対応するJavaのbyte値を戻す。</p>
+<p>結果は(objectReference=bt, type=byte)というjava値になる。btはjava.lang.Byteのインスタンスである。</p>
+<p class="rubric">事前条件</p>
+<p>Numは[-128, 127]の範囲内の整数のnum値でなければならない。</p>
+</section>
+<section id="java-short-num">
+<span id="api-2fc6b56fcac8415c42d9c704f024fafb"></span><h2><span class="section-number">6.65.10. </span>JAVA.short(Num)<a class="headerlink" href="#java-short-num" title="Link to this heading">¶</a></h2>
+<p>shortはNumに対応するJavaのshort値を戻す。</p>
+<p>結果は(objectReference=sh, type=short)というjava値になる。shはjava.lang.Shortのインスタンスである。</p>
+<p class="rubric">事前条件</p>
+<p>Numは[- 2**15, 2**15 - 1]の範囲内の整数のnum値でなければならない。</p>
+</section>
+<section id="java-int-num">
+<span id="api-000436967a852ce467bbb9e721efef6f"></span><h2><span class="section-number">6.65.11. </span>JAVA.int(Num)<a class="headerlink" href="#java-int-num" title="Link to this heading">¶</a></h2>
+<p>intはNumに対応するJavaのint値を戻す。</p>
+<p>結果は(objectReference=n, type=int)というjava値になる。nはjava.lang.Integerのインスタンスである。</p>
+<p class="rubric">事前条件</p>
+<p>Numは[- 2**31, 2**31 - 1]の範囲内の整数のnum値でなければならない。</p>
+</section>
+<section id="java-long-num">
+<span id="api-6b26b2272eabd07991c052c23df12077"></span><h2><span class="section-number">6.65.12. </span>JAVA.long(Num)<a class="headerlink" href="#java-long-num" title="Link to this heading">¶</a></h2>
+<p>longはNumに対応するJavaのlong値を戻す。</p>
+<p>結果は(objectReference=ln, type=long)というjava値になる。lnはjava.lang.Longのインスタンスである。</p>
+<p class="rubric">事前条件</p>
+<p>Numは[- 2**63, 2**63 - 1]の範囲内の整数のnum値でなければならない。</p>
+</section>
+<section id="java-float-num">
+<span id="api-3cf2d6ff9aea6e6d0158ab93daf53a07"></span><h2><span class="section-number">6.65.13. </span>JAVA.float(Num)<a class="headerlink" href="#java-float-num" title="Link to this heading">¶</a></h2>
+<p>floatは、数値的にNumに近いJavaのfloat値を戻す。</p>
+<p>結果はjava値(fl, float)になる。ここでflは、java.lang.Floatのインスタンスであり、その値はBigDecimal.floatValue()でNumから変換されたものである。</p>
+<p class="rubric">事前条件</p>
+<p>Numはnum値でなければならない。</p>
+</section>
+<section id="java-double-num">
+<span id="api-a7c3d175a289f3b0543a44c5ea82cfe8"></span><h2><span class="section-number">6.65.14. </span>JAVA.double(Num)<a class="headerlink" href="#java-double-num" title="Link to this heading">¶</a></h2>
+<p>doubleは、数値的にNumに近いJavaのdouble値を戻す。</p>
+<p>結果はjava値(dbl, double)になる。ここでdblは、java.lang.Doubleのインスタンスであり、その値はBigDecimal.doubleValue()でNumから変換されたものである。</p>
+<p class="rubric">事前条件</p>
+<p>Numはnum値でなければならない。</p>
+</section>
+<section id="java-big-integer-num">
+<span id="api-c5e20eff0b1332393ceec0a0ece9e7c9"></span><h2><span class="section-number">6.65.15. </span>JAVA.big_integer(Num)<a class="headerlink" href="#java-big-integer-num" title="Link to this heading">¶</a></h2>
+<p>big_integerはNumに対応するJavaのBigInteger値を戻す。</p>
+<p>結果はjava値(objectReference=bi, staticType=java.math.BigInteger)になる。biはjava.math.BigIntegerのインスタンスであり、その値はNumに等しい。</p>
+<p class="rubric">事前条件</p>
+<p>Numは整数のnum値でなければならない。</p>
+</section>
+<section id="java-big-decimal-num">
+<span id="api-627c8673b34bce4f65fdad173d7fc24f"></span><h2><span class="section-number">6.65.16. </span>JAVA.big_decimal(Num)<a class="headerlink" href="#java-big-decimal-num" title="Link to this heading">¶</a></h2>
+<p>big_decimalは、Numに対応するJavaのBigDecimalを戻す。</p>
+<p>結果はjava値(bd, java.math.BigDecimal)になる。ここでbdは、java.math.BigDecimalのインスタンスであり、そのscaleはNumのScaleに等しく、unscaledValueはNumのMantissaに等しい。</p>
+<p class="rubric">事前条件</p>
+<p>Numはnum値でなければならない。</p>
+</section>
+<section id="java-wrap-wrapped">
+<span id="api-5a5979141c7581d88c50fcf1c0dfa864"></span><h2><span class="section-number">6.65.17. </span>JAVA.wrap(Wrapped)<a class="headerlink" href="#java-wrap-wrapped" title="Link to this heading">¶</a></h2>
+<p>wrapは、Kinkの値をラップするjava値を戻す。</p>
+<p>Wrappedはどんな型の値でも良い。wrapは、(Wrapped, org.kink_lang.kink.Val)のjava値を戻す。</p>
+<p>Wrappedは、結果のjava値から、unwrapメソッドで抜き出せる。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Str</span> &lt;- <span class="s1">&#39;foo&#39;</span>
+<span class="nv">:Wrapper</span> &lt;- <span class="nv">JAVA</span>.<span class="n">wrap</span>(<span class="nv">Str</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Wrapper</span>.<span class="n">repr</span>)   <span class="c1"># (java &quot;StrVal(foo)&quot; as org.kink_lang.kink.Val)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Wrapper</span>.<span class="n">unwrap</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="java-true">
+<span id="api-668a1a6bcf8e031fbcc5e57fef6846f4"></span><h2><span class="section-number">6.65.18. </span>JAVA.true<a class="headerlink" href="#java-true" title="Link to this heading">¶</a></h2>
+<p>trueは、java値(Boolean.TRUE, boolean)を戻す。</p>
+</section>
+<section id="java-false">
+<span id="api-53bf40a4b1c53f68d26a93509239da0e"></span><h2><span class="section-number">6.65.19. </span>JAVA.false<a class="headerlink" href="#java-false" title="Link to this heading">¶</a></h2>
+<p>falseは、java値(Boolean.FALSE, boolean)を戻す。</p>
+</section>
+<section id="java-null">
+<span id="api-957c8217fb6034302756d828be9029a2"></span><h2><span class="section-number">6.65.20. </span>JAVA.null<a class="headerlink" href="#java-null" title="Link to this heading">¶</a></h2>
+<p>nullは、java値(null, java.lang.Object)を戻す。</p>
+</section>
+<section id="java-runtime">
+<span id="api-b1e32ad9d629e1428f9e2519196b83a2"></span><h2><span class="section-number">6.65.21. </span>JAVA.runtime<a class="headerlink" href="#java-runtime" title="Link to this heading">¶</a></h2>
+<p>runtimeは現在のランタイムを戻す。</p>
+<p>結果はjava値(vm, org.kink_lang.kink.Vm)である。ここでvmは現在のランタイムである。</p>
+</section>
+<section id="java-boolean-class">
+<span id="api-d8227633c2aa5e02ffed7e4a5881a4fa"></span><h2><span class="section-number">6.65.22. </span>JAVA.boolean_class<a class="headerlink" href="#java-boolean-class" title="Link to this heading">¶</a></h2>
+<p>boolean_classは、java値(boolean.class, java.lang.Class)を戻す。</p>
+</section>
+<section id="java-char-class">
+<span id="api-70b803d4f29ba5608523a0724ba37e46"></span><h2><span class="section-number">6.65.23. </span>JAVA.char_class<a class="headerlink" href="#java-char-class" title="Link to this heading">¶</a></h2>
+<p>char_classは、java値(char.class, java.lang.Clsas)を戻す。</p>
+</section>
+<section id="java-byte-class">
+<span id="api-d94bffd9f1207087666acd768694c073"></span><h2><span class="section-number">6.65.24. </span>JAVA.byte_class<a class="headerlink" href="#java-byte-class" title="Link to this heading">¶</a></h2>
+<p>byte_classは、java値(byte.class, java.lang.Class)を戻す。</p>
+</section>
+<section id="java-short-class">
+<span id="api-4d1ed496b29b42fabe4d1705ad13869e"></span><h2><span class="section-number">6.65.25. </span>JAVA.short_class<a class="headerlink" href="#java-short-class" title="Link to this heading">¶</a></h2>
+<p>short_classは、java値(short.class, java.lang.Class)を戻す。</p>
+</section>
+<section id="java-int-class">
+<span id="api-5e9e7d1a2a20b93d99c8a2cbf391b0f1"></span><h2><span class="section-number">6.65.26. </span>JAVA.int_class<a class="headerlink" href="#java-int-class" title="Link to this heading">¶</a></h2>
+<p>int_classは、java値(int.class, java.lang.Class)を戻す。</p>
+</section>
+<section id="java-long-class">
+<span id="api-ff84613832422dbbe7fc0adba188436e"></span><h2><span class="section-number">6.65.27. </span>JAVA.long_class<a class="headerlink" href="#java-long-class" title="Link to this heading">¶</a></h2>
+<p>long_classは、java値(long.class, java.lang.Class)を戻す。</p>
+</section>
+<section id="java-float-class">
+<span id="api-af66f24d45df371674b11633d8b8b5d1"></span><h2><span class="section-number">6.65.28. </span>JAVA.float_class<a class="headerlink" href="#java-float-class" title="Link to this heading">¶</a></h2>
+<p>float_classは、java値(float.class, java.lang.Class)を戻す。</p>
+</section>
+<section id="java-double-class">
+<span id="api-e597da2d15b51babc3cc52b409fcc606"></span><h2><span class="section-number">6.65.29. </span>JAVA.double_class<a class="headerlink" href="#java-double-class" title="Link to this heading">¶</a></h2>
+<p>double_classは、java値(double.class, java.lang.Class)を戻す。</p>
+</section>
+<section id="java-void-class">
+<span id="api-475b77f7ab3ee5002b9a6068c89cf7c8"></span><h2><span class="section-number">6.65.30. </span>JAVA.void_class<a class="headerlink" href="#java-void-class" title="Link to this heading">¶</a></h2>
+<p>void_classは、java値(void.class, java.lang.Class)を戻す。</p>
+</section>
+<section id="java-class-class-name-config">
+<span id="api-c3c0d3752dd6273532d79005e7497eaa"></span><h2><span class="section-number">6.65.31. </span>JAVA.class(Class_name ...[$config={}])<a class="headerlink" href="#java-class-class-name-config" title="Link to this heading">¶</a></h2>
+<p>classは、バイナリ名Class_nameでクラスを検索する。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = 例外を投げる関数</p>
+<p>classは、指定されたクラスをロードするのに、現在のランタイムのorg.kink_lang.kink.Vmクラスがロードされたクラスローダの、無名モジュールのリフレクションアクセスを使う。</p>
+<p>クラスklassが見つかったとき、classは、java値(klass, java.lang.Class)を引数として$successを末尾呼び出しする。</p>
+<p>クラスが見つからないとき、classは$errorを引数なしで末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>Class_nameはstr値でなければならない。</p>
+<p>$successはjava値を取る関数でなければならない。</p>
+<p>$errorはサンクでなければならない。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-iter-ITER.html"><span class="section-number">6.64. </span>kink/iter/ITER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-JAVA_CHANNEL_INPUT.html"><span class="section-number">6.66. </span>kink/javahost/JAVA_CHANNEL_INPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

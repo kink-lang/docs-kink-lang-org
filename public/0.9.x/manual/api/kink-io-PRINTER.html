@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.59. kink/io/PRINTER &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.60. kink/io/SCANNER" href="kink-io-SCANNER.html" />
+    <link rel="prev" title="6.58. kink/io/OUTPUT_PRINTER" href="kink-io-OUTPUT_PRINTER.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.59. kink/io/PRINTER</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-OUTPUT_PRINTER.html"><span class="section-number">6.58. </span>kink/io/OUTPUT_PRINTER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-SCANNER.html"><span class="section-number">6.60. </span>kink/io/SCANNER</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-io-printer">
+<h1><span class="section-number">6.59. </span>kink/io/PRINTER<a class="headerlink" href="#kink-io-printer" title="Link to this heading">¶</a></h1>
+<p>Companion mod for printers.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-printer" id="id1">type printer</a></p>
+<ul>
+<li><p><a class="reference internal" href="#printer-print-str-config" id="id2">Printer.print(Str ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#printer-print-line-str-config" id="id3">Printer.print_line(Str ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#printer-newline" id="id4">Printer.newline</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#printer-is-val" id="id5">PRINTER.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#printer-mixin" id="id6">PRINTER.mixin</a></p></li>
+</ul>
+</nav>
+<section id="type-printer">
+<span id="api-d8ea895f044d55406b23b4ecacf9b0ef"></span><h2><span class="section-number">6.59.1. </span>type printer<a class="headerlink" href="#type-printer" title="Link to this heading">¶</a></h2>
+<p>`printer` is an output port of strings.</p>
+<p>`printer` provides sequential forward operations to the underlying destination.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:STR_PRINTER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+
+<span class="nv">:P</span> &lt;- <span class="nv">STR_PRINTER</span>.<span class="n">new</span>(<span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>)
+<span class="nv">P</span>.<span class="n">print_line</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="nv">P</span>.<span class="n">print</span>(<span class="s1">&#39;bar&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">P</span>.<span class="n">str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo\r\nbar&quot;</span>
+</pre></div>
+</div>
+<section id="printer-print-str-config">
+<span id="api-edaa10271780cbbc9cab44ed72c0440c"></span><h3><span class="section-number">6.59.1.1. </span>Printer.print(Str ...[$config={}])<a class="headerlink" href="#printer-print-str-config" title="Link to this heading">¶</a></h3>
+<p>`print` writes `Str`.</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = a fun which raises an exception</p>
+<p>If `Str` is written without an IO error, `print` tail-calls $success with no arg.</p>
+<p>If an IO error occurs, `print` tail-calls $error with an `exception`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Str` must be a `str`</p>
+<p>$success must be a fun which takes no arg</p>
+<p>$error must be a fun which takes an `exception`</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:STR_PRINTER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+
+<span class="nv">:P</span> &lt;- <span class="nv">STR_PRINTER</span>.<span class="n">new</span>(<span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>)
+<span class="nv">P</span>.<span class="n">print</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="nv">P</span>.<span class="n">print</span>(<span class="s1">&#39;bar&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">P</span>.<span class="n">str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foobar&quot;</span>
+</pre></div>
+</div>
+<p class="rubric">Example: IO error</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FILE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:P</span> &lt;- <span class="nv">FILE</span>.<span class="n">open_to_print</span>(<span class="s1">&#39;/tmp/print.txt&#39;</span> <span class="nv">CHARSET</span>.<span class="n">utf8</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>)
+<span class="nv">P</span>.<span class="n">close</span>
+
+<span class="nv">P</span>.<span class="n">print</span>(<span class="s1">&#39;foo&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Exc</span>)
+    <span class="n">stderr</span>.<span class="n">print_line</span>(<span class="nv">Exc</span>.<span class="n">message</span>)
+  }
+}
+<span class="c1"># =&gt; already closed</span>
+
+<span class="nv">P</span>.<span class="n">print</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [..root..]</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   already closed</span>
+</pre></div>
+</div>
+</section>
+<section id="printer-print-line-str-config">
+<span id="api-1e74d93bb125eb9549fbf441b9149972"></span><h3><span class="section-number">6.59.1.2. </span>Printer.print_line(Str ...[$config={}])<a class="headerlink" href="#printer-print-line-str-config" title="Link to this heading">¶</a></h3>
+<p>`print_line` writes `Str` and `newline`.</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = a fun which raises an exception</p>
+<p>If `Str` and `newline` are written without an IO error, `print_line` tail-calls $success with no arg.</p>
+<p>If an IO error occurs, `print_line` tail-calls $error with an `exception`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Str` must be a `str`</p>
+<p>$success must be a fun which takes no arg</p>
+<p>$error must be a fun which takes an `exception`</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:STR_PRINTER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+
+<span class="nv">:P</span> &lt;- <span class="nv">STR_PRINTER</span>.<span class="n">new</span>(<span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>)
+<span class="nv">P</span>.<span class="n">print_line</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="nv">P</span>.<span class="n">print_line</span>(<span class="s1">&#39;bar&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">P</span>.<span class="n">str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo\r\nbar\r\n&quot;</span>
+</pre></div>
+</div>
+<p class="rubric">Example: IO error</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FILE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:P</span> &lt;- <span class="nv">FILE</span>.<span class="n">open_to_print</span>(<span class="s1">&#39;/tmp/print.txt&#39;</span> <span class="nv">CHARSET</span>.<span class="n">utf8</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>)
+<span class="nv">P</span>.<span class="n">close</span>
+
+<span class="nv">P</span>.<span class="n">print_line</span>(<span class="s1">&#39;foo&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Exc</span>)
+    <span class="n">stderr</span>.<span class="n">print_line</span>(<span class="nv">Exc</span>.<span class="n">message</span>)
+  }
+}
+<span class="c1"># =&gt; already closed</span>
+
+<span class="nv">P</span>.<span class="n">print_line</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [..root..]</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   already closed</span>
+</pre></div>
+</div>
+</section>
+<section id="printer-newline">
+<span id="api-751b4c96dc9c080abfc22c9c6f14d79f"></span><h3><span class="section-number">6.59.1.3. </span>Printer.newline<a class="headerlink" href="#printer-newline" title="Link to this heading">¶</a></h3>
+<p>`newline` returns a `str` of the newline used by `print_line`.</p>
+</section>
+</section>
+<section id="printer-is-val">
+<span id="api-aaea316f54d42c6a53f6cadbf8d02585"></span><h2><span class="section-number">6.59.2. </span>PRINTER.is?(Val)<a class="headerlink" href="#printer-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `printer`.</p>
+</section>
+<section id="printer-mixin">
+<span id="api-5ad80f5bba922e7061d0cbef80f02775"></span><h2><span class="section-number">6.59.3. </span>PRINTER.mixin<a class="headerlink" href="#printer-mixin" title="Link to this heading">¶</a></h2>
+<p>`mixin` returns a mixin trait which provides Printer.print_line method.</p>
+<p>`print_line` will be implemented using `newline` and `print` methods.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-OUTPUT_PRINTER.html"><span class="section-number">6.58. </span>kink/io/OUTPUT_PRINTER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-SCANNER.html"><span class="section-number">6.60. </span>kink/io/SCANNER</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,300 @@
+=========
+Changelog
+=========
+
+All notable changes to this project will be documented in this page.
+
+The structure of this page is based on `Keep a Changelog <https://keepachangelog.com/en/1.1.0/>`_.
+Versioning of this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
+
+.. contents::
+  :local:
+  :depth: 1
+  :backlinks: none
+
+.. _changes-0.9.5-beta:
+
+0.9.5-beta
+==========
+
+Added
+-----
+
+* :ref:`Module made from a data file <modsystem_data_file_source>`
+* :ref:`Java.instance_of? <api-8085cbddb5f1d7cdeaa5f59d3dd704a8>`
+* :ref:`Input.read_all <api-552f89408e13a7762490240f149a03c9>`
+* :ref:`INPUT.mixin <api-701d0017014c8634ab5f96fdf34d53f1>`
+* :ref:`Scanner.scan <api-32926d746a77841b745a4c3d029804bc>`
+* :ref:`SCANNER.mixin <api-f59821767c40792913ee646f25094aba>`
+* :ref:`PRINTER.mixin <api-5ad80f5bba922e7061d0cbef80f02775>`
+* :ref:`Iter.cycle <api-d615ac9b98458a6f872ab3b3a232b69e>`
+* C.replace_conversion_error option for :ref:`OUTPUT_PRINTER.new <api-131422b6152f275cd7438990f6351988>`,
+  :ref:`INPUT_SCANNER.new <api-d1e32a7edd5b3d1b05222e870e0f43de>`,
+  :ref:`FILE.open_to_print <api-d02fdfaa5d9aae6a7176b437e0e8befa>`,
+  and :ref:`FILE.open_to_scan <api-12d6507dc8d16fc03859fdd3220c7cd3>`.
+* C.synchronize option for :ref:`OUTPUT_PRINTER.new <api-131422b6152f275cd7438990f6351988>`
+  and :ref:`FILE.open_to_print <api-d02fdfaa5d9aae6a7176b437e0e8befa>`.
+* C.no_buffer option for :ref:`FILE.open_to_read <api-fafe98441385cfb4b79326879ff4d65e>`,
+  :ref:`open_to_scan <api-12d6507dc8d16fc03859fdd3220c7cd3>`,
+  :ref:`open_to_write <api-fdfdfc98095e167314e45585ce156a49>`, and
+  :ref:`open_to_print <api-d02fdfaa5d9aae6a7176b437e0e8befa>`.
+* :ref:`BIN.from_each <api-0587341c37a10bc7dd4025ce72743805>`
+* :ref:`Tcp.close_unless_connected <api-8c98880928c126a3d40debb61fb8ad06>`
+* C.on_closed option to :ref:`Tcp.connect <api-169281f7a502b89a6fdce4a7b89a81fc>`
+* :ref:`Tcp_server.cancel_accept <api-bde119861121c16817231556655d9b69>`
+* C.on_canceled option to :ref:`Tcp_server.accept <api-f1bf946fc0ddfbd067eecaf8ca2e9a7c>`
+* :ref:`Vec.with_elems <api-9c1a3a7b764fa70187afe30654617332>`
+* :ref:`Str.any? <api-fb3f401e6a199d2dab202bbacff910b7>`
+* :ref:`Bin.any? <api-ebed43145e5d610e70c443c5fff6c17f>`
+* :ref:`Map.any? <api-26f66670e9967d093cad31eecd1d180a>`
+* An optional parameter $if_absent to :ref:`Map.get <api-e5ea465da899b1f60c757a0130e60bef>`
+* An optional parameter $if_empty to :ref:`Vec.just <api-6523915a7e48a2c692e24abff5a9a9f1>`
+* Optional parameters ``From`` and ``To`` to :ref:`Vec.clear <api-ad3ac9a2915cdc73f1eb27dfbe1f0ef2>`
+* C.tail option for :ref:`TRACE.new <api-1542d05f7994da8df342930c3fc85acf>`
+* New types :ref:`program <api-b5fb44e96da396ab4b14ecad497a3748>`
+  and :ref:`compile_error <api-90981ed8c8e11e27e7d317361c204f62>`.
+  API changes accordingly.
+* :ref:`METHOD_HANDLE.proxy <api-2d21ac41d5bf17b211c947ba5962eca4>`
+* :ref:`JAVA.runtime <api-b1e32ad9d629e1428f9e2519196b83a2>`
+* :doc:`/api/kink-REF`
+
+Changed
+-------
+
+* In program texts, carriage return (U+000d) can appear only before line feed (U+000a)
+* In ``\x{xxxxxx}`` notation of rich :ref:`string tokens <str_token>`,
+  surrogate codes can no longer be specified
+* $body of :ref:`CONTROL.with_finally <api-a4599f5bf37ae1ee2080db91914c982f>` can no longer
+  exit without calling $return.
+* Refine the API of :doc:`BIN_HASHER </api/kink-BIN_HASHER>`
+* :ref:`PROCESS.exit <api-fba1d75304fad638028d6567d2bd5837>` now only accepts 
+  an exit status in [0, 255].
+* The exit status from :ref:`Process.wait <api-92659775fbe91963da598772d1f02434>`
+  is now unsigned.
+* Scan methods of :doc:`input_scanner </api/kink-io-INPUT_SCANNER>` now tail-call $error
+  on decoding error.
+* Print methods of :doc:`output_printer </api/kink-io-OUTPUT_PRINTER>` now tail-call $error
+  on encoding error.
+* :ref:`Charset.bin_to_str <api-e15dddbdc2cb0195a47b2dae841f0172>` now raises an exception on
+  decoding error.
+* :ref:`Charset.str_to_bin <api-590e3a6ff9d9a23d587075b43669a876>` now raises an exception on
+  encoding error.
+* Rename Str.runes to :ref:`.codepoints <api-486dd39bdf6a9aec769ae7c5f1bd522d>`.
+* Rename STR.from_runes to :ref:`.from_codepoints <api-9b2020a08d0489817e2f48a4a900f780>`.
+* Rename JAVA.read_only_byte_buffer to :ref:`JAVA.byte_buffer <api-94d74e84a15500dacc000e8516b4c999>`.
+* Rename VAL.val_id to :ref:`VAL.id_hash <api-2d36b72d68d811f56ce0ba7352a8818a>`.
+* :ref:`Str.repr <api-37a73555aab4b7cde2ae69615d91f7e9>` now produces unpaired surrogates to
+  backslash notation.
+* :ref:`stderr <api-1d3113732916cec85c49ef707586cb23>` replaces encode error.
+* :ref:`stderr <api-1d3113732916cec85c49ef707586cb23>` is synchronized.
+* Rename Vec.chunk, Iter.chunk, and IFUN.chunk
+  to :ref:`Vec.unconcat <api-aa4ccd1dae957de037c5a4795fcc7df5>`,
+  :ref:`Iter.unconcat <api-41349a38ad9d63c669bd8df6ff4dcb15>`,
+  and :ref:`IFUN.unconcat <api-1568b429ec04b9367393789d70c86e42>`
+* :ref:`IFUN.cycle <api-cb943c256a7d78283fb6008bee85e0e5>` now takes an ifun rather than a thunk.
+* Rename Dyn.bind to :ref:`Dyn.with <api-2c27f8f74ce3dab7f33b5d9ca1950786>`.
+* Now :ref:`JAVA.char <api-03ee2ace909fd91eacc651a9ad79897a>`,
+  :ref:`byte <api-d1e5a7af107a5cb61b33feacd980c2d5>`,
+  :ref:`short <api-2fc6b56fcac8415c42d9c704f024fafb>`,
+  :ref:`int <api-000436967a852ce467bbb9e721efef6f>`,
+  :ref:`long <api-6b26b2272eabd07991c052c23df12077>`,
+  and :ref:`big_integer <api-c5e20eff0b1332393ceec0a0ece9e7c9>`
+  require that the argument is an integer.
+  The first five also validate the lower and the upper boundaries.
+* :ref:`Tls.input <api-76f659c5f204bcc5803a95348eb6d612>`,
+  :ref:`Tls.output <api-0a2ab2064ccff8b81e4912f65c211dc6>`,
+  :ref:`Tcp.input <api-68766f039f7c19637a23ace23fb91f13>`,
+  :ref:`Tcp.output <api-ae45015f3f0129c7d60cdd8fa71e61fa>`,
+  :ref:`JAVA_CHANNEL_INPUT.new <api-36a6c637d53a52e6f539c9cb961ea1ca>`,
+  and :ref:`JAVA_CHANNEL_OUTPUT.new <api-2b4a180ab64898175218543ee74c25cc>`
+  now reject Max_buf_size=0.
+* Rename IP_ADDRESS to :doc:`IP </api/kink-socket-IP>`.
+* Rename IP_ADDRESS_PORT to :doc:`IP_PORT </api/kink-socket-IP_PORT>`.
+* Make the parameter of :ref:`Vec.any? <api-11af723e0870efb38f34d5275664b3f9>`,
+  :ref:`Iter.any? <api-fe630704531294ad4f5249c4176fa990>`,
+  and :ref:`Set.any? <api-edeae5d88aa8bffb3dcd74e23424afb5>` optional.
+* Rename Varref.have_val? to :ref:`Varref.any? <api-76b0760cfb86b823ba19b86b27802ba7>`.
+* Rename Dyn.have_val? to :ref:`Dyn.any? <api-68457ea90ac062e2c2b824aae11911a8>`.
+* Move kink/charset/CHASET to :doc:`/api/kink-CHARSET`.
+* Rename Atomic.get to :ref:`Atomic.load <api-b3f8858290eed55096f0c6e4224cbbe8>`.
+* Rename Atomic.set to :ref:`Atomic.op_store <api-060528159d8a1a31a749798dea82cea2>`.
+* Rename Map.get_maybe to :ref:`Map.get_opt <api-630f4d0db9fbd3d93575a6967dc6b4e2>`
+* Inequality operators are now compiled to ``<=`` / ``op_le``, instead of ``<`` / ``op_lt``.
+* Rename Set.push_each to :ref:`Set.append <api-81a0643d94216924bffb14257b663f13>`.
+* Rename Java.static_type to :ref:`Java.type <api-deb3eecb723aef46d1abb40358fe6b6e>`.
+* Rename Java_throw.thrown to :ref:`Java_throw.throwable <api-84973c81a5112a0af9a1dc4f3ceb2b28>`.
+* :ref:`JAVA_PROXY.new <api-e983bebce8034ca135e11da64358ffed>`
+  now returns a :ref:`java <api-bdcf8aa519e365f452da2436eacd19e7>` value typed as the primary interface.
+  Also, proxies provide default implementations for Object methods and interface default methods.
+* Now socket options like :ref:`TCP_NODELAY <api-ef70d6f9a0acc6c56641c1359f1b6951>`
+  are provided as :ref:`ref <api-a7bb87ccff07365043328fc9f076ecc9>` values.
+
+Removed
+-------
+
+* Multiline string literals
+* Java.typable_as?
+* Java.copy_from_bin
+* INPUT.read_all
+* Scanner.scan_rune
+* FILE.resolve
+* Vec.scan, .scan_inside
+* Iter.scan, .scan_inside, .fetcher_thunk
+* ITER.cycle
+* IFUN.scan, .scan_inside, fetcher_thunk
+* Vec.with_just_or
+* Vec.just_or
+* Vec.clear_slice
+* \*.empty?
+* Map.get_or
+* Map.set_pairs
+* FLAT_MAP.from_pairs
+* TREE_MAP.from_pairs
+* Trace.on_tail
+* Trace.snip?
+* Java method TraceVal.isSnip()
+* Java method vm.trace.empty()
+* Java.dynamic_type
+* JAVA.runtime_class_loader
+* METHOD_HANDLE.nop .return .throw .params .result
+
+.. _changes-0.9.4-beta:
+
+0.9.4-beta
+==========
+
+Added
+-----
+
+* :ref:`Iter + Iter <api-3ab44720e374a52836fdd24ac39db2d1>`
+* :ref:`IFUN.join <api-174dad688c763676d10f2b6ffa216451>`
+* Optional ``From`` and ``To`` parameters
+  to :ref:`Vec.iter <api-c31469da21f944429a8cf92a5403ec4f>`.
+* Optional ``Min`` parameter to :ref:`Ordered_set.iter <api-2fd2b7ab6519594389ea7aec9583603d>`.
+* Optional ``Min_key`` parameter to :ref:`Ordered_map.key_iter <api-33c96f85ef8e3c608fccab2e06618c93>`
+  and :ref:`Ordered_map.pair_iter <api-59ee186c19f6fad7a99cdecb2d43e526>`.
+
+Changed
+-------
+
+* Generate 32 bytes section id instead of 62 bytes in kinkdoc
+* When making an exception with the current traces,
+  now the second parameter of :ref:`EXCEPTION.new <api-e8325567ca9201ecedd3460476b31fa1>` can be omitted.
+* .reduce methods like :ref:`Vec.reduce <api-2df32705c7bfd54f55ac6f4e6b827746>`
+  take an optional fallback continuation for empty streams,
+  instead of returning maybe_vec.
+* Rename Vec.rev to :ref:`.reverse <api-935ab420e28fb248fb8aae6d385b54a0>`.
+* Rename Vec.push_each_xxx methods to append_each_xxx.
+* :ref:`Str.search_slice <api-40dc2be7e5fe3839e7c92d0948234e12>` now takes a config fun,
+  and returns the index instead of maybe_vec by default.
+* :ref:`Regex.match <api-2d4798ecb84f6b0444dc3418bb4960f4>` and :ref:`Regex.search <api-2c5cd9d4f21d040cbf6462c97c5f4897>`
+  now take a config fun, and return a match instead of maybe_vec by default.
+* :ref:`NUM.parse_int <api-8cd45d8a05be4d520333c05a5c5ad0df>`
+  and :ref:`NUM.parse_decimal <api-5f79a184c60f413c3f03d9064c1a8bbd>`
+  now take a config gun, and return a num instead of maybe_vec by default.
+* :ref:`OFFSET_DATETIME.parse <api-51a47db8ca38fee853999785a20e9213>` now takes a config fun,
+  and returns an offset_datetime by default.
+* Rename ``on_present`` methods to ``on_success``, and ``on_absent`` methods to ``on_error``.
+* Scanner.scan_rune now returns a rune instead of maybe_vec.
+* :ref:`Scanner.scan_line <api-24486798989c12e30cd33e07a794967a>` now returns a line instead of maybe_vec.
+* :ref:`Input.read <api-e8341e8b849b1926919895693dc3c07e>` now returns a bin instead of maybe_vec.
+* Funs and methods now pass an exception instead of an error message to $error: funs of :doc:`FILE mod </api/kink-io-FILE>`,
+  :ref:`input <api-0edb5d0790c366443607931bec431fe4>` methods,
+  :ref:`output <api-bc8f76dfc800cc663466d8d67cd505ca>` methods,
+  :ref:`scanner <api-8d9c7e1d1138bb082067424a205e115b>` methods,
+  :ref:`printer <api-d8ea895f044d55406b23b4ecacf9b0ef>` methods,
+  :ref:`PROCESS.start <api-382f762afb4d1fd1261301a4d54b00a4>`,
+  socket framework, and TLS framework.
+
+Removed
+-------
+
+* ITER.chain
+* IFUN.chain
+* Vec.iter_from
+* Vec.search
+* Ordered_set.iter_from
+* Ordered_map.key_iter_from
+* Ordered_map.pair_iter_from
+
+.. _changes-0.9.3-beta:
+
+0.9.3-beta
+==========
+
+Added
+-----
+
+* Minimal TLS support
+* :doc:`METHOD_HANDLE </api/kink-javahost-METHOD_HANDLE>` mod
+* :ref:`CONTROL.with_return <api-a4599f5bf37ae1ee2080db91914c982f>`
+
+Changed
+-------
+
+* Rename TCP_CONNECTION to :doc:`TCP </api/kink-socket-TCP>`
+* Rename UDP_SOCKET to :doc:`UDP </api/kink-socket-UDP>`
+
+Removed
+-------
+
+* CONTROL.with_break, replaced by CONTROL.with_return.
+* Support for nonblocking IO.
+  Virtual threads via
+  :ref:`THREAD.spawn_io <api-5a3cd7825e00c60cbb00217cd891f196>`
+  are better abstraction.
+
+.. _changes-0.9.2-beta:
+
+0.9.2-beta
+==========
+
+Added
+-----
+
+* :ref:`Prng.jump <api-167f0c53a577b515b5a01450a63185c2>`
+
+Changed
+-------
+
+* Migrate publishing of maven artifacts from OSSRH to Central Portal
+  using Portal OSSRH Staging API.
+
+.. _changes-0.9.1-beta:
+
+0.9.1-beta
+==========
+
+Added
+-----
+
+* JAVA.runtime_class_loader
+* Config fun arg to
+  :ref:`JAVA.class <api-c3c0d3752dd6273532d79005e7497eaa>`.
+* ``--output`` switch of :doc:`/api/kink-doc-DOC_PARSE_TOOL` mod.
+
+Changed
+-------
+
+* Widen access privilege of
+  :ref:`JAVA.class <api-c3c0d3752dd6273532d79005e7497eaa>`
+  from static access of org.kink_lang.kink module
+  to reflection access of the unnamed module.
+* :ref:`Str.repr <api-37a73555aab4b7cde2ae69615d91f7e9>`,
+  :ref:`Vec.repr <api-97b5493e30b9b5d7d421ed0d4c007f3e>`,
+  Set.repr and Map.repr methods no longer return too long results.
+* Refine the internal structure of
+  :ref:`bin <api-82b05762775bcc1b8e8b6a637617beaf>` and
+  :ref:`str <api-88bfa8d53b158d62e93928353ba002c1>` values.
+
+.. _changes-0.9.0-beta:
+
+0.9.0-beta
+==========
+
+Changed
+-------
+
+* The first beta release of Kink runtime.
+
+.. vim: et sw=2 sts=2

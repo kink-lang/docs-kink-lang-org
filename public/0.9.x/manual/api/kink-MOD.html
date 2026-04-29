@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.16. kink/MOD &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.17. kink/NUM" href="kink-NUM.html" />
+    <link rel="prev" title="6.15. kink/LOCALE" href="kink-LOCALE.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.16. kink/MOD</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-LOCALE.html"><span class="section-number">6.15. </span>kink/LOCALE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-NUM.html"><span class="section-number">6.17. </span>kink/NUM</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-mod">
+<h1><span class="section-number">6.16. </span>kink/MOD<a class="headerlink" href="#kink-mod" title="Link to this heading">¶</a></h1>
+<p>Operates the module system.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#mod-require-mod-name-config" id="id1">MOD.require(Mod_name ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#mod-add-path-path" id="id2">MOD.add_path(Path)</a></p></li>
+</ul>
+</nav>
+<section id="mod-require-mod-name-config">
+<span id="api-36236434317e1c52d15948d18e2c4bc2"></span><h2><span class="section-number">6.16.1. </span>MOD.require(Mod_name ...[$config={}])<a class="headerlink" href="#mod-require-mod-name-config" title="Link to this heading">¶</a></h2>
+<p>`require` loads the module specified by `Mod_name`. See “Module system” section of the manual for details of module loading.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL$identity</p>
+<p>• C.on_not_found($not_found): default = a fun which raises an exception</p>
+<p>• C.on_compile_error($compile_error): default = a fun which raises an exception</p>
+<p>If module loading ends with `success` status, `require` tail-calls $success with the loaded module.</p>
+<p>If module loading ends with `not_found` status, `require` tail-calls $not_found with no arg.</p>
+<p>If module loading ends with `compile_error` status, `require` tail-calls $compile_error with a `compile_error` value.</p>
+<p>If an exception is thrown while module loading, the exception is propagated to the caller.</p>
+<p class="rubric">Preconditions</p>
+<p>`Mod_name` must be a `str`.</p>
+<p>$success must be a fun which takes a module.</p>
+<p>$not_found must be a thunk.</p>
+<p>$compile_error must be a fun which takes a `compile_error` value.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:MOD</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:FLAT_SET</span> &lt;- <span class="nv">MOD</span>.<span class="n">require</span>(<span class="s1">&#39;kink/container/FLAT_SET&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (flat_set &quot;bar&quot; &quot;baz&quot; &quot;foo&quot;)</span>
+
+<span class="nv">MOD</span>.<span class="n">require</span>(<span class="s1">&#39;no/such/MOD&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_not_found</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;no such mod&#39;</span>) }
+} <span class="c1"># =&gt; no such mod</span>
+</pre></div>
+</div>
+</section>
+<section id="mod-add-path-path">
+<span id="api-82a542809dbc766c2795a2ac99f618be"></span><h2><span class="section-number">6.16.2. </span>MOD.add_path(Path)<a class="headerlink" href="#mod-add-path-path" title="Link to this heading">¶</a></h2>
+<p>`add_path` inserts `Path` to the mod base paths as the last path.</p>
+<p>Precondition:</p>
+<p>• `Path` must be a str</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-LOCALE.html"><span class="section-number">6.15. </span>kink/LOCALE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-NUM.html"><span class="section-number">6.17. </span>kink/NUM</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

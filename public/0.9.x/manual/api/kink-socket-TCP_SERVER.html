@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.94. kink/socket/TCP_SERVER &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.95. kink/socket/UDP" href="kink-socket-UDP.html" />
+    <link rel="prev" title="6.93. kink/socket/TCP" href="kink-socket-TCP.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.94. kink/socket/TCP_SERVER</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-TCP.html"><span class="section-number">6.93. </span>kink/socket/TCP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-UDP.html"><span class="section-number">6.95. </span>kink/socket/UDP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-socket-tcp-server">
+<h1><span class="section-number">6.94. </span>kink/socket/TCP_SERVER<a class="headerlink" href="#kink-socket-tcp-server" title="Link to this heading">¶</a></h1>
+<p>Provides listening sockets of TCP/IP, or stream based Unix Domain Socket.</p>
+<p class="rubric">Example</p>
+<p>The following program spawns a TCP/IP server and a client. The server sets socket options SO_REUSEADDR and SO_RCVBUF. The client sends bytes [1, 2, 3] to the server.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TCP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:TCP_SERVER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:IP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:IP_PORT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/socket/&#39;</span>)
+<span class="nv">:THREAD</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+<span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:spawn_client</span> &lt;- {(<span class="nv">:Server_addr</span>)
+  <span class="nv">THREAD</span>.<span class="n">spawn_io</span>{
+    <span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+      <span class="nv">:Tcp</span> = <span class="nv">TCP</span>.<span class="n">open</span>
+      <span class="n">finally</span>{ <span class="nv">Tcp</span>.<span class="n">close</span> }
+
+      <span class="nv">Tcp</span>.<span class="n">connect</span>(<span class="nv">Server_addr</span>)
+      <span class="nv">:Out</span> = <span class="nv">Tcp</span>.<span class="n">output</span>
+      <span class="n">finally</span>{ <span class="nv">Out</span>.<span class="n">close</span> }
+
+      <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>))
+    }
+  }
+}
+
+<span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="nv">:Server</span> = <span class="nv">TCP_SERVER</span>.<span class="n">open</span>
+  <span class="n">finally</span>{ <span class="nv">Server</span>.<span class="n">close</span> }
+
+  <span class="nv">Server</span>.<span class="n">so_reuseaddr</span> &lt;- <span class="n">true</span>
+  <span class="nv">Server</span>.<span class="n">so_rcvbuf</span> &lt;- <span class="m">1024</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Server</span>.<span class="n">so_reuseaddr</span>.<span class="n">load</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Server</span>.<span class="n">so_rcvbuf</span>.<span class="n">load</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 1152</span>
+
+  <span class="nv">Server</span>.<span class="n">bind_listen</span>(<span class="nv">IP_PORT</span>.<span class="n">new</span>(<span class="nv">IP</span>.<span class="n">for_hostname</span>(<span class="s1">&#39;::1&#39;</span>) <span class="m">0</span>))
+  <span class="nv">:Server_addr</span> = <span class="nv">Server</span>.<span class="n">local_address</span>
+  <span class="n">spawn_client</span>(<span class="nv">Server_addr</span>)
+
+  <span class="nv">:Tcp</span> = <span class="nv">Server</span>.<span class="n">accept</span>
+  <span class="n">finally</span>{ <span class="nv">Tcp</span>.<span class="n">close</span> }
+  <span class="nv">:In</span> = <span class="nv">Tcp</span>.<span class="n">input</span>
+  <span class="n">finally</span>{ <span class="nv">In</span>.<span class="n">close</span> }
+
+  <span class="nv">:Bin</span> = <span class="nv">In</span>.<span class="n">read_all</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Bin</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x01 0x02 0x03)</span>
+}
+</pre></div>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-tcp-server" id="id1">type tcp_server</a></p>
+<ul>
+<li><p><a class="reference internal" href="#serv-bind-listen-local-config-fun" id="id2">Serv.bind_listen(Local ...[$config_fun={}])</a></p></li>
+<li><p><a class="reference internal" href="#serv-accept-config" id="id3">Serv.accept(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#serv-cancel-accept" id="id4">Serv.cancel_accept</a></p></li>
+<li><p><a class="reference internal" href="#serv-close-config" id="id5">Serv.close(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#serv-local-address-config" id="id6">Serv.local_address(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#serv-so-reuseaddr" id="id7">Serv.so_reuseaddr</a></p></li>
+<li><p><a class="reference internal" href="#serv-so-rcvbuf" id="id8">Serv.so_rcvbuf</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tcp-server-open-protocol-family-protocol-family-ipv6-config" id="id9">TCP_SERVER.open(...[Protocol_family=PROTOCOL_FAMILY.ipv6 $config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tcp-server-is-val" id="id10">TCP_SERVER.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-tcp-server">
+<span id="api-9f72a653e3ef14c78f6736d88f8d1713"></span><h2><span class="section-number">6.94.1. </span>type tcp_server<a class="headerlink" href="#type-tcp-server" title="Link to this heading">¶</a></h2>
+<p>A `tcp_server` is a listening socket of TCP/IP, or stream based Unix Domain Socket.</p>
+<section id="serv-bind-listen-local-config-fun">
+<span id="api-3c7480aecadccff72f61aa4709201cd8"></span><h3><span class="section-number">6.94.1.1. </span>Serv.bind_listen(Local ...[$config_fun={}])<a class="headerlink" href="#serv-bind-listen-local-config-fun" title="Link to this heading">¶</a></h3>
+<p>`bind_listen` binds the local address to the listening socket, and changes the socket to listening mode.</p>
+<p>Config methods:</p>
+<p>• C.backlog(Backlog): default = the runtime default</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>If the socket is changed to listening mode, `bind_listen` tail-calls $success with no arg.</p>
+<p>If an IO error occurs, `bind_listen` tail-calls $error with an `exception`.</p>
+<p>`Backlog` is used as a preferred maximum number of connections which are established but not accepted.</p>
+<p class="rubric">Preconditions</p>
+<p>`Local` must be a `socket_address` whose protocol family is acceptable by the socket.</p>
+<p>`Backlog` must be a positive integer `num`.</p>
+<p>$success must be a thunk.</p>
+<p>$error must be a function which takes an `exception`.</p>
+</section>
+<section id="serv-accept-config">
+<span id="api-f1bf946fc0ddfbd067eecaf8ca2e9a7c"></span><h3><span class="section-number">6.94.1.2. </span>Serv.accept(...[$config={}])<a class="headerlink" href="#serv-accept-config" title="Link to this heading">¶</a></h3>
+<p>`accept` method accepts an incoming connection.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>• C.on_cancelled($cancelled): default = a function which raises an exception</p>
+<p>`accept` method waits until a connection becomes established, an IO error occurs, or it is cancelled.</p>
+<p>If a connection is established, `accept` tail-calls $success with a `tcp` value of the connecting socket.</p>
+<p>If an IO error occurs, `accept` tail-calls $error with an `exception`.</p>
+<p>If `accept` is cancelled, `accept` tail-calls $cancelled with no arg.</p>
+<p class="rubric">Precondition</p>
+<p>The socket must be in listening mode.</p>
+<p>$success must be a function which takes a `tcp`.</p>
+<p>$error must be a function which takes an `exception`.</p>
+<p>$cancelled must be a thunk.</p>
+</section>
+<section id="serv-cancel-accept">
+<span id="api-bde119861121c16817231556655d9b69"></span><h3><span class="section-number">6.94.1.3. </span>Serv.cancel_accept<a class="headerlink" href="#serv-cancel-accept" title="Link to this heading">¶</a></h3>
+<p>`cancel_accept` cancels the current or the next `accept` operation of this listening socket.</p>
+<p>If no other thread is blocked in `accept` operation, the next invocation of `accept` will be cancelled.</p>
+<p>If a single thread is blocked in `accept` operation, the invocation of `accept` will be cancelled.</p>
+<p>If multiple threads are blocked in `accept` operation, one of them will be cancelled.</p>
+</section>
+<section id="serv-close-config">
+<span id="api-a2eccffc92ce28df07028cafa832603b"></span><h3><span class="section-number">6.94.1.4. </span>Serv.close(...[$config={}])<a class="headerlink" href="#serv-close-config" title="Link to this heading">¶</a></h3>
+<p>`close` closes the listening socket.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>If the socket is closed successfully, `close` tail-calls $success with no arg.</p>
+<p>If an IO error occurs, `close` tail-calls $error with an `exception`.</p>
+<p class="rubric">Preconditions</p>
+<p>$success must be a thunk.</p>
+<p>$error must be a function which takes an `exception`.</p>
+</section>
+<section id="serv-local-address-config">
+<span id="api-16078e255991f3074289bc0c880543c8"></span><h3><span class="section-number">6.94.1.5. </span>Serv.local_address(...[$config={}])<a class="headerlink" href="#serv-local-address-config" title="Link to this heading">¶</a></h3>
+<p>`local_address` retrieves the `socket_address` of the local address of the listening socket.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>If the local address is available, `local_address` tail-calls $success with the `socket_address`.</p>
+<p>If an IO error occurs, `local_address` tail-calls $error with an `exception`.</p>
+<p class="rubric">Preconditions</p>
+<p>$success must be a function which takes a `socket_address`.</p>
+<p>$error must be a function which takes an `exception`.</p>
+</section>
+<section id="serv-so-reuseaddr">
+<span id="api-6edceaf45300c52d102e65fdba707476"></span><h3><span class="section-number">6.94.1.6. </span>Serv.so_reuseaddr<a class="headerlink" href="#serv-so-reuseaddr" title="Link to this heading">¶</a></h3>
+<p>`so_reuseaddr` returns a `ref` of a `bool` of SO_REUSEADDR option.</p>
+<p>For usage of socket options, see the example program at the beginning of this module.</p>
+<p class="rubric">Precondition</p>
+<p>The protocol family must be ipv4 or ipv6.</p>
+</section>
+<section id="serv-so-rcvbuf">
+<span id="api-f721d27ab313be4c3b263f5b37a4fada"></span><h3><span class="section-number">6.94.1.7. </span>Serv.so_rcvbuf<a class="headerlink" href="#serv-so-rcvbuf" title="Link to this heading">¶</a></h3>
+<p>`so_rcvbuf` returns a `ref` of a non-negative integer `num` of SO_RCVBUF option.</p>
+<p>For usage of socket options, see the example program at the beginning of this module.</p>
+</section>
+</section>
+<section id="tcp-server-open-protocol-family-protocol-family-ipv6-config">
+<span id="api-2017de1f02765db49e4d8d878f435e30"></span><h2><span class="section-number">6.94.2. </span>TCP_SERVER.open(...[Protocol_family=PROTOCOL_FAMILY.ipv6 $config={}])<a class="headerlink" href="#tcp-server-open-protocol-family-protocol-family-ipv6-config" title="Link to this heading">¶</a></h2>
+<p>`open` method makes a new listening socket.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>• C.on_unsupported($unsupported): default = a function which tail-calls $error with an `exception`</p>
+<p>If a listening socket is created, `open` tail-calls $success with a `tcp_server` of the listening socket.</p>
+<p>If an IO error occurs, `open` tail-calls $error with an `exception`.</p>
+<p>If the runtime does not support `Protocol_family`, `open` tail-calls $unsupported with no arg.</p>
+<p class="rubric">Preconditions</p>
+<p>`Protocol_family` must be a `protocol_family`.</p>
+<p>$success must be a function which takes a `tcp_server`.</p>
+<p>$error must be a function which takes an `exception`.</p>
+</section>
+<section id="tcp-server-is-val">
+<span id="api-5ba1cd7aad2ca42fd330f9f8f279b427"></span><h2><span class="section-number">6.94.3. </span>TCP_SERVER.is?(Val)<a class="headerlink" href="#tcp-server-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` method returns whether `Val` is a tcp_server.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-TCP.html"><span class="section-number">6.93. </span>kink/socket/TCP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-UDP.html"><span class="section-number">6.95. </span>kink/socket/UDP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

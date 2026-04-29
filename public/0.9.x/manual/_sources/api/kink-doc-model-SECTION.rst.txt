@@ -1,0 +1,204 @@
+=========================
+kink\/doc\/model\/SECTION
+=========================
+
+Provides sections in docs\.
+
+A section is a tree node of a kink doc\.
+
+The top level section corresponds to an entire doc\.
+
+The second level sections correspond to mods\.
+
+Sections on the third and further levels typically correspond to funs\, types and methods\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-e97f5124ca84142c36c9b806f13e949d:
+
+SECTION\.new\(Title Blocks Subsections\)
+========================================
+
+\`new\` makes a section\.
+
+Preconditions\:
+
+\• \`Title\` must be a str
+
+\• \`Blocks\` must be a vec of blocks
+
+\• \`Subsections\` must be a vec of sections
+
+.. _api-15acafcda0ba99f6c43556b99b125a7b:
+
+SECTION\.is\?\(Val\)
+====================
+
+\`is\?\` returns whether \`Val\` is a section\.
+
+.. _api-535710c0f04212088d54dfecfaf987dc:
+
+type section
+============
+
+A section in a doc\.
+
+.. _api-d6f198e79144e99d69009391cd22f1ed:
+
+Section\.op\_eq\(Another\_section\)
+-----------------------------------
+
+Two sections are equal when they have the same title\, blocks and subsections\.
+
+Precondition\:
+
+\• \`Another\_section\` must be a section\.
+
+.. _api-47eca6d4dda0e4074e3c4fc60b0ee34a:
+
+Section\.title
+--------------
+
+\`title\` returns the title of the section\.
+
+.. _api-f3985d162a655e34c9380f0ebfb508ac:
+
+Section\.blocks
+---------------
+
+\`blocks\` returns the blocks of the section\.
+
+.. _api-60466cf722d933d8b9a34275e046985f:
+
+Section\.subsections
+--------------------
+
+\`subsections\` returns the subsections of the section\.
+
+.. _api-786bb6a451f4c3d1978eaded45b29a41:
+
+Section\.to\_json\_val
+----------------------
+
+\`to\_json\_val\` converts \`Section\` to a JSON val\.
+
+Example\:
+
+.. code:: kink
+
+    :SECTION.require_from('kink/doc/model/')
+    :BLOCK.require_from('kink/doc/model/')
+    :JSON.require_from('kink/json/')
+        
+    :Doc <- SECTION.new(
+      'Doc title'
+      [ BLOCK.new_paragraph('hey!') ]
+      [ SECTION.new(
+          'Section title'
+          []
+          []
+        )
+      ]
+    )
+    :Json_val <- Doc.to_json_val
+    stdout.print_line(JSON.stringify(Json_val))
+    # Output:
+    # {
+    #   "blocks": [
+    #     {
+    #       "text": "hey!",
+    #       "type": "paragraph"
+    #     }
+    #   ],
+    #   "subsections": [
+    #     {
+    #       "blocks": [],
+    #       "subsections": [],
+    #       "title": "Section title"
+    #     }
+    #   ],
+    #   "title": "Doc title"
+    # }
+
+.. _api-2b1744b332bf59c5f0e6294be0910d0b:
+
+Section\.depth
+--------------
+
+\`depth\` returns the depth of the tree of the section\.
+
+The depth is defined as follows\:
+
+\• If the section has no subsection\, the depth is 1\.
+
+\• If the section has one or more subsections\,   the depth of the section is the maximum depth of the subsections   plus 1\.
+
+.. _api-eb1b9a03f16894a76ddac591b6c6669e:
+
+Section\.limit\_depth\(Max\_depth\)
+-----------------------------------
+
+\`limit\_depth\` returns a section whose depth is smaller than or equal to \`Max\_depth\`\.
+
+If the depth of \`Section\` is smaller than or equal to \`Max\_depth\`\, \`limit\_depth\` returns a section identical to \`Section\`\.
+
+If the depth of \`Section\` is bigger than \`Max\_depth\`\, branches are flattened so that the result is limited to \`Max\_depth\`\.
+
+.. rubric:: Precondition\:
+
+\• \`Max\_depth\` must be an int num which is \>\= 2\.
+
+.. rubric:: Usage note\:
+
+Formatters can use \`limit\_depth\` to adapt the output to a specific format\.
+
+.. _api-8e219c505db5b0374aa411156b47b3d3:
+
+SECTION\.from\_json\_val\(Json\_val \.\.\.\[\$config \= \{\}\]\)
+================================================================
+
+\`from\_json\_val\` makes a section val from \`Json\_val\`\.
+
+Preconditions\:
+
+\• \`Json\_val\` must be a json val output from Section\.to\_json\_val\.
+
+\• \$config\, if given\, must be a fun which takes a \`Conf\` val\.
+
+\`Conf\` val has the following methods\:
+
+\• Conf\.on\_success\(\$success\_cont\)\: uses \$success\_cont as the success cont\.   If \`on\_success\` is not called\, VAL\.identity is used as the default success cont\.
+
+\• Conf\.on\_error\(\$error\_cont\)\: uses \$error\_cont as the error cont\.   If \`on\_error\` is not called\, a fun which raises an exception   is used as the default error cont\.
+
+When \`from\_json\_val\` can make a section val from \`Json\_val\`\, it tail\-calls the success cont with the section\.
+
+When \`from\_json\_val\` fails to make a section\, it tail\-calls the error cont with an error message\.
+
+Example\:
+
+.. code:: kink
+
+    :SECTION.require_from('kink/doc/model/')
+    :FLAT_MAP.require_from('kink/container/')
+        
+    :Json_val <- FLAT_MAP.of(
+      'title' 'Greeting program'
+      'blocks' [
+        FLAT_MAP.of(
+          'type' 'paragraph'
+          'text' 'This program outputs "hello world" to the standard output.'
+        )
+        FLAT_MAP.of(
+          'type' 'paragraph'
+          'text' 'The exit status hall be 0 when it terminates without an error.'
+        )
+      ]
+      'subsections' []
+    )
+    :Section <- SECTION.from_json_val(Json_val)
+    stdout.print_line(Section.repr)
+    # => Section(title="Greeting program" blocks=[Paragraph_block("This program outputs \"hello world\" to the standard output.") Paragraph_block("The exit status hall be 0 when it terminates without an error.")] subsections=[])
+

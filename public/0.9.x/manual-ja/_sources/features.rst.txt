@@ -1,0 +1,240 @@
+===================
+Key design features
+===================
+
+The page describes key design features which characterize Kink language.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Principle: keep it simple
+=========================
+
+The language design principle of Kink is to keep things as *conceptually simple* as possible.
+This means having as few kinds of basic building blocks as possible.
+
+For example, exceptions, generators, and thread-local-stores (TLS) are not basic building blocks.
+Instead, :ref:`exceptions <api-08fee0648a753752ac74e092d8e9cbfd>`,
+:ref:`generators <api-6d0602cb3762becfd16f81f49dc8de8a>`,
+and :ref:`TLS-like stores <api-08ef172995301f2f7d7b31cf767db64d>`
+are all built on :term:`delimited continuations <delimited continuation>`
+as basic building blocks.
+
+Function is a value
+===================
+
+A :term:`function` is a first class value.
+
+::
+
+  :double <- {(:N) N * 2 }
+  stdout.print_line(double(42).repr) # => 84
+
+  :Doubled_vec <- [1 2 3].map($double)
+  stdout.print_line(Doubled_vec.repr) # => [2 4 6]
+
+A :term:`method` is a function stored in a variable of a value.
+
+::
+
+  :new_dog <- {
+    new_val(
+      'bark' { 'Bow' }
+      'howl' { 'Wow' }
+    )
+  }
+
+  :Dog <- new_dog
+  stdout.print_line(Dog.bark) # => Bow
+  stdout.print_line(Dog.howl) # => Wow
+
+Object is just a bunch of variables
+===================================
+
+The :doc:`object system </object>` of Kink does not include
+class-instance relationship like class based languages,
+nor prototype-child relationship like prototype based languages.
+So, there is no inheritance nor delegation.
+An object, or a :term:`value`, is just a bunch of variables.
+
+This design is based on the observation that inheritance and delegation
+are just deduplication for optimization.
+If deduplication is done in the backend by the runtime,
+it does not need to appear in the language specification.
+
+You can just call :ref:`new_val <api-fbc90c7785322a766a80191e6e1ea8de>` function to make a value
+with data and methods.
+
+::
+
+  :new_account <- {(:Initial_balance)
+    new_val(
+      'balance' {[:A]() A.Balance }
+      'deposit' {[:A](:Delta) A:Balance <- A.balance + Delta }
+      'Balance' Initial_balance
+    )
+  }
+
+  :X <- new_account(100)
+  stdout.print_line(X.balance.repr) # => 100
+  X.deposit(20)
+  stdout.print_line(X.balance.repr) # => 120
+
+  :Y <- new_account(300)
+  stdout.print_line(Y.balance.repr) # => 300
+
+Apparently, ``balance`` and ``deposit`` methods are the same for both ``X`` and ``Y``.
+In class based languages, a class is used to share methods among objects.
+In Kink, methods can be stored as a :term:`vector`
+and spreaded as arguments of ``new_val``.
+Such a vector is called a :term:`trait`.
+
+::
+
+  :new_account <- {(:Initial_balance)
+    new_val(
+      ... Account_trait
+      'Balance' Initial_balance
+    )
+  }
+
+  :Account_trait <- [
+    'balance' {[:A]() A.Balance }
+    'deposit' {[:A](:Delta) A:Balance <- A.balance + Delta }
+  ]
+
+  :X <- new_account(100)
+  stdout.print_line(X.balance.repr) # => 100
+
+Assignment by function call
+===========================
+
+Assignment of a :term:`variable` is done
+by an invocation of :ref:`op_store <api-8e1458a61e933a2fc7dcdcb3592f20c1>` method
+of a :term:`variable reference` value.
+
+::
+
+  :V <- new_val
+  V:Num <- 42
+  stdout.print_line(V.Num.repr) # => 42
+
+The program above is equivalent to the following:
+
+::
+
+  :V.op_store(new_val)
+  V:Num.op_store(42)
+  stdout.print_line(V.Num.repr) # => 42
+
+So, there is nothing like left-hand-side value in the syntax.
+
+Local control by function call
+==============================
+
+Local control structures are implemented by functions.
+For example, if-then-else is provided
+by :ref:`if <api-b98148331ab9b2bb0ff826ae2a7d0c6d>` preloaded function.
+
+::
+
+  :abs <- {(:N)
+    if(N >= 0
+      { N }
+      { -N }
+    )
+  }
+
+  stdout.print_line(abs(42).repr)   # => 42
+  stdout.print_line(abs(-42).repr)  # => 42
+
+Looping over elements of a :term:`vector` can be done with methods
+such as :ref:`fold <api-f7a2d4cc94155596c0b63f9e7d2a847c>`.
+
+::
+
+  :Sum <- [1 2 3 4 5 6 7 8 9 10].fold(0){(:Accum :N)
+    Accum + N
+  }
+  stdout.print_line(Sum.repr)  # => 55
+
+In general, loops can be implemented by recursive :term:`tail calls <tail call>`.
+That is because consecutive tail calls are guaranteed not to cause stack overflow.
+See :term:`tail call elimination`.
+
+::
+
+  # returns the sum of nums in Vec
+  :sum <- {(:Vec)
+    :loop <- {(:Accum :I)
+      if(I < Vec.size
+        { :N = Vec.get(I)
+          loop(Accum + N I + 1)
+        }
+        { Accum }
+      )
+    }
+    loop(0 0)
+  }
+  :Sum <- sum([1 2 3 4 5 6 7 8 9 10])
+  stdout.print_line(Sum.repr)  # => 55
+
+Non-local control by delimited continuation
+===========================================
+
+Non-local control structures, such as :term:`exceptions <exception>`,
+:ref:`try-finally <api-29c676e2986aaddd539609b493b6faaf>`,
+and :ref:`generators <api-6d0602cb3762becfd16f81f49dc8de8a>` are not primitives,
+but implemented by shift/reset operations of
+:term:`delimited continuations <delimited continuation>`.
+
+To make delimited continuations practically usable,
+local variable binding must be virtually immutable by default.
+That is why :ref:`let clause <letclause>` was introduced.
+
+Let's make a curried function with shift/reset
+which makes a three-element tuple from the arguments.
+
+::
+  
+  :KONT_TAG.require_from('kink/')
+
+  :triple_correct <- {(:A0)
+    :Tag = KONT_TAG.new
+    Tag.reset{
+      :A1 = Tag.shift{(:k1) $k1 }
+      :A2 = Tag.shift{(:k2) $k2 }
+      [A0 A1 A2]
+    }
+  }
+
+  :triple_broken <- {(:A0)
+    :Tag = KONT_TAG.new
+    Tag.reset{
+      :A1 <- Tag.shift{(:k1) $k1 }
+      :A2 <- Tag.shift{(:k2) $k2 }
+      [A0 A1 A2]
+    }
+  }
+
+  :test <- {(:triple)
+    :foo <- triple('foo')
+    :foo_bar <- foo('bar')
+
+    stdout.print_line(foo_bar('baz').repr)
+    foo('XXX')
+    stdout.print_line(foo_bar('baz').repr)
+  }
+
+  test($triple_correct) # => ["foo" "bar" "baz"] ["foo" "bar" "baz"]
+  test($triple_broken)  # => ["foo" "bar" "baz"] ["foo" "XXX" "baz"]
+
+``triple_correct`` uses let clauses.
+You can see the invocation ``foo('XXX')`` does not change the behavior of ``foo_bar``.
+
+On the other hand, ``triple_broken`` modifies the binding by
+:ref:`Varref.op_store <api-8e1458a61e933a2fc7dcdcb3592f20c1>`.
+That is why the result of ``foo_bar`` changes after ``foo('XXX')``.
+
+.. vim: et sw=2 sts=2

@@ -1,0 +1,92 @@
+======================
+kink\/tls\/TLS\_CLIENT
+======================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-8aabcd5cb12a30955e359ab47b674422:
+
+type tls\_client
+================
+
+A \`tls\_client\` is a factory of client side TLS connections\.
+
+A \`tls\_client\` holds various data which live longer than single TLS connections\, such as key pairs\, certificates\, and data for session resumption\.
+
+.. _api-222adeecc290f0b4927b45e0a389b230:
+
+Clnt\.connect\(Tcp \.\.\.\[\$config\=\{\}\]\)
+---------------------------------------------
+
+\`connect\` makes a client side TLS connection\, and performs the initial handshake\.
+
+Config methods\:
+
+\• C\.remote\_hostname\(Remote\_hostname\)
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise\}
+
+If \`Remote\_hostname\` is specified\, it will be used as the server hostname of SNI\. Also\, the created \`tls\` will verify the host name of the remote certificate using \`Remote\_hostname\`\.
+
+If the connection is made and the initial handshake succeeds\, \`connect\` tail\-calls \$success with the created \`tls\`\.
+
+If the connection is not made\, or the initial handshake fails\, \`connect\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\• \`Tcp\` must be a \`tcp\`\, which the TLS connection uses\.
+
+\• The protocol family of \`Tcp\` must be IPv4 or IPv6\.
+
+\• \`Tcp\` must be open\.
+
+\• \`Remote\_hostname\` must be a \`str\`\.
+
+\• \$success must be a fun which takes a \`tls\`\.
+
+\• \$error must be a fun which takes an \`exception\`\.
+
+.. _api-7f93b6df3bbcf399093dfcd3f1d6b591:
+
+TLS\_CLIENT\.new\(Ta \.\.\.\[\$config\=\{\}\]\)
+===============================================
+
+\`new\` makes a new \`tls\_client\`\.
+
+Config methods\:
+
+\• C\.key\_pair\_set\(Kps\)\: default \= KEY\_PAIR\_SET\.empty
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\`Ta\` is used to verify certificates of TLS servers\.
+
+\`Kps\` is used for certificate\-based client authentication\.
+
+If a tls\_client is successfully made\, \`new\` tail\-calls \$success with the created tls\_client\.
+
+If an error occurs\, \`new\` tail\-calls \$error with the error message\.
+
+.. rubric:: Preconditions
+
+\• \`Ta\` must be a \`trust\_anchor\`
+
+\• \`Kps\` must be a \`key\_pair\_set\`
+
+\• \$success must be a fun which takes a \`tls\_client\`
+
+\• \$error must be a fun which takes an \`exception\`
+
+.. _api-30eed5f6347998ca19dc1beb4bd0f55c:
+
+TLS\_CLIENT\.is\?\(Val\)
+========================
+
+\`is\?\` returns whether \`Val\` is a tls\_client\.
+

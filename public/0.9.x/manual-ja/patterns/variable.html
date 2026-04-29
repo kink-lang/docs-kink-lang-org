@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>7.1. Variables &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="7.2. 関数" href="function.html" />
+    <link rel="prev" title="7. Patterns and code conventions" href="index.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>7.1. Variables</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html"><span class="section-number">7. </span>Patterns and code conventions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="function.html"><span class="section-number">7.2. </span>関数</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="variables">
+<h1><span class="section-number">7.1. </span>Variables<a class="headerlink" href="#variables" title="Link to this heading">¶</a></h1>
+<p><a class="reference internal" href="../glossary.html#term-variable"><span class="xref std std-term">Variables</span></a> can be classified into two categories
+based on their symbols as follows:</p>
+<dl class="simple">
+<dt>function variable</dt><dd><p>A variable with a <a class="reference internal" href="../glossary.html#term-function-symbol"><span class="xref std std-term">function symbol</span></a>.
+The content should be a function.</p>
+</dd>
+<dt>data variable</dt><dd><p>A variable with a <a class="reference internal" href="../glossary.html#term-data-symbol"><span class="xref std std-term">data symbol</span></a>.
+The content can be a value of an arbitrary type.</p>
+</dd>
+</dl>
+<p>Variables can also be classified into two categories based
+on their owners as follows:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#member-variable"><span class="std std-ref">member variable</span></a></p></li>
+<li><p><a class="reference internal" href="#local-variable"><span class="std std-ref">local variable</span></a></p></li>
+</ul>
+<p>Thus, there are four subcategories of variables as follows:
+member function variables, member data variables,
+local function variables, and local data variables.</p>
+<p>This chapter describes how those subcategories of variables are used
+in programs.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#member-variables" id="id2">Member variables</a></p>
+<ul>
+<li><p><a class="reference internal" href="#store-and-load" id="id3">Store and load</a></p></li>
+<li><p><a class="reference internal" href="#initial-values" id="id4">Initial values</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#local-variables" id="id5">Local variables</a></p>
+<ul>
+<li><p><a class="reference internal" href="#simple-store-and-load" id="id6">Simple store and load</a></p></li>
+<li><p><a class="reference internal" href="#lexical-scoping" id="id7">Lexical scoping</a></p></li>
+<li><p><a class="reference internal" href="#formal-receiver-and-formal-arguments" id="id8">Formal receiver and formal arguments</a></p></li>
+<li><p><a class="reference internal" href="#let-pattern" id="id9">Let Pattern</a></p></li>
+<li><p><a class="reference internal" href="#local-recursive-function-pattern" id="id10">Local recursive function pattern</a></p></li>
+<li><p><a class="reference internal" href="#local-variables-should-be-write-once" id="id11">Local variables should be write-once</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multiple-assignment" id="id12">Multiple assignment</a></p></li>
+</ul>
+</nav>
+<section id="member-variables">
+<span id="member-variable"></span><h2><span class="section-number">7.1.1. </span>Member variables<a class="headerlink" href="#member-variables" title="Link to this heading">¶</a></h2>
+<p>A <em class="dfn">member variable</em> is a variable of an arbitrary type of owner.</p>
+<section id="store-and-load">
+<h3><span class="section-number">7.1.1.1. </span>Store and load<a class="headerlink" href="#store-and-load" title="Link to this heading">¶</a></h3>
+<p>Assume you have an object in the top level variable <code class="docutils literal notranslate"><span class="pre">Owner</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Owner</span> &lt;- <span class="n">new_val</span>
+</pre></div>
+</div>
+<p>You can set a content of the member variable
+by calling <code class="docutils literal notranslate"><span class="pre">op_store</span></code> method of the varref.
+It can be done by <code class="docutils literal notranslate"><span class="pre">&lt;-</span></code> <a class="reference internal" href="../language/semantics.html#operatorlist"><span class="std std-ref">operator</span></a>,
+which is a syntactic sugar for <code class="docutils literal notranslate"><span class="pre">op_store</span></code> method.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">Owner:Data</span> &lt;- <span class="m">42</span>
+<span class="nv">Owner:fun</span> &lt;- { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;hello&#39;</span>) }
+</pre></div>
+</div>
+<p>You can load the content of a member data variable using <code class="docutils literal notranslate"><span class="pre">.</span></code>,
+and the content of a member function variable using <code class="docutils literal notranslate"><span class="pre">$</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Owner</span>.<span class="nv">Data</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Owner$fun</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; (fun ,,,)</span>
+</pre></div>
+</div>
+<p>You can call the content function in a member function variable using <code class="docutils literal notranslate"><span class="pre">.</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">Owner</span>.<span class="n">fun</span>  <span class="c1"># =&gt; hello</span>
+</pre></div>
+</div>
+</section>
+<section id="initial-values">
+<h3><span class="section-number">7.1.1.2. </span>Initial values<a class="headerlink" href="#initial-values" title="Link to this heading">¶</a></h3>
+<p>You can set the initial values of member variables
+by passing values to <code class="docutils literal notranslate"><span class="pre">new_val</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Owner</span> &lt;- <span class="n">new_val</span>(
+  <span class="s1">&#39;Data&#39;</span> <span class="m">42</span>
+  <span class="s1">&#39;fun&#39;</span> { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;hello&#39;</span>) }
+)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Owner</span>.<span class="nv">Data</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<span class="nv">Owner</span>.<span class="n">fun</span> <span class="c1"># =&gt; hello</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="local-variables">
+<span id="local-variable"></span><h2><span class="section-number">7.1.2. </span>Local variables<a class="headerlink" href="#local-variables" title="Link to this heading">¶</a></h2>
+<p>A <em class="dfn">local variable</em> is a variable of an owner which is a <a class="reference internal" href="../api/kink-BINDING.html"><span class="doc">binding</span></a>.</p>
+<section id="simple-store-and-load">
+<h3><span class="section-number">7.1.2.1. </span>Simple store and load<a class="headerlink" href="#simple-store-and-load" title="Link to this heading">¶</a></h3>
+<p>You can set a content of the local variable
+by calling <code class="docutils literal notranslate"><span class="pre">op_store</span></code> method of the varref.
+It can be done by <code class="docutils literal notranslate"><span class="pre">&lt;-</span></code> <a class="reference internal" href="../language/semantics.html#operatorlist"><span class="std std-ref">operator</span></a>,
+which is a syntactic sugar for <code class="docutils literal notranslate"><span class="pre">op_store</span></code> method.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Data</span> &lt;- <span class="m">42</span>
+<span class="nv">:fun</span> &lt;- { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;hello&#39;</span>) }
+</pre></div>
+</div>
+<p>The current binding can be produced by <code class="docutils literal notranslate"><span class="pre">\binding</span></code>.
+Thus, the program above is equivalent to the following:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="k">\binding</span><span class="nv">:Data</span> &lt;- <span class="m">42</span>
+<span class="k">\binding</span><span class="nv">:fun</span> &lt;- { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;hello&#39;</span>) }
+</pre></div>
+</div>
+<p>You can load the content of a local data variable using the symbol,
+and the content of a local function variable using <code class="docutils literal notranslate"><span class="pre">$</span></code> and the symbol.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Data</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">$fun</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (fun ,,,)</span>
+</pre></div>
+</div>
+<p>Again, the program above is equivalent to the following:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="k">\binding</span>.<span class="nv">Data</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="k">\binding</span><span class="nv">$fun</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; (fun ,,,)</span>
+</pre></div>
+</div>
+<p>You can call the content function using the symbol of the variable:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">fun</span> <span class="c1"># =&gt; hello</span>
+</pre></div>
+</div>
+<p>The program above is equivalent to the following.
+Note that <code class="docutils literal notranslate"><span class="pre">nada</span></code> is passed as the receiver.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="k">\binding</span>.<span class="n">fun</span>[()]  <span class="c1"># =&gt; hello</span>
+</pre></div>
+</div>
+</section>
+<section id="lexical-scoping">
+<h3><span class="section-number">7.1.2.2. </span>Lexical scoping<a class="headerlink" href="#lexical-scoping" title="Link to this heading">¶</a></h3>
+<p>Local variables can be used as if they are resolved based on lexical scoping,
+namely by searching the symbol from the innermost context
+to the outermost context.</p>
+<p>Lexical scoping in Kink is realized by copying local variables.
+When a function is called, a new binding is created for the function call.
+All the variables of the binding of the outer function call
+are copied to the newly created binding, so that they can be accessed.
+This is done by the first four
+<a class="reference internal" href="../glossary.html#term-abstract-instruction"><span class="xref std std-term">abstract instructions</span></a>
+in <a class="reference internal" href="../language/semantics.html#functionexpression"><span class="std std-ref">functions</span></a>:
+<code class="docutils literal notranslate"><span class="pre">(enclosingbinding)</span> <span class="pre">(clonebinding)</span> <span class="pre">(dup)</span> <span class="pre">(setbinding)</span></code>.</p>
+<p>As shown in the following example,
+<code class="docutils literal notranslate"><span class="pre">X</span></code> variable, which is created at the top level,
+can be used in nested function calls of <code class="docutils literal notranslate"><span class="pre">foo</span></code> and <code class="docutils literal notranslate"><span class="pre">bar</span></code>.
+<code class="docutils literal notranslate"><span class="pre">Y</span></code> is overwritten in the function call of <code class="docutils literal notranslate"><span class="pre">foo</span></code>,
+but it does not affect <code class="docutils literal notranslate"><span class="pre">Y</span></code> variable of the top level.
+<code class="docutils literal notranslate"><span class="pre">Z</span></code> is created at the function call of <code class="docutils literal notranslate"><span class="pre">foo</span></code>,
+so it can be used only within the function call of <code class="docutils literal notranslate"><span class="pre">foo</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:X</span> &lt;- <span class="s1">&#39;x&#39;</span>
+<span class="nv">:Y</span> &lt;- <span class="s1">&#39;y&#39;</span>
+
+<span class="nv">:foo</span> &lt;- {
+  <span class="nv">:Y</span> &lt;- <span class="s1">&#39;y_masking&#39;</span>
+  <span class="nv">:Z</span> &lt;- <span class="s1">&#39;z&#39;</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;x&quot;</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Y</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;y_masking&quot;</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Z</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;z&quot;</span>
+
+  <span class="nv">:bar</span> &lt;- {
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;x&quot;</span>
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Y</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;y_masking&quot;</span>
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Z</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;z&quot;</span>
+  }
+  <span class="n">bar</span>
+}
+<span class="n">foo</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">X</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;x&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Y</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;y&quot;</span>
+
+<span class="nv">Z</span> <span class="c1"># =&gt; no such var: Z</span>
+</pre></div>
+</div>
+</section>
+<section id="formal-receiver-and-formal-arguments">
+<span id="formal-receiver-formal-args"></span><h3><span class="section-number">7.1.2.3. </span>Formal receiver and formal arguments<a class="headerlink" href="#formal-receiver-and-formal-arguments" title="Link to this heading">¶</a></h3>
+<p>The formal receiver and the formal arguments are,
+when local variables are specified,
+desugared to assignment or
+<a class="reference internal" href="#multipleassignment"><span class="std std-ref">multiple assignment</span></a> to the local variables.
+They act in the same way as other local variables.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new_time_bomb</span> &lt;- {(<span class="nv">:Time</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Time_bomb_trait</span>
+    <span class="s1">&#39;Time&#39;</span> <span class="nv">Time</span>
+  )
+}
+
+<span class="nv">:Time_bomb_trait</span> &lt;- [
+  <span class="s1">&#39;count_down&#39;</span> {[<span class="nv">:B</span>](<span class="nv">:Delta</span>)
+    <span class="nv">B:Time</span> &lt;- <span class="nv">B</span>.<span class="nv">Time</span> - <span class="nv">Delta</span>
+    <span class="n">if</span>(<span class="nv">B</span>.<span class="nv">Time</span> &lt;= <span class="m">0</span>){
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Bang!&#39;</span>)
+    }
+  }
+]
+
+<span class="nv">:Bomb</span> &lt;- <span class="n">new_time_bomb</span>(<span class="m">100</span>)
+<span class="nv">Bomb</span>.<span class="n">count_down</span>(<span class="m">50</span>)
+<span class="nv">Bomb</span>.<span class="n">count_down</span>(<span class="m">30</span>)
+<span class="nv">Bomb</span>.<span class="n">count_down</span>(<span class="m">20</span>) <span class="c1"># =&gt; Bang!</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">count_down</span></code> method above is equivalent to the following.
+Note that the receiver and the arguments are assigned to
+<code class="docutils literal notranslate"><span class="pre">_Recv</span></code> and <code class="docutils literal notranslate"><span class="pre">_Args</span></code> respectively by
+<a class="reference internal" href="../language/eval.html#storerecvargs-insn"><span class="std std-ref">storerecvargs abstract instruction</span></a>
+at the beginning of invocation.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>{ <span class="nv">:B</span> &lt;- <span class="nv">_Recv</span>
+  [<span class="nv">:Delta</span>] &lt;- <span class="nv">_Args</span>
+
+  <span class="nv">B:Time</span> &lt;- <span class="nv">B</span>.<span class="nv">Time</span> - <span class="nv">Delta</span>
+  <span class="n">if</span>(<span class="nv">B</span>.<span class="nv">Time</span> &lt;= <span class="m">0</span>){
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Bang!&#39;</span>)
+  }
+}
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="function.html#values-passed-from-caller"><span class="std std-ref">Values passed from the caller</span></a>
+for advanced handling of formal arguments.</p>
+</section>
+<section id="let-pattern">
+<span id="letpattern"></span><h3><span class="section-number">7.1.2.4. </span>Let Pattern<a class="headerlink" href="#let-pattern" title="Link to this heading">¶</a></h3>
+<p>If you want to assign a value to a local variable within a function call,
+you should use <a class="reference internal" href="../language/semantics.html#letclause"><span class="std std-ref">let clause</span></a> through <code class="docutils literal notranslate"><span class="pre">=</span></code> in most cases,
+rather than directly using <code class="docutils literal notranslate"><span class="pre">&lt;-</span></code> operator.</p>
+<p>In the following example, you should do like <code class="docutils literal notranslate"><span class="pre">do_this</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:dont_do_this</span> &lt;- {
+  <span class="nv">:Foo</span> &lt;- <span class="s1">&#39;foo&#39;</span>
+  <span class="nv">:Bar</span> &lt;- <span class="s1">&#39;bar&#39;</span>
+  <span class="nv">Foo</span> + <span class="nv">Bar</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">dont_do_this</span>.<span class="n">repr</span>) <span class="c1"># =&gt; foobar</span>
+
+<span class="nv">:do_this</span> &lt;- {
+  <span class="nv">:Foo</span> = <span class="s1">&#39;foo&#39;</span>
+  <span class="nv">:Bar</span> = <span class="s1">&#39;bar&#39;</span>
+  <span class="nv">Foo</span> + <span class="nv">Bar</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">do_this</span>.<span class="n">repr</span>) <span class="c1"># =&gt; foobar</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">do_this</span></code> is translated to the following:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:do_this</span> &lt;- {
+  {(<span class="nv">:Foo</span>)
+    {(<span class="nv">:Bar</span>)
+      <span class="nv">Foo</span> + <span class="nv">Bar</span>
+    }.<span class="n">call</span>(() [<span class="s1">&#39;bar&#39;</span>])
+  }.<span class="n">call</span>(() [<span class="s1">&#39;foo&#39;</span>])
+}
+</pre></div>
+</div>
+<p class="rubric">Rationale</p>
+<p><em class="dfn">Let Pattern</em> exists
+so that <a class="reference internal" href="../api/kink-KONT_TAG.html"><span class="doc">continuation</span></a> is practically usable.
+With delimited continuation,
+a single function call associated with a single binding
+can be resumed multiple times.
+It means, if a local variable is assigned
+after a point where a continuation can be resumed,
+that assignment can be performed multiple times in a single function call.
+It breaks <a class="reference internal" href="#writeoncelocalvar"><span class="std std-ref">write-once local variable</span></a> convention,
+and can result in an unintended outcome.</p>
+<p>In the following example, <code class="docutils literal notranslate"><span class="pre">triple_unsafe</span></code> is intended to be
+a curried function which takes three arguments
+and returns a vec of the arguments.
+However, it does not work as intended.
+When <code class="docutils literal notranslate"><span class="pre">foo</span></code> is called twice,
+they resume the same function call of [a] at the end of
+the first invocation of <code class="docutils literal notranslate"><span class="pre">shift</span></code>.
+It means <code class="docutils literal notranslate"><span class="pre">Second</span></code> is assigned twice for the same binding.
+Thus, the result of <code class="docutils literal notranslate"><span class="pre">foo_bar</span></code> changes after <code class="docutils literal notranslate"><span class="pre">foo</span></code> is called.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:KONT_TAG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:triple_unsafe</span> &lt;- {(<span class="nv">:First</span>)
+  <span class="nv">:Tag</span> = <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+  <span class="nv">Tag</span>.<span class="n">reset</span>{ <span class="c1"># [a]</span>
+    <span class="nv">:Second</span> &lt;- <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:resume</span>) <span class="nv">$resume</span> }
+    <span class="nv">:Third</span> &lt;- <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:resume</span>) <span class="nv">$resume</span> }
+    [<span class="nv">First</span> <span class="nv">Second</span> <span class="nv">Third</span>]
+  }
+}
+
+<span class="nv">:foo</span> &lt;- <span class="n">triple_unsafe</span>(<span class="s1">&#39;Foo&#39;</span>)
+<span class="nv">:foo_bar</span> &lt;- <span class="n">foo</span>(<span class="s1">&#39;Bar&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">foo_bar</span>(<span class="s1">&#39;Baz&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;Foo&quot; &quot;Bar&quot; &quot;Baz&quot;]</span>
+
+<span class="n">foo</span>(<span class="s1">&#39;broken!&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">foo_bar</span>(<span class="s1">&#39;Baz&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;Foo&quot; &quot;broken!&quot; &quot;Baz&quot;]</span>
+</pre></div>
+</div>
+<p>The program above should be written as follows using <em class="dfn">Let Pattern</em>.
+It does not overwrite <code class="docutils literal notranslate"><span class="pre">Second</span></code>, because <code class="docutils literal notranslate"><span class="pre">Second</span></code>
+is a variable of the binding of a function call which starts
+after the continuation is resumed.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:KONT_TAG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:triple_safe</span> &lt;- {(<span class="nv">:First</span>)
+  <span class="nv">:Tag</span> = <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+  <span class="nv">Tag</span>.<span class="n">reset</span>{
+    <span class="nv">:Second</span> = <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:resume</span>) <span class="nv">$resume</span> }
+    <span class="nv">:Third</span> = <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:resume</span>) <span class="nv">$resume</span> }
+    [<span class="nv">First</span> <span class="nv">Second</span> <span class="nv">Third</span>]
+  }
+}
+
+<span class="nv">:foo</span> &lt;- <span class="n">triple_safe</span>(<span class="s1">&#39;Foo&#39;</span>)
+<span class="nv">:foo_bar</span> &lt;- <span class="n">foo</span>(<span class="s1">&#39;Bar&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">foo_bar</span>(<span class="s1">&#39;Baz&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;Foo&quot; &quot;Bar&quot; &quot;Baz&quot;]</span>
+
+<span class="n">foo</span>(<span class="s1">&#39;not destructive&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">foo_bar</span>(<span class="s1">&#39;Baz&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;Foo&quot; &quot;Bar&quot; &quot;Baz&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="local-recursive-function-pattern">
+<span id="localrecursivefunpattern"></span><h3><span class="section-number">7.1.2.5. </span>Local recursive function pattern<a class="headerlink" href="#local-recursive-function-pattern" title="Link to this heading">¶</a></h3>
+<p>When you want to have a function stored in a local variable within a function,
+and make it recursive,
+<em class="dfn">let pattern</em> is not powerful enough (without a fixed point combinator).
+The following program results in “no such var” error.
+It is because the function stored in <code class="docutils literal notranslate"><span class="pre">bar</span></code> is outside of the scope of
+the local variable <code class="docutils literal notranslate"><span class="pre">bar</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:foo</span> &lt;- {
+  <span class="nv">:bar</span> = {
+    <span class="n">bar</span> <span class="c1"># =&gt; no such var: bar</span>
+  }
+  <span class="n">bar</span>
+}
+<span class="n">foo</span>
+</pre></div>
+</div>
+<p>In that case, you can make a recursive function
+directly using <code class="docutils literal notranslate"><span class="pre">op_store</span></code> operator <code class="docutils literal notranslate"><span class="pre">&lt;-</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:count_down</span> &lt;- {
+  <span class="nv">:loop</span> &lt;- {(<span class="nv">:N</span>)
+    <span class="n">if</span>(<span class="nv">N</span> &gt;= <span class="m">0</span>){
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
+      <span class="n">loop</span>(<span class="nv">N</span> - <span class="m">1</span>)
+    }
+  }
+  <span class="n">loop</span>(<span class="m">5</span>)
+}
+<span class="n">count_down</span> <span class="c1"># =&gt; 5 4 3 2 1 0</span>
+</pre></div>
+</div>
+<p>You can also make mutually recursive functions
+directly using <code class="docutils literal notranslate"><span class="pre">op_store</span></code> operator <code class="docutils literal notranslate"><span class="pre">&lt;-</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ping_pong</span> &lt;- {
+  <span class="nv">:ping</span> &lt;- {
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;ping&#39;</span>)
+    <span class="n">pong</span>
+  }
+  <span class="nv">:pong</span> &lt;- {
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;pong&#39;</span>)
+    <span class="n">ping</span>
+  }
+  <span class="n">ping</span>
+}
+<span class="n">ping_pong</span> <span class="c1"># =&gt; ping pong ping pong ping ...</span>
+</pre></div>
+</div>
+<p class="rubric">Rationale</p>
+<p>It can break <a class="reference internal" href="#writeoncelocalvar"><span class="std std-ref">write-once local variable</span></a> convention,
+but it does not practically change the outcome of the program.</p>
+<p>In the following example,
+<code class="docutils literal notranslate"><span class="pre">call_underscore</span></code> and <code class="docutils literal notranslate"><span class="pre">underscore</span></code> are assigned every time <code class="docutils literal notranslate"><span class="pre">resume</span></code>
+is called.
+That is why <code class="docutils literal notranslate"><span class="pre">val_id</span></code> for <code class="docutils literal notranslate"><span class="pre">underscore</span></code> changes.
+However, those distinct functions work in exactly the same way,
+because they have the same sequence of abstract instructions
+with the same enclosing binding.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:KONT_TAG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:setup_underscore</span> &lt;- {(<span class="nv">:Str</span>)
+  <span class="nv">:Tag</span> = <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+  <span class="nv">Tag</span>.<span class="n">reset</span>{
+    <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:k</span>) { <span class="n">k</span>(()) } }
+    <span class="nv">:call_underscore</span> &lt;- {
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;val_id: &#39;</span> + <span class="nv">VAL</span>.<span class="n">val_id</span>(<span class="nv">$underscore</span>).<span class="n">repr</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">underscore</span>.<span class="n">repr</span>)
+    }
+    <span class="nv">:underscore</span> &lt;- {
+      <span class="s1">&#39;_&#39;</span> + <span class="nv">Str</span> + <span class="s1">&#39;_&#39;</span>
+    }
+    <span class="nv">$call_underscore</span>
+  }
+}
+
+<span class="nv">:resume</span> &lt;- <span class="n">setup_underscore</span>(<span class="s1">&#39;hello&#39;</span>)
+
+<span class="nv">:enc</span> &lt;- <span class="n">resume</span>
+<span class="n">enc</span> <span class="c1"># =&gt; val_id: 2 / &quot;_hello_&quot;</span>
+
+<span class="n">resume</span>
+
+<span class="n">enc</span> <span class="c1"># =&gt; val_id: 3 / &quot;_hello_&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="local-variables-should-be-write-once">
+<span id="writeoncelocalvar"></span><h3><span class="section-number">7.1.2.6. </span>Local variables should be write-once<a class="headerlink" href="#local-variables-should-be-write-once" title="Link to this heading">¶</a></h3>
+<p>It is better keeping local variables write-once,
+to avoid unintuitive outcomes.</p>
+<p>For instance, because local variables are copied on invocation,
+modification of a local variable in the outer context
+doesn't affect local variables of nested function calls in some cases.
+Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Num</span> &lt;- <span class="m">42</span>
+
+<span class="nv">:make_fun</span> &lt;- {
+  { <span class="nv">Num</span> }
+}
+<span class="nv">:yield_num</span> &lt;- <span class="n">make_fun</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">yield_num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+
+<span class="nv">:Num</span> &lt;- <span class="m">24</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">yield_num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p>In the program above, modification of <code class="docutils literal notranslate"><span class="pre">Num</span></code>
+does not affect the result of <code class="docutils literal notranslate"><span class="pre">yield_num</span></code>.
+It can be explained as follows:</p>
+<ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">Num</span></code> is created at the top level,
+the binding of the top level becomes <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">Num</span> <span class="pre">=&gt;</span> <span class="pre">42</span> <span class="pre">]</span></code>.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">make_fun</span></code> is called,
+the binding for the function call is created copying the top level binding
+as <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">Num</span> <span class="pre">=&gt;</span> <span class="pre">42</span> <span class="pre">]</span></code> [a].</p></li>
+<li><p>The function <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">Num</span> <span class="pre">}</span></code>, which is assigned to <code class="docutils literal notranslate"><span class="pre">yield_num</span></code>,
+is created within the call of <code class="docutils literal notranslate"><span class="pre">make_fun</span></code>.
+Thus, when <code class="docutils literal notranslate"><span class="pre">yield_num</span></code> is called, a new binding is created copying [a].</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">Num</span></code> is modified to <code class="docutils literal notranslate"><span class="pre">24</span></code> at the top level, the top level binding
+becomes <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">Num</span> <span class="pre">=&gt;</span> <span class="pre">24</span> <span class="pre">]</span></code>.
+However, it does not affect the already created binding [a].
+[a] reamins as <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">Num</span> <span class="pre">=&gt;</span> <span class="pre">42</span> <span class="pre">]</span></code>.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">yield_num</span></code> is called, a new binding is created copying [a],
+as <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">Num</span> <span class="pre">=&gt;</span> <span class="pre">42</span> <span class="pre">]</span></code>.
+Thus, <code class="docutils literal notranslate"><span class="pre">Num</span></code> yields <code class="docutils literal notranslate"><span class="pre">42</span></code>.</p></li>
+</ul>
+<p>If you want to change the returned number,
+you can store the number in a member variable of a value
+which acts as a value container, like follows:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Data</span> &lt;- <span class="n">new_val</span>(<span class="s1">&#39;Num&#39;</span> <span class="m">42</span>)
+
+<span class="nv">:make_fun</span> &lt;- {
+  { <span class="nv">Data</span>.<span class="nv">Num</span> }
+}
+<span class="nv">:yield_num</span> &lt;- <span class="n">make_fun</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">yield_num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+
+<span class="nv">Data:Num</span> &lt;- <span class="m">24</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">yield_num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 24</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="multiple-assignment">
+<span id="multipleassignment"></span><h2><span class="section-number">7.1.3. </span>Multiple assignment<a class="headerlink" href="#multiple-assignment" title="Link to this heading">¶</a></h2>
+<p>You can set contents of multiple variables using
+<code class="docutils literal notranslate"><span class="pre">op_store</span></code> method of <a class="reference internal" href="../api/kink-VEC.html"><span class="doc">vec</span></a> type.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Owner</span> &lt;- <span class="n">new_val</span>
+[<span class="nv">Owner:Data</span> <span class="nv">Owner:fun</span>] &lt;- [
+  <span class="m">42</span>
+  { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;hello&#39;</span>) }
+]
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Owner</span>.<span class="nv">Data</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<span class="nv">Owner</span>.<span class="n">fun</span> <span class="c1"># =&gt; hello</span>
+</pre></div>
+</div>
+<p>Multiple assignment can also be used with <a class="reference internal" href="#letpattern"><span class="std std-ref">Let Pattern</span></a>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:foo</span> &lt;- {
+  [<span class="nv">:Data</span> <span class="nv">:fun</span>] = [
+    <span class="m">42</span>
+    { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;hello&#39;</span>) }
+  ]
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Data</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+  <span class="n">fun</span> <span class="c1"># =&gt; hello</span>
+}
+<span class="n">foo</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html"><span class="section-number">7. </span>Patterns and code conventions</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="function.html"><span class="section-number">7.2. </span>関数</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

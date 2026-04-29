@@ -1,0 +1,47 @@
+========================
+kink\/io\/INPUT\_SCANNER
+========================
+
+Provides a \`scanner\` implementation wrapping \`input\`\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-d1e32a7edd5b3d1b05222e870e0f43de:
+
+INPUT\_SCANNER\.new\(Input Charset \.\.\.\[\$config\=\{\}\]\)
+=============================================================
+
+\`new\` makes a \`scanner\` which also support \`input\` methods\. The created scanner reads bytes from \`Input\` and converts them to strings using \`Charset\`\. Methods of \`input\` type are delegated to \`Input\`\.
+
+Config method\:
+
+\• C\.replace\_conversion\_error
+
+When \`scan\_line\` or \`scan\` methods detect malformed byte sequence or a character which cannot be mapped to Unicode\, those methods tail\-call \$error by default\. If C\.replace\_conversion\_error is called\, \`scan\` and \`scan\_line\` insert replacement character sequence into the string instead of calling \$error\.
+
+.. rubric:: Preconditions
+
+\`Input\` must be \`input\` type\.
+
+\`Charset\` must be \`charset\` type\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :INPUT_SCANNER.require_from('kink/io/')
+    :BIN_INPUT.require_from('kink/io/')
+    :BIN.require_from('kink/')
+    :CHARSET.require_from('kink/')
+        
+    :In <- BIN_INPUT.new(BIN.of(102 111 111 10))
+    :S <- INPUT_SCANNER.new(In CHARSET.utf8)
+        
+    # the result suppors input
+    stdout.print_line(S.read(1).repr) # => (bin 0x66)
+        
+    # the result suppors scanner
+    stdout.print_line(S.scan_line.repr) # => "oo\n"
+

@@ -1,0 +1,246 @@
+====================
+kink\/container\/MAP
+====================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-ae589d10ad3c21b0161e4f9cc033b008:
+
+type map
+========
+
+\`map\` is an abstract type of key\-value containers\. Keys must be unique in a \`map\`\, in the equivalence relation defined by the implementation\.
+
+\`ordered\_map\` is a subtype of \`map\` which supports total ordering of keys\. See kink\/container\/ORDERED\_MAP\.
+
+.. _api-e5ea465da899b1f60c757a0130e60bef:
+
+Map\.get\(Key \.\.\.\[\$if\_absent\]\)
+--------------------------------------
+
+\`get\` returns the value associated with a key equivalent to \`Key\`\.
+
+If \`Map\` does not have such a key\, \`get\` tail\-calls \$if\_absent\. The default value of \$if\_absent is a fun which raises an exception\.
+
+.. rubric:: Preconditions
+
+\`Key\` must be in the domain of the equivalence relation of keys\.
+
+\$if\_absent must be a thunk\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_MAP.require_from('kink/container/')
+        
+    :Map <- FLAT_MAP.of('one' 1 'two' 2 'three' 3 'four' 4)
+    stdout.print_line(Map.get('one').repr)  # => 1
+    stdout.print_line(Map.get('five'){ 'big' }.repr) # => "big"
+        
+    Map.get('five')
+    # Output:
+    #   ...
+    #   -- main exception
+    #   ,,,
+    #   {builtin:kink-mods/kink/container/FLAT_MAP.kn L138 C9 raise} { -->raise('{}: no such key: {}'.format(Desc Key.repr)) }
+    #   Flat_map.get(Key ...[$if_absent]): no such key: "five"
+
+.. _api-630f4d0db9fbd3d93575a6967dc6b4e2:
+
+Map\.get\_opt\(Key\)
+--------------------
+
+If \`Map\` has a key equivalent to \`Key\`\, \`get\_opt\` returns \[Val\] where \`Val\` is the value associated with the key\.
+
+If \`Map\` does not have such a key\, \`get\_opt\` returns \[\]\.
+
+.. rubric:: Precondition
+
+\`Key\` must be in the domain of the equivalence relation of keys\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_MAP.require_from('kink/container/')
+        
+    :Map <- FLAT_MAP.of('one' 1 'two' 2 'three' 3 'four' 4)
+    stdout.print_line(Map.get_opt('one').repr)  # => [1]
+    stdout.print_line(Map.get_opt('five').repr) # => []
+
+.. _api-e1a4b17952ec950a0fafeb3074ad1b2c:
+
+Map\.have\_key\?\(Key\)
+-----------------------
+
+\`have\_key\?\` returns whether \`Map\` has a key equivalent to \`Key\`\.
+
+.. rubric:: Precondition
+
+\`Key\` must be in the domain of the equivalence relation of keys\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_MAP.require_from('kink/container/')
+        
+    :Map <- FLAT_MAP.of('one' 1 'two' 2 'three' 3 'four' 4)
+    stdout.print_line(Map.have_key?('one').repr)  # => true
+    stdout.print_line(Map.have_key?('five').repr) # => false
+
+.. _api-3a77d10f8c78a391bea00288398c4367:
+
+Map\.size
+---------
+
+\`size\` returns the number of key\-value pairs in \`Map\`\, as an integer \`num\`\.
+
+.. _api-26f66670e9967d093cad31eecd1d180a:
+
+Map\.any\?
+----------
+
+\`any\?\` returns whether \`Map\` contains one or more entries\.
+
+.. _api-d56f3cad3184a893e04ba40b3b346a14:
+
+Map\.set\(Key Val\)
+-------------------
+
+\`set\` associates \`Key\` as the key\, to \`Val\` as the value\.
+
+If \`Map\` does not have a key equivalent to \`Key\`\, \`set\` makes a new association with \`Key\` and \`Val\`\.
+
+If \`Map\` already has a key equivalent to \`Key\`\, \`set\` overwrites the association with \`Val\`\. In that case\, \`set\` might overwrite the association with \`Key\`\, or might keep the old key\.
+
+.. rubric:: Precondition
+
+\`Key\` must be in the domain of the equivalence relation of keys\.
+
+.. rubric:: Postconditions
+
+Map\.have\_key\?\(Key\) will be true\.
+
+Map\.get\(Key\) will be \`Val\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_MAP.require_from('kink/container/')
+        
+    :Map <- FLAT_MAP.of('one' 1 'two' 2 'three' 3)
+    Map.set('four' 4)
+    Map.set('one' 'ONE')
+    stdout.print_line(Map.repr) # => (flat_map "four"=>4 "one"=>"ONE" "three"=>3 "two"=>2)
+
+.. _api-bfedea521b83b81bb5908b369e41880f:
+
+Map\.pop\_at\(Key\)
+-------------------
+
+\`pop\_at\` removes the key\-value pair whose key is equivalent to \`Key\`\, and returns the associated value\.
+
+.. rubric:: Precondition
+
+\`Key\` must be in the domain of the equivalence relation of keys\.
+
+.. rubric:: Postcondition
+
+Map\.have\_key\?\(Key\) will be false\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_MAP.require_from('kink/container/')
+        
+    :Map <- FLAT_MAP.of('one' 1 'two' 2 'three' 3 'four' 4)
+    stdout.print_line(Map.pop_at('four').repr) # => 4
+    stdout.print_line(Map.repr) # => (flat_map "one"=>1 "three"=>3 "two"=>2)
+
+.. _api-61184681b7e78ea1211623d809d25cc0:
+
+Map\.clear
+----------
+
+\`clear\` removes all the key\-value pairs from \`Map\`\.
+
+.. _api-38fc32cb4b8af3bcb03e3514879bc242:
+
+Map\.key\_iter
+--------------
+
+\`key\_iter\` returns an \`iter\` of the keys\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_MAP.require_from('kink/container/')
+        
+    :Map <- FLAT_MAP.of('one' 1 'two' 2 'three' 3 'four' 4)
+    Map.key_iter.each{(:K)
+      stdout.print_line(K.repr)
+    }
+    # Output:
+    #   "four"
+    #   "one"
+    #   "three"
+    #   "two"
+
+.. _api-1e9e053fba2914a3199537e704b69103:
+
+Map\.pair\_iter
+---------------
+
+\`pair\_iter\` returns an \`iter\` of a \`vec\` \[Key Value\] for all the key\-value pairs\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FLAT_MAP.require_from('kink/container/')
+        
+    :Map <- FLAT_MAP.of('one' 1 'two' 2 'three' 3 'four' 4)
+    Map.pair_iter.each{([:K :V])
+      stdout.print_line('{} => {}'.format(K.repr V.repr))
+    }
+    # Output:
+    #   "four" => 4
+    #   "one" => 1
+    #   "three" => 3
+    #   "two" => 2
+
+.. _api-e0d8b9d6cdc93492ebb517094ce1181d:
+
+X \=\= Y
+--------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether two maps \`X\` and Y\` are equivalent\.
+
+The two maps are equivalent when the following conditions are met\:
+
+\• \`X\` and \`Y\` has the equivalent set of keys\.
+
+\• For each key \`K\` of \`X\`\, X\.get\(K\) \=\= Y\.get\(K\) returns true\.
+
+.. rubric:: Preconditions
+
+\`Y\` must be a \`map\`\.
+
+The equivalence relations of keys of \`X\` and \`Y\` must be same\.
+
+Values of \`X\` and \`Y\` must be comparable to each other using \`\=\=\` operator\.
+
+.. _api-7d3383de481bee0b3a9e45061af1adc5:
+
+MAP\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a \`map\`\.
+

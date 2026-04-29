@@ -1,0 +1,33 @@
+===========================
+kink\/doc\/DOC\_PARSE\_TOOL
+===========================
+
+Launcheable mod to parse kink doc and generate JSON\.
+
+Usage\: kink \[Kink\_options\]\.\.\. mod\:kink\/doc\/DOC\_PARSE\_TOOL \[Mod\_options\]\.\.\. Src\_dir\_path\.\.\.
+
+The command finds Kink source files of exposed mods from Src\_dir\_paths\. It parses kink doc from the source files\, then outputs JSON of the kink doc to the standard output\, or the output file if \`\-\-output\` is specified\.
+
+Mod\_options\:
+
+\• \-\-title \{Title\} \: gives the title of the kink doc\. If not given\, the default title is used\.
+
+\• \-\-overview \{Overview\_file\_path\} \: gives the file path of the overview file\,   which contains text blocks of the top level of the kink doc\.   If not given\, no blocks are placed in the top level of the kink doc\.
+
+\• \-\-output \{Output\_file\_path\} \: gives the file path of the output\.
+
+If the command generates JSON successfully\, it exits with 0 as the exit status\.
+
+If the command fails\, it exits with non\-zero exit status\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-14c0e8fa7d0e30676496de9871537294:
+
+DOC\_PARSE\_TOOL\.main\(Argv\)
+==============================
+
+main is the launcher fun of the mod\.
+

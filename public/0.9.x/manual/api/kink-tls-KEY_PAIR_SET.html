@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.104. kink/tls/KEY_PAIR_SET &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.105. kink/tls/TLS" href="kink-tls-TLS.html" />
+    <link rel="prev" title="6.103. kink/thread/THREAD" href="kink-thread-THREAD.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.104. kink/tls/KEY_PAIR_SET</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-thread-THREAD.html"><span class="section-number">6.103. </span>kink/thread/THREAD</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-tls-TLS.html"><span class="section-number">6.105. </span>kink/tls/TLS</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-tls-key-pair-set">
+<h1><span class="section-number">6.104. </span>kink/tls/KEY_PAIR_SET<a class="headerlink" href="#kink-tls-key-pair-set" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-key-pair-set" id="id1">type key_pair_set</a></p></li>
+<li><p><a class="reference internal" href="#key-pair-set-is-val" id="id2">KEY_PAIR_SET.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#key-pair-set-read-pkcs12-bin-password-config" id="id3">KEY_PAIR_SET.read_pkcs12(Bin Password ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#key-pair-set-empty" id="id4">KEY_PAIR_SET.empty</a></p></li>
+</ul>
+</nav>
+<section id="type-key-pair-set">
+<span id="api-c509ac0c14917afc3a074b444fd1d91c"></span><h2><span class="section-number">6.104.1. </span>type key_pair_set<a class="headerlink" href="#type-key-pair-set" title="Link to this heading">¶</a></h2>
+<p>A key_pair_set contains a collection of pairs of a private key, a public key, and its certificate.</p>
+</section>
+<section id="key-pair-set-is-val">
+<span id="api-7400dad43ad27aecff30c21d550f3910"></span><h2><span class="section-number">6.104.2. </span>KEY_PAIR_SET.is?(Val)<a class="headerlink" href="#key-pair-set-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a key_pair_set val.</p>
+</section>
+<section id="key-pair-set-read-pkcs12-bin-password-config">
+<span id="api-44e43de74e6b4195ac0544a537e07863"></span><h2><span class="section-number">6.104.3. </span>KEY_PAIR_SET.read_pkcs12(Bin Password ...[$config={}])<a class="headerlink" href="#key-pair-set-read-pkcs12-bin-password-config" title="Link to this heading">¶</a></h2>
+<p>`read_pkcs12` reads a `key_pair_set` from `Bin` in PKCS #12 format, which is defined in RFC 7292.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
+<p>• C.on_wrong_password($wrong_password): default = a fun which tail-calls $error</p>
+<p>If a `key_pair_set` is successfully read, `read_pkcs12` tail-calls $success with the `key_pair_set`.</p>
+<p>If the password is wrong, `read_pkcs12` tail-calls $wrong_password</p>
+<p>If an error occurs while reading the bin, `read_pkcs12` tail-calls $error with an `exception`.</p>
+<p class="rubric">Preconditions</p>
+<p>• `Bin` must be a `bin`</p>
+<p>• `Password` must be a `str`</p>
+<p>• $success must be a fun which takes a `key_pair_set`</p>
+<p>• $error must be a fun which takes an `exception`</p>
+<p>• $wrong_password must be a fun which takes no arg</p>
+</section>
+<section id="key-pair-set-empty">
+<span id="api-60f1d4da46b43b25ebc0288190e4b462"></span><h2><span class="section-number">6.104.4. </span>KEY_PAIR_SET.empty<a class="headerlink" href="#key-pair-set-empty" title="Link to this heading">¶</a></h2>
+<p>`empty` returns a key_pair_set which has no key pairs.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-thread-THREAD.html"><span class="section-number">6.103. </span>kink/thread/THREAD</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-tls-TLS.html"><span class="section-number">6.105. </span>kink/tls/TLS</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

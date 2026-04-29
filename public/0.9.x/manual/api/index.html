@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6. Builtin library API &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.1. kink/ARGV_PARSER" href="kink-ARGV_PARSER.html" />
+    <link rel="prev" title="5. Module system" href="../modsystem.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6. Builtin library API</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="../modsystem.html"><span class="section-number">5. </span>Module system</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-ARGV_PARSER.html"><span class="section-number">6.1. </span>kink/ARGV_PARSER</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="builtin-library-api">
+<h1><span class="section-number">6. </span>Builtin library API<a class="headerlink" href="#builtin-library-api" title="Link to this heading">¶</a></h1>
+<p>This chapter describes API of builtin modules and types.</p>
+<p>Types are described in the page of its companion module. For example, methods of `str` type are described in the page of kink/STR module.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kink-ARGV_PARSER.html">6.1. kink/ARGV_PARSER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-BIN.html">6.2. kink/BIN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-BINDING.html">6.3. kink/BINDING</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-BIN_HASHER.html">6.4. kink/BIN_HASHER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-BOOL.html">6.5. kink/BOOL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-CHARSET.html">6.6. kink/CHARSET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-COMPARE.html">6.7. kink/COMPARE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-CONFIG_FUN_RUNNER.html">6.8. kink/CONFIG_FUN_RUNNER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-CONTROL.html">6.9. kink/CONTROL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-DYN.html">6.10. kink/DYN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-ENUM_GROUP.html">6.11. kink/ENUM_GROUP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-EXCEPTION.html">6.12. kink/EXCEPTION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-FUN.html">6.13. kink/FUN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-KONT_TAG.html">6.14. kink/KONT_TAG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-LOCALE.html">6.15. kink/LOCALE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-MOD.html">6.16. kink/MOD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-NUM.html">6.17. kink/NUM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-NUM_DIV.html">6.18. kink/NUM_DIV</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-PROCESS.html">6.19. kink/PROCESS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-REF.html">6.20. kink/REF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-RUNTIME.html">6.21. kink/RUNTIME</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-STOPWATCH.html">6.22. kink/STOPWATCH</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-STR.html">6.23. kink/STR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-TRACE.html">6.24. kink/TRACE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-VAL.html">6.25. kink/VAL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-VARREF.html">6.26. kink/VARREF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-VEC.html">6.27. kink/VEC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-FLAT_MAP.html">6.28. kink/container/FLAT_MAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-FLAT_SET.html">6.29. kink/container/FLAT_SET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-HASH_MAP.html">6.30. kink/container/HASH_MAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-HASH_SET.html">6.31. kink/container/HASH_SET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-MAP.html">6.32. kink/container/MAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-ORDERED_MAP.html">6.33. kink/container/ORDERED_MAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-ORDERED_SET.html">6.34. kink/container/ORDERED_SET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-SET.html">6.35. kink/container/SET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-TREE_MAP.html">6.36. kink/container/TREE_MAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-container-TREE_SET.html">6.37. kink/container/TREE_SET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-datetime-DATETIME.html">6.38. kink/datetime/DATETIME</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-datetime-DAY_OF_WEEK.html">6.39. kink/datetime/DAY_OF_WEEK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-datetime-INSTANT.html">6.40. kink/datetime/INSTANT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-datetime-OFFSET.html">6.41. kink/datetime/OFFSET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-datetime-OFFSET_DATETIME.html">6.42. kink/datetime/OFFSET_DATETIME</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-datetime-TIMEZONE.html">6.43. kink/datetime/TIMEZONE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-doc-DOC_PARSE_TOOL.html">6.44. kink/doc/DOC_PARSE_TOOL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-doc-model-BLOCK.html">6.45. kink/doc/model/BLOCK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-doc-model-BLOCK_TYPE.html">6.46. kink/doc/model/BLOCK_TYPE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-doc-model-SECTION.html">6.47. kink/doc/model/SECTION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-doc-render-html-HTML_RENDER_TOOL.html">6.48. kink/doc/render/html/HTML_RENDER_TOOL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-doc-render-sphinx-SPHINX_RENDER_TOOL.html">6.49. kink/doc/render/sphinx/SPHINX_RENDER_TOOL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-BIN_INPUT.html">6.50. kink/io/BIN_INPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-BIN_OUTPUT.html">6.51. kink/io/BIN_OUTPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-BUFFER_INPUT.html">6.52. kink/io/BUFFER_INPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-BUFFER_OUTPUT.html">6.53. kink/io/BUFFER_OUTPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-FILE.html">6.54. kink/io/FILE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-INPUT.html">6.55. kink/io/INPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-INPUT_SCANNER.html">6.56. kink/io/INPUT_SCANNER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-OUTPUT.html">6.57. kink/io/OUTPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-OUTPUT_PRINTER.html">6.58. kink/io/OUTPUT_PRINTER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-PRINTER.html">6.59. kink/io/PRINTER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-SCANNER.html">6.60. kink/io/SCANNER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-STR_PRINTER.html">6.61. kink/io/STR_PRINTER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-io-STR_SCANNER.html">6.62. kink/io/STR_SCANNER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-iter-IFUN.html">6.63. kink/iter/IFUN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-iter-ITER.html">6.64. kink/iter/ITER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-javahost-JAVA.html">6.65. kink/javahost/JAVA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-javahost-JAVA_CHANNEL_INPUT.html">6.66. kink/javahost/JAVA_CHANNEL_INPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-javahost-JAVA_CHANNEL_OUTPUT.html">6.67. kink/javahost/JAVA_CHANNEL_OUTPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-javahost-JAVA_PROXY.html">6.68. kink/javahost/JAVA_PROXY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-javahost-JAVA_STREAM_INPUT.html">6.69. kink/javahost/JAVA_STREAM_INPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-javahost-JAVA_STREAM_OUTPUT.html">6.70. kink/javahost/JAVA_STREAM_OUTPUT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-javahost-JAVA_THROW.html">6.71. kink/javahost/JAVA_THROW</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-javahost-METHOD_HANDLE.html">6.72. kink/javahost/METHOD_HANDLE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-json-JSON.html">6.73. kink/json/JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-json-JSON_VAL.html">6.74. kink/json/JSON_VAL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-param-OPT_PARAM.html">6.75. kink/param/OPT_PARAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-param-PLAIN_PARAM.html">6.76. kink/param/PLAIN_PARAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-param-REST_PARAM.html">6.77. kink/param/REST_PARAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-program-COMPILE_ERROR.html">6.78. kink/program/COMPILE_ERROR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-program-LOCATION.html">6.79. kink/program/LOCATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-program-PROGRAM.html">6.80. kink/program/PROGRAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-random-CSRNG.html">6.81. kink/random/CSRNG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-random-PRNG.html">6.82. kink/random/PRNG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-random-RNG.html">6.83. kink/random/RNG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-regex-GROUP.html">6.84. kink/regex/GROUP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-regex-MATCH.html">6.85. kink/regex/MATCH</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-regex-REGEX.html">6.86. kink/regex/REGEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-repl-REPL.html">6.87. kink/repl/REPL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-socket-DATAGRAM.html">6.88. kink/socket/DATAGRAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-socket-IP.html">6.89. kink/socket/IP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-socket-IP_PORT.html">6.90. kink/socket/IP_PORT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-socket-PROTOCOL_FAMILY.html">6.91. kink/socket/PROTOCOL_FAMILY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-socket-SOCKET_ADDRESS.html">6.92. kink/socket/SOCKET_ADDRESS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-socket-TCP.html">6.93. kink/socket/TCP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-socket-TCP_SERVER.html">6.94. kink/socket/TCP_SERVER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-socket-UDP.html">6.95. kink/socket/UDP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-socket-UNIX_DOMAIN_SOCKET_PATH.html">6.96. kink/socket/UNIX_DOMAIN_SOCKET_PATH</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-test-COLLECT_FROM_FILE.html">6.97. kink/test/COLLECT_FROM_FILE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-test-TEST.html">6.98. kink/test/TEST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-test-TEST_TOOL.html">6.99. kink/test/TEST_TOOL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-thread-ATOMIC.html">6.100. kink/thread/ATOMIC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-thread-COUNT_DOWN_LATCH.html">6.101. kink/thread/COUNT_DOWN_LATCH</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-thread-MUTEX.html">6.102. kink/thread/MUTEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-thread-THREAD.html">6.103. kink/thread/THREAD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-tls-KEY_PAIR_SET.html">6.104. kink/tls/KEY_PAIR_SET</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-tls-TLS.html">6.105. kink/tls/TLS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-tls-TLS_CLIENT.html">6.106. kink/tls/TLS_CLIENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-tls-TLS_SERVER.html">6.107. kink/tls/TLS_SERVER</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kink-tls-TRUST_ANCHOR.html">6.108. kink/tls/TRUST_ANCHOR</a></li>
+</ul>
+</div>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="../modsystem.html"><span class="section-number">5. </span>Module system</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-ARGV_PARSER.html"><span class="section-number">6.1. </span>kink/ARGV_PARSER</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

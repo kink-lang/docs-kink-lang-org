@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.102. kink/thread/MUTEX &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.103. kink/thread/THREAD" href="kink-thread-THREAD.html" />
+    <link rel="prev" title="6.101. kink/thread/COUNT_DOWN_LATCH" href="kink-thread-COUNT_DOWN_LATCH.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.102. kink/thread/MUTEX</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-thread-COUNT_DOWN_LATCH.html"><span class="section-number">6.101. </span>kink/thread/COUNT_DOWN_LATCH</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-thread-THREAD.html"><span class="section-number">6.103. </span>kink/thread/THREAD</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-thread-mutex">
+<h1><span class="section-number">6.102. </span>kink/thread/MUTEX<a class="headerlink" href="#kink-thread-mutex" title="Link to this heading">¶</a></h1>
+<p>Provides non-reentrant mutex locks.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-mutex" id="id1">type mutex</a></p>
+<ul>
+<li><p><a class="reference internal" href="#mutex-lock" id="id2">Mutex.lock</a></p></li>
+<li><p><a class="reference internal" href="#mutex-unlock" id="id3">Mutex.unlock</a></p></li>
+<li><p><a class="reference internal" href="#mutex-with-lock-thunk" id="id4">Mutex.with_lock($thunk)</a></p></li>
+<li><p><a class="reference internal" href="#mutex-wait-timeout-seconds-plus-infinity" id="id5">Mutex.wait(...[Timeout_seconds = plus infinity])</a></p></li>
+<li><p><a class="reference internal" href="#mutex-wait-until-ok-thunk" id="id6">Mutex.wait_until($ok_thunk?)</a></p></li>
+<li><p><a class="reference internal" href="#mutex-notify-all" id="id7">Mutex.notify_all</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#mutex-is-val" id="id8">MUTEX.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#mutex-new" id="id9">MUTEX.new</a></p></li>
+</ul>
+</nav>
+<section id="type-mutex">
+<span id="api-9cd32f50f8302dfb93c4ffd5a50d2cb5"></span><h2><span class="section-number">6.102.1. </span>type mutex<a class="headerlink" href="#type-mutex" title="Link to this heading">¶</a></h2>
+<p>A mutex is a non-reentrant mutual exclusion lock. A mutex can also be used as a conditional variable on itself.</p>
+<p>For a mutex, at the most one thread can hold the mutex.</p>
+<p>If a thread is holding the mutex, the thread cannot acquire the mutex again. Namely, it is not reentrant.</p>
+<p>Example: a simple semaphore:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:MUTEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+
+<span class="nv">:new_semaphore</span> &lt;- {(<span class="nv">:Capa</span>)
+  <span class="nv">:V</span> = <span class="n">new_val</span>(<span class="s1">&#39;Count&#39;</span> <span class="m">0</span>)
+  <span class="nv">:Mut</span> = <span class="nv">MUTEX</span>.<span class="n">new</span>
+  <span class="n">new_val</span>(
+    <span class="s1">&#39;acquire&#39;</span> {
+      <span class="nv">Mut</span>.<span class="n">with_lock</span>{
+        <span class="nv">Mut</span>.<span class="n">wait_until</span>{ <span class="nv">V</span>.<span class="nv">Count</span> &lt; <span class="nv">Capa</span> }
+        <span class="nv">V:Count</span> &lt;- <span class="nv">V</span>.<span class="nv">Count</span> + <span class="m">1</span>
+      }
+    }
+    <span class="s1">&#39;release&#39;</span> {
+      <span class="nv">Mut</span>.<span class="n">with_lock</span>{
+        <span class="nv">V:Count</span> &lt;- <span class="nv">V</span>.<span class="nv">Count</span> - <span class="m">1</span>
+        <span class="nv">Mut</span>.<span class="n">notify_all</span>
+      }
+    }
+  )
+}
+</pre></div>
+</div>
+<p>§§ Design note: Why non-reentrant?</p>
+<p>A mutex is designed to be non-reentrant, because a non-reentrant mutex:</p>
+<p>• Can detect imbalanced lock-unlock correspondence earlier, and</p>
+<p>• Makes a programmer more careful about a critical section boundary</p>
+<section id="mutex-lock">
+<span id="api-4dcdf493d807b9206c139bd4cf37cc54"></span><h3><span class="section-number">6.102.1.1. </span>Mutex.lock<a class="headerlink" href="#mutex-lock" title="Link to this heading">¶</a></h3>
+<p>Mutex.lock acquires the Mutex.</p>
+<p>Precondition:</p>
+<p>• The current thread must NOT hold the mutex</p>
+<p>If the Mutex is held by another thread, the current thread blocks until it is available.</p>
+</section>
+<section id="mutex-unlock">
+<span id="api-876e668ec56193ea00bef261deea8b51"></span><h3><span class="section-number">6.102.1.2. </span>Mutex.unlock<a class="headerlink" href="#mutex-unlock" title="Link to this heading">¶</a></h3>
+<p>Mutex.unlock releases the mutex.</p>
+<p>Precondition:</p>
+<p>• The current thread must hold the Mutex</p>
+</section>
+<section id="mutex-with-lock-thunk">
+<span id="api-741d656f74c02970dd31d08812a2a2da"></span><h3><span class="section-number">6.102.1.3. </span>Mutex.with_lock($thunk)<a class="headerlink" href="#mutex-with-lock-thunk" title="Link to this heading">¶</a></h3>
+<p>Mutex.with_lock calls $thunk holding the Mutex. This is a convenient wrapper method for .lock and .unlock.</p>
+<p>Precondition:</p>
+<p>• The current thread must NOT hold the lock</p>
+<p>Mutex.with_lock acquires the Mutex before invoking $thunk, and releases the Mutex after $thunk returns a val, raising an exception, or escaping (see kink/CONTROL.escape).</p>
+</section>
+<section id="mutex-wait-timeout-seconds-plus-infinity">
+<span id="api-7a8abd08eeda71a0bbee9ea847573dcf"></span><h3><span class="section-number">6.102.1.4. </span>Mutex.wait(...[Timeout_seconds = plus infinity])<a class="headerlink" href="#mutex-wait-timeout-seconds-plus-infinity" title="Link to this heading">¶</a></h3>
+<p>`wait` blocks the thread until waken up.</p>
+<p>Preconditions:</p>
+<p>• The current thread must hold `Mutex`</p>
+<p>• If `Timeout_seconds` is specified, it must be a non-negative num</p>
+<p>Calling .wait method releases `Mutex` until it gets waken up. When the thread gets waken up, the thread acquires `Mutex` again.</p>
+<p>The thread gets waken when:</p>
+<p>• Another thread calls .notify_all method for `Mutex`,</p>
+<p>• `Timeout_seconds` passes, or</p>
+<p>• “Spurious wakeup” happens; namely without any trigger within your program</p>
+<p>Because of existence of “spurious wakeup,” you should always test the status which is waited for.</p>
+<p>See POSIX specification for “spurious wakeup.”</p>
+<p>http://pubs.opengroup.org/onlinepubs/9699919799/functions/pthread_cond_timedwait.html</p>
+</section>
+<section id="mutex-wait-until-ok-thunk">
+<span id="api-34562f85276f96d77a793094fbddaddc"></span><h3><span class="section-number">6.102.1.5. </span>Mutex.wait_until($ok_thunk?)<a class="headerlink" href="#mutex-wait-until-ok-thunk" title="Link to this heading">¶</a></h3>
+<p>Mutex.wait_until blocks the thread until waken up, and $ok_thunk? returns true.</p>
+<p>This is a convenient wrapper method for .wait.</p>
+<p>Precondition:</p>
+<p>• The current thread must hold a lease of the lock.</p>
+<p>Note that $ok_thunk? is called in the current thread while holding the Mutex.</p>
+</section>
+<section id="mutex-notify-all">
+<span id="api-51b8998d1bc5234d2ff4d6d9c9f41aec"></span><h3><span class="section-number">6.102.1.6. </span>Mutex.notify_all<a class="headerlink" href="#mutex-notify-all" title="Link to this heading">¶</a></h3>
+<p>Mutex.notify_all makes all the threads which is waiting for the Mutex via .wait method waken up when the Mutex is available.</p>
+<p>Precondition:</p>
+<p>• The current thread must hold a lease of the lock.</p>
+</section>
+</section>
+<section id="mutex-is-val">
+<span id="api-1ed388d4373b9cf6e95512a03d5f80bd"></span><h2><span class="section-number">6.102.2. </span>MUTEX.is?(Val)<a class="headerlink" href="#mutex-is-val" title="Link to this heading">¶</a></h2>
+<p>MUTEX.is? returns whether the Val is a mutex.</p>
+</section>
+<section id="mutex-new">
+<span id="api-5ed163469fdfe4441c101350547e551f"></span><h2><span class="section-number">6.102.3. </span>MUTEX.new<a class="headerlink" href="#mutex-new" title="Link to this heading">¶</a></h2>
+<p>MUTEX.new makes a new mutex.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-thread-COUNT_DOWN_LATCH.html"><span class="section-number">6.101. </span>kink/thread/COUNT_DOWN_LATCH</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-thread-THREAD.html"><span class="section-number">6.103. </span>kink/thread/THREAD</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

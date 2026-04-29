@@ -1,0 +1,1161 @@
+====================
+kink\/javahost\/JAVA
+====================
+
+Provides a way to operate on Java objects\, values\, classes and methods\.
+
+Host system integration provided by JAVA module is meant to be seamfull\. There is a clear boundary between Kink world and Java world\. For example\, a Java method cannot be called directly as a Kink function like JRuby or Groovy\. Instead\, you have to use \.call\_method\:
+
+.. code:: kink
+
+    Java_obj.call_method('toString')
+
+There are several reasons behind the design\.
+
+1\)  Kink is fundamentally different from Java\,     both in the object system and the execution semantics\.     Thus\, seamless integration is hard to achieve\.
+
+2\)  Generally\, larger applications can be designed more simply     when there is a boundary between separate systems\.
+
+3\)  With a clear boundary\, Kink can evolve independent of Java\.
+
+.. rubric:: Typable\-as
+
+Here we define a binary relation\, typable\-as\, between a Java object reference and a Java class object\.
+
+When an object reference \`R\` is typable\-as a class object \`T\`\, one of the following conditions is met\:
+
+\• \`T\` is a class object of a reference type\, and \`R\` is an instance of the reference type\.
+
+\• \`T\` is a class object of a reference type\, and \`R\` is null\.
+
+\• \`R\` is an instance of Boolean\, Character\, Byte\, Short\,   Integer\, Long\, Float\, or Double\,   and \`T\` is a class object of the corresponding primitive type\.
+
+Hereinafter\, we refer to a class object and the type which the class object represents interchangeably\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-bdcf8aa519e365f452da2436eacd19e7:
+
+type java
+=========
+
+A \`java\` value is a pair of \(objectReference\, type\)\, where \`objectReference\` is a Java object reference\, and \`type\` is a class object\.
+
+\`type\` is used to look up Java instance methods and instance fields\.
+
+.. rubric:: Invariant
+
+\`objectReference\` must be typable\-as \`type\`\.
+
+.. _api-deb3eecb723aef46d1abb40358fe6b6e:
+
+J\.type
+-------
+
+\`type\` method returns the \`type\` attribute of \`J\`\.
+
+The result of \`type\` method is a \`java\` value \(t\, java\.lang\.Class\)\, where \`t\` is \`type\` attribute of \`J\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Comparable_class <- JAVA.class('java.lang.Comparable')
+    :Type <- JAVA.string('foo').as(Comparable_class).type
+    stdout.print_line(Type.repr) # => (java "interface java.lang.Comparable" as java.lang.Class)
+
+.. _api-9fea7a59909457f8d4eec2ebda67a83b:
+
+J\.as\(New\_type\)
+------------------
+
+\`as\` changes \`type\` to \`New\_type\`\.
+
+The result of \`as\` is a \`java\` value \(ref\, nt\)\, where \`ref\` is \`objectReference\` of \`J\`\, and \`nt\` is \`objectReference\` of \`New\_type\`\.
+
+.. rubric:: Preconditions
+
+\`New\_type\` must be a \`java\` value \(nt\, \*\)\, where \`nt\` is a class object\, and \`objectReference\` of \`J\` is typeable\-as \`nt\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :Integer_class <- JAVA.class('java.lang.Integer')
+        
+    :Int <- JAVA.int(42)
+    stdout.print_line(Int.repr)                   # => (java "42" as int)
+    stdout.print_line(Int.as(Integer_class).repr) # => (java "42" as java.lang.Integer)
+
+.. _api-8085cbddb5f1d7cdeaa5f59d3dd704a8:
+
+J\.instance\_of\?\(Klass\)
+--------------------------
+
+\`instance\_of\?\` returns whether \`objectReference\` of \`J\` is an instance of \`Klass\`\. The check is equivalent to instanceof operator of Java language\.
+
+.. rubric:: Precondition
+
+\`Klass\` must be a \`java\` value \(klass\, \*\)\, where \`klass\` is an instance of java\.lang\.Class\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :Integer_class <- JAVA.class('java.lang.Integer')
+    :String_class <- JAVA.class('java.lang.String')
+    :Object_class <- JAVA.class('java.lang.Object')
+        
+    stdout.print_line(JAVA.string('foo').instance_of?(String_class).repr)   # => true
+    stdout.print_line(JAVA.string('foo').instance_of?(Object_class).repr)   # => true
+    stdout.print_line(JAVA.string('foo').instance_of?(Integer_class).repr)  # => false
+        
+    stdout.print_line(JAVA.int(42).instance_of?(Integer_class).repr)  # => true
+    stdout.print_line(JAVA.int(42).instance_of?(Object_class).repr)   # => true
+    stdout.print_line(JAVA.int(42).instance_of?(JAVA.int_class).repr) # => false
+
+.. _api-6fe23ab75cf9d4904597bab2866784db:
+
+J\.eq\_eq\?\(Another\)
+----------------------
+
+\`eq\_eq\?\` returns whether \`objectReference\` attributes of \`J\` and \`Another\` are identical in the meaning of \`\=\=\` operator of Java language\.
+
+.. rubric:: Precondition
+
+\`Another\` must be a \`java\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    # null is eq_eq? null, irrespective of their types
+    :Null_string <- JAVA.null.as(JAVA.class('java.lang.String'))
+    :Null_integer <- JAVA.null.as(JAVA.class('java.lang.Integer'))
+    stdout.print_line(Null_string.eq_eq?(Null_integer).repr)  # => true
+        
+    :Object_class <- JAVA.class('java.lang.Object')
+    :Str <- JAVA.string('foobar')
+    :Str_as_obj <- Str.as(Object_class)
+        
+    # object is eq_eq? itself, irrespective their types
+    stdout.print_line(Str.eq_eq?(Str_as_obj).repr)        # => true
+        
+    # object is not eq_eq? another object
+    stdout.print_line(Str.eq_eq?(Object_class.new).repr)  # => false
+
+.. _api-7df137b3d7bea8013ea10354edda1eee:
+
+J\.null\?
+---------
+
+\`null\?\` returns whehter \`objectReference\` attribute of \`J\` is null\.
+
+.. _api-a83080dd5930eac4ff25a8e518102cd9:
+
+J\.to\_kink\_str
+----------------
+
+\`to\_kink\_str\` returns a \`str\` value from a Java string\.
+
+.. rubric:: Precondition
+
+\`objectReference\` of \`J\` must be an instance of java\.lang\.String\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Java_string <- JAVA.string('foobar')
+    :Kink_str <- Java_string.to_kink_str
+    stdout.print_line(Kink_str.repr)  # => "foobar"
+
+.. _api-a0a53bf876b1d8e99a06d54243a5982f:
+
+J\.to\_kink\_bool
+-----------------
+
+\`to\_kink\_bool\` returns a \`bool\` value from a Java boolean\.
+
+.. rubric:: Precondition
+
+\`objectReference\` of \`J\` must be an instance of java\.lang\.Boolean\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Empty <- JAVA.string('')
+    :Non_empty <- JAVA.string('foo')
+    stdout.print_line(Empty.call_method('isEmpty').to_kink_bool.repr)     # => true
+    stdout.print_line(Non_empty.call_method('isEmpty').to_kink_bool.repr) # => false
+
+.. _api-24c55d5665df90acc6503d2a9479ddd6:
+
+J\.to\_kink\_num
+----------------
+
+\`to\_kink\_num\` returns a \`num\` value from a Java number\.
+
+.. rubric:: Conversion from Character\, Byte\, Short\, Integer\, Long\, or BigInteger
+
+If \`objectReference\` of \`J\` is a Character\, Byte\, Short\, Integer\, Long or BigInteger\, \`Scale\` of the result \`num\` will be 0\, and \`Mantissa\` of the result \`num\` will be equal to the integer\.
+
+.. rubric:: Conversion from Float or Double
+
+If \`objectReference\` of \`J\` is a Float or Double\, \`Scale\` of the result \`num\` will be the minimum non\-negative integer on which the number can be exactly expressed\, and \`Mantissa\` of the result \`num\` will be \`J \* \(10 \^ Scale\)\`\.
+
+The sign of 0 is not preserved in the result\.
+
+.. rubric:: Conversion from BigDecimal
+
+If \`objectReference\` of \`J\` is a BigDecimal\, \`Scale\` of the result \`num\` will be equal to the result of BigDecimal\.scale\(\)\, and \`Mantissa\` will be equal to the result of BigDecimal\.unscaledValue\(\)\.
+
+.. rubric:: Preconditions
+
+\`objectReference\` of \`J\` must be an instance of Character\, Byte\, Short\, Integer\, Long\, Float\, Double\, BigInteger or BigDecimal\.
+
+If the reference is a Float or Double\, it must not be NaN or plus\/minus infinite numbers\.
+
+If the reference is a BigInteger\, it must be in the supported range of \`Mantissa\` of \`num\` values\.
+
+If the reference is a BigDecimal\, its scale must be in the range of supported \`Scale\` of \`num\` values\, and its unscaled value must be in the range of supported \`Mantissa\` of \`num\` values\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Ans <- JAVA.byte(42).to_kink_num
+    stdout.print_line(Ans.repr)           # => 42
+    stdout.print_line(Ans.scale.repr)     # => 0
+    stdout.print_line(Ans.mantissa.repr)  # => 42
+        
+    :Pi <- JAVA.float(3.14).to_kink_num
+    stdout.print_line(Pi.repr)          # => 3.1400001049041748046875
+    stdout.print_line(Pi.scale.repr)    # => 22
+    stdout.print_line(Pi.mantissa.repr) # => 31400001049041748046875
+
+.. _api-55761176379e983faa180bb9f5c6ccf1:
+
+J\.to\_kink\_bin\(\.\.\.\[From To\]\)
+-------------------------------------
+
+\`to\_kink\_bin\` returns a \`bin\` value from a Java byte array\.
+
+The default value of \`From\` is 0\. The default value of \`To\` is the length of the byte array\.
+
+The size of the result \`bin\` will be \`To \- From\`\. The \`bin\` will contain a slice of bytes of \`J\` in the range \[From\, To\)\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(bytes\, \*\) where \`bytes\` is an instance of byte\[\]\.
+
+\`From\` and \`To\` must be integer \`num\` values\.
+
+0 \<\= From \<\= To \<\= bytes\.length
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Bytes <- JAVA.byte_class.array_of(
+      JAVA.byte(0) JAVA.byte(1) JAVA.byte(2) JAVA.byte(3) JAVA.byte(4))
+    :Copy <- Bytes.to_kink_bin
+    stdout.print_line(Copy.repr) # => (bin 0x00 0x01 0x02 0x03 0x04)
+        
+    :Slice <- Bytes.to_kink_bin(1 4)
+    stdout.print_line(Slice.repr) # => (bin 0x01 0x02 0x03)
+
+.. _api-19473767f080757f7c71139694d97b84:
+
+J\.to\_kink\_exception
+----------------------
+
+\`to\_kink\_exception\` returns an \`exception\` value from a Java Throwable\.
+
+\`to\_kink\_exception\` encodes Throwable\.toString into \`Message\`\, Throwable\.getStackTrace into \`Traces\`\, Throwable\.getCause and getSuppressed into \`Next\` of the result \`exception\`\.
+
+Other attributes of the throwable\, like SQLException\.getErrorCode\, are not preserved\.
+
+.. rubric:: Preconditions
+
+\`objectReference\` of \`J\` must be an instance of java\.lang\.Throwable\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    JAVA.big_integer(42).call_method('divide' JAVA.big_integer(0)){(:C)
+      C.catch(JAVA.class('java.lang.ArithmeticException')){(:Java_exc)
+        :Exc = Java_exc.to_kink_exception
+        Exc.desc_iter.each{(:Str)
+          stdout.print_line(Str)
+        }
+      }
+    }
+    # Output:
+    #   -- main exception
+    #   [org.kink_lang.kink/org.kink_lang.kink.internal.startup.Kink.main(Kink.java:34)]
+    #   [org.kink_lang.kink/org.kink_lang.kink.Vm.run(Vm.java:217)]
+    #   ,,,
+    #   [java.base/java.math.BigInteger.divideKnuth(BigInteger.java:2447)]
+    #   [java.base/java.math.MutableBigInteger.divideKnuth(MutableBigInteger.java:1184)]
+    #   java.lang.ArithmeticException: BigInteger divide by zero
+
+.. _api-c25b08a4c49c79bb41fe6844b5835ae8:
+
+J\.unwrap
+---------
+
+\`unwrap\` extracts a Kink value wrapped by JAVA\.wrap\.
+
+When \`J\` is a \`java\` value \(Wrapped\, \? super org\.kink\_lang\.kink\.Val\)\, \`unwrap\` returns \`Wrapped\`\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(Wrapped\, \*\)\, where \`Wrapped\` is an instance of org\.kink\_lang\.kink\.Val\, and the runtime of \`Wrapped\` is same as the current runtime\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :VAL.require_from('kink/')
+        
+    :Str <- 'foo'
+    :Wrapped_str <- JAVA.wrap(Str)
+    stdout.print_line(Wrapped_str.repr)  # (java "StrVal(foo)" as org.kink_lang.kink.Val)
+        
+    :Unwrapped_str <- Wrapped_str.unwrap
+    stdout.print_line(Unwrapped_str.repr) # => "foo"
+    stdout.print_line(VAL.same?(Unwrapped_str Str).repr) # => true
+
+.. _api-20b25eef6973f24f70edfdc23b7b54d7:
+
+J\.array\_class
+---------------
+
+\`array\_class\` returns the class object of the array class of the given component type\.
+
+If \`objectReference\` of \`J\` is a class object \`C\`\, \`array\_class\` returns a \`java\` value \(C\[\]\, java\.lang\.Class\)\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(C\, \*\)\, where \`C\` is a class object\.
+
+\`C\` must not be void class\.
+
+If \`C\` is an array class\, its dimension must not exceed 254\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Array_class <- JAVA.int_class.array_class
+    stdout.print_line(Array_class.repr)  # => (java "class [I" as java.lang.Class)
+
+.. _api-04851e8fc772947f8b966398b8a8be35:
+
+J\.array\_new\(Size\)
+---------------------
+
+\`array\_new\` returns an array of the given component type and the size\.
+
+If \`objectReference\` of \`J\` is a class object \`C\`\, \`array\_new\` returns a \`java\` value of \(Array\, C\[\]\)\, where \`Array\` is an array with \`Size\` as the length\.
+
+The elements \`Array\` is initialized by the zero value of \`C\`\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(C\, \*\)\, where \`C\` is a class object\.
+
+\`C\` must not be void class\.
+
+If \`C\` is an array class\, its dimension must not exceed 254\.
+
+\`Size\` must be a non\-negative integer \`num\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Array <- JAVA.int_class.array_new(2)
+    stdout.print_line(Array.repr)               # => (java "[I@4722ef0c" as [I)
+    stdout.print_line(Array.array_length.repr)  # => 2
+
+.. _api-769448fbe4a33788552d0427d9664b14:
+
+J\.array\_of\(\.\.\.\[E0 E1 \,\,\,\]\)
+--------------------------------------
+
+\`array\_of\` returns an array containing the given elements\.
+
+If \`objectReference\` of \`J\` is a class object \`C\`\, \`array\_of\` returns a \`java\` value of \(Array\, C\[\]\)\, where \`Array\` is an array containing \`E0\`\, \`E1\`\, \,\,\, as its elements\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(C\, \*\)\, where \`C\` is a class object\.
+
+\`C\` must not be void class\.
+
+If \`C\` is an array class\, its dimension must not exceed 254\.
+
+\`E0\`\, \`E1\`\, \,\,\, must be \`java\` values whose \`objectReference\` attributes are typable\-as \`objectReference\` of \`J\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Array <- JAVA.int_class.array_of(JAVA.int(10) JAVA.int(20))
+    stdout.print_line(Array.repr)               # => (java "[I@4722ef0c" as [I)
+    stdout.print_line(Array.array_get(0).repr)  # => (java "10" as int)
+    stdout.print_line(Array.array_get(1).repr)  # => (java "20" as int)
+    stdout.print_line(Array.array_length.repr)  # => 2
+
+.. _api-c049f691d199541f42fece1688810b8d:
+
+J\.array\_length
+----------------
+
+\`array\_length\` returns the length of array as an integer \`num\` value\.
+
+.. rubric:: Precondition
+
+\`J\` must be a \`java\` value \(array\, \*\)\, where \`array\` is an array\.
+
+.. _api-6707f6ec517186fb30c5f783ac70e012:
+
+J\.array\_get\(Ind\)
+--------------------
+
+\`array\_get\` returns the element of the array \`J\` at the index \`Ind\`\.
+
+If the component type of the array is a reference type \`rt\`\, \`array\_get\` returns a \`java\` value \(element\, rt\)\, where \`element\` is the element of the array\.
+
+If the component type of the array is a primitive type \`pt\`\, \`array\_get\` returns a \`java\` value \(box\, pt\)\, where \`box\` is a instance of the corresponding wrapper type which contains the element of the array\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(array\, \*\)\, where \`array\` is an array\.
+
+\`Ind\` must be an integer \`num\` value in the range \[0\, length\)\, where \`length\` is the length of the array\.
+
+.. _api-a0987ed8cb63182c4067407a3c5e026d:
+
+J\.array\_set\(Ind Elem\)
+-------------------------
+
+\`array\_set\` sets the value \`Elem\` to the array \`J\` at the index \`Ind\`\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(array\, \*\)\, where \`array\` is an array\.
+
+\`Ind\` must be an integer \`num\` value in the range \[0\, length\)\, where \`length\` is the length of the array\.
+
+\`Elem\` must be a \`java\` value \(elem\, \*\)\, where \`elem\` is typable\-as the component type of the array\.
+
+.. _api-4d770acd5c9652a775a07b8989b8f602:
+
+J\.get\_field\(Field\_name\)
+----------------------------
+
+\`get\_field\` returns the content of the public instance field\.
+
+The field is looked up from \`type\` of \`J\`\, using Class\.getField\(String\)\.
+
+If the declared type of the field is a reference type \`rt\`\, the result will be a \`java\` value \(contentObj\, rt\)\, where \`contentObj\` is the content of the field\.
+
+If the declared type of the field is a primitive type \`pt\`\, the result will be a \`java\` value \(box\, pt\)\, where \`box\` is an instance of the corresponding wrapper type which contains the element of the field\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value\.
+
+\`Field\_name\` must be a \`str\`\.
+
+\`type\` of \`J\` must have a public instance field with the name \`Field\_name\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :True <- JAVA.runtime.get_field('bool').get_field('trueVal')
+    stdout.print_line(True.repr) # => (java "trueVal" as org.kink_lang.kink.Val)
+
+.. _api-ebb499209518eb119dd6c6b6ef367c40:
+
+J\.set\_field\(Field\_name Content\)
+------------------------------------
+
+\`set\_field\` sets \`Content\` to the public instance field\.
+
+The field is looked up from \`type\` of \`J\`\, using Class\.getField\(String\)\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value\.
+
+\`Field\_name\` must be a \`str\`\.
+
+\`type\` of \`J\` must have a public instance field with the name \`Field\_name\`\.
+
+The field must not be final\.
+
+\`Content\` must be a \`java\` value \(contentObj\, \*\)\, where \`contentObj\` must be typable\-as the declared type of the field\.
+
+.. _api-5cb44d97a98cb538ebbd1875ae977959:
+
+J\.get\_static\(Field\_name\)
+-----------------------------
+
+\`get\_static\` returns the content of the public static field of the class \`J\`\.
+
+When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the field is looked up from \`ownerClass\` using Class\.getField\(String\)\.
+
+If the declared type of the field is a reference type \`rt\`\, the result will be a \`java\` value \(contentObj\, rt\)\, where \`contentObj\` is the content of the field\.
+
+If the declared type of the field is a primitive type \`pt\`\, the result will be a \`java\` value \(box\, pt\)\, where \`box\` is an instance of the corresponding wrapper type which contains the element of the field\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(ownerClass\, \*\)\, where \`ownerClass\` is an instance of java\.lang\.Class\.
+
+\`Field\_name\` must be a \`str\`\.
+
+\`ownerClass\` must have a public static field with the name \`Field\_name\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Byte_class <- JAVA.class('java.lang.Byte')
+    :Byte_max <- Byte_class.get_static('MAX_VALUE')
+    stdout.print_line(Byte_max.repr)  # => (java "127" as byte)
+
+.. _api-19da60ec93f3279a1f7f8ffe305fda90:
+
+J\.set\_static\(Field\_name Content\)
+-------------------------------------
+
+\`set\_static\` sets \`Content\` to the public static field of the class \`J\`\.
+
+When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the field is looked up from \`ownerClass\` using Class\.getField\(String\)\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(ownerClass\, \*\)\, where \`ownerClass\` is an instance of java\.lang\.Class\.
+
+\`Field\_name\` must be a \`str\`\.
+
+\`ownerClass\` must have a public static field with the name \`Field\_name\`\.
+
+The field must not be final\.
+
+\`Content\` must be a \`java\` value \(contentObj\, \*\)\, where \`contentObj\` must be typable\-as the declared type of the field\.
+
+.. _api-a88a85d17e6737f382eaec6f6cf284de:
+
+J\.call\_method\(Method\_name \.\.\.\[A0 A1 \,\,\,\] \.\.\.\[\$config\=\{\}\]\)
+-------------------------------------------------------------------------------
+
+\`call\_method\` calls a public instance method of the object \`J\`\.
+
+.. rubric:: Look up
+
+The instance method is looked up by \`J\.type\.getMethod\(Method\_name\, A0\.type\, A1\.type\, \,\,\,\)\`\.
+
+.. rubric:: Result
+
+1\)  If the declared return type of the method is a reference type \`rt\`\,     and the method terminates without throwing an exception\,     \`call\_method\` tail\-calls the success continuation with a \`java\` value \(resultObj\, rt\)\,     where \`resultObj\` is the returned value of the method\.
+
+2\)  If the declared return type \`pt\` of the method is     char\, boolean\, byte\, short\, int\, long\, float or double\,     and the method terminates without throwing an exception\,     \`call\_method\` tail\-calls the success continuation with a \`java\` value \(resultObj\, pt\)\,     where \`resultObj\` is a wrapper instance of the returned value\.
+
+3\)  If the declared return type the method is void\,     and the method terminates without throwing an exception\,     \`call\_method\` tail\-calls the success continuation with no arg\.
+
+4\)  If the method terminates throwing a Java exception \`exceptionObj\`\,     and the exception is an instance of one or more exception types specified     by invocations of C\.catch\,     \`call\_method\` tail\-calls the error continuation corresponding     to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
+
+5\)  If the method terminates throwing a Java exception\,     and no exception type passed to C\.catch matches the thrown exception\,     \`call\_method\` raises a Kink exception\.
+
+If C\.on\_success is not called for the config value\, and the declared return type of the method is void\, \{ nada \} is used as the default success continuation\.
+
+If C\.on\_success is not called for the config value\, and the declared return type of the method is not void\, VAL\.identity is used as the default success continuation\.
+
+.. rubric:: Preconditions
+
+\`Method\_name\` must be a \`str\`\.
+
+\`A0\`\, \`A1\` \,\,\, must be \`java\` values\.
+
+\`type\` of \`J\` must have the specified public instance method\.
+
+\$config must be a function which takes a \`java\_call\_config\` value\.
+
+.. rubric:: Examples
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :ArrayList_class <- JAVA.class('java.util.ArrayList')
+    :Object_class <- JAVA.class('java.lang.Object')
+    :Lst <- ArrayList_class.new
+        
+    # .as(Object_class) is required,
+    # because the method is looked up using static types of the args
+    Lst.call_method('add' JAVA.string('foo').as(Object_class))
+    Lst.call_method('add' JAVA.int(42).as(Object_class))
+        
+    stdout.print_line(Lst.repr) # => (java "[foo, 42]" as java.util.ArrayList)
+        
+    # call ArrayList.remove(int)
+    :Removed <- Lst.call_method('remove' JAVA.int(0))
+    stdout.print_line(Removed.repr) # => (java "foo" as java.lang.Object)
+        
+    # call ArrayList.remove(java.lang.Object)
+    :Success <- Lst.call_method('remove' JAVA.int(42).as(Object_class))
+    stdout.print_line(Success.repr) # => (java "true" as boolean)
+
+By default\, a Java exception results in a Kink exception\.
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+    :JAVA.require_from('kink/javahost/')
+    :ArrayList_class <- JAVA.class('java.util.ArrayList')
+    :Lst <- ArrayList_class.new
+        
+    CONTROL.try(
+      { Lst.call_method('get' JAVA.int(42)) }
+      {(:R) raise('must not reach here') }
+      {(:Exc)
+        stdout.print_line(Exc.message)
+      }
+    )
+    # => java exception: java.lang.IndexOutOfBoundsException: Index 42 out of bounds for length 0
+
+The success\/error continuations can be configured by the config function\.
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :BigInteger_class <- JAVA.class('java.math.BigInteger')
+        
+    :divide_10_by <- {(:Divisor)
+      BigInteger_class.get_static('TEN').call_method('divide' Divisor){(:C)
+        C.on_success{(:R)
+          'result: {}'.format(R.repr)
+        }
+        C.catch(JAVA.class('java.lang.RuntimeException')){(:Exc)
+          'rte: {}'.format(Exc.repr)
+        }
+        C.catch(JAVA.class('java.lang.Exception')){(:Exc)
+          'exception: {}'.format(Exc.repr)
+        }
+      }
+    }
+        
+    stdout.print_line(divide_10_by(JAVA.big_integer(2)))
+    # => result: (java "5" as java.math.BigInteger)
+        
+    stdout.print_line(divide_10_by(JAVA.big_integer(0)))
+    # => rte: (java "java.lang.ArithmeticException: BigInteger divide by zero" as java.lang.RuntimeException)
+
+If the return type of the Java method is void\, the success continuation is tail\-called with no arg\.
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :ArrayList_class <- JAVA.class('java.util.ArrayList')
+    :Object_class <- JAVA.class('java.lang.Object')
+        
+    :Lst <- ArrayList_class.new
+    Lst.call_method('add' JAVA.string('foo').as(Object_class))
+    Lst.call_method('add' JAVA.string('bar').as(Object_class))
+        
+    Lst.call_method('clear'){(:C)
+      C.on_success{()
+        stdout.print_line('cleared!')
+      }
+    }
+    # => cleared!
+
+.. _api-c29cebd9582aa314d0da77584f52883c:
+
+J\.call\_static\(Method\_name \.\.\.\[A0 A1 \,\,\,\] \.\.\.\[\$config\=\{\}\]\)
+-------------------------------------------------------------------------------
+
+\`call\_static\` calls a public static method of the class \`J\`\.
+
+.. rubric:: Look up
+
+When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the static method is looked up by \`ownerClass\.getMethod\(Method\_name\, A0\.type\, A1\.type\, \,\,\,\)\`\.
+
+.. rubric:: Result
+
+Same as J\.call\_method\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(ownerClass\, \*\)\, where \`ownerClass\` is a class object\.
+
+\`Method\_name\` must be a \`str\`\.
+
+\`A0\`\, \`A1\` \,\,\, must be \`java\` values\.
+
+\`ownerClass\` must have the specified public static method\.
+
+\$config must be a function which takes a \`java\_call\_config\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :String_class <- JAVA.class('java.lang.String')
+    :Object_class <- JAVA.class('java.lang.Object')
+    :Java_str <- String_class.call_static(
+      'format' JAVA.string('ans=%d') Object_class.array_of(JAVA.int(42)))
+    stdout.print_line(Java_str.repr)  # => (java "ans=42" as java.lang.String)
+
+.. _api-cb58bf3938ed2a294fe6d9cdadd912a2:
+
+J\.new\(\.\.\.\[A0 A1 \,\,\,\] \.\.\.\[\$config\=\{\}\]\)
+---------------------------------------------------------
+
+\`new\` calls a public constructor of the class \`J\`\, and returns the new instance\.
+
+.. rubric:: Look up
+
+When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the public constructor is looked up by \`ownerClass\.getConstructor\(A0\.type\, A1\.type\, \,\,\,\)\`\.
+
+.. rubric:: Result
+
+1\)  If a new instance \`resultObj\` is created\,     \`new\` tail\-calls the success continuation with a \`java\` value     \(resultObj\, ownerClass\)\.
+
+2\)  If the constructor terminates throwing a Java exception \`exceptionObj\`\,     and the exception is an instance of one or more exception types specified     by invocations of C\.catch\,     \`new\` tail\-calls the error continuation corresponding     to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
+
+3\)  If the constructor terminates throwing a Java exception\,     and no exception type passed to C\.catch matches the thrown exception\,     \`new\` raises a Kink exception\.
+
+If C\.on\_success is not called for the config value\, VAL\.identity is used as the default success continuation\.
+
+.. rubric:: Preconditions
+
+\`J\` must be a \`java\` value \(ownerClass\, \*\)\, where \`ownerClass\` is a class object\.
+
+\`A0\`\, \`A1\` \,\,\, must be \`java\` values\.
+
+\`ownerClass\` must have the specified public constructor\.
+
+\$config must be a function which takes a \`java\_call\_config\` value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :CONTROL.require_from('kink/')
+    :JAVA.require_from('kink/javahost/')
+    :BigDecimal_class <- JAVA.class('java.math.BigDecimal')
+        
+    :make_big_decimal <- {(:Str)
+      BigDecimal_class.new(JAVA.string(Str))
+    }
+        
+    stdout.print_line(make_big_decimal('12.3').repr)  # => (java "12.3" as java.math.BigDecimal)
+        
+    CONTROL.try(
+      { make_big_decimal('xxx') }
+      {(:R) raise('must not reach here') }
+      {(:Exc)
+        stdout.print_line(Exc.message)
+      }
+    )
+    # => java exception: java.lang.NumberFormatException: Character x is neither a decimal digit number, decimal point, nor "e" notation exponential mark.
+
+.. _api-1a06ea9468b89c20d92b26d8c3e7ac25:
+
+type java\_call\_config
+=======================
+
+\`java\_call\_config\` is a config value of J\.call\_method\, J\.call\_static\, and J\.new\.
+
+.. _api-4c9620a4e105b451cad76eb0b32bb671:
+
+C\.on\_success\(\$success\)
+---------------------------
+
+\`on\_success\` specifies \$success as the success continuation\.
+
+.. _api-ad8c769ad8e7396b95aa92590571fb68:
+
+C\.catch\(Exception\_class \$error\)
+------------------------------------
+
+\`catch\` specifies \$error as the error continuation corresponding to the exception type \`Exception\_class\`\.
+
+\`catch\` can be called multiple times to specify error continuations for different exception types\.
+
+.. rubric:: Preconditions
+
+\`Exception\_class\` must be a \`java\` value \(et\, \*\)\, where \`et\` is a subclass of java\.lang\.Throwable\.
+
+\`Exception\_class\` must not be a subtype of exception types specified by preceding invocations of \`catch\`\.
+
+\$error must be a function which takes a \`java\` value\.
+
+.. _api-01b2e16345130933f93fe63167e15c32:
+
+JAVA\.is\?\(Val\)
+=================
+
+\`is\?\` returns whether \`Val\` is a \`java\` value\.
+
+.. _api-a17414dab3a705ea1673aefb4572a9cc:
+
+JAVA\.string\(Str\)
+===================
+
+\`string\` returns a Java string which has the same string as \`Str\`\.
+
+The result will be a \`java\` value  \(string\, java\.lang\.String\)\, where \`string\` is an instance of String which has the same string as \`Str\`\.
+
+.. rubric:: Precondition
+
+\`Str\` must be a \`str\` value\.
+
+.. _api-38409f4b7fe4b8cdb7e3145c4934dcd8:
+
+JAVA\.bytes\(Bin \.\.\.\[From\=0 To\=Bin\.size\]\)
+==================================================
+
+\`bytes\` returns a Java byte array from the slice of \`Bin\` in the range \[From\, To\)\.
+
+The result will be a \`java\` value \(byteArray\, byte\[\]\)\, where \`byteArray\` is an array of bytes whose elements are copied from the slice of \`Bin\` in the range \[From\, To\)\.
+
+.. rubric:: Preconditions
+
+\`Bin\` must be a \`bin\`\.
+
+\`From\` and \`To\` must be integer \`num\` values\.
+
+0 \<\= From \<\= To \<\= Bin\.size
+
+.. _api-94d74e84a15500dacc000e8516b4c999:
+
+JAVA\.byte\_buffer\(Bin\)
+=========================
+
+\`byte\_buffer\` returns a read only ByteBuffer containing the bytes of \`Bin\`\.
+
+The result will be a \`java\` value \(byteBuffer\, java\.nio\.ByteBuffer\)\. \`byteBuffer\` will have attributes as follows\:
+
+\• The capacity and the initial limit are Bin\.size\.
+
+\• The initial position is 0\.
+
+.. rubric:: Precondition
+
+\`Bin\` must be a \`bin\`\.
+
+.. _api-573e951a5ce4533f3e960a19340cc367:
+
+JAVA\.boolean\(Bool\)
+=====================
+
+\`boolean\` returns a Java boolean corresponding to \`Bool\`\.
+
+If \`Bool\` is true\, \`boolean\` returns a \`java\` value \(Boolean\.TRUE\, boolean\)\.
+
+If \`Bool\` is false\, \`boolean\` returns a \`java\` value \(Boolean\.FALSE\, boolean\)\.
+
+.. rubric:: Precondition
+
+\`Bool\` must be a \`bool\`\.
+
+.. _api-03ee2ace909fd91eacc651a9ad79897a:
+
+JAVA\.char\(Num\)
+=================
+
+\`char\` returns a Java char corresponding to \`Num\`\.
+
+The result will be a \`java\` value \(objectReference\=ch\, type\=char\)\, where \`ch\` is an instance of java\.lang\.Character\.
+
+.. rubric:: Precondition
+
+\`Num\` must be an integer \`num\` in the range \[0\, 0xffff\]\.
+
+.. _api-d1e5a7af107a5cb61b33feacd980c2d5:
+
+JAVA\.byte\(Num\)
+=================
+
+\`byte\` returns a Java byte corresponding to \`Num\`\.
+
+The result will be a \`java\` value \(objectReference\=bt\, type\=byte\)\, where \`bt\` is an instance of java\.lang\.Byte\.
+
+.. rubric:: Precondition
+
+\`Num\` must be an integer \`num\` in the range \[\-128\, 127\]\.
+
+.. _api-2fc6b56fcac8415c42d9c704f024fafb:
+
+JAVA\.short\(Num\)
+==================
+
+\`short\` returns a Java short corresponding to \`Num\`\.
+
+The result will be a \`java\` value \(objectReference\=sh\, type\=short\)\, where \`sh\` is an instance of java\.lang\.Short\.
+
+.. rubric:: Precondition
+
+\`Num\` must be an integer \`num\` in the range \[\- 2\*\*15\, 2\*\*15 \- 1\]\.
+
+.. _api-000436967a852ce467bbb9e721efef6f:
+
+JAVA\.int\(Num\)
+================
+
+\`int\` returns a Java int corresponding to \`Num\`\.
+
+The result will be a \`java\` value \(objectReference\=n\, type\=int\)\, where \`n\` is an instance of java\.lang\.Integer\.
+
+.. rubric:: Precondition
+
+\`Num\` must be an integer \`num\` in the range \[\- 2\*\*31\, 2\*\*31 \- 1\]\.
+
+.. _api-6b26b2272eabd07991c052c23df12077:
+
+JAVA\.long\(Num\)
+=================
+
+\`long\` returns a Java long corresponding to \`Num\`\.
+
+The result will be a \`java\` value \(objectReference\=ln\, type\=long\)\, where \`ln\` is an instance of java\.lang\.Long\.
+
+.. rubric:: Precondition
+
+\`Num\` must be an integer \`num\` in the range \[\- 2\*\*63\, 2\*\*63 \- 1\]\.
+
+.. _api-3cf2d6ff9aea6e6d0158ab93daf53a07:
+
+JAVA\.float\(Num\)
+==================
+
+\`float\` returns a Java float value numerically close to \`Num\`\.
+
+The result will be a \`java\` value \(fl\, float\)\, where \`fl\` is an instance of java\.lang\.Float\, which is converted from \`Num\` by BigDecimal\.floatValue\(\)\.
+
+.. rubric:: Precondition
+
+\`Num\` must be a \`num\` value\.
+
+.. _api-a7c3d175a289f3b0543a44c5ea82cfe8:
+
+JAVA\.double\(Num\)
+===================
+
+\`double\` returns a Java double value numerically close to \`Num\`\.
+
+The result will be a \`java\` value \(dbl\, double\)\, where \`dbl\` is an instance of java\.lang\.Double\, which is converted from \`Num\` by BigDecimal\.doubleValue\(\)\.
+
+.. rubric:: Precondition
+
+\`Num\` must be a \`num\` value\.
+
+.. _api-c5e20eff0b1332393ceec0a0ece9e7c9:
+
+JAVA\.big\_integer\(Num\)
+=========================
+
+\`big\_integer\` returns a Java BigInteger corresponding to \`Num\`\.
+
+The result will be a \`java\` value \(objectReference\=bi\, type\=java\.math\.BigInteger\)\, where \`bi\` is an instance of java\.math\.BigInteger\, and the value is equal to \`Num\`\.
+
+.. rubric:: Precondition
+
+\`Num\` must be an integer \`num\`\.
+
+.. _api-627c8673b34bce4f65fdad173d7fc24f:
+
+JAVA\.big\_decimal\(Num\)
+=========================
+
+\`big\_decimal\` returns a Java BigDecimal corresponding to \`Num\`\.
+
+The result will be a \`java\` value \(bd\, java\.math\.BigDecimal\)\, where \`bd\` is an instance of java\.math\.BigDecimal\, whose scale is equal to \`Scale\` of \`Num\`\, and the unscaledValue is equal to \`Mantissa\` of \`Num\`\.
+
+.. rubric:: Precondition
+
+\`Num\` must be a \`num\` value\.
+
+.. _api-5a5979141c7581d88c50fcf1c0dfa864:
+
+JAVA\.wrap\(Wrapped\)
+=====================
+
+\`wrap\` returns a \`java\` value which wraps a Kink value\.
+
+\`Wrapped\` can be a value of any type\. \`wrap\` returns a \`java\` value \(Wrapped\, org\.kink\_lang\.kink\.Val\)\.
+
+\`Wrapped\` can be extracted from the result \`java\` value using \`unwrap\` method\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+        
+    :Str <- 'foo'
+    :Wrapper <- JAVA.wrap(Str)
+    stdout.print_line(Wrapper.repr)   # (java "StrVal(foo)" as org.kink_lang.kink.Val)
+    stdout.print_line(Wrapper.unwrap.repr)  # => "foo"
+
+.. _api-668a1a6bcf8e031fbcc5e57fef6846f4:
+
+JAVA\.true
+==========
+
+\`true\` returns a \`java\` value \(Boolean\.TRUE\, boolean\)\.
+
+.. _api-53bf40a4b1c53f68d26a93509239da0e:
+
+JAVA\.false
+===========
+
+\`false\` returns a \`java\` value \(Boolean\.FALSE\, boolean\)\.
+
+.. _api-957c8217fb6034302756d828be9029a2:
+
+JAVA\.null
+==========
+
+\`null\` returns a \`java\` value \(null\, java\.lang\.Object\)\.
+
+.. _api-b1e32ad9d629e1428f9e2519196b83a2:
+
+JAVA\.runtime
+=============
+
+\`runtime\` returns the current runtime\.
+
+The result is a \`java\` value \(vm\, org\.kink\_lang\.kink\.Vm\)\, where \`vm\` is the current runtime\.
+
+.. _api-d8227633c2aa5e02ffed7e4a5881a4fa:
+
+JAVA\.boolean\_class
+====================
+
+\`boolean\_class\` returns a \`java\` value \(boolean\.class\, java\.lang\.Class\)\.
+
+.. _api-70b803d4f29ba5608523a0724ba37e46:
+
+JAVA\.char\_class
+=================
+
+\`char\_class\` returns a \`java\` value \(char\.class\, java\.lang\.Class\)\.
+
+.. _api-d94bffd9f1207087666acd768694c073:
+
+JAVA\.byte\_class
+=================
+
+\`byte\_class\` returns a \`java\` value \(byte\.class\, java\.lang\.Class\)\.
+
+.. _api-4d1ed496b29b42fabe4d1705ad13869e:
+
+JAVA\.short\_class
+==================
+
+\`short\_class\` returns a \`java\` value \(short\.class\, java\.lang\.Class\)\.
+
+.. _api-5e9e7d1a2a20b93d99c8a2cbf391b0f1:
+
+JAVA\.int\_class
+================
+
+\`int\_class\` returns a \`java\` value \(int\.class\, java\.lang\.Class\)\.
+
+.. _api-ff84613832422dbbe7fc0adba188436e:
+
+JAVA\.long\_class
+=================
+
+\`long\_class\` returns a \`java\` value \(long\.class\, java\.lang\.Class\)\.
+
+.. _api-af66f24d45df371674b11633d8b8b5d1:
+
+JAVA\.float\_class
+==================
+
+\`float\_class\` returns a \`java\` value \(float\.class\, java\.lang\.Class\)\.
+
+.. _api-e597da2d15b51babc3cc52b409fcc606:
+
+JAVA\.double\_class
+===================
+
+\`double\_class\` returns a \`java\` value \(double\.class\, java\.lang\.Class\)\.
+
+.. _api-475b77f7ab3ee5002b9a6068c89cf7c8:
+
+JAVA\.void\_class
+=================
+
+\`void\_class\` returns a \`java\` value \(void\.class\, java\.lang\.Class\)\.
+
+.. _api-c3c0d3752dd6273532d79005e7497eaa:
+
+JAVA\.class\(Class\_name \.\.\.\[\$config\=\{\}\]\)
+===================================================
+
+\`class\` looks up a class by the binary name \`Class\_name\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a function which raises an exception
+
+\`class\` function loads the specified class\, using the reflection access of the unnamed module of the class loader from which org\.kink\_lang\.kink\.Vm class of the current runtime is loaded\.
+
+If the class \`klass\` is found\, \`class\` tail\-calls \$success with a \`java\` value \(klass\, java\.lang\.Class\)\.
+
+If the class is not found\, \`class\` tail\-calls \$error with no arg\.
+
+.. rubric:: Preconditions
+
+\`Class\_name\` must be a \`str\` value\.
+
+\$success must be a function which takes a \`java\` value\.
+
+\$error must be a thunk\.
+

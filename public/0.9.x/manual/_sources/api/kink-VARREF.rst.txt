@@ -1,0 +1,242 @@
+============
+kink\/VARREF
+============
+
+Companion mod for varref vals\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-43c405a672f1fcd864105835744e4c63:
+
+type varref
+===========
+
+A varref\, or a variable reference\, is a val which represents a variable\.
+
+Operations such as assignment are done via varref vals\.
+
+A varref consists of \(Owner\, Sym\)\, where the \`Owner\` is the owner of the variable\, and the \`Sym\` is the symbol of the variable\.
+
+A varref is a subtype of plain\_param\. See kink\/param\/PLAIN\_PARAM mod\.
+
+.. _api-9149b04024119e6743bfce567a330250:
+
+Varref\.owner
+-------------
+
+\`owner\` returns the \`Owner\` of \`Varref\`\.
+
+Example\:
+
+.. code:: kink
+
+    :Owner <- 42
+    :Varref <- Owner:Foo
+    stdout.print_line(Varref.owner.repr) # => 42
+
+.. _api-f0bd1a74333e30f4a156fdead5a0aba1:
+
+Varref\.sym
+-----------
+
+\`sym\` returns the \`Sym\` of \`Varref\`\.
+
+Example\:
+
+.. code:: kink
+
+    :Owner <- 42
+    :Varref <- Owner:Foo
+    stdout.print_line(Varref.sym.repr) # => "Foo"
+
+.. _api-8e1458a61e933a2fc7dcdcb3592f20c1:
+
+Varref \<\- Content
+-------------------
+
+\`\<\-\` operator\, or \`op\_store\` method\, does variable\-store operation for the variable represented by \`Varref\`\, with \`Content\` as the content of the variable\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :V <- 42
+    stdout.print_line(V.repr) # => 42
+
+.. _api-ccb05513dd1c65fedbb36887fcd81818:
+
+Varref\.load
+------------
+
+\`load\` does variable load operation for the variable represented by \`Varref\`\, and returns the content of the variable\.
+
+Precondition\:
+
+\• the content of the variable must not be empty
+
+Example\:
+
+.. code:: kink
+
+    :V <- 42
+    stdout.print_line(:V.load.repr) # => 42
+
+.. _api-76b0760cfb86b823ba19b86b27802ba7:
+
+Varref\.any\?
+-------------
+
+\`any\?\` returns whether the content of \`Varref\` is not empty\, but a value\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Owner <- new_val('Foo' 42)
+    stdout.print_line(Owner:Foo.any?.repr)  # => true
+    stdout.print_line(Owner:Bar.any?.repr)  # => false
+
+.. _api-63597fda3177ac30803c3405d3dd7ba7:
+
+Varref\.require\_from\(Prefix\)
+-------------------------------
+
+\`require\_from\` loads a mod then stores the mod to the variable\.
+
+Calling this method is equivalent to calling “Varref \<\- MOD\.require\(Prefix \+ Varref\.sym\)”\.
+
+Example\:
+
+.. code:: kink
+
+    :NUM.require_from('kink/')
+    stdout.print_line(NUM.is?(42).repr)  # => true
+
+The program above is equivalent to the following\.
+
+.. code:: kink
+
+    :MOD.require_from('kink/')
+    :NUM <- MOD.require('kink/NUM')
+    stdout.print_line(NUM.is?(42).repr)  # => true
+
+.. _api-58a0d84a3d4a63aee83546415f4bd5f5:
+
+Varref\.rest
+------------
+
+\`rest\` makes a rest\_param backed by the variable\.
+
+\`pass\_rest\` method of the result rest\_param assigns the variable to the args\.
+
+Example\:
+
+.. code:: kink
+
+    :take_args <- {(:X :Y :Z.rest)
+      stdout.print_line(X.repr)
+      stdout.print_line(Y.repr)
+      stdout.print_line(Z.repr)
+    }
+        
+    take_args('foo' 'bar')
+    # Output:
+    #   "foo"
+    #   "bar"
+    #   []
+        
+    take_args('foo' 'bar' 'baz')
+    # Output:
+    #   "foo"
+    #   "bar"
+    #   ["baz"]
+        
+    take_args('foo' 'bar' 'baz' 'qux')
+    # Output:
+    #   "foo"
+    #   "bar"
+    #   ["baz" "qux"]
+
+See also kink\/param\/REST\_PARAM\.
+
+.. _api-a6b43b4c86defa1c7e8594a542d1c2fa:
+
+Varref\.opt
+-----------
+
+\`opt\` makes an opt\_param backed by the variable\.
+
+\`pass\_arg\` method of the result opt\_param stores a singleton vec of the argument of \`pass\_arg\` to the variable\.
+
+\`pass\_nothing\` method of the result opt\_param stores an empty vec to the variable\.
+
+Example\:
+
+.. code:: kink
+
+    :take_args <- {(:X :Y :Z.opt :W.opt)
+      stdout.print_line(X.repr)
+      stdout.print_line(Y.repr)
+      stdout.print_line(Z.repr)
+      stdout.print_line(W.repr)
+    }
+        
+    take_args('foo' 'bar')
+    # Output:
+    #   "foo"
+    #   "bar"
+    #   []
+    #   []
+        
+    take_args('foo' 'bar' 'baz')
+    # Output:
+    #   "foo"
+    #   "bar"
+    #   ["baz"]
+    #   []
+        
+    take_args('foo' 'bar' 'baz' 'qux')
+    # Output:
+    #   "foo"
+    #   "bar"
+    #   ["baz"]
+    #   ["qux"]
+
+See also kink\/param\/OPT\_PARAM\.
+
+.. _api-4916e3b9d10bfe6e0d720ab8278a3133:
+
+Varref\.repr
+------------
+
+\`repr\` returns a str representation of the Varref\, such as \"\:Foo\"\.
+
+.. _api-54700d6431b1d05dcd5e7329ad11e6b9:
+
+VARREF\.is\?\(Val\)
+===================
+
+\`is\?\` returns whether \`Val\` is a varref\.
+
+.. _api-6b886b86841f53184d092cbd1d1aee09:
+
+VARREF\.new\(Owner Sym\)
+========================
+
+\`new\` makes a varref \(Owner\, Sym\)\.
+
+Precondition\:
+
+\• \`Sym\` must be a str
+
+Example\:
+
+.. code:: kink
+
+    :VARREF.require_from('kink/')
+    :Owner <- new_val('Foo' 42)
+    :Varref <- VARREF.new(Owner 'Foo')
+    stdout.print_line(Varref.load.repr) # => 42
+

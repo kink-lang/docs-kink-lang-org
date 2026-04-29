@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.101. kink/thread/COUNT_DOWN_LATCH &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.102. kink/thread/MUTEX" href="kink-thread-MUTEX.html" />
+    <link rel="prev" title="6.100. kink/thread/ATOMIC" href="kink-thread-ATOMIC.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.101. kink/thread/COUNT_DOWN_LATCH</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-thread-ATOMIC.html"><span class="section-number">6.100. </span>kink/thread/ATOMIC</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-thread-MUTEX.html"><span class="section-number">6.102. </span>kink/thread/MUTEX</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-thread-count-down-latch">
+<h1><span class="section-number">6.101. </span>kink/thread/COUNT_DOWN_LATCH<a class="headerlink" href="#kink-thread-count-down-latch" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-count-down-latch" id="id1">type count_down_latch</a></p>
+<ul>
+<li><p><a class="reference internal" href="#l-count-down" id="id2">L.count_down</a></p></li>
+<li><p><a class="reference internal" href="#l-wait" id="id3">L.wait</a></p></li>
+<li><p><a class="reference internal" href="#l-count" id="id4">L.count</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#count-down-latch-new-count" id="id5">COUNT_DOWN_LATCH.new(Count)</a></p></li>
+<li><p><a class="reference internal" href="#count-down-latch-is-val" id="id6">COUNT_DOWN_LATCH.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-count-down-latch">
+<span id="api-38b462f09a076ec8a686c5d06f0e6d74"></span><h2><span class="section-number">6.101.1. </span>type count_down_latch<a class="headerlink" href="#type-count-down-latch" title="Link to this heading">¶</a></h2>
+<p>`count_down_latch` is a downward counter which is used to wait until the specified number of operations are performed in multiple threads.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:MUTEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+<span class="nv">:THREAD</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+<span class="nv">:COUNT_DOWN_LATCH</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+
+<span class="nv">:Mut</span> &lt;- <span class="nv">MUTEX</span>.<span class="n">new</span>
+<span class="nv">:Start_latch</span> &lt;- <span class="nv">COUNT_DOWN_LATCH</span>.<span class="n">new</span>(<span class="m">1</span>)
+<span class="nv">:Done_latch</span> &lt;- <span class="nv">COUNT_DOWN_LATCH</span>.<span class="n">new</span>(<span class="m">10</span>)
+<span class="nv">:Task_nums</span> &lt;- []
+
+<span class="m">10</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:Num</span>)
+  <span class="nv">THREAD</span>.<span class="n">spawn</span>{
+    <span class="nv">Start_latch</span>.<span class="n">wait</span> <span class="c1"># wait for the start signal from the main thread</span>
+    <span class="nv">Mut</span>.<span class="n">with_lock</span>{
+      <span class="nv">Task_nums</span>.<span class="n">push_back</span>(<span class="nv">Num</span>)
+    }
+    <span class="nv">Done_latch</span>.<span class="n">count_down</span>
+  }
+}
+
+<span class="nv">Start_latch</span>.<span class="n">count_down</span>
+<span class="nv">Done_latch</span>.<span class="n">wait</span>  <span class="c1"># wait until all the tasks have finished</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Task_nums</span>.<span class="n">sort</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [0 1 2 3 4 5 6 7 8 9]</span>
+</pre></div>
+</div>
+<p>Concurrency:</p>
+<p>• If the count is not zero when `count_down` is called,   the invocation of `count_down` happens-before returning from `wait` on the same latch.</p>
+<p>• If the count is not zero when `count_down` is called,   the invocation of `count_down` happens-before   returning from `count` on the same latch the result of which is zero.</p>
+<section id="l-count-down">
+<span id="api-b720bbeebbb8ee4ac121e39faa2fad36"></span><h3><span class="section-number">6.101.1.1. </span>L.count_down<a class="headerlink" href="#l-count-down" title="Link to this heading">¶</a></h3>
+<p>`count_down` subtract 1 from the count of the latch when it is greater than zero. `count_down` does nothing if the count is already zero.</p>
+<p>If the count becomes zero, all the threads blocked by `wait` method of the latch are released.</p>
+</section>
+<section id="l-wait">
+<span id="api-d311ea22e64b981a3d6b95e2fa1a1af5"></span><h3><span class="section-number">6.101.1.2. </span>L.wait<a class="headerlink" href="#l-wait" title="Link to this heading">¶</a></h3>
+<p>`wait` blocks the current thread until the count of the latch becomes zero.</p>
+<p>If the count of the latch is already zero when `wait` is called, `wait` returns immediately without blocking the current thread.</p>
+</section>
+<section id="l-count">
+<span id="api-839b0b36822111413e59bf398a1ee79b"></span><h3><span class="section-number">6.101.1.3. </span>L.count<a class="headerlink" href="#l-count" title="Link to this heading">¶</a></h3>
+<p>`count` returns the count of the latch as an int num.</p>
+<p>Result:</p>
+<p>• The result is a non-negative int num.</p>
+</section>
+</section>
+<section id="count-down-latch-new-count">
+<span id="api-ad54536b6338313ad5af47be87c63f82"></span><h2><span class="section-number">6.101.2. </span>COUNT_DOWN_LATCH.new(Count)<a class="headerlink" href="#count-down-latch-new-count" title="Link to this heading">¶</a></h2>
+<p>`new` makes a `count_down_latch` val with `Count` as the initial count.</p>
+<p>Precondition:</p>
+<p>• `Count` must be a non-negative int num.</p>
+</section>
+<section id="count-down-latch-is-val">
+<span id="api-d1439718498a1d3e2ed849ec1ab81d86"></span><h2><span class="section-number">6.101.3. </span>COUNT_DOWN_LATCH.is?(Val)<a class="headerlink" href="#count-down-latch-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `count_down_latch` val.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-thread-ATOMIC.html"><span class="section-number">6.100. </span>kink/thread/ATOMIC</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-thread-MUTEX.html"><span class="section-number">6.102. </span>kink/thread/MUTEX</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

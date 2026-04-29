@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>9. Testing &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=8f459034"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="10. Commandline" href="commandline/index.html" />
+    <link rel="prev" title="8. Kinkdoc: API Documentation system" href="kinkdoc.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>9. Testing</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kinkdoc.html"><span class="section-number">8. </span>Kinkdoc: API Documentation system</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="commandline/index.html"><span class="section-number">10. </span>Commandline</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="testing">
+<h1><span class="section-number">9. </span>Testing<a class="headerlink" href="#testing" title="Link to this heading">¶</a></h1>
+<p>Software tests can be implemented using
+<a class="reference internal" href="api/kink-test-TEST.html"><span class="doc">kink/test/TEST</span></a> module.
+They can be executed by the launchable module
+<a class="reference internal" href="api/kink-test-TEST_TOOL.html"><span class="doc">kink/test/TEST_TOOL</span></a>.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#writing-and-running-tests" id="id2">Writing and running tests</a></p></li>
+<li><p><a class="reference internal" href="#grouping-tests" id="id3">Grouping tests</a></p></li>
+<li><p><a class="reference internal" href="#parameterized-tests" id="id4">Parameterized tests</a></p></li>
+<li><p><a class="reference internal" href="#asserting-an-exception-is-raised" id="id5">Asserting an exception is raised</a></p></li>
+<li><p><a class="reference internal" href="#skipping-a-test" id="id6">Skipping a test</a></p></li>
+</ul>
+</nav>
+<section id="writing-and-running-tests">
+<h2><span class="section-number">9.1. </span>Writing and running tests<a class="headerlink" href="#writing-and-running-tests" title="Link to this heading">¶</a></h2>
+<p>Assume you have a module org/example/RAT
+under the file src/main/org/example/RAT.kn as follows.
+RAT module provides rational number type.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># src/main/org/example/RAT.kn</span>
+
+<span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Rat_trait</span> &lt;- [
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Numer</span>
+  }
+
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Denom</span>
+  }
+
+  <span class="s1">&#39;op_eq&#39;</span> {[<span class="nv">:X</span>](<span class="nv">:Y</span>)
+    <span class="nv">X</span>.<span class="n">numer</span> * <span class="nv">Y</span>.<span class="n">denom</span> == <span class="nv">Y</span>.<span class="n">numer</span> * <span class="nv">X</span>.<span class="n">denom</span>
+  }
+
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>]
+    <span class="s1">&#39;(rat {}/{})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>)
+  }
+]
+
+<span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  <span class="nv">Denom</span> != <span class="m">0</span> || <span class="n">raise</span>(
+    <span class="s1">&#39;RAT.new(Numer Denom): Denom must be nonzero, but was zero&#39;</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Rat_trait</span>
+    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
+    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
+  )
+}
+</pre></div>
+</div>
+<p>Now, let's write tests of the module
+in the file src/test/org/example/RAT_test.kn.
+You can implement a test by calling TEST.test function.
+You can pass a descriptive name of the test as the first argument of TEST.test.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># src/test/org/example/RAT_test.kn.</span>
+
+<span class="nv">:RAT</span>.<span class="n">require_from</span>(<span class="s1">&#39;org/example/&#39;</span>)
+<span class="nv">:TEST</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/test/&#39;</span>)
+
+<span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;numer is provided by RAT.new&#39;</span>){
+  <span class="nv">:Rat</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>)
+  <span class="nv">:Result</span> = <span class="nv">Rat</span>.<span class="n">numer</span>
+  <span class="nv">Result</span> == <span class="m">2</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+}
+
+<span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;denom is provided by RAT.new&#39;</span>){
+  <span class="nv">:Rat</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>)
+  <span class="nv">:Result</span> = <span class="nv">Rat</span>.<span class="n">denom</span>
+  <span class="nv">Result</span> == <span class="m">5</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+}
+</pre></div>
+</div>
+<p>As you can see, assertion is done by checking the condition
+and explicitly raising an exception.</p>
+<p>You can run the tests by the following commandline.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink -p src/main mod:kink/test/TEST_TOOL src/test
+..
+Success 2 Failure 0 Skipped 0
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">main</span></code> is specified because org/example/RAT module
+is defined under src/main.
+The last argument <code class="docutils literal notranslate"><span class="pre">src/test</span></code> is the directory of tests.
+Every file with a path ending with <code class="docutils literal notranslate"><span class="pre">_test.kn</span></code> under the directory
+is loaded as a test program.</p>
+<p>Two periods in the output mean that two tests succeeded.
+The last line of the output is the summary of test execution,
+which says two tests succeeded, no test failed, and no test was skipped.
+In that case, the command exits with the exit status 0.</p>
+<p>Let's add a test with a wrong assertion.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;wrong expectation for .denom&#39;</span>){
+  <span class="nv">:Rat</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>)
+  <span class="nv">:Result</span> = <span class="nv">Rat</span>.<span class="n">denom</span>
+  <span class="nv">Result</span> == <span class="m">0</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+}
+</pre></div>
+</div>
+<p>Then run the tests again.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink -p src/main mod:kink/test/TEST_TOOL src/test
+
+..!
+Failure: src/test/org/example/RAT_test.kn; wrong expectation for .denom
+  -- main exception
+  [(root)]
+  {..call by host..}
+  {..call by host..}
+  {startup}
+  {builtin:kink-mods/kink/_startup/STARTUP.kn L238 C3 _startup_aux} --&gt;_startup_aux(Args Dep)
+  {builtin:kink-mods/kink/_startup/STARTUP.kn L221 C11 try} CONTROL.--&gt;try(
+  [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.--&gt;reset{
+  ,,,
+  ,,,
+  [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = --&gt;body
+  {builtin:kink-mods/kink/test/TEST.kn L311 C15 _test_thunk} { T.--&gt;_test_thunk }
+  {src/test/org/example/RAT_test.kn L21 C15 op_logor} Result == 0 --&gt;|| raise(&#39;got {}&#39;.format(Result.repr))
+  {..call by host..}
+  {src/test/org/example/RAT_test.kn L21 C18 raise} Result == 0 || --&gt;raise(&#39;got {}&#39;.format(Result.repr))
+  got 5
+
+
+Success 2 Failure 1 Skipped 0
+</pre></div>
+</div>
+<p>As you can see, the exception is reported to the standard output.
+If one or more tests fail, the command exists with nonzero exit status.</p>
+</section>
+<section id="grouping-tests">
+<h2><span class="section-number">9.2. </span>Grouping tests<a class="headerlink" href="#grouping-tests" title="Link to this heading">¶</a></h2>
+<p>Tests can be grouped by TEST.group.
+Groups can be nested.
+Group names will be parts of the test address,
+along with the program file path and the test name.</p>
+<p>Let's rewrite the test program as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># src/test/org/example/RAT_test.kn.</span>
+
+<span class="nv">:RAT</span>.<span class="n">require_from</span>(<span class="s1">&#39;org/example/&#39;</span>)
+<span class="nv">:TEST</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/test/&#39;</span>)
+
+<span class="nv">TEST</span>.<span class="n">group</span>(<span class="s1">&#39;Rat val&#39;</span>){
+  <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;numer is provided by RAT.new&#39;</span>){
+    <span class="nv">:Rat</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>)
+    <span class="nv">:Result</span> = <span class="nv">Rat</span>.<span class="n">numer</span>
+    <span class="nv">Result</span> == <span class="m">2</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+  }
+
+  <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;denom is provided by RAT.new&#39;</span>){
+    <span class="nv">:Rat</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>)
+    <span class="nv">:Result</span> = <span class="nv">Rat</span>.<span class="n">denom</span>
+    <span class="nv">Result</span> == <span class="m">5</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+  }
+
+  <span class="nv">TEST</span>.<span class="n">group</span>(<span class="s1">&#39;Rat == Another_rat&#39;</span>){
+    <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;1/2 == 1/2&#39;</span>){
+      <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">2</span>) == <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">2</span>) || <span class="n">raise</span>(<span class="s1">&#39;got false&#39;</span>)
+    }
+
+    <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;2/4 == 3/6&#39;</span>){
+      <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">4</span>) == <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">3</span> <span class="m">6</span>) || <span class="n">raise</span>(<span class="s1">&#39;got false&#39;</span>)
+    }
+
+    <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;1/2 != 1/3&#39;</span>){
+      <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">2</span>) == <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">3</span>) &amp;&amp; <span class="n">raise</span>(<span class="s1">&#39;got true&#39;</span>)
+    }
+  }
+}
+</pre></div>
+</div>
+<p>Then, run the tests with <code class="docutils literal notranslate"><span class="pre">--verbose</span></code> mode.
+<code class="docutils literal notranslate"><span class="pre">--verbose</span></code> mode outputs the test address for each test.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink -p src/main/ mod:kink/test/TEST_TOOL src/test/ --verbose
+src/test/org/example/RAT_test.kn; Rat val; numer is provided by RAT.new : Success 0.052 sec
+src/test/org/example/RAT_test.kn; Rat val; denom is provided by RAT.new : Success 0.005 sec
+src/test/org/example/RAT_test.kn; Rat val; Rat == Another_rat; 1/2 == 1/2 : Success 0.005 sec
+src/test/org/example/RAT_test.kn; Rat val; Rat == Another_rat; 2/4 == 3/6 : Success 0.005 sec
+src/test/org/example/RAT_test.kn; Rat val; Rat == Another_rat; 1/2 != 1/3 : Success 0.005 sec
+
+Success 5 Failure 0 Skipped 0
+</pre></div>
+</div>
+<p>As you see, group names are included in test addresses.</p>
+</section>
+<section id="parameterized-tests">
+<h2><span class="section-number">9.3. </span>Parameterized tests<a class="headerlink" href="#parameterized-tests" title="Link to this heading">¶</a></h2>
+<p>When you want to parameterize tests,
+or run single logic with multiple data sets,
+you can do so by calling TEST.test in a loop.</p>
+<p>For example, the test program can be rewritten as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># src/test/org/example/RAT_test.kn.</span>
+
+<span class="nv">:RAT</span>.<span class="n">require_from</span>(<span class="s1">&#39;org/example/&#39;</span>)
+<span class="nv">:TEST</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/test/&#39;</span>)
+
+<span class="nv">TEST</span>.<span class="n">group</span>(<span class="s1">&#39;Rat val&#39;</span>){
+  <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;numer is provided by RAT.new&#39;</span>){
+    <span class="nv">:Rat</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>)
+    <span class="nv">:Result</span> = <span class="nv">Rat</span>.<span class="n">numer</span>
+    <span class="nv">Result</span> == <span class="m">2</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+  }
+
+  <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;denom is provided by RAT.new&#39;</span>){
+    <span class="nv">:Rat</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>)
+    <span class="nv">:Result</span> = <span class="nv">Rat</span>.<span class="n">denom</span>
+    <span class="nv">Result</span> == <span class="m">5</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+  }
+
+  <span class="nv">TEST</span>.<span class="n">group</span>(<span class="s1">&#39;Rat == Another_rat&#39;</span>){
+    [ [<span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">2</span>) <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">2</span>) <span class="n">true</span>]
+      [<span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">4</span>) <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">3</span> <span class="m">6</span>) <span class="n">true</span>]
+      [<span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">2</span>) <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">3</span>) <span class="n">false</span>]
+    ].<span class="n">each</span>{([<span class="nv">:X</span> <span class="nv">:Y</span> <span class="nv">:Expected</span>])
+      <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;({} == {}) == {}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Expected</span>.<span class="n">repr</span>)){
+        <span class="nv">:Actual</span> = <span class="nv">X</span> == <span class="nv">Y</span>
+        <span class="nv">Actual</span> == <span class="nv">Expected</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Actual</span>.<span class="n">repr</span>))
+      }
+    }
+  }
+}
+</pre></div>
+</div>
+</section>
+<section id="asserting-an-exception-is-raised">
+<h2><span class="section-number">9.4. </span>Asserting an exception is raised<a class="headerlink" href="#asserting-an-exception-is-raised" title="Link to this heading">¶</a></h2>
+<p>When you want to assert that the target function raises an exception,
+you can do so by catching an exception by CONTROL.try.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TEST</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/test/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;denom must not be zero&#39;</span>){
+  <span class="nv">CONTROL</span>.<span class="n">try</span>(
+    { <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">0</span>) }
+
+    <span class="c1"># RAT.new must raise an exception</span>
+    {(<span class="nv">:R</span>) <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">repr</span>)) }
+
+    <span class="c1"># the exception message must have &#39;RAT.new&#39; and &#39;zero&#39;</span>
+    {(<span class="nv">:Exc</span>)
+      <span class="nv">:Msg</span> = <span class="nv">Exc</span>.<span class="n">message</span>
+      <span class="nv">Msg</span>.<span class="n">have_slice?</span>(<span class="s1">&#39;RAT.new&#39;</span>) &amp;&amp; <span class="nv">Msg</span>.<span class="n">have_slice?</span>(<span class="s1">&#39;zero&#39;</span>) || <span class="nv">Exc</span>.<span class="n">raise</span>
+    }
+  )
+}
+</pre></div>
+</div>
+</section>
+<section id="skipping-a-test">
+<h2><span class="section-number">9.5. </span>Skipping a test<a class="headerlink" href="#skipping-a-test" title="Link to this heading">¶</a></h2>
+<p>Sometimes you might want to run a specific test
+only when a certain condition is met.
+You can do so by calling TEST.skip in the test thunk.</p>
+<p>For example, you might want to</p>
+<ol class="arabic simple">
+<li><p>ignore a test because the target code has not yet been implemented,</p></li>
+<li><p>run a test only on a Windoes system, or</p></li>
+<li><p>run a test only for integration testing.</p></li>
+</ol>
+<p>Let's rewrite the test program as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># src/test/org/example/RAT_test.kn.</span>
+
+<span class="nv">:RAT</span>.<span class="n">require_from</span>(<span class="s1">&#39;org/example/&#39;</span>)
+<span class="nv">:TEST</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/test/&#39;</span>)
+<span class="nv">:RUNTIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="c1"># (1)</span>
+<span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;1/2  &lt;= 2/3&#39;</span>){
+  <span class="c1"># Rat.op_le has not yet been implemented</span>
+  <span class="nv">TEST</span>.<span class="n">skip</span>
+
+  <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">2</span>) &lt;= <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span>/<span class="m">3</span>) || <span class="n">raise</span>(<span class="s1">&#39;got false&#39;</span>)
+}
+
+<span class="c1"># (2)</span>
+<span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;executed only on windows&#39;</span>){
+  <span class="nv">RUNTIME</span>.<span class="n">windows?</span> || <span class="nv">TEST</span>.<span class="n">skip</span>
+
+  <span class="nv">:Rat</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>)
+  <span class="nv">:Result</span> = <span class="nv">Rat</span>.<span class="n">numer</span>
+  <span class="nv">Result</span> == <span class="m">2</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+}
+
+<span class="c1"># (3)</span>
+<span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;executed only when label &quot;integration&quot; is given&#39;</span>){
+  <span class="nv">TEST</span>.<span class="n">have_label?</span>(<span class="s1">&#39;integration&#39;</span>) || <span class="nv">TEST</span>.<span class="n">skip</span>
+
+  <span class="nv">:Rat</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>)
+  <span class="nv">:Result</span> = <span class="nv">Rat</span>.<span class="n">denom</span>
+  <span class="nv">Result</span> == <span class="m">5</span> || <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">Result</span>.<span class="n">repr</span>))
+}
+</pre></div>
+</div>
+<p>Let's execute the tests.
+When you are on a Unix system, all the tests are skipped.
+Three hyphens mean three tests were skipped.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink -p src/main mod:kink/test/TEST_TOOL src/test
+---
+Success 0 Failure 0 Skipped 3
+</pre></div>
+</div>
+<p>Then, run them as integration testing.
+You can pass a label through <code class="docutils literal notranslate"><span class="pre">--label</span></code> option.
+It can be tested by TEST.have_label?.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink -p src/main mod:kink/test/TEST_TOOL src/test --label integration
+--.
+Success 1 Failure 0 Skipped 2
+</pre></div>
+</div>
+<p>This time, the third test is executed, because TEST.have_label? returns true.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kinkdoc.html"><span class="section-number">8. </span>Kinkdoc: API Documentation system</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="commandline/index.html"><span class="section-number">10. </span>Commandline</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

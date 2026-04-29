@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.103. kink/thread/THREAD &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.104. kink/tls/KEY_PAIR_SET" href="kink-tls-KEY_PAIR_SET.html" />
+    <link rel="prev" title="6.102. kink/thread/MUTEX" href="kink-thread-MUTEX.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.103. kink/thread/THREAD</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-thread-MUTEX.html"><span class="section-number">6.102. </span>kink/thread/MUTEX</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-tls-KEY_PAIR_SET.html"><span class="section-number">6.104. </span>kink/tls/KEY_PAIR_SET</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-thread-thread">
+<h1><span class="section-number">6.103. </span>kink/thread/THREAD<a class="headerlink" href="#kink-thread-thread" title="Link to this heading">¶</a></h1>
+<p>Provides access to preemptive threads.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#thread-spawn-thunk" id="id1">THREAD.spawn($thunk)</a></p></li>
+<li><p><a class="reference internal" href="#thread-spawn-io-thunk" id="id2">THREAD.spawn_io($thunk)</a></p></li>
+<li><p><a class="reference internal" href="#thread-id" id="id3">THREAD.id</a></p></li>
+<li><p><a class="reference internal" href="#thread-name" id="id4">THREAD.name</a></p></li>
+<li><p><a class="reference internal" href="#thread-sleep-seconds" id="id5">THREAD.sleep(Seconds)</a></p></li>
+</ul>
+</nav>
+<section id="thread-spawn-thunk">
+<span id="api-431fec36c7549e58fdd8d99e80d94c69"></span><h2><span class="section-number">6.103.1. </span>THREAD.spawn($thunk)<a class="headerlink" href="#thread-spawn-thunk" title="Link to this heading">¶</a></h2>
+<p>`spawn` fun starts a new preemptive thread, and runs $thunk on a new abstract stack machine in the thread.</p>
+<p>If the runtime supports multiple types of threads, `spawn` chooses the thread system suitable for compute bound tasks. For example, on Java Virtual Machine, the platform thread is chosen.</p>
+<p>Precondition:</p>
+<p>• $thunk must be a fun which takes no arg</p>
+<p>`spawn` returns nada.</p>
+<p>Living threads do not prevent the process from exiting, thus they act like Java's daemon threads.</p>
+<p>When you spawn a thread, it is automatically detatched from the spawning thread, thus there is no need to join the thread. If you want to block until another thread completes its work, use a concurrency primitive such as MUTEX.</p>
+<p>Concurrency:</p>
+<p>• Invocation of `spawn` happens-before invocation of $thunk in the new thread.</p>
+</section>
+<section id="thread-spawn-io-thunk">
+<span id="api-5a3cd7825e00c60cbb00217cd891f196"></span><h2><span class="section-number">6.103.2. </span>THREAD.spawn_io($thunk)<a class="headerlink" href="#thread-spawn-io-thunk" title="Link to this heading">¶</a></h2>
+<p>spawn_io fun starts a new preemptive thread, and runs $thunk on a new abstract stack machine in the thread.</p>
+<p>If the runtime supports multiple types of threads, spawn_io chooses the thread system suitable for IO bound tasks. For example, on Java Virtual Machine, the virtual thread is chosen.</p>
+<p>Precondition:</p>
+<p>• $thunk must be a fun which takes no arg</p>
+<p>spawn_io returns nada.</p>
+<p>Living threads do not prevent the process from exiting, thus they act like Java's daemon threads.</p>
+<p>When you spawn a thread, it is automatically detatched from the spawning thread, thus there is no need to join the thread. If you want to block until another thread completes its work, use a concurrency primitive such as MUTEX.</p>
+<p>Concurrency:</p>
+<p>• Invocation of spawn_io happens-before invocation of $thunk in the new thread.</p>
+</section>
+<section id="thread-id">
+<span id="api-541f7e39a756802e822049daf619a241"></span><h2><span class="section-number">6.103.3. </span>THREAD.id<a class="headerlink" href="#thread-id" title="Link to this heading">¶</a></h2>
+<p>`id` fun returns an int num as the id of the thread.</p>
+<p>Thread ids are unique within the runtime for each thread.</p>
+</section>
+<section id="thread-name">
+<span id="api-50f98472937c55ee0eb43b4877d2b535"></span><h2><span class="section-number">6.103.4. </span>THREAD.name<a class="headerlink" href="#thread-name" title="Link to this heading">¶</a></h2>
+<p>`name` fun returns a str as the name of the current thread.</p>
+<p>Thread names are not guaranteed to be unique. Thread names can be empty.</p>
+</section>
+<section id="thread-sleep-seconds">
+<span id="api-4d2da89fa9aad1e1e892ee7300fc30e6"></span><h2><span class="section-number">6.103.5. </span>THREAD.sleep(Seconds)<a class="headerlink" href="#thread-sleep-seconds" title="Link to this heading">¶</a></h2>
+<p>`sleep` causes the current thread to sleep for the specified `Seconds`.</p>
+<p>`Seconds` must be a non-negative num of arbitrary precision. The maximum precision effective in the result depends on the runtime system. For example, in a Kink runtime system on the JVM, the two invocations of STOPWATCH.start in the following program are equivalent. Both tries to sleep 1234 milliseconds.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:THREAD</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+<span class="nv">THREAD</span>.<span class="n">sleep</span>(<span class="m">1.23456</span>) <span class="c1"># tries to sleep 1234 milliseconds</span>
+<span class="nv">THREAD</span>.<span class="n">sleep</span>(<span class="m">1.234</span>)   <span class="c1"># tries to sleep 1234 milliseconds</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-thread-MUTEX.html"><span class="section-number">6.102. </span>kink/thread/MUTEX</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-tls-KEY_PAIR_SET.html"><span class="section-number">6.104. </span>kink/tls/KEY_PAIR_SET</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

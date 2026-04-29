@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>11. 用語集 &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=8f459034"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="12. 変更履歴" href="changelog.html" />
+    <link rel="prev" title="10.2. REPL" href="commandline/repl.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>11. 用語集</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="commandline/repl.html"><span class="section-number">10.2. </span>REPL</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="changelog.html"><span class="section-number">12. </span>変更履歴</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="glossary">
+<h1><span class="section-number">11. </span>用語集<a class="headerlink" href="#glossary" title="Link to this heading">¶</a></h1>
+<section id="language-and-runtime">
+<h2><span class="section-number">11.1. </span>言語とランタイム<a class="headerlink" href="#language-and-runtime" title="Link to this heading">¶</a></h2>
+<dl class="simple glossary">
+<dt id="term-value">値<a class="headerlink" href="#term-value" title="Link to this term">¶</a></dt><dd><p>データの基本的な単位。「val」と略される。 <a class="reference internal" href="object.html#value"><span class="std std-ref">Values</span></a> を見よ。</p>
+</dd>
+<dt id="term-embedded-properties">埋め込みプロパティ<a class="headerlink" href="#term-embedded-properties" title="Link to this term">¶</a></dt><dd><p>値が、変数を介さずに保持しているデータ。 <a class="reference internal" href="object.html#embedded-properties"><span class="std std-ref">Embedded properties</span></a> を見よ。</p>
+</dd>
+<dt id="term-variable">変数<a class="headerlink" href="#term-variable" title="Link to this term">¶</a></dt><dd><p>所有者である値と、シンボルの対。内容として値が持てる。 <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a> を見よ。</p>
+</dd>
+<dt id="term-owner-of-the-variable">変数の所有者<a class="headerlink" href="#term-owner-of-the-variable" title="Link to this term">¶</a></dt><dd><p>変数を所有している <a class="reference internal" href="#term-value"><span class="xref std std-term">値</span></a> 。 <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a> を見よ。</p>
+</dd>
+<dt id="term-symbol-of-the-variable">変数のシンボル<a class="headerlink" href="#term-symbol-of-the-variable" title="Link to this term">¶</a></dt><dd><p>変数のUnicodeコードポイント列。「sym」と略される。 <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a> を見よ。</p>
+</dd>
+<dt id="term-function-symbol">関数シンボル<a class="headerlink" href="#term-function-symbol" title="Link to this term">¶</a></dt><dd><p><code class="regexp docutils literal notranslate"><span class="pre">[a-z_][a-z0-9_?]*</span></code> を満たすシンボル。 <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a> を見よ。</p>
+</dd>
+<dt id="term-data-symbol">データシンボル<a class="headerlink" href="#term-data-symbol" title="Link to this term">¶</a></dt><dd><p><code class="regexp docutils literal notranslate"><span class="pre">([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*</span></code> を満たすシンボル。 <a class="reference internal" href="object.html#variable"><span class="std std-ref">Variables</span></a> を見よ。</p>
+</dd>
+<dt id="term-variable-load-operation">variable-load操作<a class="headerlink" href="#term-variable-load-operation" title="Link to this term">¶</a></dt><dt id="term-variable-store-operation">variable-store操作<a class="headerlink" href="#term-variable-store-operation" title="Link to this term">¶</a></dt><dt id="term-variable-symbols-operation">variable-symbols操作<a class="headerlink" href="#term-variable-symbols-operation" title="Link to this term">¶</a></dt><dd><p>変数についての3つの基本的な操作。 <a class="reference internal" href="object.html#variable-operations"><span class="std std-ref">Variable operations</span></a> を見よ。</p>
+</dd>
+<dt id="term-compile">コンパイル<a class="headerlink" href="#term-compile" title="Link to this term">¶</a></dt><dd><p>プログラムを <a class="reference internal" href="#term-function"><span class="xref std std-term">関数</span></a> に変換する手順。コンパイルは <a class="reference internal" href="api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">Program.compile</span></a> によって行われる。コンパイルの仕様については、 <a class="reference internal" href="language/index.html"><span class="doc">言語仕様</span></a> を見よう。</p>
+</dd>
+<dt id="term-desugaring">脱糖<a class="headerlink" href="#term-desugaring" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-compile"><span class="xref std std-term">コンパイル</span></a> のうち、プログラムを <a class="reference internal" href="#term-desugared-form"><span class="xref std std-term">脱糖化形式</span></a> に変形する段階。 <a class="reference internal" href="language/semantics.html#desugaring"><span class="std std-ref">Desugaring</span></a> を見よ。</p>
+</dd>
+<dt id="term-desugared-form">脱糖化形式<a class="headerlink" href="#term-desugared-form" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-desugaring"><span class="xref std std-term">脱糖</span></a> によって作られたプログラム。脱糖化形式のプログラムは <a class="reference internal" href="#term-translation"><span class="xref std std-term">翻訳</span></a> の入力になれる。 <a class="reference internal" href="language/semantics.html#desugaring"><span class="std std-ref">Desugaring</span></a> を見よ。</p>
+</dd>
+<dt id="term-translation">翻訳<a class="headerlink" href="#term-translation" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-compile"><span class="xref std std-term">コンパイル</span></a> のうち、脱糖化形式のプログラムを <a class="reference internal" href="#term-abstract-instruction"><span class="xref std std-term">抽象命令</span></a> の列に変換する段階。 <a class="reference internal" href="language/semantics.html#translation"><span class="std std-ref">Translation</span></a> を見よ。</p>
+</dd>
+<dt id="term-abstract-stack-machine">抽象スタックマシン<a class="headerlink" href="#term-abstract-stack-machine" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-abstract-instruction"><span class="xref std std-term">抽象命令</span></a> を評価する抽象機械。 <a class="reference internal" href="language/eval.html"><span class="doc">評価</span></a> を見よ。</p>
+</dd>
+<dt id="term-abstract-instruction">抽象命令<a class="headerlink" href="#term-abstract-instruction" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-abstract-stack-machine"><span class="xref std std-term">抽象スタックマシン</span></a> によって評価される命令。 <a class="reference internal" href="language/eval.html"><span class="doc">評価</span></a> を見よ。</p>
+</dd>
+<dt id="term-call-stack">コールスタック<a class="headerlink" href="#term-call-stack" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-abstract-stack-machine"><span class="xref std std-term">抽象スタックマシン</span></a> のスタック。 <a class="reference internal" href="#term-abstract-instruction"><span class="xref std std-term">抽象命令</span></a> の列を保持する。 <a class="reference internal" href="language/eval.html#call-stack"><span class="std std-ref">Call stack</span></a> を見よ。</p>
+</dd>
+<dt id="term-tail-call">末尾呼び出し<a class="headerlink" href="#term-tail-call" title="Link to this term">¶</a></dt><dd><p>関数呼び出しの末尾で行われる関数呼び出し。これは、 <a class="reference internal" href="language/eval.html#tailcall-instruction"><span class="std std-ref">tailcall instruction</span></a> によって行われる。</p>
+</dd>
+<dt id="term-tail-call-elimination">末尾呼び出し除去<a class="headerlink" href="#term-tail-call-elimination" title="Link to this term">¶</a></dt><dd><p>連続する <a class="reference internal" href="#term-tail-call"><span class="xref std std-term">末尾呼び出し</span></a> がスタックオーバーフローを起こさないという、ランタイムへの要求。 <a class="reference internal" href="language/eval.html#tailcall-instruction"><span class="std std-ref">tailcall instruction</span></a> を見よ。</p>
+</dd>
+<dt id="term-delimited-continuation">限定継続<a class="headerlink" href="#term-delimited-continuation" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="api/kink-KONT_TAG.html#api-35db7c321b93a22b6e6164fab36bf940"><span class="std std-ref">Kont_tag.shift</span></a> の呼び出しから、 <a class="reference internal" href="api/kink-KONT_TAG.html#api-9877213663340a1e14488dc493151c3a"><span class="std std-ref">Kont_tag.reset</span></a> の呼び出しの終わりまでの評価を再開する <a class="reference internal" href="#term-function"><span class="xref std std-term">関数</span></a> 。「kont」と略される。 <a class="reference internal" href="language/eval.html#kont-instruction"><span class="std std-ref">kont instruction</span></a> を見よ。</p>
+</dd>
+<dt id="term-host-procedure">ホスト手続き<a class="headerlink" href="#term-host-procedure" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-host-system"><span class="xref std std-term">ホストシステム</span></a> 中の手続きを指し示す情報の抽象的な単位。 <a class="reference internal" href="language/eval.html#hostcall-instruction"><span class="std std-ref">hostcall instruction</span></a> を見よ。</p>
+</dd>
+<dt id="term-runtime">ランタイム<a class="headerlink" href="#term-runtime" title="Link to this term">¶</a></dt><dd><p><em class="dfn">ランタイム</em> は値、実行器、その他の部品を含むシステムである。</p>
+</dd>
+<dt id="term-host-system">ホストシステム<a class="headerlink" href="#term-host-system" title="Link to this term">¶</a></dt><dd><p><em class="dfn">ホストシステム</em> は <a class="reference internal" href="#term-runtime"><span class="xref std std-term">ランタイム</span></a> がその上で実装されているシステムである。典型的には、ホストシステムはJava Virtual Machineである。</p>
+</dd>
+<dt id="term-module-system">モジュールシステム<a class="headerlink" href="#term-module-system" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-runtime"><span class="xref std std-term">runtime</span></a> のサブシステムで、 <a class="reference internal" href="#term-module"><span class="xref std std-term">モジュール</span></a> を管理する。 <a class="reference internal" href="modsystem.html"><span class="doc">モジュールシステム</span></a> を見よ。</p>
+</dd>
+<dt id="term-module">モジュール<a class="headerlink" href="#term-module" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-module-system"><span class="xref std std-term">モジュールシステム</span></a> によってロードされる値。「mod」と省略される。 <a class="reference internal" href="modsystem.html"><span class="doc">モジュールシステム</span></a> を見よ。</p>
+</dd>
+<dt id="term-module-base-paths">モジュール基底パス集合<a class="headerlink" href="#term-module-base-paths" title="Link to this term">¶</a></dt><dd><p>モジュールのソースが配置できるディレクトリの集合。 <a class="reference internal" href="modsystem.html#module-base-paths"><span class="std std-ref">モジュール基底パス集合</span></a> を見よ。</p>
+</dd>
+</dl>
+</section>
+<section id="builtin-library">
+<h2><span class="section-number">11.2. </span>組み込みライブラリ<a class="headerlink" href="#builtin-library" title="Link to this heading">¶</a></h2>
+<dl class="simple glossary">
+<dt id="term-function">関数<a class="headerlink" href="#term-function" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="api/kink-FUN.html#api-26c971da584c97df3028fa31cf051166"><span class="std std-ref">fun型</span></a> の値。「fun」と略される。</p>
+</dd>
+<dt id="term-variable-reference">変数参照<a class="headerlink" href="#term-variable-reference" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="api/kink-VARREF.html#api-43c405a672f1fcd864105835744e4c63"><span class="std std-ref">varref型</span></a> の値。「varref」と略される。</p>
+</dd>
+<dt id="term-vector">ベクタ<a class="headerlink" href="#term-vector" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="api/kink-VEC.html#api-8f14b909c07234a50b4b4c739ce19bcd"><span class="std std-ref">vec型</span></a> の値。「vec」と略される。</p>
+</dd>
+<dt id="term-bool">ブール<a class="headerlink" href="#term-bool" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="api/kink-BOOL.html#api-4114da34f96e8d8f51b850be2f586125"><span class="std std-ref">bool型</span></a> の値。 <a class="reference internal" href="api/kink-BINDING.html#api-cad6f8e450bbe63736bc0643397a5f4c"><span class="std std-ref">true</span></a> か <a class="reference internal" href="api/kink-BINDING.html#api-778dd33edaef2635e679ce12ef09930b"><span class="std std-ref">false</span></a> のどちらか。</p>
+</dd>
+<dt id="term-exception">例外<a class="headerlink" href="#term-exception" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="api/kink-EXCEPTION.html#api-08fee0648a753752ac74e092d8e9cbfd"><span class="std std-ref">exception型</span></a> の値。ランタイムエラーを表す。</p>
+</dd>
+<dt id="term-delimited-continuation-tag">限定継続タグ<a class="headerlink" href="#term-delimited-continuation-tag" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="api/kink-KONT_TAG.html#api-30c0ec5df9d2435c0132d55f5a695215"><span class="std std-ref">kont_tag型</span></a> の値。 <a class="reference internal" href="language/eval.html#delimit-instruction"><span class="std std-ref">delimit instruction</span></a> を見よ。</p>
+</dd>
+</dl>
+</section>
+<section id="patterns-and-conventions">
+<h2><span class="section-number">11.3. </span>パターンと慣習<a class="headerlink" href="#patterns-and-conventions" title="Link to this heading">¶</a></h2>
+<dl class="simple glossary">
+<dt id="term-method">メソッド<a class="headerlink" href="#term-method" title="Link to this term">¶</a></dt><dd><p>ある値の変数に保持され、その値をレシーバとした操作を行うために使われる関数。 <a class="reference internal" href="patterns/function.html#method"><span class="std std-ref">Methods</span></a> を見よ。</p>
+</dd>
+<dt id="term-constructor">コンストラクタ<a class="headerlink" href="#term-constructor" title="Link to this term">¶</a></dt><dd><p>新しい値を作る関数。 <a class="reference internal" href="patterns/function.html#constructor"><span class="std std-ref">Constructors</span></a> を見よ。</p>
+</dd>
+<dt id="term-trait">トレイト<a class="headerlink" href="#term-trait" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="api/kink-BINDING.html#api-fbc90c7785322a766a80191e6e1ea8de"><span class="std std-ref">new_val</span></a> の引数として展開されるような、メソッドとそのシンボルを保持したベクタ。 <a class="reference internal" href="patterns/function.html#constructor"><span class="std std-ref">Constructors</span></a> を見よ。</p>
+</dd>
+<dt id="term-thunk">サンク<a class="headerlink" href="#term-thunk" title="Link to this term">¶</a></dt><dd><p>メソッドとして使われず、引数を取らない関数。 <a class="reference internal" href="patterns/function.html#thunk"><span class="std std-ref">Thunks</span></a> を見よ。</p>
+</dd>
+<dt id="term-predicate">述語<a class="headerlink" href="#term-predicate" title="Link to this term">¶</a></dt><dd><p>メソッドとして使われず、ひとつの引数を取って、ブールを戻す関数。 <a class="reference internal" href="patterns/function.html#predicate"><span class="std std-ref">述語</span></a> を見よ。</p>
+</dd>
+<dt id="term-constant">定数<a class="headerlink" href="#term-constant" title="Link to this term">¶</a></dt><dd><p>毎回同じ値を戻す <a class="reference internal" href="#term-thunk"><span class="xref std std-term">サンク</span></a> 。<a class="reference internal" href="patterns/function.html#constant"><span class="std std-ref">Constants</span></a> を見よ。</p>
+</dd>
+<dt id="term-continuation">継続<a class="headerlink" href="#term-continuation" title="Link to this term">¶</a></dt><dd><p>関数呼び出しの末尾で呼び出される関数。 <a class="reference internal" href="#term-delimited-continuation"><span class="xref std std-term">限定継続</span></a> と混同しないように。 <a class="reference internal" href="patterns/function.html#continuation"><span class="std std-ref">継続</span></a> を見よ。</p>
+</dd>
+<dt id="term-continuation-passing-style">継続渡しスタイル<a class="headerlink" href="#term-continuation-passing-style" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-continuation"><span class="xref std std-term">継続</span></a> が呼び出し元から渡されるようなプログラムの構成。 <a class="reference internal" href="patterns/function.html#continuation"><span class="std std-ref">継続</span></a> を見よ。</p>
+</dd>
+<dt id="term-kinkdoc">kinkdoc<a class="headerlink" href="#term-kinkdoc" title="Link to this term">¶</a></dt><dd><p>KinkプログラムのAPI文書化システム。 <a class="reference internal" href="kinkdoc.html"><span class="doc">Kinkdoc: API Documentation system</span></a> を見よ。</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="commandline/repl.html"><span class="section-number">10.2. </span>REPL</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="changelog.html"><span class="section-number">12. </span>変更履歴</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+=============================
+kink\/doc\/model\/BLOCK\_TYPE
+=============================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-b982c3a3b7af10b497648fc46380dce2:
+
+type block\_type
+================
+
+block\_type is an enum type of \`paragraph\`\, \`code\` and \`heading\`\.
+
+.. _api-9f7b418f6c06da9290cfe2e1a5c18490:
+
+BLOCK\_TYPE\.paragraph
+======================
+
+\`paragraph\` fun returns the block\_type enum val BLOCK\_TYPE\.paragraph\.
+
+.. _api-3be6ae5f40f5a434825a25c459a8abfc:
+
+BLOCK\_TYPE\.code
+=================
+
+\`code\` fun returns the block\_type enum val BLOCK\_TYPE\.code\.
+
+.. _api-e1303a5a58cb85111f12cbbc54c2b356:
+
+BLOCK\_TYPE\.heading
+====================
+
+\`heading\` fun returns the block\_type enum val BLOCK\_TYPE\.heading\.
+

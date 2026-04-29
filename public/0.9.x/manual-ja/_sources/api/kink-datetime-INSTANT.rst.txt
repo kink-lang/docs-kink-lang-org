@@ -1,0 +1,83 @@
+=======================
+kink\/datetime\/INSTANT
+=======================
+
+Provides instant class\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-c151fa79f0a3f431dd63dd0e57b34ace:
+
+type instant
+============
+
+An instant is a point of time on the time line\.
+
+An instant consists of a nanosecond precision epoch time\, which is an elapsed time from 1970\-01\-01T00\:00\:00Z\. The definition of the length of seconds follows the Java Time\-Scale\:
+
+https\:\/\/docs\.oracle\.com\/en\/java\/javase\/11\/docs\/api\/java\.base\/java\/time\/Instant\.html
+
+Thus\, no leap seconds are inserted to the epoch time of an instant\.
+
+The scale of the epoch time is 9\.
+
+The range of epoch time is \[\-999999999999\.999999999\, 999999999999\.999999999\]\. The minimum and the maximum values represent 29720 BC and AD 33658 respectively in ISO 8601 calendar system\.
+
+.. _api-0d16b4ba141ffd115ea59ebf459ec251:
+
+Ins\.epoch\_time
+----------------
+
+“epoch\_time” method returns the epoch time of the instant\.
+
+The result is a num\, the scale of which is 9\.
+
+.. _api-44eeb37c6822618827801a874053a67c:
+
+I1 \< I2\, I1 \<\= I2\, I1 \=\= I2\, I1 \!\= I2\, I1 \>\= I2\, I1 \> I2
+-----------------------------------------------------------------------
+
+Instants are comparable based on the order of the epoch times\.
+
+.. _api-d20f060693006706b2de0b6834b12e03:
+
+Ins\.repr
+---------
+
+\`repr\` returns the str representation of the instant such as \"\(instant 1580445786\.123456789\)\"\.
+
+.. _api-3f7d03320d1135059ca2cde9187e74c5:
+
+INSTANT\.new\(Epoch\_time\)
+===========================
+
+INSTANT\.new fun makes an instant val representing the Epoch\_time\.
+
+Preconditions\:
+
+\• Epoch\_time must be a num\.
+
+\• The scale of Epoch\_time must be less than or equal to 9\.
+
+\• Epoch\_time must be in the range \[\-999999999999\.999999999\, 999999999999\.999999999\]\.
+
+.. _api-030d833c787ef80620f4060f525e3076:
+
+INSTANT\.now
+============
+
+INSTANT\.now returns an instant val of the current instant provided by the system clock\.
+
+The result is not guarunteed to to progress monotonically\, or smoothly\. For example\, when the system clock is synchronized\, the result can move back or jump forward\.
+
+If you want to measure the elapsed machine time\, use STOPWATCH\.start\. See kink\/STOPWATCH\.
+
+.. _api-4f8b182d0eee098749442d73b68bec1d:
+
+INSTANT\.is\?\(Val\)
+====================
+
+INSTANT\.is\? returns whether Val is an instant val\.
+

@@ -1,0 +1,79 @@
+==========
+Code style
+==========
+
+This chapter is a style guide of multiple-line structures.
+For expressions which fit in a single line, you can choose any style.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Indentation
+===========
+
+Indentation is done with 2 whitespaces for each level.
+
+The indentation level of is calculated by the following rule:
+The indentation level is the number of pairs of parentheses, braces,
+and brackets which enclose the first token of the line.
+
+See the example below.
+
+::
+
+  :foo <- {(:X :Y)  # (a)
+    bar(  # (b)
+      42
+      []
+      { xxx
+        yyy
+        zzz
+      } # (c)
+    )
+  }
+
+The first token of the line (a), ``:``, is not enclosed
+by any parentheses, braces, or brackets.
+So the indentation level is 0.
+
+The first token of the line (b), ``bar``, is enclosed
+by the pair of parentheses opened at (a).
+So the indentation level is 1.
+
+The line (c) consists of only a closing brace.
+It is enclosed by a pair of brace opened at (a),
+and a pair of parentheses opened at (b).
+So the indentation level is 2.
+
+Parentheses, braces and brackets
+================================
+
+If a pair of parentheses, braces, or brackets spans multiple lines,
+
+* the opening parenthesis, brace, or bracket
+  should not be the only token of a line, and
+
+See the example again.
+
+::
+
+  :foo <- {(:X :Y)  # (d)
+    bar(  # (e)
+      42
+      []
+      { xxx # (f)
+        yyy
+        zzz
+      }
+    )
+  }
+
+The opening brace of (d) and the opening parenthesis (e) follow other tokens,
+so it follows the rule.
+
+The opening brace of (f) is the first token of the line.
+In order not make it the only token of the line,
+the first expression ``xxx`` follows the opening brace.
+
+.. vim: et sw=2 sts=2

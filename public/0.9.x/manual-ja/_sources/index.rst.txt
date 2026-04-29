@@ -1,0 +1,36 @@
+================================
+Kink programming language manual
+================================
+
+Kink language is an object-based programming language,
+adopting object system without inheritance,
+and delimited continuations.
+
+Kink is an implementation of Kink language runtime, which runs on JVM.
+
+Contents
+========
+.. toctree::
+  :maxdepth: 1
+  :titlesonly:
+  :numbered: 5
+
+  features
+  installation
+  language/index
+  object
+  modsystem
+  api/index
+  patterns/index
+  kinkdoc
+  testing
+  commandline/index
+  glossary
+  changelog
+
+Other resources
+===============
+
+* |linktoroot|
+
+.. vim: et sw=2 sts=2

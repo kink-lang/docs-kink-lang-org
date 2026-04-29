@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.13. kink/FUN &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.14. kink/KONT_TAG" href="kink-KONT_TAG.html" />
+    <link rel="prev" title="6.12. kink/EXCEPTION" href="kink-EXCEPTION.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.13. kink/FUN</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-EXCEPTION.html"><span class="section-number">6.12. </span>kink/EXCEPTION</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-KONT_TAG.html"><span class="section-number">6.14. </span>kink/KONT_TAG</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-fun">
+<h1><span class="section-number">6.13. </span>kink/FUN<a class="headerlink" href="#kink-fun" title="Link to this heading">¶</a></h1>
+<p>The companion mod for fun vals.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-fun" id="id2">type fun</a></p>
+<ul>
+<li><p><a class="reference internal" href="#fun-call-recv-args" id="id3">Fun.call(Recv Args)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#fun-is-val" id="id4">FUN.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-fun">
+<span id="api-26c971da584c97df3028fa31cf051166"></span><h2><span class="section-number">6.13.1. </span>type fun<a class="headerlink" href="#type-fun" title="Link to this heading">¶</a></h2>
+<p>A fun is a function value.</p>
+<p>Conceptually, a fun holds a sequence of abstract instructions. See “Language specification” → “Evaluation” chapter for abstract instructinos.</p>
+<section id="fun-call-recv-args">
+<span id="api-6fa30820b07f255c739983259119b7c6"></span><h3><span class="section-number">6.13.1.1. </span>Fun.call(Recv Args)<a class="headerlink" href="#fun-call-recv-args" title="Link to this heading">¶</a></h3>
+<p>`call` tail-calls `Fun` with `Recv` as the recv, and `Args` as the args of the invocation.</p>
+<p>Precondition:</p>
+<p>• `Args` must be a vec.</p>
+</section>
+</section>
+<section id="fun-is-val">
+<span id="api-c688f30d4c84298a3bb2fca5d76b33a1"></span><h2><span class="section-number">6.13.2. </span>FUN.is?(Val)<a class="headerlink" href="#fun-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether the `Val` is a fun.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-EXCEPTION.html"><span class="section-number">6.12. </span>kink/EXCEPTION</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-KONT_TAG.html"><span class="section-number">6.14. </span>kink/KONT_TAG</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

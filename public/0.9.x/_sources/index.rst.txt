@@ -1,0 +1,28 @@
+Kink |release|
+==============
+
+.. rubric:: Language Manual
+  
+* `English version <manual/index.html>`_
+* `Japanese version / 日本語版 <manual-ja/index.html>`_
+
+.. rubric:: Java API Specification
+
+* `Javadoc <javadoc/org.kink_lang.kink/module-summary.html>`_
+
+.. rubric:: Licenses
+
+.. toctree::
+  :titlesonly:
+
+  license
+
+.. * :doc:`license`
+
+.. rubric:: External Links
+
+* `Project Hosting <https://sourceforge.net/projects/kink-lang/>`_
+* `Documentation <https://doc.kink-lang.org/>`_
+* `Maven Central <https://mvnrepository.com/artifact/org.kink-lang/kink>`_
+
+.. vim: et sw=2 sts=2

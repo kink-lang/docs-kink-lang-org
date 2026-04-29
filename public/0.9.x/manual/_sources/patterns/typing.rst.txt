@@ -1,0 +1,131 @@
+======
+Typing
+======
+
+Kink language does not support static type system.
+However, in the perspective of programming practices, typing exists.
+For example, ``repr`` method of any value
+is expected to return a value of str type,
+and a str value is expected to have ``size`` method.
+Thus, you can write ``repr_size`` function as follows:
+
+::
+
+  # (Val: any type) -> int num type
+  :repr_size <- {(:Val)
+    Val.repr.size
+  }
+
+  stdout.print_line(repr_size(12345).repr)  # => 5
+  stdout.print_line(repr_size(['foo' 'bar']).repr)  # => 13
+
+This chapter describes typing and type testing patterns of Kink.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Typing contracts
+================
+
+Typing can be considered as a contract between a component and its client.
+Here, components include the language and modules.
+Contracts should be specified in public documentation.
+
+For example, in the language specification,
+a :ref:`function expression <functionexpression>`
+is specified to produce a :doc:`function value </api/kink-FUN>`.
+It is a postcondition contract of a function expression.
+Thus, a program can assume the result of a function expression
+can be called, or has ``call`` method.
+
+For another example,
+the first argument of ``print_line`` method of
+a :doc:`printer </api/kink-io-PRINTER>`
+value is specified to be a str.
+It is a precondition contract.
+Thus, if the value given to the argument is not a str value,
+the behavior of the method is not specified.
+
+Type testing by intrinsic property
+==================================
+
+The runtime or a :term:`host procedure` might test the type of a value
+by its intrinsic property,
+such as the runtime class of the value.
+
+One example is :ref:`checkfun abstract instruction <checkfun-insn>`,
+which ensures that the called value is a function.
+The check is probably done using an instrinsic property of the value,
+such as by testing the runtime class.
+
+For another example,
+``raise`` :doc:`preloaded function </api/kink-BINDING>`
+takes a str value as the argument.
+Probably the function ensures that the argument is a str,
+by testing the runtime class.
+
+Duck type testing
+=================
+
+Another way of type testing is :dfn:`duck type testing`.
+:dfn:`duck type testing` is type testing based on what methods a value has.
+
+For example, if ``rat`` type is expected to have ``numer``, ``denom``
+and ``repr`` methods,
+duck type testing can be done by ensuring
+a value has ``numer`` and ``denom`` variables.
+
+.. note::
+
+  Every value has ``repr`` method.
+  Thus, testing exisitence of ``repr`` method is not needed.
+
+Usually, a set of methods can be extracted out of the :term:`trait`.
+In the following example,
+A vec of method symbols is stored in ``Rat_var_syms`` variable.
+``is?`` method does duck type testing comparing the variable symbols
+of the value to test, and ``Rat_var_syms``.
+
+::
+
+  # example/RAT.kn
+
+  :VAL.require_from('kink/')
+
+  # `new` makes a new rat value.
+  :new <- {(:Numer :Denom)
+    new_val(
+      ... Rat_trait
+      'Numer' Numer
+      'Denom' Denom
+    )
+  }
+
+  # `is?` returns whether `Val` is a rat value.
+  # The type testing is done by duck type testing.
+  :is? <- {(:Val)
+    VAL.var_syms(Val).have_all?(Rat_var_syms)
+  }
+
+  :Rat_trait <- [
+    'numer' {[:R]() R.Numer }
+    'denom' {[:R]() R.Denom }
+    'repr' {[:R]()
+      '(rat numer={} denom={})'.format(R.numer.repr R.denom.repr)
+    }
+  ]
+
+  # => ['numer' 'denom' 'repr']
+  :Rat_var_syms <- Rat_trait.chunk(2).map{([:Sym :Val]) Sym }
+
+``is?`` method can be used as follows:
+
+::
+
+  :RAT.require_from('example/')
+
+  stdout.print_line(RAT.is?(RAT.new(10 20)).repr)  # => true
+  stdout.print_line(RAT.is?(nada).repr)  # => false
+
+.. vim: et sw=2 sts=2

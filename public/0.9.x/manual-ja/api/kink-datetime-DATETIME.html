@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.38. kink/datetime/DATETIME &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.39. kink/datetime/DAY_OF_WEEK" href="kink-datetime-DAY_OF_WEEK.html" />
+    <link rel="prev" title="6.37. kink/container/TREE_SET" href="kink-container-TREE_SET.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.38. kink/datetime/DATETIME</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-TREE_SET.html"><span class="section-number">6.37. </span>kink/container/TREE_SET</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-datetime-DAY_OF_WEEK.html"><span class="section-number">6.39. </span>kink/datetime/DAY_OF_WEEK</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-datetime-datetime">
+<h1><span class="section-number">6.38. </span>kink/datetime/DATETIME<a class="headerlink" href="#kink-datetime-datetime" title="Link to this heading">¶</a></h1>
+<p>Provides `datetime` type.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-datetime" id="id2">type datetime</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dt-year" id="id3">Dt.year</a></p></li>
+<li><p><a class="reference internal" href="#dt-month" id="id4">Dt.month</a></p></li>
+<li><p><a class="reference internal" href="#dt-day" id="id5">Dt.day</a></p></li>
+<li><p><a class="reference internal" href="#dt-hour" id="id6">Dt.hour</a></p></li>
+<li><p><a class="reference internal" href="#dt-minute" id="id7">Dt.minute</a></p></li>
+<li><p><a class="reference internal" href="#dt-second" id="id8">Dt.second</a></p></li>
+<li><p><a class="reference internal" href="#dt-day-of-week" id="id9">Dt.day_of_week</a></p></li>
+<li><p><a class="reference internal" href="#dt1-dt2-dt1-dt2-dt1-dt2-dt1-dt2-dt1-dt2-dt1-dt2" id="id10">Dt1 &lt; Dt2, Dt1 &lt;= Dt2, Dt1 != Dt2, Dt1 == Dt2, Dt1 &gt;= Dt2, Dt1 &gt; Dt2</a></p></li>
+<li><p><a class="reference internal" href="#dt-repr" id="id11">Dt.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#datetime-new-year-month-day-hour-minute-second" id="id12">DATETIME.new(Year Month Day Hour Minute Second)</a></p></li>
+<li><p><a class="reference internal" href="#datetime-is-val" id="id13">DATETIME.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-datetime">
+<span id="api-a4fb003f4fec9a480651a5336772b420"></span><h2><span class="section-number">6.38.1. </span>type datetime<a class="headerlink" href="#type-datetime" title="Link to this heading">¶</a></h2>
+<p>A `datetime` val represents date and time without timezone or UTC offset, in the ISO 8601 calendar system without inserting leap seconds.</p>
+<p>A `datetime` val is represented to nanosecond precision. The subsecond part is represented within “second” attribute, together with integral second part.</p>
+<p>The range of `datetime` is [0001-00-00T00:00:00.000000000, 9999-12-31T23:59:59.999999999].</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="nv">:Dt</span> &lt;- <span class="nv">DATETIME</span>.<span class="n">new</span>(<span class="m">2020</span> <span class="m">1</span> <span class="m">10</span> <span class="m">23</span> <span class="m">14</span> <span class="m">25.123456789</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dt</span>.<span class="n">year</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; 2020</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dt</span>.<span class="n">month</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dt</span>.<span class="n">day</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 10</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dt</span>.<span class="n">hour</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; 23</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dt</span>.<span class="n">minute</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 13</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dt</span>.<span class="n">second</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 25.123456789</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Dt</span>.<span class="n">day_of_week</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; DAY_OF_WEEK.friday</span>
+</pre></div>
+</div>
+<section id="dt-year">
+<span id="api-80caf4ee055f5b10228497d47b45339e"></span><h3><span class="section-number">6.38.1.1. </span>Dt.year<a class="headerlink" href="#dt-year" title="Link to this heading">¶</a></h3>
+<p>“year” method returns the year part of Dt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [1, 9999].</p>
+</section>
+<section id="dt-month">
+<span id="api-142289462584f3d99316259071f72cbd"></span><h3><span class="section-number">6.38.1.2. </span>Dt.month<a class="headerlink" href="#dt-month" title="Link to this heading">¶</a></h3>
+<p>“month” method returns the month part of Dt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [1, 12].</p>
+</section>
+<section id="dt-day">
+<span id="api-1658d9b3ddd9aaeeca830067deb9f756"></span><h3><span class="section-number">6.38.1.3. </span>Dt.day<a class="headerlink" href="#dt-day" title="Link to this heading">¶</a></h3>
+<p>“day” method returns the day part of Dt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [1, 31].</p>
+</section>
+<section id="dt-hour">
+<span id="api-f3b7941fe3578621e0e485432705e4b1"></span><h3><span class="section-number">6.38.1.4. </span>Dt.hour<a class="headerlink" href="#dt-hour" title="Link to this heading">¶</a></h3>
+<p>“hour” method returns the hour part of Dt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [0, 23].</p>
+</section>
+<section id="dt-minute">
+<span id="api-3addd5ab4c625e9bcce36beda99b1204"></span><h3><span class="section-number">6.38.1.5. </span>Dt.minute<a class="headerlink" href="#dt-minute" title="Link to this heading">¶</a></h3>
+<p>“minute” method returns the minute part of Dt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [0, 59].</p>
+</section>
+<section id="dt-second">
+<span id="api-459bbfe7ced4e64b2d586879e03db845"></span><h3><span class="section-number">6.38.1.6. </span>Dt.second<a class="headerlink" href="#dt-second" title="Link to this heading">¶</a></h3>
+<p>“second” method returns the second part of Dt.</p>
+<p>Postcondition:</p>
+<p>• The result is a num with scale=9, in the range [0.000000000, 59.999999999].</p>
+</section>
+<section id="dt-day-of-week">
+<span id="api-648dce57045490742b6cb02a4b52a900"></span><h3><span class="section-number">6.38.1.7. </span>Dt.day_of_week<a class="headerlink" href="#dt-day-of-week" title="Link to this heading">¶</a></h3>
+<p>“day_of_week” method returns the day of week corresponding to the date of Dt.</p>
+<p>Postcondition:</p>
+<p>• The result is a day_of_week. See kink/datetime/DAY_OF_WEEK.</p>
+</section>
+<section id="dt1-dt2-dt1-dt2-dt1-dt2-dt1-dt2-dt1-dt2-dt1-dt2">
+<span id="api-d968835637cf49a174dedad8f2e32b5c"></span><h3><span class="section-number">6.38.1.8. </span>Dt1 &lt; Dt2, Dt1 &lt;= Dt2, Dt1 != Dt2, Dt1 == Dt2, Dt1 &gt;= Dt2, Dt1 &gt; Dt2<a class="headerlink" href="#dt1-dt2-dt1-dt2-dt1-dt2-dt1-dt2-dt1-dt2-dt1-dt2" title="Link to this heading">¶</a></h3>
+<p>`datetime` values can be compared each other by comparison operators.</p>
+<p>When a `datetime` X represents civil time which precedes the civil time represented by the other `datetime` Y, X is considered less than Y.</p>
+</section>
+<section id="dt-repr">
+<span id="api-ed79ac3684bed5aa2626a8ca18677c9b"></span><h3><span class="section-number">6.38.1.9. </span>Dt.repr<a class="headerlink" href="#dt-repr" title="Link to this heading">¶</a></h3>
+<p>“repr” returns a str representation of Dt, such as &quot;Date_time(2020-01-10T23:07:04.123456789)&quot;.</p>
+</section>
+</section>
+<section id="datetime-new-year-month-day-hour-minute-second">
+<span id="api-92d159c28c0e8ff5f955f815d8a1101b"></span><h2><span class="section-number">6.38.2. </span>DATETIME.new(Year Month Day Hour Minute Second)<a class="headerlink" href="#datetime-new-year-month-day-hour-minute-second" title="Link to this heading">¶</a></h2>
+<p>`new` fun makes a `datetime` val, with the speicifed attributes.</p>
+<p>• Year must be an int num in the range [1, 9999].</p>
+<p>• Month must be an int num in the range [1, 12].</p>
+<p>• Day must be an int num.</p>
+<p>• The combination of Year, Month and Day must be a valid date in ISO 8601 calendar system.</p>
+<p>• Hour must be an int num in the range [0, 23].</p>
+<p>• Minute must be an int num in the range [0, 59].</p>
+<p>• Second must be a num with scale&lt;=9 in the range [0.000000000, 59.999999999].</p>
+</section>
+<section id="datetime-is-val">
+<span id="api-572109b98637a33437dfe3dea5d69c2e"></span><h2><span class="section-number">6.38.3. </span>DATETIME.is?(Val)<a class="headerlink" href="#datetime-is-val" title="Link to this heading">¶</a></h2>
+<p>DATETIME.is? returns whether Val is a `datetime` val.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-TREE_SET.html"><span class="section-number">6.37. </span>kink/container/TREE_SET</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-datetime-DAY_OF_WEEK.html"><span class="section-number">6.39. </span>kink/datetime/DAY_OF_WEEK</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

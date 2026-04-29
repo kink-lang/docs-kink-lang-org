@@ -1,0 +1,73 @@
+==========
+kink\/BOOL
+==========
+
+Companion mod for bool vals\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-4114da34f96e8d8f51b850be2f586125:
+
+type bool
+=========
+
+Bool vals are true or false\,
+
+See \`if\` preloaded fun for 1\-way or 2\-way branch\.
+
+For multi\-way branch\, use \`branch\` preloaded fun\.
+
+See \`op\_lognot\`\, \`op\_logor\`\, \`op\_logand\` preloaded funs for logical operations\. They are translated from \!\, \|\|\, and \&\& operators\. Example\:
+
+.. code:: kink
+
+    # whether S has a whitespace character on the head or the tail
+    :strippable? <- {(:S)
+      S.any? && (S.get(0) == 0x20 || S.get(S.size - 1) == 0x20)
+    }
+        
+    stdout.print_line(strippable?('foo').repr)  # => false
+    stdout.print_line(strippable?(' foo').repr) # => true
+    stdout.print_line(strippable?('foo ').repr) # => true
+    stdout.print_line(strippable?('').repr)     # => false
+
+.. _api-5e13249ccd82055f19a86811319e5146:
+
+Bool\.op\_eq\(Arg\_bl\)
+-----------------------
+
+Bool\.op\_eq returns whether two bool vals are equal\.
+
+Arg\_bl must be a bool\.
+
+If both Bool and Arg\_bl are true\, or both Bool and Arg\_bl are false\, Bool\.op\_eq returns true\.
+
+If Bool is true and Arg\_bl is false\, or Bool is false and Arg\_bl is true\, Bool\.op\_eq returns false\.
+
+Note that an expression “X \=\= Y” is translated to “\(X\)\.op\_eq\(Y\)”\. See Semantics section of the manual\.
+
+.. _api-96ec3c036cb6c4bb0e22e09472be6f5f:
+
+Bool\.repr
+----------
+
+Bool\.repr returns \"true\" for true\, \"false\" for false\.
+
+.. _api-720ddc3162ac38219e5bf4db24f92857:
+
+BOOL\.is\?\(Val\)
+=================
+
+BOOL\.is\? returns whether the Val is a bool val\.
+
+Example\:
+
+.. code:: kink
+
+    :BOOL.require_from('kink/')
+    stdout.print_line(BOOL.is?(true).repr)   # => true
+    stdout.print_line(BOOL.is?(false).repr)  # => true
+    stdout.print_line(BOOL.is?(42).repr)     # => false
+

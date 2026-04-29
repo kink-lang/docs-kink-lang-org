@@ -1,0 +1,160 @@
+===================
+kink\/thread\/MUTEX
+===================
+
+Provides non\-reentrant mutex locks\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-9cd32f50f8302dfb93c4ffd5a50d2cb5:
+
+type mutex
+==========
+
+A mutex is a non\-reentrant mutual exclusion lock\. A mutex can also be used as a conditional variable on itself\.
+
+For a mutex\, at the most one thread can hold the mutex\.
+
+If a thread is holding the mutex\, the thread cannot acquire the mutex again\. Namely\, it is not reentrant\.
+
+Example\: a simple semaphore\:
+
+.. code:: kink
+
+    :MUTEX.require_from('kink/thread/')
+        
+    :new_semaphore <- {(:Capa)
+      :V = new_val('Count' 0)
+      :Mut = MUTEX.new
+      new_val(
+        'acquire' {
+          Mut.with_lock{
+            Mut.wait_until{ V.Count < Capa }
+            V:Count <- V.Count + 1
+          }
+        }
+        'release' {
+          Mut.with_lock{
+            V:Count <- V.Count - 1
+            Mut.notify_all
+          }
+        }
+      )
+    }
+
+§§ Design note\: Why non\-reentrant\?
+
+A mutex is designed to be non\-reentrant\, because a non\-reentrant mutex\:
+
+\• Can detect imbalanced lock\-unlock correspondence earlier\, and
+
+\• Makes a programmer more careful about a critical section boundary
+
+.. _api-4dcdf493d807b9206c139bd4cf37cc54:
+
+Mutex\.lock
+-----------
+
+Mutex\.lock acquires the Mutex\.
+
+Precondition\:
+
+\• The current thread must NOT hold the mutex
+
+If the Mutex is held by another thread\, the current thread blocks until it is available\.
+
+.. _api-876e668ec56193ea00bef261deea8b51:
+
+Mutex\.unlock
+-------------
+
+Mutex\.unlock releases the mutex\.
+
+Precondition\:
+
+\• The current thread must hold the Mutex
+
+.. _api-741d656f74c02970dd31d08812a2a2da:
+
+Mutex\.with\_lock\(\$thunk\)
+----------------------------
+
+Mutex\.with\_lock calls \$thunk holding the Mutex\. This is a convenient wrapper method for \.lock and \.unlock\.
+
+Precondition\:
+
+\• The current thread must NOT hold the lock
+
+Mutex\.with\_lock acquires the Mutex before invoking \$thunk\, and releases the Mutex after \$thunk returns a val\, raising an exception\, or escaping \(see kink\/CONTROL\.escape\)\.
+
+.. _api-7a8abd08eeda71a0bbee9ea847573dcf:
+
+Mutex\.wait\(\.\.\.\[Timeout\_seconds \= plus infinity\]\)
+----------------------------------------------------------
+
+\`wait\` blocks the thread until waken up\.
+
+Preconditions\:
+
+\• The current thread must hold \`Mutex\`
+
+\• If \`Timeout\_seconds\` is specified\, it must be a non\-negative num
+
+Calling \.wait method releases \`Mutex\` until it gets waken up\. When the thread gets waken up\, the thread acquires \`Mutex\` again\.
+
+The thread gets waken when\:
+
+\• Another thread calls \.notify\_all method for \`Mutex\`\,
+
+\• \`Timeout\_seconds\` passes\, or
+
+\• “Spurious wakeup” happens\; namely without any trigger within your program
+
+Because of existence of “spurious wakeup\,” you should always test the status which is waited for\.
+
+See POSIX specification for “spurious wakeup\.”
+
+http\:\/\/pubs\.opengroup\.org\/onlinepubs\/9699919799\/functions\/pthread\_cond\_timedwait\.html
+
+.. _api-34562f85276f96d77a793094fbddaddc:
+
+Mutex\.wait\_until\(\$ok\_thunk\?\)
+-----------------------------------
+
+Mutex\.wait\_until blocks the thread until waken up\, and \$ok\_thunk\? returns true\.
+
+This is a convenient wrapper method for \.wait\.
+
+Precondition\:
+
+\• The current thread must hold a lease of the lock\.
+
+Note that \$ok\_thunk\? is called in the current thread while holding the Mutex\.
+
+.. _api-51b8998d1bc5234d2ff4d6d9c9f41aec:
+
+Mutex\.notify\_all
+------------------
+
+Mutex\.notify\_all makes all the threads which is waiting for the Mutex via \.wait method waken up when the Mutex is available\.
+
+Precondition\:
+
+\• The current thread must hold a lease of the lock\.
+
+.. _api-1ed388d4373b9cf6e95512a03d5f80bd:
+
+MUTEX\.is\?\(Val\)
+==================
+
+MUTEX\.is\? returns whether the Val is a mutex\.
+
+.. _api-5ed163469fdfe4441c101350547e551f:
+
+MUTEX\.new
+==========
+
+MUTEX\.new makes a new mutex\.
+

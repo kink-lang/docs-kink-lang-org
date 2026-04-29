@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>7.6. Error handling &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="7.7. Naming conventions" href="naming.html" />
+    <link rel="prev" title="7.5. Control structure" href="control.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>7.6. Error handling</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="control.html"><span class="section-number">7.5. </span>Control structure</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="naming.html"><span class="section-number">7.7. </span>Naming conventions</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="error-handling">
+<h1><span class="section-number">7.6. </span>Error handling<a class="headerlink" href="#error-handling" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#error-handling-approeaches" id="id1">Error handling approeaches</a></p></li>
+<li><p><a class="reference internal" href="#error-result-for-valid-input" id="id2">Error result for valid input</a></p></li>
+<li><p><a class="reference internal" href="#exception-as-a-panic-button" id="id3">Exception as a panic button</a></p></li>
+<li><p><a class="reference internal" href="#when-to-catch-an-exception" id="id4">When to catch an exception</a></p></li>
+</ul>
+</nav>
+<section id="error-handling-approeaches">
+<h2><span class="section-number">7.6.1. </span>Error handling approeaches<a class="headerlink" href="#error-handling-approeaches" title="Link to this heading">¶</a></h2>
+<p>In general, there are three common approaches to handle exceptional situation
+in program languages: variant types, <a class="reference internal" href="../glossary.html#term-exception"><span class="xref std std-term">exceptions</span></a>,
+and <a class="reference internal" href="../glossary.html#term-continuation"><span class="xref std std-term">continuation</span></a> passing.</p>
+<p>Variant types such as <code class="docutils literal notranslate"><span class="pre">Either</span></code> in Haskell can naturally represent
+that an expression can yield either a normal result, or an exceptional result.
+However, variant types are pointless without static typing, or syntactical
+mechanisms such as monad, which Kink does not support.</p>
+<p>Exceptions are convenient to raise and ignore, but cumbersome to catch.
+It's really easy to miss what can happen where,
+because you might catch an exception raised
+from any subexpression of the <code class="docutils literal notranslate"><span class="pre">try</span></code> block, at any depth of the call stack.
+Java's checked exception aimed to address that problem,
+resulting in tons of new problems.
+Sometimes you know your code never results in an exception,
+but nevertheless you must still check it because it is a checked exception.
+Example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">MessageDigest</span><span class="w"> </span><span class="n">md</span><span class="p">;</span>
+<span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">md</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MessageDigest</span><span class="p">.</span><span class="na">getInstance</span><span class="p">(</span><span class="s">&quot;SHA-256&quot;</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">NoSuchAlgorithmException</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RuntimeException</span><span class="p">(</span>
+<span class="w">      </span><span class="s">&quot;must reach here; SHA-256 is always supported&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>With the third approach, continuation passing,
+the caller can pass actions to be performed when the invocation resulted
+in a success, or an error.
+Continuation passing is practical in languages like Kink,
+where an anonymous function can be easily produced as a first class value.</p>
+<p>Kink adopts continuation passing and exceptions as error handling approaches.</p>
+</section>
+<section id="error-result-for-valid-input">
+<h2><span class="section-number">7.6.2. </span>Error result for valid input<a class="headerlink" href="#error-result-for-valid-input" title="Link to this heading">¶</a></h2>
+<p>If a function call can result in an error with valid input,
+it is recommended that the function optionally
+take <a class="reference internal" href="../glossary.html#term-continuation"><span class="xref std std-term">continuations</span></a>
+for both a success result and an error result.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">compile</span></code> function of
+<a class="reference internal" href="../api/kink-regex-REGEX.html"><span class="doc">kink/regex/REGEX</span></a>
+takes a success continuation and an error continuation
+through a config function.
+You can specify a success continuation by <code class="docutils literal notranslate"><span class="pre">on_success</span></code>,
+and an error continuation by <code class="docutils literal notranslate"><span class="pre">on_error</span></code>.
+The success continuation is tail-called when the pattern can be compiled,
+and the error continuation is tail-called when the pattern has a syntax error.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># match.kn</span>
+
+<span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+
+<span class="nv">:main</span> &lt;- {(<span class="nv">:Argv</span>)
+  <span class="nv">:Pattern</span> = <span class="nv">Argv</span>.<span class="n">front</span>
+  <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="nv">Pattern</span>){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Regex</span>)
+      <span class="nv">:Msg</span> = <span class="n">if</span>(<span class="nv">Regex</span>.<span class="n">accept?</span>(<span class="s1">&#39;foobar&#39;</span>)
+        { <span class="s1">&#39;/{}/ matches &quot;foobar&quot;&#39;</span>.<span class="n">format</span>(<span class="nv">REGEX</span>.<span class="n">escape</span>(<span class="nv">Pattern</span>)) }
+        { <span class="s1">&#39;/{}/ does not match &quot;foobar&quot;&#39;</span>.<span class="n">format</span>(<span class="nv">REGEX</span>.<span class="n">escape</span>(<span class="nv">Pattern</span>)) }
+      )
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Msg</span>)
+    }
+    <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Msg</span> <span class="nv">:Ind</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;error at index={}: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Ind</span> <span class="nv">Msg</span>))
+    }
+  }
+}
+
+<span class="c1"># $ kink match.kn &#39;fo+bar&#39;</span>
+<span class="c1"># /\Qfo+bar\E/ matches &quot;foobar&quot;</span>
+<span class="c1">#</span>
+<span class="c1"># $ kink match.kn &#39;fx+bar&#39;</span>
+<span class="c1"># /\Qfx+bar\E/ does not match &quot;foobar&quot;</span>
+<span class="c1">#</span>
+<span class="c1"># $ kink match.kn &#39;[[[&#39;</span>
+<span class="c1"># error at index=2: Unclosed character class</span>
+</pre></div>
+</div>
+<p>It is recommended that the default success continuation return the result.
+It is recommended that the default error continuation raise an <a class="reference internal" href="../glossary.html#term-exception"><span class="xref std std-term">exception</span></a>.</p>
+<p>In the following example, no continuations are specified for <code class="docutils literal notranslate"><span class="pre">compile</span></code>,
+so an exception is raised when the pattern has a syntax error.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># match_lazy.kn</span>
+
+<span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+
+<span class="nv">:main</span> &lt;- {(<span class="nv">:Argv</span>)
+  <span class="nv">:Pattern</span> = <span class="nv">Argv</span>.<span class="n">front</span>
+  <span class="nv">:Regex</span> = <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="nv">Pattern</span>)
+  <span class="nv">:Msg</span> = <span class="n">if</span>(<span class="nv">Regex</span>.<span class="n">accept?</span>(<span class="s1">&#39;foobar&#39;</span>)
+    { <span class="s1">&#39;/{}/ matches &quot;foobar&quot;&#39;</span>.<span class="n">format</span>(<span class="nv">REGEX</span>.<span class="n">escape</span>(<span class="nv">Pattern</span>)) }
+    { <span class="s1">&#39;/{}/ does not match &quot;foobar&quot;&#39;</span>.<span class="n">format</span>(<span class="nv">REGEX</span>.<span class="n">escape</span>(<span class="nv">Pattern</span>)) }
+  )
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Msg</span>)
+}
+
+<span class="c1"># $ kink match_lazy.kn &#39;fo+bar&#39;</span>
+<span class="c1"># /\Qfo+bar\E/ matches &quot;foobar&quot;</span>
+<span class="c1">#</span>
+<span class="c1"># $ kink match_lazy.kn &#39;fx+bar&#39;</span>
+<span class="c1"># /\Qfx+bar\E/ does not match &quot;foobar&quot;</span>
+<span class="c1">#</span>
+<span class="c1"># $ kink match_lazy.kn &#39;[[[&#39;</span>
+<span class="c1"># -- main exception</span>
+<span class="c1"># [(root)]</span>
+<span class="c1"># ,,,</span>
+<span class="c1"># REGEX.compile(Pattern ...[$config]): syntax error: Unclosed character class: [[--&gt;[</span>
+</pre></div>
+</div>
+<p>Note that information within exceptions
+should be used only for debugging purpose.
+That is why an exception contains only the message, the stack trace,
+and optionally the next exception in the chain.
+If you want to use detailed information such as the position index
+where the syntax error is found, specify an error continuation
+instead of catching the exception.</p>
+</section>
+<section id="exception-as-a-panic-button">
+<h2><span class="section-number">7.6.3. </span>Exception as a panic button<a class="headerlink" href="#exception-as-a-panic-button" title="Link to this heading">¶</a></h2>
+<p>When things go wrong and there is nothing else you can do,
+you can raise an <a class="reference internal" href="../glossary.html#term-exception"><span class="xref std std-term">exception</span></a> as a panic button.
+As an example, you can raise an exception when
+a precondition of a function is not met.
+It can be a type mismatch, zero division, and so on.</p>
+<p>In the next program, <code class="docutils literal notranslate"><span class="pre">new_rat</span></code> is a constructor of a rational number type.
+<code class="docutils literal notranslate"><span class="pre">new_rat</span></code> has a precondition that <code class="docutils literal notranslate"><span class="pre">Denom</span></code> must be nonzero,
+because the denominator of a rational number cannot be zero.
+However, invocation of <code class="docutils literal notranslate"><span class="pre">new_rat</span></code> at [A] passes <code class="docutils literal notranslate"><span class="pre">0</span></code> as <code class="docutils literal notranslate"><span class="pre">Denom</span></code>,
+thus the precondition does not match.
+In that case, there is nothing else <code class="docutils literal notranslate"><span class="pre">new_rat</span></code> can do,
+so it raises an exception.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:new_rat</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">Numer</span>) &amp;&amp; <span class="nv">Numer</span>.<span class="n">int?</span> || <span class="n">raise</span>(
+    <span class="s1">&#39;new_rat(Numer Denom): Numer must be int num, but was {}&#39;</span>
+    .<span class="n">format</span>(<span class="nv">Numer</span>.<span class="n">repr</span>))
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">Denom</span>) &amp;&amp; <span class="nv">Denom</span>.<span class="n">int?</span> &amp;&amp; <span class="nv">Denom</span> != <span class="m">0</span> || <span class="n">raise</span>(
+    <span class="s1">&#39;new_rat(Numer Denom): Denom must be nonzero int num, but was {}&#39;</span>
+    .<span class="n">format</span>(<span class="nv">Denom</span>.<span class="n">repr</span>))
+
+  <span class="n">new_val</span>(
+    ... <span class="nv">Rat_trait</span>
+    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
+    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
+  )
+}
+
+<span class="nv">:Rat_trait</span> &lt;- [
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Numer</span> }
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>] <span class="nv">R</span>.<span class="nv">Denom</span> }
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>] <span class="s1">&#39;(rat {}/{})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>) }
+]
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">new_rat</span>(<span class="m">2</span> <span class="m">5</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; (rat 2/5)</span>
+
+<span class="c1"># [A]</span>
+<span class="n">new_rat</span>(<span class="m">3</span> <span class="m">0</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [..root..]</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {(stdin) L8 C51 raise} NUM.is?(Denom) &amp;&amp; Denom.int? &amp;&amp; Denom != 0 || --&gt;raise(</span>
+<span class="c1">#   new_rat(Numer Denom): Denom must be nonzero int num, but was 0</span>
+</pre></div>
+</div>
+</section>
+<section id="when-to-catch-an-exception">
+<h2><span class="section-number">7.6.4. </span>When to catch an exception<a class="headerlink" href="#when-to-catch-an-exception" title="Link to this heading">¶</a></h2>
+<p>Catch an <a class="reference internal" href="../glossary.html#term-exception"><span class="xref std std-term">exception</span></a> only to report the error to engineers,
+and to continue the process.</p>
+<p>For example, an HTTP server will catch an exception
+which is raised during request processing.
+It will probably write the exception to the log file,
+and return 500 Internal Server Error response.</p>
+<p>As another example, a multithread producer-consumer framework
+will catch an exception which is raised during task processing.
+It will probably write the exception to the log file,
+and notify the task producer of the error.</p>
+<p>If you want to get details of an error, such as the SQL error code
+or the HTTP status code, exceptions are not the way to go.
+Use continuation passing instead.
+When you determine what to do based on the exception message in your program,
+it is a sign of a bad design. Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># DON&#39;T DO LIKE THIS</span>
+<span class="nv">:add_employee_bad_way</span> &lt;- {(<span class="nv">:Conn</span> <span class="nv">:Id</span> <span class="nv">:Name</span> <span class="nv">:success_cont</span> <span class="nv">:duplicate_id_cont</span>)
+  <span class="nv">CONTROL</span>.<span class="n">try</span>(
+    { <span class="nv">Conn</span>.<span class="n">execute</span>(<span class="s1">&#39;INSERT INTO employee(id, name) VALUES(?, ?)&#39;</span> [<span class="nv">Id</span> <span class="nv">Name</span>]) }
+    { <span class="n">success_cont</span> }
+    {(<span class="nv">:Exc</span>)
+      <span class="n">if</span>(<span class="nv">Exc</span>.<span class="n">message</span>.<span class="n">have_slice?</span>(<span class="s1">&#39;SQL code: 00001&#39;</span>)
+        { <span class="n">duplicate_id_cont</span> }
+        { <span class="nv">Exc</span>.<span class="n">raise</span> }
+      )
+    }
+  )
+}
+
+<span class="c1"># do like this</span>
+<span class="nv">:add_employee</span> &lt;- {(<span class="nv">:Conn</span> <span class="nv">:Id</span> <span class="nv">:Name</span> <span class="nv">:success_cont</span> <span class="nv">:duplicate_id_cont</span>)
+  <span class="nv">Conn</span>.<span class="n">execute</span>(<span class="s1">&#39;INSERT INTO employee(id, name) VALUES(?, ?)&#39;</span> [<span class="nv">Id</span> <span class="nv">Name</span>]){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{ <span class="n">success_cont</span> }
+    <span class="nv">C</span>.<span class="n">on_uniqueness_violation</span>{ <span class="n">duplicate_id_cont</span> }
+    <span class="c1"># for other types of errors, let `execute` raise an exception</span>
+  }
+}
+</pre></div>
+</div>
+<p>Of course,
+it is permissible to catch an exception to test the exception message.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:RAT</span>.<span class="n">require_from</span>(<span class="s1">&#39;org/example/&#39;</span>)
+<span class="nv">:TEST</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/test/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">TEST</span>.<span class="n">group</span>(<span class="s1">&#39;Rat / rat&#39;</span>){
+  <span class="nv">TEST</span>.<span class="n">test</span>(<span class="s1">&#39;zero division is not allowed&#39;</span>){
+    <span class="nv">:Numer</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">3</span>)
+    <span class="nv">:Denom</span> = <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">0</span> <span class="m">2</span>)
+    <span class="nv">CONTROL</span>.<span class="n">try</span>(
+      { <span class="nv">Numer</span> / <span class="nv">Denom</span> }
+      {(<span class="nv">:R</span>) <span class="n">raise</span>(<span class="s1">&#39;got {}&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">repr</span>)) }
+      {(<span class="nv">:Exc</span>)
+        <span class="nv">:Msg</span> = <span class="nv">Exc</span>.<span class="n">message</span>
+        <span class="nv">Msg</span>.<span class="n">have_slice?</span>(<span class="s1">&#39;Rat.op_div&#39;</span>) &amp;&amp; <span class="nv">Msg</span>.<span class="n">have_slice?</span>(<span class="s1">&#39;zero&#39;</span>) || <span class="nv">Exc</span>.<span class="n">raise</span>
+      }
+    )
+  }
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="control.html"><span class="section-number">7.5. </span>Control structure</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="naming.html"><span class="section-number">7.7. </span>Naming conventions</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

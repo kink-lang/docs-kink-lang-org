@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.2. kink/BIN &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.3. kink/BINDING" href="kink-BINDING.html" />
+    <link rel="prev" title="6.1. kink/ARGV_PARSER" href="kink-ARGV_PARSER.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.2. kink/BIN</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-ARGV_PARSER.html"><span class="section-number">6.1. </span>kink/ARGV_PARSER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-BINDING.html"><span class="section-number">6.3. </span>kink/BINDING</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-bin">
+<h1><span class="section-number">6.2. </span>kink/BIN<a class="headerlink" href="#kink-bin" title="Link to this heading">¶</a></h1>
+<p>Companion mod for bin vals.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-bin" id="id3">type bin</a></p>
+<ul>
+<li><p><a class="reference internal" href="#bin-size" id="id4">Bin.size</a></p></li>
+<li><p><a class="reference internal" href="#bin-any" id="id5">Bin.any?</a></p></li>
+<li><p><a class="reference internal" href="#bin-get-ind" id="id6">Bin.get(Ind)</a></p></li>
+<li><p><a class="reference internal" href="#bin-slice-from-to" id="id7">Bin.slice(From To)</a></p></li>
+<li><p><a class="reference internal" href="#bin-take-front-n" id="id8">Bin.take_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#bin-take-back-n" id="id9">Bin.take_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#bin-drop-front-n" id="id10">Bin.drop_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#bin-drop-back-n" id="id11">Bin.drop_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#bin1-bin2" id="id12">Bin1 + Bin2</a></p></li>
+<li><p><a class="reference internal" href="#bin-n" id="id13">Bin * N</a></p></li>
+<li><p><a class="reference internal" href="#api-878a019e16a5d5ef1afae22edeaa98d7" id="id14">Bin1 == Bin2</a></p></li>
+<li><p><a class="reference internal" href="#api-558b801a901b8a7134812b839c5296c8" id="id15">Bin1 &lt;= Bin2</a></p></li>
+<li><p><a class="reference internal" href="#bin-repr" id="id16">Bin.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#bin-is-val" id="id17">BIN.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#bin-of-nums" id="id18">BIN.of(... Nums)</a></p></li>
+<li><p><a class="reference internal" href="#bin-from-each-eacher" id="id19">BIN.from_each(Eacher)</a></p></li>
+</ul>
+</nav>
+<section id="type-bin">
+<span id="api-82b05762775bcc1b8e8b6a637617beaf"></span><h2><span class="section-number">6.2.1. </span>type bin<a class="headerlink" href="#type-bin" title="Link to this heading">¶</a></h2>
+<p>`bin` is a finite length immutable byte array.</p>
+<p>Elements of `bin` are int `num` vals in the range [0x00, 0xff].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Magic</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xca</span> <span class="m">0xfe</span> <span class="m">0xba</span> <span class="m">0xbe</span>)
+<span class="nv">:Slice</span> &lt;- <span class="nv">Magic</span>.<span class="n">take_front</span>(<span class="m">2</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0xca 0xfe)</span>
+</pre></div>
+</div>
+<section id="bin-size">
+<span id="api-f2b44e4ba16a23807f9dbdfc39a0373f"></span><h3><span class="section-number">6.2.1.1. </span>Bin.size<a class="headerlink" href="#bin-size" title="Link to this heading">¶</a></h3>
+<p>`size` returns a `num` of the number of elements of `Bin`.</p>
+</section>
+<section id="bin-any">
+<span id="api-ebed43145e5d610e70c443c5fff6c17f"></span><h3><span class="section-number">6.2.1.2. </span>Bin.any?<a class="headerlink" href="#bin-any" title="Link to this heading">¶</a></h3>
+<p>`any?` returns whether the size of `Bin` is greater than or equal to 1.</p>
+</section>
+<section id="bin-get-ind">
+<span id="api-122a097b98c9a8356e280db3d12ce141"></span><h3><span class="section-number">6.2.1.3. </span>Bin.get(Ind)<a class="headerlink" href="#bin-get-ind" title="Link to this heading">¶</a></h3>
+<p>`get` returns the element at the index `Ind` in `Bin`.</p>
+<p>The result is an int `num` in the range [0, 0xff].</p>
+<p class="rubric">Precondition</p>
+<p>`Ind` must be an int `num` in the range [0, Bin.size).</p>
+</section>
+<section id="bin-slice-from-to">
+<span id="api-3b2e2857cbb8a6c94a1be4155faa93ad"></span><h3><span class="section-number">6.2.1.4. </span>Bin.slice(From To)<a class="headerlink" href="#bin-slice-from-to" title="Link to this heading">¶</a></h3>
+<p>`slice` returns a `bin` of the slice in the range [From, To).</p>
+<p class="rubric">Preconditions</p>
+<p>`From` and `To` must be integer `num` values.</p>
+<p>0 &lt;= From &lt;= To &lt;= Bin.size</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Magic</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xca</span> <span class="m">0xfe</span> <span class="m">0xba</span> <span class="m">0xbe</span>)
+<span class="nv">:Slice</span> &lt;- <span class="nv">Magic</span>.<span class="n">slice</span>(<span class="m">1</span> <span class="m">3</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0xfe 0xba)</span>
+</pre></div>
+</div>
+</section>
+<section id="bin-take-front-n">
+<span id="api-d1ac9d599b50ebd0adb923e7be1dbf5b"></span><h3><span class="section-number">6.2.1.5. </span>Bin.take_front(N)<a class="headerlink" href="#bin-take-front-n" title="Link to this heading">¶</a></h3>
+<p>`take_front` returns a `bin` that is a slice of the first `N` elements of `Bin`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an int `num` in the range [0, Bin.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Pdf_signature</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x25</span> <span class="m">0x50</span> <span class="m">0x44</span> <span class="m">0x46</span> <span class="m">0x2d</span>)
+<span class="nv">:Slice</span> &lt;- <span class="nv">Pdf_signature</span>.<span class="n">take_front</span>(<span class="m">2</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x25 0x50)</span>
+</pre></div>
+</div>
+</section>
+<section id="bin-take-back-n">
+<span id="api-21ef0dca6a0e1fe2247205a3874e1d3b"></span><h3><span class="section-number">6.2.1.6. </span>Bin.take_back(N)<a class="headerlink" href="#bin-take-back-n" title="Link to this heading">¶</a></h3>
+<p>`take_back` returns a `bin` that is a slice of the last `N` elements of `Bin`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an int `num` in the range [0, Bin.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Pdf_signature</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x25</span> <span class="m">0x50</span> <span class="m">0x44</span> <span class="m">0x46</span> <span class="m">0x2d</span>)
+<span class="nv">:Slice</span> &lt;- <span class="nv">Pdf_signature</span>.<span class="n">take_back</span>(<span class="m">2</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x46 0x2d)</span>
+</pre></div>
+</div>
+</section>
+<section id="bin-drop-front-n">
+<span id="api-69b2a56f071156aa536f2710828e60e8"></span><h3><span class="section-number">6.2.1.7. </span>Bin.drop_front(N)<a class="headerlink" href="#bin-drop-front-n" title="Link to this heading">¶</a></h3>
+<p>`drop_front` returns a `bin` that is a slice excluding the first `N` elements of `Bin`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an int `num` in the range [0, Bin.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Pdf_signature</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x25</span> <span class="m">0x50</span> <span class="m">0x44</span> <span class="m">0x46</span> <span class="m">0x2d</span>)
+<span class="nv">:Slice</span> &lt;- <span class="nv">Pdf_signature</span>.<span class="n">drop_front</span>(<span class="m">2</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x44 0x46 0x2d)</span>
+</pre></div>
+</div>
+</section>
+<section id="bin-drop-back-n">
+<span id="api-c2d3ae3c1a7a4e8b234e7bb62501736c"></span><h3><span class="section-number">6.2.1.8. </span>Bin.drop_back(N)<a class="headerlink" href="#bin-drop-back-n" title="Link to this heading">¶</a></h3>
+<p>`drop_back` returns a `bin` that is a slice excluding the last `N` elements of `Bin`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an int `num` in the range [0, Bin.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Pdf_signature</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x25</span> <span class="m">0x50</span> <span class="m">0x44</span> <span class="m">0x46</span> <span class="m">0x2d</span>)
+<span class="nv">:Slice</span> &lt;- <span class="nv">Pdf_signature</span>.<span class="n">drop_back</span>(<span class="m">2</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x25 0x50 0x44)</span>
+</pre></div>
+</div>
+</section>
+<section id="bin1-bin2">
+<span id="api-3e13c84330f5676c9587947b89bb790b"></span><h3><span class="section-number">6.2.1.9. </span>Bin1 + Bin2<a class="headerlink" href="#bin1-bin2" title="Link to this heading">¶</a></h3>
+<p>`+` operator, or `op_add` method, returns a `bin` containing the elements of `Bin1` on the front, and the elements of `Bin2` on the back.</p>
+<p class="rubric">Precondition</p>
+<p>`Bin2` must be a `bin`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Cafe</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xca</span> <span class="m">0xfe</span>)
+<span class="nv">:Babe</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xba</span> <span class="m">0xbe</span>)
+<span class="nv">:Cafe_babe</span> &lt;- <span class="nv">Cafe</span> + <span class="nv">Babe</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Cafe_babe</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0xca 0xfe 0xba 0xbe)</span>
+</pre></div>
+</div>
+</section>
+<section id="bin-n">
+<span id="api-0682105fdc1cb4306b262f9c6d11469c"></span><h3><span class="section-number">6.2.1.10. </span>Bin * N<a class="headerlink" href="#bin-n" title="Link to this heading">¶</a></h3>
+<p>`*` operator, or `op_mul` method, returns a `bin` repeating the elements of `Bin`, `N` times.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an int `num`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Babe</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xba</span> <span class="m">0xbe</span>)
+<span class="nv">:Babe_babe_babe</span> &lt;- <span class="nv">Babe</span> * <span class="m">3</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Babe_babe_babe</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0xba 0xbe 0xba 0xbe 0xba 0xbe)</span>
+</pre></div>
+</div>
+</section>
+<section id="api-878a019e16a5d5ef1afae22edeaa98d7">
+<span id="id1"></span><h3><span class="section-number">6.2.1.11. </span>Bin1 == Bin2<a class="headerlink" href="#api-878a019e16a5d5ef1afae22edeaa98d7" title="Link to this heading">¶</a></h3>
+<p>`==` operator, or `op_eq` method, returns whether `Bin1` and `Bin2` contain the same sequence of elements.</p>
+<p class="rubric">Precondition</p>
+<p>`Bin1` and `Bin2` must be `bin` type.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Bin</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">Bin</span> == <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">Bin</span> != <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">Bin</span> == <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">3</span> <span class="m">2</span> <span class="m">1</span>)).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">Bin</span> != <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">3</span> <span class="m">2</span> <span class="m">1</span>)).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="api-558b801a901b8a7134812b839c5296c8">
+<span id="id2"></span><h3><span class="section-number">6.2.1.12. </span>Bin1 &lt;= Bin2<a class="headerlink" href="#api-558b801a901b8a7134812b839c5296c8" title="Link to this heading">¶</a></h3>
+<p>`&lt;=` operator, or `op_le` method, returns whether `Bin1` is smaller than or equal to `Bin2` lexicographically.</p>
+<p class="rubric">Precondition</p>
+<p>`Bin1` and `Bin2` must be `bin` values.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:compare</span> &lt;- {(<span class="nv">:Bin</span> <span class="nv">:Arg_bin</span>)
+  [<span class="nv">:Lt?</span> <span class="nv">:Le?</span> <span class="nv">:Gt?</span> <span class="nv">:Ge?</span>] = [
+    <span class="nv">Bin</span> &lt; <span class="nv">Arg_bin</span>
+    <span class="nv">Bin</span> &lt;= <span class="nv">Arg_bin</span>
+    <span class="nv">Bin</span> &gt; <span class="nv">Arg_bin</span>
+    <span class="nv">Bin</span> &gt;= <span class="nv">Arg_bin</span>
+  ]
+  <span class="n">stdout</span>.<span class="n">print_line</span>(
+    <span class="s1">&#39;Lt?={} Le?={} Gt?={} Ge?={}&#39;</span>.<span class="n">format</span>(<span class="nv">Lt?</span>.<span class="n">repr</span> <span class="nv">Le?</span>.<span class="n">repr</span> <span class="nv">Gt?</span>.<span class="n">repr</span> <span class="nv">Ge?</span>.<span class="n">repr</span>))
+}
+
+<span class="n">compare</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>) <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>))    <span class="c1"># =&gt; Lt?=false Le?=true Gt?=false Ge?=true</span>
+<span class="n">compare</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>) <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>))  <span class="c1"># =&gt; Lt?=true Le?=true Gt?=false Ge?=false</span>
+<span class="n">compare</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>) <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span>))      <span class="c1"># =&gt; Lt?=false Le?=false Gt?=true Ge?=true</span>
+</pre></div>
+</div>
+</section>
+<section id="bin-repr">
+<span id="api-f6a86b6c41324569f1909a66cd2fdcad"></span><h3><span class="section-number">6.2.1.13. </span>Bin.repr<a class="headerlink" href="#bin-repr" title="Link to this heading">¶</a></h3>
+<p>`repr` returns a str like &quot;(bin 0xca 0xfe 0xba 0xbe)&quot;, or &quot;(bin 0x01 0x02 0x03 ,,, size=999 ,,, 0xfd 0xfe 0xff)&quot;</p>
+</section>
+</section>
+<section id="bin-is-val">
+<span id="api-8e317be47842c41df30f7acc2ece1a61"></span><h2><span class="section-number">6.2.2. </span>BIN.is?(Val)<a class="headerlink" href="#bin-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `bin`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Bin</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">is?</span>(<span class="nv">Bin</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">is?</span>(<span class="m">42</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="bin-of-nums">
+<span id="api-72bef2f9ac0c3f203b50bf21397b173d"></span><h2><span class="section-number">6.2.3. </span>BIN.of(... Nums)<a class="headerlink" href="#bin-of-nums" title="Link to this heading">¶</a></h2>
+<p>`of` returns a `bin` containing `Nums` as the elements.</p>
+<p class="rubric">Precondition</p>
+<p>Each element of `Nums` must be an int `num` in the range [0, 0xff].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Bin</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0</span> <span class="m">1</span> <span class="m">254</span> <span class="m">255</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Bin</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x00 0x01 0xfe 0xff)</span>
+</pre></div>
+</div>
+</section>
+<section id="bin-from-each-eacher">
+<span id="api-0587341c37a10bc7dd4025ce72743805"></span><h2><span class="section-number">6.2.4. </span>BIN.from_each(Eacher)<a class="headerlink" href="#bin-from-each-eacher" title="Link to this heading">¶</a></h2>
+<p>`from_each` returns a `bin` containing elements of `Eacher`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Eacher` must support .each($consume) method like vectors and iters.</p>
+<p>Each element of `Eacher` must be an int `num` in the range [0, 0xff].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Bin</span> &lt;- <span class="nv">BIN</span>.<span class="n">from_each</span>([<span class="m">0</span> <span class="m">1</span> <span class="m">254</span> <span class="m">255</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Bin</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x00 0x01 0xfe 0xff)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-ARGV_PARSER.html"><span class="section-number">6.1. </span>kink/ARGV_PARSER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-BINDING.html"><span class="section-number">6.3. </span>kink/BINDING</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.44. kink/doc/DOC_PARSE_TOOL &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.45. kink/doc/model/BLOCK" href="kink-doc-model-BLOCK.html" />
+    <link rel="prev" title="6.43. kink/datetime/TIMEZONE" href="kink-datetime-TIMEZONE.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.44. kink/doc/DOC_PARSE_TOOL</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-datetime-TIMEZONE.html"><span class="section-number">6.43. </span>kink/datetime/TIMEZONE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-doc-model-BLOCK.html"><span class="section-number">6.45. </span>kink/doc/model/BLOCK</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-doc-doc-parse-tool">
+<h1><span class="section-number">6.44. </span>kink/doc/DOC_PARSE_TOOL<a class="headerlink" href="#kink-doc-doc-parse-tool" title="Link to this heading">¶</a></h1>
+<p>Launcheable mod to parse kink doc and generate JSON.</p>
+<p>Usage: kink [Kink_options]... mod:kink/doc/DOC_PARSE_TOOL [Mod_options]... Src_dir_path...</p>
+<p>The command finds Kink source files of exposed mods from Src_dir_paths. It parses kink doc from the source files, then outputs JSON of the kink doc to the standard output, or the output file if `--output` is specified.</p>
+<p>Mod_options:</p>
+<p>• --title {Title} : gives the title of the kink doc. If not given, the default title is used.</p>
+<p>• --overview {Overview_file_path} : gives the file path of the overview file,   which contains text blocks of the top level of the kink doc.   If not given, no blocks are placed in the top level of the kink doc.</p>
+<p>• --output {Output_file_path} : gives the file path of the output.</p>
+<p>If the command generates JSON successfully, it exits with 0 as the exit status.</p>
+<p>If the command fails, it exits with non-zero exit status.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#doc-parse-tool-main-argv" id="id1">DOC_PARSE_TOOL.main(Argv)</a></p></li>
+</ul>
+</nav>
+<section id="doc-parse-tool-main-argv">
+<span id="api-14c0e8fa7d0e30676496de9871537294"></span><h2><span class="section-number">6.44.1. </span>DOC_PARSE_TOOL.main(Argv)<a class="headerlink" href="#doc-parse-tool-main-argv" title="Link to this heading">¶</a></h2>
+<p>main is the launcher fun of the mod.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-datetime-TIMEZONE.html"><span class="section-number">6.43. </span>kink/datetime/TIMEZONE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-doc-model-BLOCK.html"><span class="section-number">6.45. </span>kink/doc/model/BLOCK</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

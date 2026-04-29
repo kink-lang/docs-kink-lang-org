@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.82. kink/random/PRNG &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.83. kink/random/RNG" href="kink-random-RNG.html" />
+    <link rel="prev" title="6.81. kink/random/CSRNG" href="kink-random-CSRNG.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.82. kink/random/PRNG</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-random-CSRNG.html"><span class="section-number">6.81. </span>kink/random/CSRNG</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-random-RNG.html"><span class="section-number">6.83. </span>kink/random/RNG</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-random-prng">
+<h1><span class="section-number">6.82. </span>kink/random/PRNG<a class="headerlink" href="#kink-random-prng" title="Link to this heading">¶</a></h1>
+<p>Pseudo random number generators using xoshiro256** algorithm.</p>
+<p>This is a non-blocking deterministic RNG, desgined to be used for Monte Carlo simulation.</p>
+<p>xoshiro256** is not cryptographically secure. Thus, if you have to generate such as random nonces, salts, or session ids, use kink/random/CSRNG instead.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-prng" id="id1">type prng</a></p>
+<ul>
+<li><p><a class="reference internal" href="#prng-gen-int-seed-gen-bin-size-gen-bool" id="id2">Prng.gen_int(Seed) .gen_bin(Size) .gen_bool</a></p></li>
+<li><p><a class="reference internal" href="#prng-state" id="id3">Prng.state</a></p></li>
+<li><p><a class="reference internal" href="#prng-jump-config" id="id4">Prng.jump($config)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#prng-from-seed-seed" id="id5">PRNG.from_seed(Seed)</a></p></li>
+<li><p><a class="reference internal" href="#prng-from-state-state" id="id6">PRNG.from_state(State)</a></p></li>
+<li><p><a class="reference internal" href="#prng-is-val" id="id7">PRNG.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-prng">
+<span id="api-4e81448f6d6b456a93b8795f8e25017c"></span><h2><span class="section-number">6.82.1. </span>type prng<a class="headerlink" href="#type-prng" title="Link to this heading">¶</a></h2>
+<p>`prng` is a type of pseudo RNGs based on xoshiro256** algorithm.</p>
+<p>`prng` is a subtype of `rng`. See kink/random/RNG for `rng` type.</p>
+<p>`prng` val is not thread-safe. Thus, use of a single `prng` val from multiple threads must be synchronized.</p>
+<section id="prng-gen-int-seed-gen-bin-size-gen-bool">
+<span id="api-06e76b5fbe89d3d5179125d1bf312465"></span><h3><span class="section-number">6.82.1.1. </span>Prng.gen_int(Seed) .gen_bin(Size) .gen_bool<a class="headerlink" href="#prng-gen-int-seed-gen-bin-size-gen-bool" title="Link to this heading">¶</a></h3>
+<p>See `rng` type on kink/random/RNG mod for these methods.</p>
+</section>
+<section id="prng-state">
+<span id="api-fd072d7298084dc055f87efb3584510f"></span><h3><span class="section-number">6.82.1.2. </span>Prng.state<a class="headerlink" href="#prng-state" title="Link to this heading">¶</a></h3>
+<p>`state` returns the internal state of the RNG as a 32 bytes `bin` val. The result bin contains at least one non-zero bit.</p>
+<p>The result bin can be used as the arg of PRNG.from_state.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PRNG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/random/&#39;</span>)
+
+<span class="nv">:Rng</span> &lt;- <span class="nv">PRNG</span>.<span class="n">from_seed</span>(-<span class="m">42</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Rng</span>.<span class="n">state</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; BIN.of(0xfe 0xc8 0x00 0x06 0xdf 0x05 0x42 0x54 0x9b 0x4c 0xba 0xaf 0xb8 0x98 0x7e 0xee 0x00 0xbb 0x49 0xbc 0xa3 0x96 0xee 0xfe 0x9a 0xc8 0xbe 0x5b 0x59 0x28 0xe8 0xf6)</span>
+
+<span class="nv">Rng</span>.<span class="n">gen_bool</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Rng</span>.<span class="n">state</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; BIN.of(0xff 0x4c 0x04 0xf2 0x3e 0xb5 0xd4 0x4c 0x65 0x3f 0xf3 0x15 0xc4 0x0b 0xd2 0x44 0x8b 0x2c 0x38 0x8a 0x81 0x4f 0xac 0xaa 0x12 0xc3 0x00 0x30 0x80 0x9e 0x9c 0x36)</span>
+</pre></div>
+</div>
+</section>
+<section id="prng-jump-config">
+<span id="api-167f0c53a577b515b5a01450a63185c2"></span><h3><span class="section-number">6.82.1.3. </span>Prng.jump($config)<a class="headerlink" href="#prng-jump-config" title="Link to this heading">¶</a></h3>
+<p>`jump` moves the internal state of the RNG forward by the given number of steps.</p>
+<p>$config must take a config val, which has following methods.</p>
+<p>• C.node(Node)</p>
+<p>• C.thread(Thread)</p>
+<p>• C.offset(Offset)</p>
+<p>All the config methods take a non-negative int numer as the argument. If a method is not called, the value defaults to 0.</p>
+<p>The number of steps will be computed as follows: Node * 2**192 + Thread * 2**128 + Offset.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PRNG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/random/&#39;</span>)
+<span class="nv">:THREAD</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+<span class="nv">:MUTEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/thread/&#39;</span>)
+<span class="nv">:TREE_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Test_count</span> &lt;- <span class="m">10</span>
+<span class="nv">:Seed</span> &lt;- -<span class="m">42</span>
+<span class="nv">:Ans</span> &lt;- <span class="nv">TREE_MAP</span>.<span class="n">new</span>
+<span class="nv">:Mutex</span> &lt;- <span class="nv">MUTEX</span>.<span class="n">new</span>
+
+<span class="c1"># do cointoss simulation in 10 threads</span>
+<span class="nv">Test_count</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:Test</span>)
+  <span class="nv">THREAD</span>.<span class="n">spawn</span>{
+    <span class="nv">:Rng</span> = <span class="nv">PRNG</span>.<span class="n">from_seed</span>(<span class="nv">Seed</span>)
+    <span class="nv">Rng</span>.<span class="n">jump</span>{(<span class="nv">:C</span>)
+      <span class="nv">C</span>.<span class="n">thread</span>(<span class="nv">Test</span>)
+    }
+    <span class="nv">:Attempts</span> = <span class="m">1000</span>
+    <span class="nv">:Cointoss_series</span> = <span class="nv">Attempts</span>.<span class="n">times</span>.<span class="n">map</span>{ <span class="nv">Rng</span>.<span class="n">gen_int</span>(<span class="m">2</span>) }
+    <span class="nv">:Sum</span> = <span class="nv">Cointoss_series</span>.<span class="n">fold</span>(<span class="m">0</span>){(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }
+    <span class="nv">:Avg</span> = (<span class="nv">Sum</span> / <span class="nv">Attempts</span>).<span class="n">floor</span>(<span class="m">3</span>)
+    <span class="nv">Mutex</span>.<span class="n">with_lock</span>{
+      <span class="nv">Ans</span>.<span class="n">set</span>(<span class="nv">Test</span> <span class="nv">Avg</span>)
+      <span class="nv">Mutex</span>.<span class="n">notify_all</span>
+    }
+  }
+}
+
+<span class="nv">Mutex</span>.<span class="n">with_lock</span>{
+  <span class="nv">Mutex</span>.<span class="n">wait_until</span>{ <span class="nv">Ans</span>.<span class="n">size</span> == <span class="nv">Test_count</span> }
+  <span class="nv">Ans</span>.<span class="n">pair_iter</span>.<span class="n">each</span>{([<span class="nv">:Test</span> <span class="nv">:Avg</span>])
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Test {}: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Test</span> <span class="nv">Avg</span>))
+  }
+}
+
+<span class="c1"># Output:</span>
+<span class="c1">#   Test 0: 0.475</span>
+<span class="c1">#   Test 1: 0.512</span>
+<span class="c1">#   Test 2: 0.492</span>
+<span class="c1">#   Test 3: 0.490</span>
+<span class="c1">#   Test 4: 0.513</span>
+<span class="c1">#   Test 5: 0.504</span>
+<span class="c1">#   Test 6: 0.509</span>
+<span class="c1">#   Test 7: 0.503</span>
+<span class="c1">#   Test 8: 0.506</span>
+<span class="c1">#   Test 9: 0.517</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="prng-from-seed-seed">
+<span id="api-6035f5b46e9f6018fa38250895437c2f"></span><h2><span class="section-number">6.82.2. </span>PRNG.from_seed(Seed)<a class="headerlink" href="#prng-from-seed-seed" title="Link to this heading">¶</a></h2>
+<p>`from_seed` makes a new `prng` val from the Seed.</p>
+<p>Preconditions:</p>
+<p>• Seed must be an int num.</p>
+<p>The initial state of the RNG is created as follows:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">seed_bin</span> := <span class="n">sha256</span>(<span class="nv">ASCII</span> <span class="n">representation</span> <span class="n">of</span> <span class="nv">Seed</span>.<span class="n">show</span>)
+<span class="n">initial</span> <span class="n">state</span> := <span class="n">seed_bin</span> <span class="n">if</span> <span class="n">seed_bin</span> <span class="n">is</span> <span class="n">not</span> <span class="n">all</span>-<span class="n">zero</span>, <span class="n">or</span> <span class="n">otherwise</span> <span class="n">sha256</span>(<span class="n">empty</span> <span class="n">bytes</span>)
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PRNG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/random/&#39;</span>)
+
+<span class="nv">:A</span> &lt;- <span class="nv">PRNG</span>.<span class="n">from_seed</span>(-<span class="m">42</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">A</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 62</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">A</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 30</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">A</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 11</span>
+
+<span class="nv">:B</span> &lt;- <span class="nv">PRNG</span>.<span class="n">from_seed</span>(-<span class="m">42</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">B</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 62</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">B</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 30</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">B</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 11</span>
+
+<span class="nv">:C</span> &lt;- <span class="nv">PRNG</span>.<span class="n">from_seed</span>(<span class="m">31</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">C</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 56</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">C</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 96</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">C</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 97</span>
+</pre></div>
+</div>
+</section>
+<section id="prng-from-state-state">
+<span id="api-6ead0ee97c44d86f6c6928fddc1773bd"></span><h2><span class="section-number">6.82.3. </span>PRNG.from_state(State)<a class="headerlink" href="#prng-from-state-state" title="Link to this heading">¶</a></h2>
+<p>`from_state` makes a new `prng` val from the initial `State`.</p>
+<p>Preconditions:</p>
+<p>• `State` must be a `bin` val</p>
+<p>• The size of `State` must be 32</p>
+<p>• At least one bit of `State` must be 1</p>
+<p>The result of Prng.state can be used as the arg of `from_state`.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PRNG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/random/&#39;</span>)
+<span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Initial_state</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(
+  <span class="m">0xfe</span> <span class="m">0xc8</span> <span class="m">0x00</span> <span class="m">0x06</span> <span class="m">0xdf</span> <span class="m">0x05</span> <span class="m">0x42</span> <span class="m">0x54</span> <span class="m">0x9b</span> <span class="m">0x4c</span> <span class="m">0xba</span> <span class="m">0xaf</span> <span class="m">0xb8</span> <span class="m">0x98</span> <span class="m">0x7e</span> <span class="m">0xee</span>
+  <span class="m">0x00</span> <span class="m">0xbb</span> <span class="m">0x49</span> <span class="m">0xbc</span> <span class="m">0xa3</span> <span class="m">0x96</span> <span class="m">0xee</span> <span class="m">0xfe</span> <span class="m">0x9a</span> <span class="m">0xc8</span> <span class="m">0xbe</span> <span class="m">0x5b</span> <span class="m">0x59</span> <span class="m">0x28</span> <span class="m">0xe8</span> <span class="m">0xf6</span>
+)
+<span class="nv">:Rng</span> &lt;- <span class="nv">PRNG</span>.<span class="n">from_state</span>(<span class="nv">Initial_state</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Rng</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 62</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Rng</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 30</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Rng</span>.<span class="n">gen_int</span>(<span class="m">100</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 11</span>
+</pre></div>
+</div>
+</section>
+<section id="prng-is-val">
+<span id="api-ca843d7dde212c24955baadc2b1ac44f"></span><h2><span class="section-number">6.82.4. </span>PRNG.is?(Val)<a class="headerlink" href="#prng-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `prng` val.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-random-CSRNG.html"><span class="section-number">6.81. </span>kink/random/CSRNG</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-random-RNG.html"><span class="section-number">6.83. </span>kink/random/RNG</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

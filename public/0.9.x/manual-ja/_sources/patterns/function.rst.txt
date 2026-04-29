@@ -1,0 +1,545 @@
+=========
+Functions 
+=========
+
+This chapter describes types of :term:`functions <function>`,
+and construction of functions.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Types of functions
+==================
+
+.. _method:
+
+Methods
+-------
+
+A :dfn:`method` is a function stored in a value,
+and used to do an operation for the value as the receiver.
+
+Assume you make a single-element immutable container type ``just``,
+which has one method: ``get``.
+This type can be defined and used as follows.
+
+::
+
+  :new_just <- {(:Val)
+    new_val(
+      ... Just_trait
+      'Val' Val
+    )
+  }
+
+  :Just_trait <- [
+
+    # [1]
+    'get' {[:J]()
+      J.Val
+    }
+  ]
+
+  :Just <- new_just(42)
+
+  # [2]
+  :V <- Just.get
+  stdout.print_line(V.repr)  # => 42
+
+``get`` method is called at [2].
+The receiver ``Just`` is passed to ``J`` in the implementation of ``get`` at [1].
+
+.. _constructor:
+
+Constructors
+------------
+
+A :dfn:`constructor` is a function which creates a new value.
+
+Usually, a constructor is named ``new``.
+For example, suppose a module named ``example/RAT`` provides functionality of
+rational numbers.
+In ``example/RAT`` mod, a constructor of a rational number can be defined as follows:
+
+::
+
+  # example/RAT.kn
+
+  :new <- {(:Numer :Denom)
+    new_val(
+      'numer' {[:R]() R.Numer }
+      'denom' {[:R]() R.Denom }
+      'repr' {[:R]()
+        '(rat numer={} denom={})'.format(R.numer.repr R.denom.repr)
+      }
+
+      'Numer' Numer
+      'Denom' Denom
+    )
+  }
+
+This constructor can be called from a client of the mod as follows:
+
+::
+
+  :RAT.require_from('example/')
+
+  stdout.print_line(RAT.new(2 5).repr) # => (rat numer=2 denom=5)
+  stdout.print_line(RAT.new(3 7).repr) # => (rat numer=3 denom=7)
+
+Apparently, ``numer``, ``denom``, and ``repr`` methods can be shared among
+rational number values.
+Thus, usually, methods and the syms are stored in a vec called a :dfn:`trait`,
+then they are spreaded as arguments of :ref:`new_val <api-fbc90c7785322a766a80191e6e1ea8de>`.
+
+For example, ``example/RAT`` mod can be rewritten as follows,
+using a trait ``Rat_trait``.
+
+::
+
+  # example/RAT.kn
+
+  :new <- {(:Numer :Denom)
+    new_val(
+      ... Rat_trait
+      'Numer' Numer
+      'Denom' Denom
+    )
+  }
+
+  :Rat_trait <- [
+    'numer' {[:R]() R.Numer }
+    'denom' {[:R]() R.Denom }
+    'repr' {[:R]()
+      '(rat numer={} denom={})'.format(R.numer.repr R.denom.repr)
+    }
+  ]
+
+.. _thunk:
+
+Thunks
+------
+
+A :dfn:`thunk` is a function that is not used as a method, and takes no arguments.
+
+This is a thunk::
+
+  {() stdout.print_line('hello') }
+
+This is also a thunk::
+
+  { stdout.print_line('hello') }
+
+A thunk is used to delay evaluation until its result or side-effect is needed.
+In the example below,
+only one of two thunks ``negative_cont`` and ``non_negative_cont``
+is called based on the sign of ``Num``.
+
+::
+
+  :branch_on_sign <- {(:Num :negative_cont :non_negative_cont)
+    if(Num < 0
+      { negative_cont }
+      { non_negative_cont }
+    )
+  }
+
+  # => negative
+  branch_on_sign(
+    -1
+    { stdout.print_line('negative') }
+    { stdout.print_line('non negative') }
+  )
+
+  # => non negative
+  branch_on_sign(
+    1
+    { stdout.print_line('negative') }
+    { stdout.print_line('non negative') }
+  )
+
+.. _predicate:
+
+Predicates
+----------
+
+A :dfn:`predicate` is a function that is not used as a method, takes one argument,
+and returns a bool.
+
+For example, this is a predicate::
+
+  {(:N) N % == 2 }
+
+Predicates are used by methods like :ref:`Vec.filter <api-2c58ef95f8a75a29db05a46de52c8967>`.
+
+.. _constant:
+
+Constants
+---------
+
+A :dfn:`constant` is a :term:`thunk` which returns a same value every time.
+
+A constant can be made like this::
+
+  :Result_of_heavy_calculation <- 42
+
+  # constant which returns 42
+  :answer <- {() Result_of_heavy_calculation }
+
+  stdout.print_line(answer.repr) # => 42
+
+See LOCALE.root of :doc:`kink/LOCALE </api/kink-LOCALE>` mod
+and TRACE.snip of :doc:`kink/TRACE </api/kink-TRACE>` mod
+for examples in the builtin API.
+
+.. note::
+
+  The reason of providing constants as functions is to maintain a principle
+  that only functions can be public,
+  while data variables cannot.
+  See :doc:`Accessibility <accessibility>`.
+
+.. _values_passed_from_caller:
+
+Values passed from the caller
+=============================
+
+About the basics of values passed from the caller of a function,
+see :ref:`formal_receiver_formal_args`.
+This section describes advanced handling of values passed from the caller.
+
+Optional and variadic parameters
+--------------------------------
+
+If you want to take optional arguments after mandatory ones,
+you can use ``Varref.opt`` as follows.
+
+::
+
+  :posix_locale_tag <- {(:Lang :Opt_territory.opt :Opt_charset.opt)
+    :Territory = Opt_territory.just_or{ 'US' }
+    :Charset = Opt_charset.just_or{ 'UTF-8' }
+    stdout.print_line('{}-{}.{}'.format(Lang Territory Charset))
+  }
+
+  posix_locale_tag('en' 'GB' 'ASCII') # => en-GB.ASCII
+  posix_locale_tag('en' 'GB') # => en-GB.UTF-8
+  posix_locale_tag('en')      # => en-US.UTF-8
+
+As shown above, if an argument is given to the optional parameter,
+a single element vec containing the argument is passed to the variable.
+If no argument is given to the optional parameter,
+an empty vec is passed to the variable.
+
+See :doc:`kink/param/OPT_PARAM </api/kink-param-OPT_PARAM>` for details.
+
+If you want to take variadic arguments at the end of the arguments list,
+you can use ``Varref.rest`` as follows.
+
+::
+
+  :commandline <- {(:Command :Args.rest)
+    stdout.prine_line('command: {}'.format(Command))
+    Args.size.times{(:I)
+      stdout.prine_line('arg #{}: {}'.format(I Args.get(I)))
+    }
+  }
+
+  commandline('ls' '-ltr' '/etc')
+  # Output:
+  #   command: ls
+  #   arg #0: -ltr
+  #   arg #1: /etc
+
+See :doc:`kink/param/REST_PARAM </api/kink-param-REST_PARAM>` for details.
+
+You can take both optional and variadic arguments.
+
+::
+
+  :take_opt_variadic <- {(:Mandatory :Opt.opt :Rest.rest)
+    stdout.prine_line('Mandatory {}'.format(Mandatory.repr))
+    stdout.prine_line('Opt {}'.format(Opt.repr))
+    stdout.prine_line('Rest {}'.format(Rest.repr))
+  }
+
+  take_opt_variadic('foo' 'bar' 'baz' 'qux')
+  # Output:
+  #   Mandatory "foo"
+  #   Opt ["bar"]
+  #   Rest ["baz" "qux"]
+
+Config functions
+----------------
+
+When positional optional parameters are not flexible enough,
+a config function can be used.
+
+For example,
+:ref:`Program.compile <api-eb38c6c06f06250d57f7c828992a2147>` can take
+a binding, a locale, and other optional values,
+and each can be omitted independently.
+For that case, optional parameters are not appropriate.
+Assuming that the parameter list is
+``(Text, opt Binding, opt Locale)``,
+you cannot omit only ``Binding`` while specifying ``Locale``.
+
+So, Program.compile takes an optional config function
+at the end of the parameter list.
+The client of Program.compile can specify a binding, a locale,
+and a program name,
+by calling methods of a config val, which is passed to the config function.
+
+::
+
+  :LOCALE.require_from('kink/')
+  :BINDING.require_from('kink/')
+  :PROGRAM.require_from('kink/program/')
+
+  :Program <- PROGRAM.new('printnum.kn' 'stdout.print_line(Num.repr)')
+  :print_num <- Program.compile{(:C)
+    :Binding = BINDING.new
+    Binding:Num <- 42
+    C.binding(Binding)
+  }
+  print_num # => 42
+
+Here, the parameter of Program.compile is a config function.
+The parameter ``C`` of the config function is a config value.
+
+If you provide a function which takes a config function,
+and the config value is simple enough,
+you can use :doc:`kink/CONFIG_FUN_RUNNER </api/kink-CONFIG_FUN_RUNNER>`.
+
+.. note::
+
+  Config functions can be seen as an alternative aproach to named parameters
+  of other languages.
+  The most notable advantage of config functions is that they don't need
+  a dedicated syntax.
+  A config function is just the last argument passed to the configured function.
+
+Function result
+===============
+
+Return value
+------------
+
+In most cases, a function returns a value,
+which is the value of the last expression
+of the sequence of the function body.
+
+Example:
+
+::
+
+  :NUM.require_from('kink/')
+
+  :fraction_part <- {(:Num)
+    NUM.is?(Num) || raise('Num must be a num, but was {}'.format(Num.repr))
+    Num % 1
+  }
+
+  stdout.print_line(fraction_part(3.1415).repr)  # => 0.1415
+
+In the example above, ``fraction_part`` function
+returns the result value of ``Num % 1`` as its result.
+
+.. _continuation:
+
+Continuation
+------------
+
+Sometimes a function call results in calling another function
+:term:`at the tail <tail call>`.
+Such a function called at the tail is called a :dfn:`continuation`.
+Don't confuse with :term:`delimited continuation`.
+
+If a program is composed in a style in which a continuation is passed from the caller,
+the program is said to be composed in :term:`continuation passing style`.
+
+For example, :ref:`Vec.with_elems <api-9c1a3a7b764fa70187afe30654617332>`
+is written in continuation passing style.
+``with_elems`` tail-calls a fun passed as an argument.
+Thus, that fun is the continuation of ``with_elems``.
+Example:
+
+::
+
+  :display_opt <- {(:Opt_vec)
+    Opt_vec.with_elems(
+      { 'empty' }
+      {(:Just) 'just {}'.format(Just.repr) }
+    )
+  }
+
+  stdout.print_line(display_opt([]))  # => empty
+  stdout.print_line(display_opt([42]))  # => just 42
+
+Exception
+---------
+
+A function call can terminate raising an :doc:`exception </api/kink-EXCEPTION>`,
+when there is no other way.
+
+For example below, ``fraction_part`` requires a number as the argument.
+If that expectation is not met,
+``fraction_part`` raises an exception because the precondition is broken.
+
+::
+
+  :NUM.require_from('kink/')
+
+  :fraction_part <- {(:Num)
+    NUM.is?(Num) || raise('Num must be a num, but was {}'.format(Num.repr))
+    Num % 1
+  }
+
+  fraction_part('str')
+  # Output:
+  #   -- main exception
+  #   [..root..]
+  #   {..call by host..}
+  #   {..call by host..}
+  #   {startup}
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L260 C3 _startup_aux} -->_startup_aux(Args Dep)
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L243 C11 try} CONTROL.-->try(
+  #   [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.-->reset{
+  #   {..call by host..}
+  #   [..kont tag..]
+  #   [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = -->body
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L245 C7 _start} -->_start(Non_opts Dep)
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L137 C3 if} -->if(Non_opts == []
+  #   {..call by host..}
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L152 C20 call} { :Source_spec -->= Non_opts.front
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L153 C20 call} :Script_args -->= Non_opts.drop_front(1)
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L154 C7 branch} -->branch(
+  #   {..call by host..}
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L180 C34 call} [:Source_desc :Script] -->= _scan_from(Source_spec Dep)
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L182 C20 call} :Binding -->= BINDING.new
+  #   {builtin:kink-mods/kink/_startup/STARTUP.kn L184 C11 _run_script} -->_run_script(Binding $script_fun Script_args)
+  #   [builtin:kink-mods/kink/_startup/STARTUP.kn L128 C3 script_fun] -->script_fun
+  #   {(stdin) L8 C1 fraction_part} -->fraction_part('str')
+  #   [(stdin) L4 C16 op_logor] NUM.is?(Num) -->|| raise('Num must be a num, but was {}'.format(Num.repr))
+  #   {..call by host..}
+  #   {(stdin) L4 C19 raise} NUM.is?(Num) || -->raise('Num must be a num, but was {}'.format(Num.repr))
+  #   Num must be a num, but was "str"
+
+See :doc:`error` for details.
+
+Side effects
+------------
+
+Function might also cause side effects,
+such as changing the target value of a member variable,
+or I/O to the file system or the network.
+
+In the next example,
+``fill_zero`` sets 0 to all the elements of a vector.
+It is considered as a side effect of ``fill_zero``.
+
+::
+
+  :fill_zero <- {(:Vec)
+    Vec.size.times.each{(:I)
+      Vec.set(I 0)
+    }
+  }
+
+  :Vec <- [1 2 3 4 5]
+  fill_zero(Vec)
+  stdout.print_line(Vec.repr) # => [0 0 0 0 0]
+
+It is better to avoid side effects as much as possible,
+unless side effects themselves are the purpose of the function.
+
+Here is a caveat.
+In mainstream languages,
+modification of a value not exposed from the function
+is not considered as a side effect.
+However, in Kink, that can sometimes be an observable side effect
+because of :term:`delimited continuation`.
+
+In the following example,
+you might think ``Mapped`` is not exposed from ``map`` function,
+so calling ``push_back`` method does not cause side effects.
+
+::
+
+  :map <- {(:Vec :transform)
+    :Mapped = []
+    :loop <- {(:I)
+      if(I < Vec.size){
+        Mapped.push_back(transform(Vec.get(I)))
+        loop(I + 1)
+      }
+    }
+    loop(0)
+    Mapped.dup
+  }
+
+  :Double <- map(
+    [0 1 2 3]
+    {(:I) I * 2 }
+  )
+  stdout.print_line(Double.repr) # => [0 2 4 6]
+
+However, it is possible that a function call of ``map``
+is resumed from the middle.
+The following example shows that modification of ``Mapped``
+can actually be observed from outside.
+
+::
+
+  :KONT_TAG.require_from('kink/')
+
+  :double_caller <- {(:Vec)
+    :Tag = KONT_TAG.new
+    Tag.reset{
+      map(Vec){(:Num)
+        if(Num == 0
+          { Tag.shift{(:resume)
+              { resume(nada) }
+            }
+            0
+          }
+          { Num * 2 }
+        )
+      }
+    }
+  }
+
+  :call_double <- double_caller([0 1 2 3])
+
+  :D1 <- call_double
+  stdout.print_line(D1.repr)  # => [0 2 4 6]
+
+  :D2 <- call_double
+  stdout.print_line(D2.repr)  # => [0 2 4 6 0 2 4 6]
+
+To avoid this kind of side effect,
+you can define ``map`` like the following.
+
+::
+
+  :map <- {(:Vec :transform)
+    :loop <- {(:I :Mapped)
+      if(I < Vec.size
+        { :New_mapped = Mapped + [transform(Vec.get(I))]
+          loop(I + 1 New_mapped)
+        }
+        { Mapped }
+      )
+    }
+    loop(0 [])
+  }
+
+Also note that implementation with side effects can sometimes be
+justified from the point of view of efficiency.
+Possibly it can be faster, or it can allocate less space.
+For example, the builtin implementation of ``map`` method
+a :doc:`vector </api/kink-VEC>` can cause side effects
+when it is resumed by delimited continuation in the middle.
+
+.. vim: et sw=2 sts=2

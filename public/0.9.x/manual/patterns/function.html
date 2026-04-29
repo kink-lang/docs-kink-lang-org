@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>7.2. Functions &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="7.3. Accessibility" href="accessibility.html" />
+    <link rel="prev" title="7.1. Variables" href="variable.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>7.2. Functions</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="variable.html"><span class="section-number">7.1. </span>Variables</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="accessibility.html"><span class="section-number">7.3. </span>Accessibility</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="functions">
+<h1><span class="section-number">7.2. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h1>
+<p>This chapter describes types of <a class="reference internal" href="../glossary.html#term-function"><span class="xref std std-term">functions</span></a>,
+and construction of functions.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#types-of-functions" id="id2">Types of functions</a></p>
+<ul>
+<li><p><a class="reference internal" href="#methods" id="id3">Methods</a></p></li>
+<li><p><a class="reference internal" href="#constructors" id="id4">Constructors</a></p></li>
+<li><p><a class="reference internal" href="#thunks" id="id5">Thunks</a></p></li>
+<li><p><a class="reference internal" href="#predicates" id="id6">Predicates</a></p></li>
+<li><p><a class="reference internal" href="#constants" id="id7">Constants</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#values-passed-from-the-caller" id="id8">Values passed from the caller</a></p>
+<ul>
+<li><p><a class="reference internal" href="#optional-and-variadic-parameters" id="id9">Optional and variadic parameters</a></p></li>
+<li><p><a class="reference internal" href="#config-functions" id="id10">Config functions</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#function-result" id="id11">Function result</a></p>
+<ul>
+<li><p><a class="reference internal" href="#return-value" id="id12">Return value</a></p></li>
+<li><p><a class="reference internal" href="#continuation" id="id13">Continuation</a></p></li>
+<li><p><a class="reference internal" href="#exception" id="id14">Exception</a></p></li>
+<li><p><a class="reference internal" href="#side-effects" id="id15">Side effects</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="types-of-functions">
+<h2><span class="section-number">7.2.1. </span>Types of functions<a class="headerlink" href="#types-of-functions" title="Link to this heading">¶</a></h2>
+<section id="methods">
+<span id="method"></span><h3><span class="section-number">7.2.1.1. </span>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h3>
+<p>A <em class="dfn">method</em> is a function stored in a value,
+and used to do an operation for the value as the receiver.</p>
+<p>Assume you make a single-element immutable container type <code class="docutils literal notranslate"><span class="pre">just</span></code>,
+which has one method: <code class="docutils literal notranslate"><span class="pre">get</span></code>.
+This type can be defined and used as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new_just</span> &lt;- {(<span class="nv">:Val</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Just_trait</span>
+    <span class="s1">&#39;Val&#39;</span> <span class="nv">Val</span>
+  )
+}
+
+<span class="nv">:Just_trait</span> &lt;- [
+
+  <span class="c1"># [1]</span>
+  <span class="s1">&#39;get&#39;</span> {[<span class="nv">:J</span>]()
+    <span class="nv">J</span>.<span class="nv">Val</span>
+  }
+]
+
+<span class="nv">:Just</span> &lt;- <span class="n">new_just</span>(<span class="m">42</span>)
+
+<span class="c1"># [2]</span>
+<span class="nv">:V</span> &lt;- <span class="nv">Just</span>.<span class="n">get</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">get</span></code> method is called at [2].
+The receiver <code class="docutils literal notranslate"><span class="pre">Just</span></code> is passed to <code class="docutils literal notranslate"><span class="pre">J</span></code> in the implementation of <code class="docutils literal notranslate"><span class="pre">get</span></code> at [1].</p>
+</section>
+<section id="constructors">
+<span id="constructor"></span><h3><span class="section-number">7.2.1.2. </span>Constructors<a class="headerlink" href="#constructors" title="Link to this heading">¶</a></h3>
+<p>A <em class="dfn">constructor</em> is a function which creates a new value.</p>
+<p>Usually, a constructor is named <code class="docutils literal notranslate"><span class="pre">new</span></code>.
+For example, suppose a module named <code class="docutils literal notranslate"><span class="pre">example/RAT</span></code> provides functionality of
+rational numbers.
+In <code class="docutils literal notranslate"><span class="pre">example/RAT</span></code> mod, a constructor of a rational number can be defined as follows:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># example/RAT.kn</span>
+
+<span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  <span class="n">new_val</span>(
+    <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>]() <span class="nv">R</span>.<span class="nv">Numer</span> }
+    <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>]() <span class="nv">R</span>.<span class="nv">Denom</span> }
+    <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>]()
+      <span class="s1">&#39;(rat numer={} denom={})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">denom</span>.<span class="n">repr</span>)
+    }
+
+    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
+    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
+  )
+}
+</pre></div>
+</div>
+<p>This constructor can be called from a client of the mod as follows:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:RAT</span>.<span class="n">require_from</span>(<span class="s1">&#39;example/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">2</span> <span class="m">5</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (rat numer=2 denom=5)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">3</span> <span class="m">7</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (rat numer=3 denom=7)</span>
+</pre></div>
+</div>
+<p>Apparently, <code class="docutils literal notranslate"><span class="pre">numer</span></code>, <code class="docutils literal notranslate"><span class="pre">denom</span></code>, and <code class="docutils literal notranslate"><span class="pre">repr</span></code> methods can be shared among
+rational number values.
+Thus, usually, methods and the syms are stored in a vec called a <em class="dfn">trait</em>,
+then they are spreaded as arguments of <a class="reference internal" href="../api/kink-BINDING.html#api-fbc90c7785322a766a80191e6e1ea8de"><span class="std std-ref">new_val</span></a>.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">example/RAT</span></code> mod can be rewritten as follows,
+using a trait <code class="docutils literal notranslate"><span class="pre">Rat_trait</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># example/RAT.kn</span>
+
+<span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Rat_trait</span>
+    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
+    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
+  )
+}
+
+<span class="nv">:Rat_trait</span> &lt;- [
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>]() <span class="nv">R</span>.<span class="nv">Numer</span> }
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>]() <span class="nv">R</span>.<span class="nv">Denom</span> }
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>]()
+    <span class="s1">&#39;(rat numer={} denom={})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">denom</span>.<span class="n">repr</span>)
+  }
+]
+</pre></div>
+</div>
+</section>
+<section id="thunks">
+<span id="thunk"></span><h3><span class="section-number">7.2.1.3. </span>Thunks<a class="headerlink" href="#thunks" title="Link to this heading">¶</a></h3>
+<p>A <em class="dfn">thunk</em> is a function that is not used as a method, and takes no arguments.</p>
+<p>This is a thunk:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>{() <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;hello&#39;</span>) }
+</pre></div>
+</div>
+<p>This is also a thunk:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;hello&#39;</span>) }
+</pre></div>
+</div>
+<p>A thunk is used to delay evaluation until its result or side-effect is needed.
+In the example below,
+only one of two thunks <code class="docutils literal notranslate"><span class="pre">negative_cont</span></code> and <code class="docutils literal notranslate"><span class="pre">non_negative_cont</span></code>
+is called based on the sign of <code class="docutils literal notranslate"><span class="pre">Num</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:branch_on_sign</span> &lt;- {(<span class="nv">:Num</span> <span class="nv">:negative_cont</span> <span class="nv">:non_negative_cont</span>)
+  <span class="n">if</span>(<span class="nv">Num</span> &lt; <span class="m">0</span>
+    { <span class="n">negative_cont</span> }
+    { <span class="n">non_negative_cont</span> }
+  )
+}
+
+<span class="c1"># =&gt; negative</span>
+<span class="n">branch_on_sign</span>(
+  -<span class="m">1</span>
+  { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;negative&#39;</span>) }
+  { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;non negative&#39;</span>) }
+)
+
+<span class="c1"># =&gt; non negative</span>
+<span class="n">branch_on_sign</span>(
+  <span class="m">1</span>
+  { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;negative&#39;</span>) }
+  { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;non negative&#39;</span>) }
+)
+</pre></div>
+</div>
+</section>
+<section id="predicates">
+<span id="predicate"></span><h3><span class="section-number">7.2.1.4. </span>Predicates<a class="headerlink" href="#predicates" title="Link to this heading">¶</a></h3>
+<p>A <em class="dfn">predicate</em> is a function that is not used as a method, takes one argument,
+and returns a bool.</p>
+<p>For example, this is a predicate:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>{(<span class="nv">:N</span>) <span class="nv">N</span> % == <span class="m">2</span> }
+</pre></div>
+</div>
+<p>Predicates are used by methods like <a class="reference internal" href="../api/kink-VEC.html#api-2c58ef95f8a75a29db05a46de52c8967"><span class="std std-ref">Vec.filter</span></a>.</p>
+</section>
+<section id="constants">
+<span id="constant"></span><h3><span class="section-number">7.2.1.5. </span>Constants<a class="headerlink" href="#constants" title="Link to this heading">¶</a></h3>
+<p>A <em class="dfn">constant</em> is a <a class="reference internal" href="../glossary.html#term-thunk"><span class="xref std std-term">thunk</span></a> which returns a same value every time.</p>
+<p>A constant can be made like this:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Result_of_heavy_calculation</span> &lt;- <span class="m">42</span>
+
+<span class="c1"># constant which returns 42</span>
+<span class="nv">:answer</span> &lt;- {() <span class="nv">Result_of_heavy_calculation</span> }
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">answer</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p>See LOCALE.root of <a class="reference internal" href="../api/kink-LOCALE.html"><span class="doc">kink/LOCALE</span></a> mod
+and TRACE.snip of <a class="reference internal" href="../api/kink-TRACE.html"><span class="doc">kink/TRACE</span></a> mod
+for examples in the builtin API.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The reason of providing constants as functions is to maintain a principle
+that only functions can be public,
+while data variables cannot.
+See <a class="reference internal" href="accessibility.html"><span class="doc">Accessibility</span></a>.</p>
+</div>
+</section>
+</section>
+<section id="values-passed-from-the-caller">
+<span id="values-passed-from-caller"></span><h2><span class="section-number">7.2.2. </span>Values passed from the caller<a class="headerlink" href="#values-passed-from-the-caller" title="Link to this heading">¶</a></h2>
+<p>About the basics of values passed from the caller of a function,
+see <a class="reference internal" href="variable.html#formal-receiver-formal-args"><span class="std std-ref">Formal receiver and formal arguments</span></a>.
+This section describes advanced handling of values passed from the caller.</p>
+<section id="optional-and-variadic-parameters">
+<h3><span class="section-number">7.2.2.1. </span>Optional and variadic parameters<a class="headerlink" href="#optional-and-variadic-parameters" title="Link to this heading">¶</a></h3>
+<p>If you want to take optional arguments after mandatory ones,
+you can use <code class="docutils literal notranslate"><span class="pre">Varref.opt</span></code> as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:posix_locale_tag</span> &lt;- {(<span class="nv">:Lang</span> <span class="nv">:Opt_territory</span>.<span class="n">opt</span> <span class="nv">:Opt_charset</span>.<span class="n">opt</span>)
+  <span class="nv">:Territory</span> = <span class="nv">Opt_territory</span>.<span class="n">just_or</span>{ <span class="s1">&#39;US&#39;</span> }
+  <span class="nv">:Charset</span> = <span class="nv">Opt_charset</span>.<span class="n">just_or</span>{ <span class="s1">&#39;UTF-8&#39;</span> }
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{}-{}.{}&#39;</span>.<span class="n">format</span>(<span class="nv">Lang</span> <span class="nv">Territory</span> <span class="nv">Charset</span>))
+}
+
+<span class="n">posix_locale_tag</span>(<span class="s1">&#39;en&#39;</span> <span class="s1">&#39;GB&#39;</span> <span class="s1">&#39;ASCII&#39;</span>) <span class="c1"># =&gt; en-GB.ASCII</span>
+<span class="n">posix_locale_tag</span>(<span class="s1">&#39;en&#39;</span> <span class="s1">&#39;GB&#39;</span>) <span class="c1"># =&gt; en-GB.UTF-8</span>
+<span class="n">posix_locale_tag</span>(<span class="s1">&#39;en&#39;</span>)      <span class="c1"># =&gt; en-US.UTF-8</span>
+</pre></div>
+</div>
+<p>As shown above, if an argument is given to the optional parameter,
+a single element vec containing the argument is passed to the variable.
+If no argument is given to the optional parameter,
+an empty vec is passed to the variable.</p>
+<p>See <a class="reference internal" href="../api/kink-param-OPT_PARAM.html"><span class="doc">kink/param/OPT_PARAM</span></a> for details.</p>
+<p>If you want to take variadic arguments at the end of the arguments list,
+you can use <code class="docutils literal notranslate"><span class="pre">Varref.rest</span></code> as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:commandline</span> &lt;- {(<span class="nv">:Command</span> <span class="nv">:Args</span>.<span class="n">rest</span>)
+  <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;command: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Command</span>))
+  <span class="nv">Args</span>.<span class="n">size</span>.<span class="n">times</span>{(<span class="nv">:I</span>)
+    <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;arg #{}: {}&#39;</span>.<span class="n">format</span>(<span class="nv">I</span> <span class="nv">Args</span>.<span class="n">get</span>(<span class="nv">I</span>)))
+  }
+}
+
+<span class="n">commandline</span>(<span class="s1">&#39;ls&#39;</span> <span class="s1">&#39;-ltr&#39;</span> <span class="s1">&#39;/etc&#39;</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   command: ls</span>
+<span class="c1">#   arg #0: -ltr</span>
+<span class="c1">#   arg #1: /etc</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../api/kink-param-REST_PARAM.html"><span class="doc">kink/param/REST_PARAM</span></a> for details.</p>
+<p>You can take both optional and variadic arguments.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:take_opt_variadic</span> &lt;- {(<span class="nv">:Mandatory</span> <span class="nv">:Opt</span>.<span class="n">opt</span> <span class="nv">:Rest</span>.<span class="n">rest</span>)
+  <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;Mandatory {}&#39;</span>.<span class="n">format</span>(<span class="nv">Mandatory</span>.<span class="n">repr</span>))
+  <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;Opt {}&#39;</span>.<span class="n">format</span>(<span class="nv">Opt</span>.<span class="n">repr</span>))
+  <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;Rest {}&#39;</span>.<span class="n">format</span>(<span class="nv">Rest</span>.<span class="n">repr</span>))
+}
+
+<span class="n">take_opt_variadic</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   Mandatory &quot;foo&quot;</span>
+<span class="c1">#   Opt [&quot;bar&quot;]</span>
+<span class="c1">#   Rest [&quot;baz&quot; &quot;qux&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="config-functions">
+<h3><span class="section-number">7.2.2.2. </span>Config functions<a class="headerlink" href="#config-functions" title="Link to this heading">¶</a></h3>
+<p>When positional optional parameters are not flexible enough,
+a config function can be used.</p>
+<p>For example,
+<a class="reference internal" href="../api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">Program.compile</span></a> can take
+a binding, a locale, and other optional values,
+and each can be omitted independently.
+For that case, optional parameters are not appropriate.
+Assuming that the parameter list is
+<code class="docutils literal notranslate"><span class="pre">(Text,</span> <span class="pre">opt</span> <span class="pre">Binding,</span> <span class="pre">opt</span> <span class="pre">Locale)</span></code>,
+you cannot omit only <code class="docutils literal notranslate"><span class="pre">Binding</span></code> while specifying <code class="docutils literal notranslate"><span class="pre">Locale</span></code>.</p>
+<p>So, Program.compile takes an optional config function
+at the end of the parameter list.
+The client of Program.compile can specify a binding, a locale,
+and a program name,
+by calling methods of a config val, which is passed to the config function.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:BINDING</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;printnum.kn&#39;</span> <span class="s1">&#39;stdout.print_line(Num.repr)&#39;</span>)
+<span class="nv">:print_num</span> &lt;- <span class="nv">Program</span>.<span class="n">compile</span>{(<span class="nv">:C</span>)
+  <span class="nv">:Binding</span> = <span class="nv">BINDING</span>.<span class="n">new</span>
+  <span class="nv">Binding:Num</span> &lt;- <span class="m">42</span>
+  <span class="nv">C</span>.<span class="n">binding</span>(<span class="nv">Binding</span>)
+}
+<span class="n">print_num</span> <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p>Here, the parameter of Program.compile is a config function.
+The parameter <code class="docutils literal notranslate"><span class="pre">C</span></code> of the config function is a config value.</p>
+<p>If you provide a function which takes a config function,
+and the config value is simple enough,
+you can use <a class="reference internal" href="../api/kink-CONFIG_FUN_RUNNER.html"><span class="doc">kink/CONFIG_FUN_RUNNER</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Config functions can be seen as an alternative aproach to named parameters
+of other languages.
+The most notable advantage of config functions is that they don't need
+a dedicated syntax.
+A config function is just the last argument passed to the configured function.</p>
+</div>
+</section>
+</section>
+<section id="function-result">
+<h2><span class="section-number">7.2.3. </span>Function result<a class="headerlink" href="#function-result" title="Link to this heading">¶</a></h2>
+<section id="return-value">
+<h3><span class="section-number">7.2.3.1. </span>Return value<a class="headerlink" href="#return-value" title="Link to this heading">¶</a></h3>
+<p>In most cases, a function returns a value,
+which is the value of the last expression
+of the sequence of the function body.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:fraction_part</span> &lt;- {(<span class="nv">:Num</span>)
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">Num</span>) || <span class="n">raise</span>(<span class="s1">&#39;Num must be a num, but was {}&#39;</span>.<span class="n">format</span>(<span class="nv">Num</span>.<span class="n">repr</span>))
+  <span class="nv">Num</span> % <span class="m">1</span>
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">fraction_part</span>(<span class="m">3.1415</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 0.1415</span>
+</pre></div>
+</div>
+<p>In the example above, <code class="docutils literal notranslate"><span class="pre">fraction_part</span></code> function
+returns the result value of <code class="docutils literal notranslate"><span class="pre">Num</span> <span class="pre">%</span> <span class="pre">1</span></code> as its result.</p>
+</section>
+<section id="continuation">
+<span id="id1"></span><h3><span class="section-number">7.2.3.2. </span>Continuation<a class="headerlink" href="#continuation" title="Link to this heading">¶</a></h3>
+<p>Sometimes a function call results in calling another function
+<a class="reference internal" href="../glossary.html#term-tail-call"><span class="xref std std-term">at the tail</span></a>.
+Such a function called at the tail is called a <em class="dfn">continuation</em>.
+Don't confuse with <a class="reference internal" href="../glossary.html#term-delimited-continuation"><span class="xref std std-term">delimited continuation</span></a>.</p>
+<p>If a program is composed in a style in which a continuation is passed from the caller,
+the program is said to be composed in <a class="reference internal" href="../glossary.html#term-continuation-passing-style"><span class="xref std std-term">continuation passing style</span></a>.</p>
+<p>For example, <a class="reference internal" href="../api/kink-VEC.html#api-9c1a3a7b764fa70187afe30654617332"><span class="std std-ref">Vec.with_elems</span></a>
+is written in continuation passing style.
+<code class="docutils literal notranslate"><span class="pre">with_elems</span></code> tail-calls a fun passed as an argument.
+Thus, that fun is the continuation of <code class="docutils literal notranslate"><span class="pre">with_elems</span></code>.
+Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:display_opt</span> &lt;- {(<span class="nv">:Opt_vec</span>)
+  <span class="nv">Opt_vec</span>.<span class="n">with_elems</span>(
+    { <span class="s1">&#39;empty&#39;</span> }
+    {(<span class="nv">:Just</span>) <span class="s1">&#39;just {}&#39;</span>.<span class="n">format</span>(<span class="nv">Just</span>.<span class="n">repr</span>) }
+  )
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">display_opt</span>([]))  <span class="c1"># =&gt; empty</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">display_opt</span>([<span class="m">42</span>]))  <span class="c1"># =&gt; just 42</span>
+</pre></div>
+</div>
+</section>
+<section id="exception">
+<h3><span class="section-number">7.2.3.3. </span>Exception<a class="headerlink" href="#exception" title="Link to this heading">¶</a></h3>
+<p>A function call can terminate raising an <a class="reference internal" href="../api/kink-EXCEPTION.html"><span class="doc">exception</span></a>,
+when there is no other way.</p>
+<p>For example below, <code class="docutils literal notranslate"><span class="pre">fraction_part</span></code> requires a number as the argument.
+If that expectation is not met,
+<code class="docutils literal notranslate"><span class="pre">fraction_part</span></code> raises an exception because the precondition is broken.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:fraction_part</span> &lt;- {(<span class="nv">:Num</span>)
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">Num</span>) || <span class="n">raise</span>(<span class="s1">&#39;Num must be a num, but was {}&#39;</span>.<span class="n">format</span>(<span class="nv">Num</span>.<span class="n">repr</span>))
+  <span class="nv">Num</span> % <span class="m">1</span>
+}
+
+<span class="n">fraction_part</span>(<span class="s1">&#39;str&#39;</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [..root..]</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {startup}</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L260 C3 _startup_aux} --&gt;_startup_aux(Args Dep)</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L243 C11 try} CONTROL.--&gt;try(</span>
+<span class="c1">#   [builtin:kink-mods/kink/CONTROL.kn L93 C33 reset] :switch = KONT_TAG.escape_tag.--&gt;reset{</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   [..kont tag..]</span>
+<span class="c1">#   [builtin:kink-mods/kink/CONTROL.kn L94 C10 body] :R = --&gt;body</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L245 C7 _start} --&gt;_start(Non_opts Dep)</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L137 C3 if} --&gt;if(Non_opts == []</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L152 C20 call} { :Source_spec --&gt;= Non_opts.front</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L153 C20 call} :Script_args --&gt;= Non_opts.drop_front(1)</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L154 C7 branch} --&gt;branch(</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L180 C34 call} [:Source_desc :Script] --&gt;= _scan_from(Source_spec Dep)</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L182 C20 call} :Binding --&gt;= BINDING.new</span>
+<span class="c1">#   {builtin:kink-mods/kink/_startup/STARTUP.kn L184 C11 _run_script} --&gt;_run_script(Binding $script_fun Script_args)</span>
+<span class="c1">#   [builtin:kink-mods/kink/_startup/STARTUP.kn L128 C3 script_fun] --&gt;script_fun</span>
+<span class="c1">#   {(stdin) L8 C1 fraction_part} --&gt;fraction_part(&#39;str&#39;)</span>
+<span class="c1">#   [(stdin) L4 C16 op_logor] NUM.is?(Num) --&gt;|| raise(&#39;Num must be a num, but was {}&#39;.format(Num.repr))</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   {(stdin) L4 C19 raise} NUM.is?(Num) || --&gt;raise(&#39;Num must be a num, but was {}&#39;.format(Num.repr))</span>
+<span class="c1">#   Num must be a num, but was &quot;str&quot;</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="error.html"><span class="doc">Error handling</span></a> for details.</p>
+</section>
+<section id="side-effects">
+<h3><span class="section-number">7.2.3.4. </span>Side effects<a class="headerlink" href="#side-effects" title="Link to this heading">¶</a></h3>
+<p>Function might also cause side effects,
+such as changing the target value of a member variable,
+or I/O to the file system or the network.</p>
+<p>In the next example,
+<code class="docutils literal notranslate"><span class="pre">fill_zero</span></code> sets 0 to all the elements of a vector.
+It is considered as a side effect of <code class="docutils literal notranslate"><span class="pre">fill_zero</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:fill_zero</span> &lt;- {(<span class="nv">:Vec</span>)
+  <span class="nv">Vec</span>.<span class="n">size</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:I</span>)
+    <span class="nv">Vec</span>.<span class="n">set</span>(<span class="nv">I</span> <span class="m">0</span>)
+  }
+}
+
+<span class="nv">:Vec</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>]
+<span class="n">fill_zero</span>(<span class="nv">Vec</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [0 0 0 0 0]</span>
+</pre></div>
+</div>
+<p>It is better to avoid side effects as much as possible,
+unless side effects themselves are the purpose of the function.</p>
+<p>Here is a caveat.
+In mainstream languages,
+modification of a value not exposed from the function
+is not considered as a side effect.
+However, in Kink, that can sometimes be an observable side effect
+because of <a class="reference internal" href="../glossary.html#term-delimited-continuation"><span class="xref std std-term">delimited continuation</span></a>.</p>
+<p>In the following example,
+you might think <code class="docutils literal notranslate"><span class="pre">Mapped</span></code> is not exposed from <code class="docutils literal notranslate"><span class="pre">map</span></code> function,
+so calling <code class="docutils literal notranslate"><span class="pre">push_back</span></code> method does not cause side effects.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:map</span> &lt;- {(<span class="nv">:Vec</span> <span class="nv">:transform</span>)
+  <span class="nv">:Mapped</span> = []
+  <span class="nv">:loop</span> &lt;- {(<span class="nv">:I</span>)
+    <span class="n">if</span>(<span class="nv">I</span> &lt; <span class="nv">Vec</span>.<span class="n">size</span>){
+      <span class="nv">Mapped</span>.<span class="n">push_back</span>(<span class="n">transform</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="nv">I</span>)))
+      <span class="n">loop</span>(<span class="nv">I</span> + <span class="m">1</span>)
+    }
+  }
+  <span class="n">loop</span>(<span class="m">0</span>)
+  <span class="nv">Mapped</span>.<span class="n">dup</span>
+}
+
+<span class="nv">:Double</span> &lt;- <span class="n">map</span>(
+  [<span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span>]
+  {(<span class="nv">:I</span>) <span class="nv">I</span> * <span class="m">2</span> }
+)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Double</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [0 2 4 6]</span>
+</pre></div>
+</div>
+<p>However, it is possible that a function call of <code class="docutils literal notranslate"><span class="pre">map</span></code>
+is resumed from the middle.
+The following example shows that modification of <code class="docutils literal notranslate"><span class="pre">Mapped</span></code>
+can actually be observed from outside.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:KONT_TAG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:double_caller</span> &lt;- {(<span class="nv">:Vec</span>)
+  <span class="nv">:Tag</span> = <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+  <span class="nv">Tag</span>.<span class="n">reset</span>{
+    <span class="n">map</span>(<span class="nv">Vec</span>){(<span class="nv">:Num</span>)
+      <span class="n">if</span>(<span class="nv">Num</span> == <span class="m">0</span>
+        { <span class="nv">Tag</span>.<span class="n">shift</span>{(<span class="nv">:resume</span>)
+            { <span class="n">resume</span>(<span class="n">nada</span>) }
+          }
+          <span class="m">0</span>
+        }
+        { <span class="nv">Num</span> * <span class="m">2</span> }
+      )
+    }
+  }
+}
+
+<span class="nv">:call_double</span> &lt;- <span class="n">double_caller</span>([<span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span>])
+
+<span class="nv">:D1</span> &lt;- <span class="n">call_double</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">D1</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [0 2 4 6]</span>
+
+<span class="nv">:D2</span> &lt;- <span class="n">call_double</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">D2</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [0 2 4 6 0 2 4 6]</span>
+</pre></div>
+</div>
+<p>To avoid this kind of side effect,
+you can define <code class="docutils literal notranslate"><span class="pre">map</span></code> like the following.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:map</span> &lt;- {(<span class="nv">:Vec</span> <span class="nv">:transform</span>)
+  <span class="nv">:loop</span> &lt;- {(<span class="nv">:I</span> <span class="nv">:Mapped</span>)
+    <span class="n">if</span>(<span class="nv">I</span> &lt; <span class="nv">Vec</span>.<span class="n">size</span>
+      { <span class="nv">:New_mapped</span> = <span class="nv">Mapped</span> + [<span class="n">transform</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="nv">I</span>))]
+        <span class="n">loop</span>(<span class="nv">I</span> + <span class="m">1</span> <span class="nv">New_mapped</span>)
+      }
+      { <span class="nv">Mapped</span> }
+    )
+  }
+  <span class="n">loop</span>(<span class="m">0</span> [])
+}
+</pre></div>
+</div>
+<p>Also note that implementation with side effects can sometimes be
+justified from the point of view of efficiency.
+Possibly it can be faster, or it can allocate less space.
+For example, the builtin implementation of <code class="docutils literal notranslate"><span class="pre">map</span></code> method
+a <a class="reference internal" href="../api/kink-VEC.html"><span class="doc">vector</span></a> can cause side effects
+when it is resumed by delimited continuation in the middle.</p>
+</section>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="variable.html"><span class="section-number">7.1. </span>Variables</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="accessibility.html"><span class="section-number">7.3. </span>Accessibility</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

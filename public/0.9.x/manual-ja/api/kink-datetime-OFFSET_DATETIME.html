@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.42. kink/datetime/OFFSET_DATETIME &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.43. kink/datetime/TIMEZONE" href="kink-datetime-TIMEZONE.html" />
+    <link rel="prev" title="6.41. kink/datetime/OFFSET" href="kink-datetime-OFFSET.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.42. kink/datetime/OFFSET_DATETIME</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-datetime-OFFSET.html"><span class="section-number">6.41. </span>kink/datetime/OFFSET</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-datetime-TIMEZONE.html"><span class="section-number">6.43. </span>kink/datetime/TIMEZONE</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-datetime-offset-datetime">
+<h1><span class="section-number">6.42. </span>kink/datetime/OFFSET_DATETIME<a class="headerlink" href="#kink-datetime-offset-datetime" title="Link to this heading">¶</a></h1>
+<p>Provides offset_datetime type.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-offset-datetime" id="id2">type offset_datetime</a></p>
+<ul>
+<li><p><a class="reference internal" href="#odt-year" id="id3">Odt.year</a></p></li>
+<li><p><a class="reference internal" href="#odt-month" id="id4">Odt.month</a></p></li>
+<li><p><a class="reference internal" href="#odt-day" id="id5">Odt.day</a></p></li>
+<li><p><a class="reference internal" href="#odt-hour" id="id6">Odt.hour</a></p></li>
+<li><p><a class="reference internal" href="#odt-minute" id="id7">Odt.minute</a></p></li>
+<li><p><a class="reference internal" href="#odt-second" id="id8">Odt.second</a></p></li>
+<li><p><a class="reference internal" href="#odt-day-of-week" id="id9">Odt.day_of_week</a></p></li>
+<li><p><a class="reference internal" href="#odt-offset" id="id10">Odt.offset</a></p></li>
+<li><p><a class="reference internal" href="#odt-datetime" id="id11">Odt.datetime</a></p></li>
+<li><p><a class="reference internal" href="#odt-instant" id="id12">Odt.instant</a></p></li>
+<li><p><a class="reference internal" href="#odt-show-config" id="id13">Odt.show(...[$config])</a></p></li>
+<li><p><a class="reference internal" href="#odt1-odt2" id="id14">Odt1 == Odt2</a></p></li>
+<li><p><a class="reference internal" href="#odt-repr" id="id15">Odt.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#offset-datetime-new-year-month-day-hour-minute-second-offset" id="id16">OFFSET_DATETIME.new(Year Month Day Hour Minute Second Offset)</a></p></li>
+<li><p><a class="reference internal" href="#offset-datetime-is-val" id="id17">OFFSET_DATETIME.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#offset-datetime-from-instant-offset-instant-offset" id="id18">OFFSET_DATETIME.from_instant_offset(Instant Offset)</a></p></li>
+<li><p><a class="reference internal" href="#offset-datetime-from-instant-timezone-instant-tz" id="id19">OFFSET_DATETIME.from_instant_timezone(Instant Tz)</a></p></li>
+<li><p><a class="reference internal" href="#offset-datetime-from-datetime-offset-dt-offset" id="id20">OFFSET_DATETIME.from_datetime_offset(Dt Offset)</a></p></li>
+<li><p><a class="reference internal" href="#offset-datetime-from-datetime-timezone-dt-tz" id="id21">OFFSET_DATETIME.from_datetime_timezone(Dt Tz)</a></p></li>
+<li><p><a class="reference internal" href="#offset-datetime-parse-str-config" id="id22">OFFSET_DATETIME.parse(Str ...[$config={}])</a></p></li>
+</ul>
+</nav>
+<section id="type-offset-datetime">
+<span id="api-abb3a5484e5d90353980e35d96945d85"></span><h2><span class="section-number">6.42.1. </span>type offset_datetime<a class="headerlink" href="#type-offset-datetime" title="Link to this heading">¶</a></h2>
+<p>An offset_datetime represents a combination of date-and-time, and UTC offset, in the ISO 8601 calendar system without inserting leap seconds.</p>
+<p>The date-and-time part is represented to nanosecond precision. The subsecond part is represented within “second” attribute, together with the integral second part.</p>
+<p>The range of the date-and-time part is [0001-00-00T00:00:00.000000000, 9999-12-31T23:59:59.999999999].</p>
+<p>The range of the UTC offset part is [UTC-18:00, UTC+18:00].</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:OFFSET_DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:OFFSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="nv">:Odt</span> &lt;- <span class="nv">OFFSET_DATETIME</span>.<span class="n">new</span>(<span class="m">2020</span> <span class="m">1</span> <span class="m">10</span> <span class="m">23</span> <span class="m">14</span> <span class="m">25.123456789</span> <span class="nv">OFFSET</span>.<span class="n">new</span>(-(<span class="m">5</span> * <span class="m">60</span> + <span class="m">30</span>)))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">year</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 2020</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">month</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; 1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">day</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; 10</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">hour</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 23</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">minute</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 14</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">second</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 25.123456789</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">day_of_week</span>.<span class="n">repr</span>) <span class="c1"># =&gt; DAY_OF_WEEK.friday</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">datetime</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; (datetime 2020-01-10T23:14:25.123456789)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">offset</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (offset -05:30)</span>
+</pre></div>
+</div>
+<section id="odt-year">
+<span id="api-acfce2255ecc6adf737532d20cba2cfd"></span><h3><span class="section-number">6.42.1.1. </span>Odt.year<a class="headerlink" href="#odt-year" title="Link to this heading">¶</a></h3>
+<p>“year” method returns the year part of Odt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [1, 9999].</p>
+</section>
+<section id="odt-month">
+<span id="api-f6d60d95e50891257cda29f28d2edf00"></span><h3><span class="section-number">6.42.1.2. </span>Odt.month<a class="headerlink" href="#odt-month" title="Link to this heading">¶</a></h3>
+<p>“month” method returns the month part of Odt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [1, 12].</p>
+</section>
+<section id="odt-day">
+<span id="api-7738b5076f6c0cd61c0c8c2647d74143"></span><h3><span class="section-number">6.42.1.3. </span>Odt.day<a class="headerlink" href="#odt-day" title="Link to this heading">¶</a></h3>
+<p>“day” method returns the day part of Odt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [1, 31].</p>
+</section>
+<section id="odt-hour">
+<span id="api-ac265877b5da9f67c48f80933a208d53"></span><h3><span class="section-number">6.42.1.4. </span>Odt.hour<a class="headerlink" href="#odt-hour" title="Link to this heading">¶</a></h3>
+<p>“hour” method returns the hour part of Odt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [0, 23].</p>
+</section>
+<section id="odt-minute">
+<span id="api-605281b508dd3549fdd44f3708fa9cfa"></span><h3><span class="section-number">6.42.1.5. </span>Odt.minute<a class="headerlink" href="#odt-minute" title="Link to this heading">¶</a></h3>
+<p>“minute” method returns the minute part of Odt.</p>
+<p>Postcondition:</p>
+<p>• The result is an int num, in the range [0, 59].</p>
+</section>
+<section id="odt-second">
+<span id="api-9ad875da45b30618f9b13bc3d585e2e4"></span><h3><span class="section-number">6.42.1.6. </span>Odt.second<a class="headerlink" href="#odt-second" title="Link to this heading">¶</a></h3>
+<p>“second” method returns the second part of Odt.</p>
+<p>Postcondition:</p>
+<p>• The result is a num with scale=9, in the range [0.000000000, 59.999999999].</p>
+</section>
+<section id="odt-day-of-week">
+<span id="api-adfbb3b2b8551d3075a59023318d6dbe"></span><h3><span class="section-number">6.42.1.7. </span>Odt.day_of_week<a class="headerlink" href="#odt-day-of-week" title="Link to this heading">¶</a></h3>
+<p>“day_of_week” method returns the day of week corresponding to the date of Odt.</p>
+<p>Postcondition:</p>
+<p>• The result is a day_of_week. See kink/datetime/DAY_OF_WEEK.</p>
+</section>
+<section id="odt-offset">
+<span id="api-e1557c2174060c5bc1f5485bb16110fc"></span><h3><span class="section-number">6.42.1.8. </span>Odt.offset<a class="headerlink" href="#odt-offset" title="Link to this heading">¶</a></h3>
+<p>“offset” method returns the UTC offset of Odt.</p>
+<p>Postcondition:</p>
+<p>• The result is a `offset`. See kink/datetime/OFFSET.</p>
+</section>
+<section id="odt-datetime">
+<span id="api-651d2592fdd83acb9b908e8d06098dae"></span><h3><span class="section-number">6.42.1.9. </span>Odt.datetime<a class="headerlink" href="#odt-datetime" title="Link to this heading">¶</a></h3>
+<p>`datetime` returns the datetime without UTC offset.</p>
+<p>Postcondition:</p>
+<p>• The result is a `datetime` val. See kink/datetime/DATETIME.</p>
+</section>
+<section id="odt-instant">
+<span id="api-1f3aaa1218f6b3162970d75dc413d892"></span><h3><span class="section-number">6.42.1.10. </span>Odt.instant<a class="headerlink" href="#odt-instant" title="Link to this heading">¶</a></h3>
+<p>`instant` method returns an `instant` val representing the point of time same as `Odt`.</p>
+<p>Postcondition</p>
+<p>• The result is an instant. See kink/datetime/INSTANT.</p>
+</section>
+<section id="odt-show-config">
+<span id="api-be8d685f81f7ae4b54a799e38cf3a452"></span><h3><span class="section-number">6.42.1.11. </span>Odt.show(...[$config])<a class="headerlink" href="#odt-show-config" title="Link to this heading">¶</a></h3>
+<p>`show` returns a str representation of `Odt`, which is intended to be used in UI messages.</p>
+<p>Precondition:</p>
+<p>• $config must be a fun which takes a `show_config` value.   See kink/STR for `show_config` type.</p>
+<p>The spec must be</p>
+<p>• an empty str, or</p>
+<p>• a str which matches `(?&lt;Field&gt;[^\u0020]+)(\u0020+(?&lt;Option&gt;[^\u0020]))*`.</p>
+<p>Specifying the empty spec is equivalent with specifying 'iso8601'.</p>
+<p class="rubric">When spec is an empty str, or `Field` = 'iso8601'</p>
+<p>`show` returns a str which represents `Odt` by ISO 8601 format, such as '2001-07-04T01:23:45.123456789-05:30'. The number of digits of the fractional part of the second is always 9. When the offset is zero, the offset is displayed as '+00:00'.</p>
+<p>No `Option` is allowed.</p>
+<p class="rubric">When `Field` = 'year'</p>
+<p>`show` returns a str which represents the year part of `Odt`.</p>
+<p>`Option` can be '0001-9999' (default) or '00-99'. The options are mutually exclusive. When '0001-9999' is specified, the year is represented by 4 digits (such as '0042' and '1969'). When '00-99' is specified, the year is represented by the latter 2 digits (such as '42' and '69').</p>
+<p class="rubric">When `Field` = 'month'</p>
+<p>`show` returns a str which represents the month part of `Odt`.</p>
+<p>`Option` can be '01-12' (default), '1-12', 'full', or 'short'. The options are mutually exclusive. When '01-12' is specified, the month is represented by 2 digits (such as '01' and '12'). When '1-12' is specified, the month is represented by 1 or 2 digits (such as '1' and '12'). When 'full' is specified, the month is represented by a locale-dependent full name (such as 'January' and 'December'). When 'short' is specified, the month is represented by a locale-dependent short name (such as 'Jan' and 'Dec').</p>
+<p class="rubric">When `Field` = 'day'</p>
+<p>`show` returns a str which represents the day part of `Odt`.</p>
+<p>`Option` can be '01-31' (default) or '1-31'. The options are mutually exclusive. When '01-31' is specified, the day is represented by 2 digits (such as '01' and '31'). When '1-31' is specified, the day is represented by 1 or 2 digits (such as '1' and '31').</p>
+<p class="rubric">When `Field` = 'day_of_week'</p>
+<p>`show` returns a str which represents the day of week of `Odt`</p>
+<p>`Option` can be 'full' (default) or 'short'. The options are mutually exclusive. When 'full' is specified, the day of week is represented by a locale-dependent full name (such as 'Monday' and 'Sunday'). When 'short' is specified, the day of week is represented by a locale-dependent long name (such as 'Mon' and 'Sun').</p>
+<p class="rubric">When `Field` = 'ampm'</p>
+<p>`show` returns a locale-dependent str which represents whether `Odt` is AM or PM.</p>
+<p>No `Option` is accepted.</p>
+<p class="rubric">When `Field` = 'hour'</p>
+<p>`show` returns a str which represents the hour part of `Odt`.</p>
+<p>`Option` can be '00-23', '0-23', or '1-12'. The options are mutually exclusive. When '00-23' is specified, the hour is represented by 2 digits (such as '00' and '23'). When '0-23' is specified, the hour is represented by 1 or 2 digits (such as '0' and '23'). When '1-12' is specified, the hour is represented by 1 or 2 digits as the hour in a 12-hour clock (such as '1' and '12').</p>
+<p class="rubric">When `Field` = 'minute'</p>
+<p>`show` returns a str which represents the minute part of `Odt`.</p>
+<p>`Option` can be '00-59' or '0-59'. The options are mutually exclusive. When '00-59' is specified, the minute is represented by 2 digits (such as '00' and '59'). When '0-59' is specified, the minute is represented by 1 or 2 digits (such as '0' and '59').</p>
+<p class="rubric">When `Field` = 'second'</p>
+<p>`show` returns a str which represents the second part of `Odt`.</p>
+<p>`Option` can be '00-59' (default), '0-59', '.0', '.1', '.2',,, '.8', or '.9' (default).</p>
+<p>'00-59' and '0-59' are mutually exclusive. When '00-59' is specified, the integral part of the second is represented by 2 digits (such as '00' and '59'). When '0-59' is specified, the integral part of the second is represented by 1 or 2 digits (such as '0' and '59').</p>
+<p>'.0', '.1', '.2',,, '.8', and '.9' are mutually exclusive. When '.0' is specified, the fractional part of the second is not displayed. When '.1', '.2',,, '.8', or '.9' is specified, the fractional part is floored to the specified scale and displayed after '.'.</p>
+<p class="rubric">When `Field` = 'offset'</p>
+<p>`show` returns a str which represents the offset part of `Odt`.</p>
+<p>`Option` can be '00:00' (default), '0000', 'noZ' (default), and 'Z'.</p>
+<p>'00:00' and '0000' are mutually exclusive. When '00:00' is specified, the offset is represented using ':' as a separator (such as '+09:00' and '-05:30'). When '0000' is specified, the offset is represented without a separator (such as '+0900' and '-0530').</p>
+<p>'noZ' and 'Z' are mutually exclusive. When 'noZ' is specified, offset=0 is represented by '+00:00' (if '00:00' is specified) or '+0000' (if '0000' is specified). When 'Z' is specified, offset=0 is represented by 'Z'.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:OFFSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:OFFSET_DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="nv">:Odt</span> &lt;- <span class="nv">OFFSET_DATETIME</span>.<span class="n">new</span>(<span class="m">2001</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5.123456789</span> <span class="nv">OFFSET</span>.<span class="n">new</span>(-(<span class="m">5</span> * <span class="m">60</span> + <span class="m">30</span>)))
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;year&#39;</span>) })       <span class="c1"># =&gt; 2001</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;year 00-99&#39;</span>) }) <span class="c1"># =&gt; 01</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;month&#39;</span>) })          <span class="c1"># =&gt; 01</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;month 1-12&#39;</span>) })     <span class="c1"># =&gt; 1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;month full&#39;</span>)
+    <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;fr&#39;</span>))
+  }
+)  <span class="c1"># =&gt; janvier</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;month short&#39;</span>)
+    <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;fr&#39;</span>))
+  }
+)  <span class="c1"># =&gt; janv.</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;day&#39;</span>) })      <span class="c1"># =&gt; 02</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;day 1-31&#39;</span>) }) <span class="c1"># =&gt; 2</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;day_of_week&#39;</span>) })     <span class="c1"># =&gt; Tue</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;day_of_week full&#39;</span>)
+    <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;fr&#39;</span>))
+  }
+)  <span class="c1"># =&gt; mardi</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;day_of_week short&#39;</span>)
+    <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;fr&#39;</span>))
+  }
+)  <span class="c1"># =&gt; mar.</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;ampm&#39;</span>) }) <span class="c1"># =&gt; AM</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;ampm&#39;</span>)
+    <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;ja&#39;</span>))
+  }
+)  <span class="c1"># =&gt; 午前</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;hour&#39;</span>) })       <span class="c1"># =&gt; 03</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;hour 0-23&#39;</span>) })  <span class="c1"># =&gt; 3</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;hour 1-12&#39;</span>) })  <span class="c1"># =&gt; 3</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;minute&#39;</span>) })       <span class="c1"># =&gt; 04</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;minute 0-59&#39;</span>) })  <span class="c1"># =&gt; 4</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;second&#39;</span>) })         <span class="c1"># =&gt; 05.123456789</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;second 0-59 .3&#39;</span>) }) <span class="c1"># =&gt; 5.123</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;offset&#39;</span>) })         <span class="c1"># =&gt; -05:00</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;offset 0000&#39;</span>) })    <span class="c1"># =&gt; -0500</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;offset 0000 Z&#39;</span>) })  <span class="c1"># =&gt; -0500</span>
+
+<span class="nv">:Utc_odt</span> &lt;- <span class="nv">OFFSET_DATETIME</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">1</span> <span class="m">1</span> <span class="m">0</span> <span class="m">0</span> <span class="m">0</span> <span class="nv">OFFSET</span>.<span class="n">new</span>(<span class="m">0</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Utc_odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;offset&#39;</span>) })         <span class="c1"># =&gt; +00:00</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Utc_odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;offset 0000&#39;</span>) })    <span class="c1"># =&gt; +0000</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Utc_odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;offset Z&#39;</span>) })       <span class="c1"># =&gt; Z</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Utc_odt</span>.<span class="n">show</span>{(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">spec</span>(<span class="s1">&#39;offset 0000 Z&#39;</span>) })  <span class="c1"># =&gt; Z</span>
+</pre></div>
+</div>
+<p>Usually, `show` method is used from Str.format.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:OFFSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:OFFSET_DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="nv">:Odt</span> &lt;- <span class="nv">OFFSET_DATETIME</span>.<span class="n">new</span>(<span class="m">1993</span> <span class="m">3</span> <span class="m">6</span> <span class="m">3</span> <span class="m">40</span> <span class="m">20</span> <span class="nv">OFFSET</span>.<span class="n">new</span>(<span class="m">60</span> * <span class="m">9</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Odt: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Odt</span>))  <span class="c1"># =&gt; Odt: 1993-03-06T03:40:20.000000000+09:00</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{Odt%month Jan} {Odt%day 1-31}, {Odt%year} ({Odt%day_of_week})&#39;</span>.<span class="n">format</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Odt&#39;</span> <span class="nv">Odt</span>)
+    <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;fr&#39;</span>))
+  }
+) <span class="c1"># =&gt; mars 6, 1993 (samedi)</span>
+</pre></div>
+</div>
+</section>
+<section id="odt1-odt2">
+<span id="api-e947a49299f5eeaf935bc7024e5c879f"></span><h3><span class="section-number">6.42.1.12. </span>Odt1 == Odt2<a class="headerlink" href="#odt1-odt2" title="Link to this heading">¶</a></h3>
+<p>offset_datetime values Odt1 and Odt2 are equal when:</p>
+<p>• They have the same civil time, and</p>
+<p>• They have the same UTC offset.</p>
+</section>
+<section id="odt-repr">
+<span id="api-740b6e0ae597c84333d43e92e531e711"></span><h3><span class="section-number">6.42.1.13. </span>Odt.repr<a class="headerlink" href="#odt-repr" title="Link to this heading">¶</a></h3>
+<p>“repr” returns a str representation of Odt, such as &quot;(offset_datetime 2020-01-10T23:07:04.123456789-05:30)&quot;</p>
+</section>
+</section>
+<section id="offset-datetime-new-year-month-day-hour-minute-second-offset">
+<span id="api-c8681d27a73e726cb2b42a741ba7ddb0"></span><h2><span class="section-number">6.42.2. </span>OFFSET_DATETIME.new(Year Month Day Hour Minute Second Offset)<a class="headerlink" href="#offset-datetime-new-year-month-day-hour-minute-second-offset" title="Link to this heading">¶</a></h2>
+<p>“new” fun makes an offset_datetime, with the speicifed attributes.</p>
+<p>• Year must be an int num in the range [1, 9999].</p>
+<p>• Month must be an int num in the range [1, 12].</p>
+<p>• Day must be an int num.</p>
+<p>• The combination of Year, Month and Day must be a valid date in ISO 8601 calendar system.</p>
+<p>• Hour must be an int num in the range [0, 23].</p>
+<p>• Minute must be an int num in the range [0, 59].</p>
+<p>• Second must be a num with scale&lt;=9 in the range [0.000000000, 59.999999999].</p>
+<p>• Offset must be an `offset` val.</p>
+</section>
+<section id="offset-datetime-is-val">
+<span id="api-11b62448224bcfa43b4a63a6ad596b58"></span><h2><span class="section-number">6.42.3. </span>OFFSET_DATETIME.is?(Val)<a class="headerlink" href="#offset-datetime-is-val" title="Link to this heading">¶</a></h2>
+<p>OFFSET_DATETIME.is? returns whether Val is an offset_datetime val.</p>
+</section>
+<section id="offset-datetime-from-instant-offset-instant-offset">
+<span id="api-d7fc8308e23c171765b1a39697e4fac9"></span><h2><span class="section-number">6.42.4. </span>OFFSET_DATETIME.from_instant_offset(Instant Offset)<a class="headerlink" href="#offset-datetime-from-instant-offset-instant-offset" title="Link to this heading">¶</a></h2>
+<p>`from_instant_offset` makes an `offset_datetime` val representing the `Instant` at the `Offset`.</p>
+<p>Preconditions:</p>
+<p>• `Instant` must be an `instant`</p>
+<p>• `Offset` must be a `offset`</p>
+<p>• The date and time of the resulting offset_datetime must be in the range   [0001-00-00T00:00:00.000000000, 9999-12-31T23:59:59.999999999]</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:INSTANT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:OFFSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:OFFSET_DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="nv">:Ins</span> &lt;- <span class="nv">INSTANT</span>.<span class="n">new</span>(<span class="m">1579580443.123456789</span>)
+<span class="nv">:Odt</span> &lt;- <span class="nv">OFFSET_DATETIME</span>.<span class="n">from_instant_offset</span>(<span class="nv">Ins</span> <span class="nv">OFFSET</span>.<span class="n">new</span>(<span class="m">60</span> * <span class="m">9</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (offset_datetime 2020-01-21T13:20:43.123456789+09:00)</span>
+</pre></div>
+</div>
+</section>
+<section id="offset-datetime-from-instant-timezone-instant-tz">
+<span id="api-c87782ba025b051194f60d2b5d094c55"></span><h2><span class="section-number">6.42.5. </span>OFFSET_DATETIME.from_instant_timezone(Instant Tz)<a class="headerlink" href="#offset-datetime-from-instant-timezone-instant-tz" title="Link to this heading">¶</a></h2>
+<p>`from_instant_timezone` makes an `offset_datetime` val representing the `Instant` at the timezone.</p>
+<p>Preconditions:</p>
+<p>• `Instant` must be an instant</p>
+<p>• `Tz` must be a timezone</p>
+<p>• The date and time of the resulting offset_datetime must be in the range   [0001-00-00T00:00:00.000000000, 9999-12-31T23:59:59.999999999]</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:INSTANT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:TIMEZONE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:OFFSET_DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="nv">:Ins</span> &lt;- <span class="nv">INSTANT</span>.<span class="n">new</span>(<span class="m">1579580443.123456789</span>)
+<span class="nv">:Pt</span> &lt;- <span class="nv">TIMEZONE</span>.<span class="n">for</span>(<span class="s1">&#39;America/Los_Angeles&#39;</span>)
+<span class="nv">:Odt</span> &lt;- <span class="nv">OFFSET_DATETIME</span>.<span class="n">from_instant_timezone</span>(<span class="nv">Ins</span> <span class="nv">Pt</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (offset_datetime 2020-01-20T20:20:43.123456789-08:00)</span>
+</pre></div>
+</div>
+</section>
+<section id="offset-datetime-from-datetime-offset-dt-offset">
+<span id="api-7459b4e5c8da98040ccd071687ed9354"></span><h2><span class="section-number">6.42.6. </span>OFFSET_DATETIME.from_datetime_offset(Dt Offset)<a class="headerlink" href="#offset-datetime-from-datetime-offset-dt-offset" title="Link to this heading">¶</a></h2>
+<p>`from_datetime_offset` makes an `offset_datetime` val representing the datetime at the `Offset`.</p>
+<p>Preconditions:</p>
+<p>• `Dt` must be a `datetime` val</p>
+<p>• `Offset` must be a offset</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:OFFSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:OFFSET_DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="nv">:Dt</span> &lt;- <span class="nv">DATETIME</span>.<span class="n">new</span>(<span class="m">2020</span> <span class="m">1</span> <span class="m">21</span> <span class="m">13</span> <span class="m">20</span> <span class="m">43.123456789</span>)
+<span class="nv">:Odt</span> &lt;- <span class="nv">OFFSET_DATETIME</span>.<span class="n">from_datetime_offset</span>(<span class="nv">Dt</span> <span class="nv">OFFSET</span>.<span class="n">new</span>(<span class="m">60</span> * <span class="m">9</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (offset_datetime 2020-01-21T13:20:43.123456789+09:00)</span>
+</pre></div>
+</div>
+</section>
+<section id="offset-datetime-from-datetime-timezone-dt-tz">
+<span id="api-e05df7e359f288f2e1f6b649c23f7752"></span><h2><span class="section-number">6.42.7. </span>OFFSET_DATETIME.from_datetime_timezone(Dt Tz)<a class="headerlink" href="#offset-datetime-from-datetime-timezone-dt-tz" title="Link to this heading">¶</a></h2>
+<p>`from_datetime_timezone` makes an `offset_datetime` val representing the `datetime` at the `timezone`.</p>
+<p>Preconditions:</p>
+<p>• `Dt` must be a `datetime`</p>
+<p>• `Tz` must be a `timezone`</p>
+<p>Result:</p>
+<p>• If there is only one `offset` valid at the datetime,   the fun produces an `offset_datetime` val with the offset.</p>
+<p>• If there are two `offset` vals valid at the datetime due to transition,   the fun produces an `offset_datetime` with the offset before the transition.</p>
+<p>• If there is no `offset` valid at the datetime due to transition,   the fun first makes an `offset_datetime` with the offset before the transition (A),   then produces an `offset_datetime` which represents the instant of (A)   at the offset after the transition.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:TIMEZONE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+<span class="nv">:OFFSET_DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="nv">:Pt</span> &lt;- <span class="nv">TIMEZONE</span>.<span class="n">for</span>(<span class="s1">&#39;America/Los_Angeles&#39;</span>)
+
+<span class="c1"># winter</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(
+  <span class="nv">OFFSET_DATETIME</span>.<span class="n">from_datetime_timezone</span>(
+    <span class="nv">DATETIME</span>.<span class="n">new</span>(<span class="m">2019</span> <span class="m">1</span> <span class="m">1</span> <span class="m">08</span> <span class="m">00</span> <span class="m">00</span>)  <span class="c1"># UTC-08:00 is valid</span>
+    <span class="nv">Pt</span>
+  ).<span class="n">repr</span>
+) <span class="c1"># =&gt; (offset_datetime 2019-01-01T08:00:00.000000000-08:00)</span>
+
+<span class="c1"># gap: winter -&gt; summer</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(
+  <span class="nv">OFFSET_DATETIME</span>.<span class="n">from_datetime_timezone</span>(
+    <span class="nv">DATETIME</span>.<span class="n">new</span>(<span class="m">2019</span> <span class="m">3</span> <span class="m">10</span> <span class="m">02</span> <span class="m">30</span> <span class="m">00</span>) <span class="c1"># no valid offset for the date and time</span>
+    <span class="nv">Pt</span>
+  ).<span class="n">repr</span>
+) <span class="c1"># =&gt; (offset_datetime 2019-03-10T03:30:00.000000000-07:00)</span>
+
+<span class="c1"># summer</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(
+  <span class="nv">OFFSET_DATETIME</span>.<span class="n">from_datetime_timezone</span>(
+    <span class="nv">DATETIME</span>.<span class="n">new</span>(<span class="m">2019</span> <span class="m">7</span> <span class="m">1</span> <span class="m">08</span> <span class="m">00</span> <span class="m">00</span>)  <span class="c1"># UTC-07:00 is valid</span>
+    <span class="nv">Pt</span>
+  ).<span class="n">repr</span>
+) <span class="c1"># =&gt; (offset_datetime 2019-07-01T08:00:00.000000000-07:00)</span>
+
+<span class="c1"># overlap: summer -&gt; winter</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(
+  <span class="nv">OFFSET_DATETIME</span>.<span class="n">from_datetime_timezone</span>(
+    <span class="nv">DATETIME</span>.<span class="n">new</span>(<span class="m">2019</span> <span class="m">11</span> <span class="m">3</span> <span class="m">01</span> <span class="m">30</span> <span class="m">00</span>) <span class="c1"># both UTC-08:00 and UTC-07:00 are valid</span>
+    <span class="nv">Pt</span>
+  ).<span class="n">repr</span>
+) <span class="c1"># =&gt; (offset_datetime 2019-11-03T01:30:00.000000000-07:00)</span>
+</pre></div>
+</div>
+<p>If you need more control over conversion, consider using Tz.offset_for_datetime.</p>
+</section>
+<section id="offset-datetime-parse-str-config">
+<span id="api-51a47db8ca38fee853999785a20e9213"></span><h2><span class="section-number">6.42.8. </span>OFFSET_DATETIME.parse(Str ...[$config={}])<a class="headerlink" href="#offset-datetime-parse-str-config" title="Link to this heading">¶</a></h2>
+<p>`parse` parses an `offset_datetime` from `Str`.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = a fun which raises an exception</p>
+<p>If `Str` is accepted by the syntax and the limiting conditions are met, `parse` tail-calls $success with an `offset_datetime` val.</p>
+<p>If `Str` is not accepted by the syntax, or the limiting conditions are not met, `parse` tail-calls $error with no arg.</p>
+<p class="rubric">Syntax and limiting conditions</p>
+<p>Syntax: `{Year}-{Month}-{Day}T{Hour}:{Minute}:{Second}Z` (offset is zero), or `{Year}-{Month}-{Day}T{Hour}:{Minute}:{Second}{Offset_sign}{Offset_hour}:{Offset_minute}`.</p>
+<p>• `Year` is four decimal digits from `0001` to `9999`</p>
+<p>• `Month` is two decimal digits from `01` to `12`</p>
+<p>• `Day` is two decimal digits from `01` to `31`</p>
+<p>• `Hour` is two decimal digits from `00` to `23`</p>
+<p>• `Minute` is two decimal digits from `00` to `59`</p>
+<p>• `Second` is two decimal digits from `00` to `59`,   or `{Int}.{Frac}` where `Int`is two decimal digits from `00` to `59`   and `Frac` is 1 to 9 decimal digits.</p>
+<p>• `Offset_sign` is either `-` or `+`</p>
+<p>• `Offset_hour` is two decimal digits from `00` to `18`</p>
+<p>• `Offset_minute` is `00` if `Offset_hour` is `18`,   otherwise two decimal digits from `00` to `59`</p>
+<p>Limiting conditions:</p>
+<p>• `Year`, `Month`, and `Day` must constitute a valid date in ISO 8601 calendar system.</p>
+<p class="rubric">Preconditions</p>
+<p>• `Str` must be a str</p>
+<p>• $success must be a fun which takes an `offset_datetime` val</p>
+<p>• $error must be a fun which takes no arg</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:OFFSET_DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">OFFSET_DATETIME</span>.<span class="n">parse</span>(<span class="s1">&#39;2020-11-04T12:34:56Z&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; (offset_datetime 2020-11-04T12:34:56.000000000+00:00)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">OFFSET_DATETIME</span>.<span class="n">parse</span>(<span class="s1">&#39;2020-11-04T12:34:56+18:00&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; (offset_datetime 2020-11-04T12:34:56.000000000+18:00)</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">OFFSET_DATETIME</span>.<span class="n">parse</span>(<span class="s1">&#39;2020-11-04T12:34:56-18:00&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; (offset_datetime 2020-11-04T12:34:56.000000000-18:00)</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:OFFSET_DATETIME</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="nv">OFFSET_DATETIME</span>.<span class="n">parse</span>(<span class="s1">&#39;2020-11-04T12:34:56Z&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Odt</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">repr</span>) }
+  <span class="nv">C</span>.<span class="n">on_error</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;error&#39;</span>) }
+}
+<span class="c1"># =&gt; (offset_datetime 2020-11-04T12:34:56.000000000+00:00)</span>
+
+<span class="nv">OFFSET_DATETIME</span>.<span class="n">parse</span>(<span class="s1">&#39;boo&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Odt</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Odt</span>.<span class="n">repr</span>) }
+  <span class="nv">C</span>.<span class="n">on_error</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;error&#39;</span>) }
+}
+<span class="c1"># =&gt; error</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-datetime-OFFSET.html"><span class="section-number">6.41. </span>kink/datetime/OFFSET</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-datetime-TIMEZONE.html"><span class="section-number">6.43. </span>kink/datetime/TIMEZONE</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+=========================
+kink\/tls\/KEY\_PAIR\_SET
+=========================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-c509ac0c14917afc3a074b444fd1d91c:
+
+type key\_pair\_set
+===================
+
+A key\_pair\_set contains a collection of pairs of a private key\, a public key\, and its certificate\.
+
+.. _api-7400dad43ad27aecff30c21d550f3910:
+
+KEY\_PAIR\_SET\.is\?\(Val\)
+===========================
+
+\`is\?\` returns whether \`Val\` is a key\_pair\_set val\.
+
+.. _api-44e43de74e6b4195ac0544a537e07863:
+
+KEY\_PAIR\_SET\.read\_pkcs12\(Bin Password \.\.\.\[\$config\=\{\}\]\)
+=====================================================================
+
+\`read\_pkcs12\` reads a \`key\_pair\_set\` from \`Bin\` in PKCS \#12 format\, which is defined in RFC 7292\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\• C\.on\_wrong\_password\(\$wrong\_password\)\: default \= a fun which tail\-calls \$error
+
+If a \`key\_pair\_set\` is successfully read\, \`read\_pkcs12\` tail\-calls \$success with the \`key\_pair\_set\`\.
+
+If the password is wrong\, \`read\_pkcs12\` tail\-calls \$wrong\_password
+
+If an error occurs while reading the bin\, \`read\_pkcs12\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\• \`Bin\` must be a \`bin\`
+
+\• \`Password\` must be a \`str\`
+
+\• \$success must be a fun which takes a \`key\_pair\_set\`
+
+\• \$error must be a fun which takes an \`exception\`
+
+\• \$wrong\_password must be a fun which takes no arg
+
+.. _api-60f1d4da46b43b25ebc0288190e4b462:
+
+KEY\_PAIR\_SET\.empty
+=====================
+
+\`empty\` returns a key\_pair\_set which has no key pairs\.
+

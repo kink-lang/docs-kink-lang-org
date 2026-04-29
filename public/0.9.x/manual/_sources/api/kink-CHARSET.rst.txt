@@ -1,0 +1,146 @@
+=============
+kink\/CHARSET
+=============
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-bf7d9b8204c4961012f73c523ed9519f:
+
+type charset
+============
+
+\`charset\` is a system for encoding strings into byte sequences\.
+
+.. _api-5d96dcbe5e2a88cb34f858fb97ddcfbf:
+
+Charset\.name
+-------------
+
+\`name\` returns the name of the charset as a \`str\`\.
+
+The result might not be equal to the name specified for CHARSET\.for\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :CHARSET.require_from('kink/')
+        
+    :Utf16 <- CHARSET.for('utf16')
+    stdout.print_line(Utf16.name.repr) # => "UTF-16"
+
+.. _api-590e3a6ff9d9a23d587075b43669a876:
+
+Charset\.str\_to\_bin\(Str\)
+----------------------------
+
+\`str\_to\_bin\` converts \`Str\` to a \`bin\`\.
+
+If you want to specify how conversion errors are handled\, use kink\/io\/OUTPUT\_PRINTER and kink\/io\/BIN\_OUTPUT\.
+
+.. rubric:: Precondition
+
+\`Str\` must be a \`str\`\.
+
+\`Str\` must be able to encode by \`Charset\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :CHARSET.require_from('kink/')
+        
+    :Bin <- CHARSET.utf8.str_to_bin('Foo')
+    stdout.print_line(Bin.repr) # => (bin 0x46 0x6f 0x6f)
+
+.. _api-e15dddbdc2cb0195a47b2dae841f0172:
+
+Charset\.bin\_to\_str\(Bin\)
+----------------------------
+
+\`bin\_to\_str\` converts \`Bin\` to a \`str\`\.
+
+If you want to specify how conversion errors are handled\, use kink\/io\/INPUT\_SCANNER and kink\/io\/BIN\_INPUT\.
+
+.. rubric:: Precondition
+
+\`Bin\` must be a \`bin\`\.
+
+\`Bin\` must be able to decode by \`Charset\` into a Unicode string\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :CHARSET.require_from('kink/')
+    :BIN.require_from('kink/')
+        
+    :Str <- CHARSET.utf8.bin_to_str(BIN.of(0x46 0x6f 0x6f))
+    stdout.print_line(Str.repr) # => "Foo"
+
+.. _api-5846441d492906cc3b3c9ab2e976658f:
+
+X \=\= Y
+--------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether two charsets have the same name\.
+
+.. rubric:: Precondition
+
+\`Y\` must be a \`charset\`\.
+
+.. _api-611660487044f9886b16d98377b5bb09:
+
+CHARSET\.for\(Name \.\.\.\[\$config\=\{\}\]\)
+=============================================
+
+\`for\` tries to find a charset with the specified \`Name\`\, from the charset repository provided by the runtime\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity\.
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception\.
+
+If the specified charset is found\, \`for\` tail\-calls \$success with the \`charset\`\.
+
+If the specified charset is not found\, \`for\` tail\-calls \$error with no arg\.
+
+.. rubric:: Preconditions
+
+\`Name\` must be a \`str\`\.
+
+\$success must be a fun which takes a \`charset\`\.
+
+\$error must be a fun which takes no arg\.
+
+.. _api-d7762f66611aeb2ef662007a9bf1fca2:
+
+CHARSET\.is\?\(Val\)
+====================
+
+\`is\?\` returns whether \`Val\` is a \`charset\`\.
+
+.. _api-92352ee1659690c389419c02ae1b6a55:
+
+CHARSET\.utf8
+=============
+
+\`utf8\` returns UTF\-8 \`charset\`\.
+
+.. _api-daea6986ca846ed2f14e69501b670bb7:
+
+CHARSET\.ascii
+==============
+
+\`ascii\` returns ASCII \`charset\`\.
+
+.. _api-adbed7ac680ccb3cc4d32aa0c6e85aa0:
+
+CHARSET\.default
+================
+
+\`default\` returns the \`charset\` default to the runtime\.
+

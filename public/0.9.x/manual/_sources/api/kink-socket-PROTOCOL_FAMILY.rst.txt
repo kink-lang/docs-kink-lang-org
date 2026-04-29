@@ -1,0 +1,47 @@
+==============================
+kink\/socket\/PROTOCOL\_FAMILY
+==============================
+
+Provides the constants which represents the protocol families of socket API\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-d81bb093733d572cff79f87cf20009e8:
+
+type protocol\_family
+=====================
+
+\`protocol\_family\` values are \`ipv4\`\, \`ipv6\`\, or \`unix\`\.
+
+\`protocol\_family\` values can be compared by \`\=\=\` operator\, or \`op\_eq\` method each other\.
+
+.. _api-70a26ff1fc47956d6c884057f0ca29a2:
+
+PROTOCOL\_FAMILY\.ipv4
+======================
+
+\`ipv4\` represents IPv4 protocol\.
+
+.. _api-bbf9623cae8258198d423e4e83dc1e07:
+
+PROTOCOL\_FAMILY\.ipv6
+======================
+
+\`ipv6\` represents IPv6 protocol\.
+
+.. _api-3b26072aefa63d3f63b95729ae9e0724:
+
+PROTOCOL\_FAMILY\.unix
+======================
+
+\`unix\` represents Unix domain socket protocol\.
+
+.. _api-f44ab58224df81ced83e8222faa12d7d:
+
+PROTOCOL\_FAMILY\.is\?\(Val\)
+=============================
+
+\`is\?\` returns whether \`Val\` is a \`protocol\_family\` value\.
+

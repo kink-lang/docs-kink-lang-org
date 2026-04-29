@@ -1,0 +1,196 @@
+========
+Glossary
+========
+
+Language and runtime
+====================
+
+.. glossary::
+
+  value
+    The primitive unit of data.
+    Can be abbreviated to “val”.
+    See :ref:`value`.
+
+  embedded properties
+    Data contained in a value not via variables.
+    See :ref:`embedded_properties`.
+
+  variable
+    A pair of the owner value and the symbol,
+    which can have a content value.
+    See :ref:`variable`.
+
+  owner of the variable
+    The :term:`value` which owns the variable.
+    See :ref:`variable`.
+
+  symbol of the variable
+    The Unicode code point sequence of the variable.
+    Can be abbreviated to “sym”.
+    See :ref:`variable`.
+
+  function symbol
+    A symbol which is accepted by :regexp:`[a-z_][a-z0-9_?]*`.
+    See :ref:`variable`.
+
+  data symbol
+    A symbol which is accepted by :regexp:`([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*`.
+    See :ref:`variable`.
+
+  variable-load operation
+  variable-store operation
+  variable-symbols operation
+    Three primitive operations about variables.
+    See :ref:`variable_operations`.
+
+  compile
+    Steps to convert a program to a :term:`function`.
+    Compilation is done by :ref:`Program.compile <api-eb38c6c06f06250d57f7c828992a2147>`.
+    See :doc:`/language/index` for the specification of compilation.
+
+  desugaring
+    A step of :term:`compile` which transforms a program to its :term:`desugared form`.
+    See :ref:`desugaring`.
+
+  desugared form
+    A program made by :term:`desugaring`.
+    A program in the desugared form can be an input of :term:`translation`.
+    See :ref:`desugaring`.
+
+  translation
+    A step of :term:`compile` which converts a program in the desugared form
+    into :term:`abstract instructions <abstract instruction>`.
+    See :ref:`translation`.
+
+  abstract stack machine
+    An abstract machine which evaluates :term:`abstract instruction <abstract instruction>`.
+    See :doc:`/language/eval`.
+
+  abstract instruction
+    An instruction which is evaluated by :term:`abstract stack machine`.
+    See :doc:`/language/eval`.
+
+  call stack
+    The stack of an :term:`abstract stack machine`,
+    which consists of a sequence of :term:`abstract instructions <abstract instruction>`.
+    See :ref:`call_stack`.
+
+  tail call
+    A function call done at the end of a function call,
+    which is done by :ref:`tailcall instruction <tailcall_instruction>`.
+
+  tail call elimination
+    The requirement for the runtime
+    that consecutive :term:`tail calls <tail call>` do not cause stack overflow.
+    See :ref:`tailcall_instruction`.
+
+  delimited continuation
+    A :term:`function` to resume the evaluation
+    from an invocation of :ref:`Kont_tag.shift <api-35db7c321b93a22b6e6164fab36bf940>`
+    to the end of an invocation of :ref:`Kont_tag.reset <api-9877213663340a1e14488dc493151c3a>`.
+    Can be abbreviated to “kont”.
+    See :ref:`kont_instruction` for the definition.
+
+  host procedure
+    An abstract unit of information to specify a procedure within the :term:`host system`.
+    See :ref:`hostcall_instruction`.
+
+  runtime
+    The :dfn:`runtime` is a system which consists of values, executors and other components.
+
+  host system
+    The :dfn:`host system` is a system on which the :term:`runtime` is implemented.
+    Typically, the host system is a Java Virtual Machine.
+
+  module system
+    A subsystem of the :term:`runtime` which manages :term:`modules <module>`.
+    See :doc:`/modsystem`.
+
+  module
+    A value loaded by the :term:`module system`.
+    Can be abbreviated to “mod”.
+    See :doc:`/modsystem`.
+
+  module base paths
+    A set of directories where module sources can be placed.
+    See :ref:`module_base_paths`.
+
+
+Builtin library
+===============
+
+.. glossary::
+
+  function
+    A value of :ref:`type fun <api-26c971da584c97df3028fa31cf051166>`.
+    Can be abbreviated to “fun”.
+
+  variable reference
+    A value of :ref:`type varref <api-43c405a672f1fcd864105835744e4c63>`.
+    Can be abbreviated to “varref”.
+
+  vector
+    A value of :ref:`type vec <api-8f14b909c07234a50b4b4c739ce19bcd>`.
+    Can be abbreviated to “vec”.
+
+  bool
+    A value of :ref:`type bool <api-4114da34f96e8d8f51b850be2f586125>`,
+    which is either :ref:`true <api-cad6f8e450bbe63736bc0643397a5f4c>`
+    or :ref:`false <api-778dd33edaef2635e679ce12ef09930b>`.
+
+  exception
+    A value of :ref:`type exception <api-08fee0648a753752ac74e092d8e9cbfd>`,
+    which represents a runtime error.
+
+  delimited continuation tag
+    A value of :ref:`type kont_tag <api-30c0ec5df9d2435c0132d55f5a695215>`.
+    See :ref:`delimit_instruction`.
+
+Patterns and conventions
+========================
+
+.. glossary::
+
+  method
+    A function which is stored in a variable of a value,
+    and used to do an operation for the value as the receiver.
+    See :ref:`method`.
+
+  constructor
+    A function which creates a new value.
+    See :ref:`constructor`.
+
+  trait
+    A vec which stores methods and the symbols,
+    which are spreaded as arguments of :ref:`new_val <api-fbc90c7785322a766a80191e6e1ea8de>`.
+    See :ref:`constructor`.
+
+  thunk
+    A function that is not used as a method, and takes no arguments.
+    See :ref:`thunk`.
+
+  predicate
+    A function that is not used as a method, takes one argument,
+    and returns a bool.
+    See :ref:`predicate`.
+
+  constant
+    A :term:`thunk` which returns a same value every time.
+    See :ref:`constant`.
+
+  continuation
+    A function which is called at the tail of a function call.
+    Don't confuse with :term:`delimited continuation`.
+    See :ref:`continuation`.
+
+  continuation passing style
+    Composition of a program where the :term:`continuation`
+    is passed from the caller.
+    See :ref:`continuation`.
+
+  kinkdoc
+    API documentation system for Kink programs.
+    See :doc:`/kinkdoc`.
+
+.. vim: et sw=2 sts=2 et

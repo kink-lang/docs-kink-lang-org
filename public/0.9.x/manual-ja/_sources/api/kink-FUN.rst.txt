@@ -1,0 +1,37 @@
+=========
+kink\/FUN
+=========
+
+The companion mod for fun vals\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-26c971da584c97df3028fa31cf051166:
+
+type fun
+========
+
+A fun is a function value\.
+
+Conceptually\, a fun holds a sequence of abstract instructions\. See “Language specification” → “Evaluation” chapter for abstract instructinos\.
+
+.. _api-6fa30820b07f255c739983259119b7c6:
+
+Fun\.call\(Recv Args\)
+----------------------
+
+\`call\` tail\-calls \`Fun\` with \`Recv\` as the recv\, and \`Args\` as the args of the invocation\.
+
+Precondition\:
+
+\• \`Args\` must be a vec\.
+
+.. _api-c688f30d4c84298a3bb2fca5d76b33a1:
+
+FUN\.is\?\(Val\)
+================
+
+\`is\?\` returns whether the \`Val\` is a fun\.
+

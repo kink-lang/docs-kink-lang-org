@@ -1,0 +1,106 @@
+=============================
+kink\/program\/COMPILE\_ERROR
+=============================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-90981ed8c8e11e27e7d317361c204f62:
+
+type compile\_error
+===================
+
+\`compile\_error\` is an error of compilation of a program\.
+
+\`compile\_error\` consists of the following attributes\:
+
+\• Message\: the error message as a \`str\`\.
+
+\• From\: the \`location\` of the start of the error\.
+
+\• To\: the \`location\` of the end of the error\.
+
+.. rubric:: Invariant
+
+From\.program \=\= To\.program
+
+From\.pos \<\= To\.pos
+
+.. _api-5ec1c2142158027330771345131c2cdc:
+
+Err\.message
+------------
+
+\`message\` returns \`Message\` attribute of \`Err\`\.
+
+.. _api-d492808cdf7595ed9af63b62faddaa45:
+
+Err\.from
+---------
+
+\`from\` returns \`From\` attribute of \`Err\`\.
+
+.. _api-15ce4579ade453484a2debf95b9335f6:
+
+Err\.to
+-------
+
+\`to\` returns \`To\` attribute of \`Err\`\.
+
+.. _api-35f3dd531004ca43754d376f0f94e5a3:
+
+Err\.desc
+---------
+
+\`desc\` returns a \`str\` which describes the compile error for the programmer\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :PROGRAM.require_from('kink/program/')
+    :LOCATION.require_from('kink/program/')
+    :COMPILE_ERROR.require_from('kink/program/')
+        
+    :Program <- PROGRAM.new('foo.kn' 'Foo + @@ Bar')
+    :From <- LOCATION.new(Program 6)
+    :To <- LOCATION.new(Program 8)
+    :Err <- COMPILE_ERROR.new('unknown operator' From To)
+    stdout.print_line(Err.desc.repr) # => "unknown operator: [foo.kn L1 C7] Foo + -->@@ Bar"
+
+.. _api-cf3baa368d25b7c395416f6d172bc6fa:
+
+Err1 \=\= Err2
+--------------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`Err1\` and \`Err2\` have the equal \`Message\`\, \`From\`\, and \`To\` attributes\.
+
+.. rubric:: Precondition
+
+\`Err2\` must be a \`compile\_error\`\.
+
+.. _api-0c121d4685999e25b549bd3b7780ed33:
+
+COMPILE\_ERROR\.new\(Message From To\)
+======================================
+
+\`new\` returns a new \`compile\_error\` with the passed attributes\.
+
+.. rubric:: Preconditions
+
+\`Message\` must be a \`str\`\.
+
+\`From\` and \`To\` must be \`location\` values\.
+
+From\.program \=\= To\.program
+
+From\.pos \<\= To\.pos
+
+.. _api-8de54eaac2ef61e148eb7cd4169f436f:
+
+COMPILE\_ERROR\.is\?\(Val\)
+===========================
+
+\`is\?\` returns whether \`Val\` is a \`compile\_error\`\.
+

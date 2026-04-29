@@ -1,0 +1,442 @@
+=============
+kink\/PROCESS
+=============
+
+Control the current process and subprocesses\.
+
+.. rubric:: About exit statuses
+
+In POSIX compliant systems\, only the least 8 bits of the exit status can be usable \[1\]\. To comply with that restriction\, PROCESS\.exit only accepts int nums in \[0\, 255\]\.
+
+In Windows API\, the exit status is a 32bit unsigned integer \[2\]\. To be able to handle that\, the range of Process\.wait is defined as \[0\, 4294967295\]\. Note that\, although Windows API specifies the exit status as unsigned\, cmd\.exe and PowerShell treat the exit status as signed\.
+
+\[1\] https\:\/\/pubs\.opengroup\.org\/onlinepubs\/9799919799\/functions\/wait\.html
+
+\[2\] https\:\/\/learn\.microsoft\.com\/en\-us\/windows\/win32\/api\/processthreadsapi\/nf\-processthreadsapi\-getexitcodeprocess
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-b5f2e480fce00d4fd85ef2ee776bd550:
+
+PROCESS\.pid
+============
+
+\`pid\` returns the current process id in an int num\.
+
+Example\:
+
+.. code:: kink
+
+    :PROCESS.require_from('kink/')
+        
+    stdout.print_line(PROCESS.pid.repr) # => 123
+
+.. _api-6439105bf1ebf7c1174f53e9b6e65107:
+
+PROCESS\.env\(Env\_name\)
+=========================
+
+\`env\` returns the str of the environment variable specified by \`Env\_name\`\.
+
+Preconditions\:
+
+\• \`Env\_name\` must be a str
+
+\• The process must have the specified environment variable
+
+Case sensitivity of \`Env\_name\` depends on the host system\. Typically\, it is case sensitive on Unix systems\, and case insensitive on Windows systems\.
+
+Example\:
+
+.. code:: kink
+
+    :PROCESS.require_from('kink/')
+        
+    stdout.print_line(PROCESS.env('PATH').repr)
+    # => "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+.. _api-e4c76dff294932419c991191e6b40601:
+
+PROCESS\.have\_env\?\(Env\_name\)
+=================================
+
+\`have\_env\?\` returns whether the process has the environment variable specified by \`Env\_name\`\.
+
+Precondition\:
+
+\• \`Env\_name\` must be a str
+
+Example\:
+
+.. code:: kink
+
+    :PROCESS.require_from('kink/')
+        
+    stdout.print_line(PROCESS.have_env?('PATH').repr) # => true
+    stdout.print_line(PROCESS.have_env?('NO_SUCH_ENV').repr)  # => false
+
+Case sensitivity of \`Env\_name\` depends on the host system\. Typically\, it is case sensitive on Unix systems\, and case insensitive on Windows systems\.
+
+.. _api-fba1d75304fad638028d6567d2bd5837:
+
+PROCESS\.exit\(Exit\_status\)
+=============================
+
+\`exit\` terminates the process running the runtime system with the \`Exit\_status\`\.
+
+.. rubric:: Precondition
+
+\• \`Exit\_status\` must be an int num in the range \[0\, 255\]\.
+
+.. _api-382f762afb4d1fd1261301a4d54b00a4:
+
+PROCESS\.start\(Command\_and\_args \.\.\.\[\$config\=\{\}\]\)
+=============================================================
+
+\`start\` launches a subprocess by the command specified by \`Command\_and\_args\`\.
+
+If \`start\` succeeds to launch a subprocess\, it tail\-calls \$success with the \`process\` val which represents the launched subprocess\. \$success is provided by C\.on\_success\, or VAL\.identity by default\.
+
+If \`start\` fails to launch a subprocess\, it tail\-calls \$error with an \`exception\`\. \$error is provided by C\.on\_error\, or \{\(\:Exc\) Exc\.raise \} by default\.
+
+.. rubric:: Preconditions
+
+\• \`Command\_and\_args\` must be a vec of strs
+
+\• \`Command\_and\_args\` must contain at least one element
+
+\• \$config\, if given\, must be a fun which takes a val of \`start\_config\` type
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :PROCESS.require_from('kink/')
+        
+    :Ls <- PROCESS.start(['ls' '-1' '/']) # command: ls -1 /
+    stdout.print_line(Ls.wait) # => 0
+
+The source of the standard input and the destination of the standard output and standard error of the subprocess can be configured\.
+
+.. code:: kink
+
+    :PROCESS.require_from('kink/')
+    :CONTROL.require_from('kink/')
+    :INPUT_SCANNER.require_from('kink/io/')
+    :CHARSET.require_from('kink/')
+        
+    :Lines <- CONTROL.with_finally{(:finally)
+      :Ls = PROCESS.start(['ls' '-1' '/']){(:C)
+        C.stdout_to_pipe
+      }
+      finally{ Ls.wait }
+      :Stdout = Ls.stdout
+      finally{ Stdout.close }
+      :Scanner = INPUT_SCANNER.new(Stdout CHARSET.utf8)
+      :loop <- {(:Lines)
+        Scanner.scan_line{(:C)
+          C.on_success{(:L) loop(Lines + [L]) }
+          C.on_eof{ Lines }
+        }
+      }
+      loop([])
+    }
+    stdout.print_line(Lines.repr) # => ["bin\n" "boot\n" "dev\n" "etc\n" "home\n" ,,,]
+
+See \`start\_config\` for details\.
+
+.. _api-80ea487e6fc6a729cb74d168606b4f2d:
+
+type start\_config
+==================
+
+Config val type of PROCESS\.start\.
+
+Invocation of stdin\_xxx methods overwrites configuration of precedent invocation of stdin\_xxx methods\. In the next example\, the subprocess reads stdin from \/etc\/passwd\.
+
+.. code:: kink
+
+    :PROCESS.require_from('kink/')
+        
+    :Process <- PROCESS.start(['grep' 'nologin']){(:C)
+      C.stdin_from_pipe # pipe is not used
+      C.stdin_from_file('/etc/passwd')
+    }
+    Process.wait
+    # Output:
+    #   daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+    #   bin:x:2:2:bin:/bin:/usr/sbin/nologin
+    #   ...
+
+The same is true for stdout\_xxx and stderr\_xxx methods\.
+
+.. _api-0bfd72551ddf47be76f52374da779597:
+
+C\.stdin\_inherit
+-----------------
+
+\`stdin\_inherit\` specifies that the subprocess inherits standard input from the current process\.
+
+This is the default option for the standard input\.
+
+.. _api-9a73b2310741032ffb3f5616281a7aeb:
+
+C\.stdin\_from\_pipe
+--------------------
+
+\`stdin\_from\_pipe\` specifies that bytes of the standard input of the subprocess comes from the pipe output of the current process\.
+
+If you specify \`stdin\_from\_pipe\`\, you can call P\.stdin to get the pipe linked to the subprocess\.
+
+.. _api-0f6a2ba3317a1199ad1c04eb47eea3d4:
+
+C\.stdin\_from\_file\(File\_path\)
+----------------------------------
+
+\`stdin\_from\_file\` specifies that bytes of the standard input of the subprocess comes from the file on \`File\_path\`\.
+
+Precondition\:
+
+\• \`File\_path\` must be a str\.
+
+If the file cannot be opened\, PROCESS\.start fails\.
+
+.. _api-707fba7dd89e8c5e01a32735c80f83b9:
+
+C\.stdout\_inherit
+------------------
+
+\`stdout\_inherit\` specifies that the subprocess inherits the standard output of the current process\.
+
+This is the default option for the standard output\.
+
+.. _api-f8e7b29843bb21640ed477ec44d0b10e:
+
+C\.stdout\_to\_pipe
+-------------------
+
+\`stdout\_to\_pipe\` specifies that the standard output of the subprocess goes to the pipe input of the current process\.
+
+If you specify \`stdout\_to\_pipe\`\, you can call P\.stdout to get the pipe input linked to the subprocess\.
+
+.. _api-ddd0fe027c89d7428ad9ce9acfea0509:
+
+C\.stdout\_to\_overwrite\(File\_path\)
+--------------------------------------
+
+\`stdout\_to\_overwrite\` specifies that the standard output of the subprocess goes to a file specified by \`File\_path\` by OVERWRITE mode\.
+
+Precondition\:
+
+\• \`File\_path\` must be a str
+
+If the file cannot be opened\, PROCESS\.start fails\.
+
+See kink\/io\/FILE for OVERWRITE mode\.
+
+.. _api-0f2a911b6664f730518f398113b8f787:
+
+C\.stdout\_to\_append\(File\_path\)
+-----------------------------------
+
+\`stdout\_to\_append\` specifies that the standard output of the subprocess goes to a file specified by \`File\_path\` by APPEND mode\.
+
+Precondition\:
+
+\• \`File\_path\` must be a str
+
+If the file cannot be opened\, PROCESS\.start fails\.
+
+See kink\/io\/FILE for APPEND mode\.
+
+.. _api-bffd926fe8c4c3c7a3800dd224ccb6c4:
+
+C\.stderr\_inherit
+------------------
+
+\`stderr\_inherit\` specifies that the subprocess inherits the standard error of the current process\.
+
+This is the default option for the standard error\.
+
+.. _api-ff45f65ea68b5ee121438229f7d36856:
+
+C\.stderr\_to\_pipe
+-------------------
+
+\`stderr\_to\_pipe\` specifies that the standard error of the subprocess goes to the pipe input of the current process\.
+
+If you specify \`stderr\_to\_pipe\`\, you can call P\.stderr to get the pipe input liked to the subprocess\.
+
+.. _api-192d72474670790a9894807101a296ec:
+
+C\.stderr\_to\_overwrite\(File\_path\)
+--------------------------------------
+
+\`stderr\_to\_overwrite\` specifies that the standard error of the subprocess goes to a file specified by \`File\_path\` by OVERWRITE mode\.
+
+Precondition\:
+
+\• \`File\_path\` must be a str
+
+If the file cannot be opened\, PROCESS\.start fails\.
+
+See kink\/io\/FILE for OVERWRITE mode\.
+
+.. _api-26ae4f6545b9ba52eabcb022d4b6f3b0:
+
+C\.stderr\_to\_append\(File\_path\)
+-----------------------------------
+
+\`stderr\_to\_append\` specifies that the standard error of the subprocess goes to a file specified by \`File\_path\` by APPEND mode\.
+
+Precondition\:
+
+\• \`File\_path\` must be a str
+
+If the file cannot be opened\, PROCESS\.start fails\.
+
+See kink\/io\/FILE for APPEND mode\.
+
+.. _api-fad113949683b114b665617758fe05a8:
+
+C\.stderr\_to\_stdout
+---------------------
+
+\`stderr\_to\_stdout\` specifies that the standard error of the subprocess goes to its standard output\.
+
+It is similar to specifying \`2\>\&1\` in Unix sh\.
+
+.. _api-51276d6a731ad8ea3aa68b2eb1cc2a06:
+
+C\.dir\(Dir\_path\)
+-------------------
+
+\`dir\` specifies \`Dir\_path\` as the working directory of the subprocess\.
+
+Precondition\:
+
+\• Dir\_path must be a str
+
+If the subprocess cannot change directory to \`Dir\_path\`\, PROCESS\.start fails\.
+
+.. _api-a89a07b4f2f9d26c04e76cce6ea4616a:
+
+C\.set\_env\(Env\_name Env\_val\)
+---------------------------------
+
+\`set\_env\` specifies that the subprocess has the environment variable with the name \`Env\_name\` and the value \`Env\_val\`\.
+
+Preconditions\:
+
+\• \`Env\_name\` must be a str
+
+\• \`Env\_val\` must be a str
+
+Case sensitivity of \`Env\_name\` depends on the host system\. Typically\, it is case sensitive on Unix systems\, and case insensitive on Windows systems\.
+
+.. _api-e7c35e55fa4487dd2b698aeb10a92606:
+
+C\.unset\_env\(Env\_name\)
+--------------------------
+
+\`unset\_env\` specifies that the subprocess does not have the environment variable with the name \`Env\_name\`\.
+
+Precondition\:
+
+\• \`Env\_name\` must be a str
+
+Case sensitivity of \`Env\_name\` depends on the host system\. Typically\, it is case sensitive on Unix systems\, and case insensitive on Windows systems\.
+
+.. _api-77692b4f3259374e4dfb6f6ea58d513d:
+
+C\.on\_success\(\$success\)
+---------------------------
+
+\`on\_success\` sets \$success\.
+
+Precondition\:
+
+\• \$success must be a fun which takes a \`process\`\.
+
+.. _api-086cec733abbbe4cfbcdaea74635fd8a:
+
+C\.on\_error\(\$error\)
+-----------------------
+
+\`on\_error\` sets \$error\.
+
+Precondition\:
+
+\• \$error must be a fun which takes an \`exception\`\.
+
+.. _api-13c6afa4353859d00ede48dc409fe636:
+
+type process
+============
+
+\`process\` is a type of subprocesses launched by PROCESS\.start\.
+
+.. _api-92659775fbe91963da598772d1f02434:
+
+P\.wait\(\.\.\.\[\$config\=\{\}\]\)
+-----------------------------------
+
+\`wait\` waits until the exit status of the subprocess is available\, or it reaches the timeout\.
+
+Config methods\:
+
+\• C\.timeout\(Timeout\_seconds\)
+
+\• C\.on\_success\(\$success\_cont\)\: default \= VAL\.identity
+
+\• C\.on\_timeout\(\$timeout\_cont\)\: default \= a fun which raises an exception
+
+\`Timeout\_seconds\` is a non\-negative num of arbitrary scale\. It is used as the seconds until the timeout\. If the timeout is reached before the exit status becomes available\, \`wait\` tail\-calls \$timeout\_cont with no arg\.
+
+\`Timeout\_seconds\` migh be adjusted to an appropriate value by \`wait\`\. If C\.timeout is not called\, \`wait\` never reaches the timeout\.
+
+If the exit status becomes available within the timeout\. \`wait\` tail\-calls \$success\_cont with the exit status as an int num in the range \[0\, 4294967295\]\.
+
+.. rubric:: Preconditions
+
+\• \`Timeout\_seconds\` must be a non\-negative num
+
+\• \$success\_cont must be a fun which takes an int num in the range \[0\, 4294967295\]
+
+\• \$timeout\_cont must be a fun which takes no arg
+
+.. _api-4951dcd80af57c5e36544bab32fbf8e7:
+
+P\.stdin
+--------
+
+\`stdin\` returns the pipe \`output\` linked to the standard input of the subprocess\.
+
+Precondition\:
+
+\• C\.stdin\_from\_pipe must be called for the \`start\_config\` val\.
+
+.. _api-14b13c4bbf795d794ac91db3695cc310:
+
+P\.stdout
+---------
+
+\`stdout\` returns the pipe \`input\` linked to the standard output of the subprocess\.
+
+Precondition\:
+
+\• C\.stdout\_to\_pipe must be called for the \`start\_config\` val\.
+
+.. _api-6682bcbdfce779a5b1727742732623bd:
+
+P\.stderr
+---------
+
+\`stderr\` returns the pipe \`input\` linked to the standard error of the subprocess\.
+
+Precondition\:
+
+\• C\.stderr\_to\_pipe must be called for the \`start\_config\` val\.
+

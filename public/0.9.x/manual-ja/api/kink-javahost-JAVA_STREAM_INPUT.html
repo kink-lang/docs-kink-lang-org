@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.69. kink/javahost/JAVA_STREAM_INPUT &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.70. kink/javahost/JAVA_STREAM_OUTPUT" href="kink-javahost-JAVA_STREAM_OUTPUT.html" />
+    <link rel="prev" title="6.68. kink/javahost/JAVA_PROXY" href="kink-javahost-JAVA_PROXY.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.69. kink/javahost/JAVA_STREAM_INPUT</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-javahost-JAVA_PROXY.html"><span class="section-number">6.68. </span>kink/javahost/JAVA_PROXY</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-JAVA_STREAM_OUTPUT.html"><span class="section-number">6.70. </span>kink/javahost/JAVA_STREAM_OUTPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-javahost-java-stream-input">
+<h1><span class="section-number">6.69. </span>kink/javahost/JAVA_STREAM_INPUT<a class="headerlink" href="#kink-javahost-java-stream-input" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#java-stream-input-new-stream" id="id2">JAVA_STREAM_INPUT.new(Stream)</a></p></li>
+</ul>
+</nav>
+<section id="java-stream-input-new-stream">
+<span id="api-d9c7f2a5801f701f38d21168079534e7"></span><h2><span class="section-number">6.69.1. </span>JAVA_STREAM_INPUT.new(Stream)<a class="headerlink" href="#java-stream-input-new-stream" title="Link to this heading">¶</a></h2>
+<p>`new` makes an `input` val which wraps a Java InputStream object specified by `Stream` arg.</p>
+<p>Preconditions:</p>
+<p>• `Stream` must be a java val.</p>
+<p>• The object reference of `Stream` must be an instance of java.io.InputStream.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<span class="nv">:JAVA_STREAM_INPUT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+
+<span class="nv">:Bais_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.io.ByteArrayInputStream&#39;</span>)
+<span class="nv">:Bais</span> &lt;- <span class="nv">Bais_class</span>.<span class="n">new</span>(<span class="nv">JAVA</span>.<span class="n">bytes</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)))
+<span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="nv">:In</span> = <span class="nv">JAVA_STREAM_INPUT</span>.<span class="n">new</span>(<span class="nv">Bais</span>)
+  <span class="n">finally</span>{ <span class="nv">In</span>.<span class="n">close</span> }
+  <span class="nv">:Bin</span> = <span class="nv">In</span>.<span class="n">read_all</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Bin</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x01 0x02 0x03)</span>
+}
+</pre></div>
+</div>
+<p>See kink/io/INPUT for `input` type.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-javahost-JAVA_PROXY.html"><span class="section-number">6.68. </span>kink/javahost/JAVA_PROXY</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-javahost-JAVA_STREAM_OUTPUT.html"><span class="section-number">6.70. </span>kink/javahost/JAVA_STREAM_OUTPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

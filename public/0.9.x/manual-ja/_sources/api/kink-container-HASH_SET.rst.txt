@@ -1,0 +1,64 @@
+==========================
+kink\/container\/HASH\_SET
+==========================
+
+Provides a \`set\` implementation which stores elements in a hash table\.
+
+If elements can be passed from the public\, ensure that the distribution of the hash is not predictable\, in order to prevent DDoS attacks\. You might need to use a cryptograghic hash function and perform element extension by crypto\-random data\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-8a05adc9c1f6616809d2db3f8c098c72:
+
+HASH\_SET\.new\(\$hash \.\.\.\[\$config\=\{\}\]\)
+=================================================
+
+\`new\` returns a new empty hash \`set\`\.
+
+.. rubric:: Config method
+
+C\.eq\(\$eq\?\)\: default \= \{\(\:X \:Y\) X \=\= Y \}
+
+.. rubric:: Equivalence
+
+\$eq\? is used to compare values\. \$eq\? must be an equivalence relation which satisfies the following for all X\, Y\, and Z in the domain of elements\.
+
+\• reflexive\: eq\?\(X X\)
+
+\• symmetric\: \(if eq\?\(X Y\) then eq\?\(Y X\)\) and \(if not eq\?\(X Y\) then not eq\?\(Y X\)\)
+
+\• transitive\: if eq\?\(X Y\) and eq\?\(Y Z\) then eq\?\(X Z\)
+
+.. rubric:: Hash
+
+\$hash must satisfy the following for all X and Y in the domain of elements\.
+
+\• if eq\?\(X Y\) then hash\(X\) \=\= hash\(Y\)
+
+.. rubric:: Preconditions
+
+\$hash must be a fun which takes a value\, and returns an integer \`num\`\.
+
+\$eq\? must be a fun which takes two values\, and returns a \`bool\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :HASH_SET.require_from('kink/container/')
+    :VAL.require_from('kink/')
+        
+    :X <- new_val
+    :Y <- new_val
+    :Z <- new_val
+        
+    :Set <- HASH_SET.new(VAL$id_hash){(:C)
+      C.eq(VAL$same?)
+    }
+    Set.push(X)
+    Set.push(Y)
+    stdout.print_line(Set.have?(X).repr)  # => true
+    stdout.print_line(Set.have?(Z).repr)  # => false
+

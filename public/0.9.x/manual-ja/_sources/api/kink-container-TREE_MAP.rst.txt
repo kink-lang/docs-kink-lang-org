@@ -1,0 +1,102 @@
+==========================
+kink\/container\/TREE\_MAP
+==========================
+
+Provides an \`ordered\_map\` implementation which stores keys in a balanced binary tree\.
+
+Tree map is a safe default choice\, because it guarantees logarithmic worst\-case computational complexity for operations like \`get\` and \`set\`\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-194060c1666088e4198a548cb629db00:
+
+TREE\_MAP\.new\(\.\.\.\[\$config\=\{\}\]\)
+==========================================
+
+\`new\` returns a new empty tree \`ordered\_map\`\.
+
+.. rubric:: Config method
+
+C\.order\(\$in\_order\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
+
+.. rubric:: Comparison of keys
+
+\$in\_order\? is used to compare keys\. \$in\_order\? must be a toal order which satisfies the following for all X\, Y\, and Z in the domain of keys\.
+
+\• reflexive\: in\_order\?\(X X\)
+
+\• transitive\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y Z\) then in\_order\?\(X Z\)
+
+\• antisymmetric\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y X\) then X is equivalent to Y
+
+\• strongly connected\: in\_order\?\(X Y\) \|\| in\_order\?\(Y X\)
+
+.. rubric:: Precondition
+
+\$in\_order\? must be a fun which takes two values and returns a \`bool\`\.
+
+.. rubric:: Example\: default order
+
+.. code:: kink
+
+    :TREE_MAP.require_from('kink/container/')
+        
+    :Map <- TREE_MAP.new
+    Map.set('one' 1)
+    Map.set('two' 2)
+    Map.set('three' 3)
+    Map.set('four' 4)
+    stdout.print_line(Map.get_opt('one').repr)  # => [1]
+    stdout.print_line(Map.get_opt('two').repr)  # => [2]
+    stdout.print_line(Map.get_opt('TWO').repr)  # => []
+
+.. rubric:: Example\: custom order
+
+.. code:: kink
+
+    :TREE_MAP.require_from('kink/container/')
+        
+    :Map <- TREE_MAP.new{(:C)
+      C.order{(:X :Y)
+        X.ascii_downcase <= Y.ascii_downcase
+      }
+    }
+    Map.set('one' 1)
+    Map.set('two' 2)
+    Map.set('three' 3)
+    Map.set('four' 4)
+    stdout.print_line(Map.get_opt('one').repr)  # => [1]
+    stdout.print_line(Map.get_opt('two').repr)  # => [2]
+    stdout.print_line(Map.get_opt('TWO').repr)  # => [2]
+
+.. _api-7b40a3550a811aba9a4c3c6a4071f870:
+
+TREE\_MAP\.of\(\.\.\.\[K0 V0 K1 V1 \,\,\,\]\)
+=============================================
+
+\`of\` makes a new tree \`ordered\_map\` which contains the given keys and values\. Keys are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
+
+The result map has key\-value pairs \(K0\, V0\)\, \(K1\, V1\)\, \(K2\, V2\) \,\,\,\.
+
+.. rubric:: Precondition
+
+\`K0\`\, \`K1\`\, \`K2\` \,\,\, must be in the domain of keys\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :TREE_MAP.require_from('kink/container/')
+        
+    :Map <- TREE_MAP.of('one' 1 'two' 2 'three' 3 'four' 4)
+    Map.pair_iter.each{([:K :V])
+      stdout.print_line('{} => {}'.format(K.repr V.repr))
+    }
+    # Output:
+    #   "four" => 4
+    #   "one" => 1
+    #   "three" => 3
+    #   "two" => 2
+

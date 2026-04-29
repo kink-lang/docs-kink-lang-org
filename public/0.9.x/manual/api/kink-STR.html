@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.23. kink/STR &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.24. kink/TRACE" href="kink-TRACE.html" />
+    <link rel="prev" title="6.22. kink/STOPWATCH" href="kink-STOPWATCH.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.23. kink/STR</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-STOPWATCH.html"><span class="section-number">6.22. </span>kink/STOPWATCH</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-TRACE.html"><span class="section-number">6.24. </span>kink/TRACE</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-str">
+<h1><span class="section-number">6.23. </span>kink/STR<a class="headerlink" href="#kink-str" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-str" id="id3">type str</a></p>
+<ul>
+<li><p><a class="reference internal" href="#str-codepoints" id="id4">Str.codepoints</a></p></li>
+<li><p><a class="reference internal" href="#str-size" id="id5">Str.size</a></p></li>
+<li><p><a class="reference internal" href="#str-any" id="id6">Str.any?</a></p></li>
+<li><p><a class="reference internal" href="#str-get-codepoint-ind" id="id7">Str.get(Codepoint_ind)</a></p></li>
+<li><p><a class="reference internal" href="#str-slice-from-to" id="id8">Str.slice(From To)</a></p></li>
+<li><p><a class="reference internal" href="#str-take-front-n" id="id9">Str.take_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#str-take-back-n" id="id10">Str.take_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#str-drop-front-n" id="id11">Str.drop_front(N)</a></p></li>
+<li><p><a class="reference internal" href="#str-drop-back-n" id="id12">Str.drop_back(N)</a></p></li>
+<li><p><a class="reference internal" href="#str-search-slice-slice-min-pos-config" id="id13">Str.search_slice(Slice Min_pos ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#str-have-prefix-prefix" id="id14">Str.have_prefix?(Prefix)</a></p></li>
+<li><p><a class="reference internal" href="#str-have-suffix-suffix" id="id15">Str.have_suffix?(Suffix)</a></p></li>
+<li><p><a class="reference internal" href="#str-have-slice-slice" id="id16">Str.have_slice?(Slice)</a></p></li>
+<li><p><a class="reference internal" href="#str-trim" id="id17">Str.trim</a></p></li>
+<li><p><a class="reference internal" href="#str-trim-front" id="id18">Str.trim_front</a></p></li>
+<li><p><a class="reference internal" href="#str-trim-back" id="id19">Str.trim_back</a></p></li>
+<li><p><a class="reference internal" href="#str-ascii-upcase" id="id20">Str.ascii_upcase</a></p></li>
+<li><p><a class="reference internal" href="#str-ascii-downcase" id="id21">Str.ascii_downcase</a></p></li>
+<li><p><a class="reference internal" href="#str-format-args-str-format-config" id="id22">Str.format(... Args) / Str.format($config)</a></p></li>
+<li><p><a class="reference internal" href="#str1-str2" id="id23">Str1 + Str2</a></p></li>
+<li><p><a class="reference internal" href="#str-n" id="id24">Str * N</a></p></li>
+<li><p><a class="reference internal" href="#api-e461b6f0978f21154235248e2fdda4f7" id="id25">Str1 == Str2</a></p></li>
+<li><p><a class="reference internal" href="#api-76164063a0a6184957b3cafcdb92dcba" id="id26">Str1 &lt;= Str2</a></p></li>
+<li><p><a class="reference internal" href="#str-show-config" id="id27">Str.show(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#str-repr" id="id28">Str.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#type-format-config" id="id29">type format_config</a></p>
+<ul>
+<li><p><a class="reference internal" href="#format-config-arg-pos-arg" id="id30">Format_config.arg(Pos_arg)</a></p></li>
+<li><p><a class="reference internal" href="#format-config-named-arg-name-arg" id="id31">Format_config.named_arg(Name Arg)</a></p></li>
+<li><p><a class="reference internal" href="#format-config-locale-locale" id="id32">Format_config.locale(Locale)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#show-config-methods" id="id33">*.show(...[$config={}]) methods</a></p></li>
+<li><p><a class="reference internal" href="#str-is-val" id="id34">STR.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#str-from-codepoints-codepoints" id="id35">STR.from_codepoints(Codepoints)</a></p></li>
+<li><p><a class="reference internal" href="#str-default-newline" id="id36">STR.default_newline</a></p></li>
+</ul>
+</nav>
+<section id="type-str">
+<span id="api-88bfa8d53b158d62e93928353ba002c1"></span><h2><span class="section-number">6.23.1. </span>type str<a class="headerlink" href="#type-str" title="Link to this heading">¶</a></h2>
+<p>`str` type is a finite-length immutable string of Unicode code points.</p>
+<p>About Unicode code points, see: https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G22700</p>
+<p class="rubric">Surrogate code points</p>
+<p>`str` may contain surrogate code points, but handling of them is runtime implementation dependent.</p>
+<p>For example, if code points are encoded in 16bit code units, paired surrogate code points might be merged to an out-of-BMP code point.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:STR</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Str</span> &lt;- <span class="nv">STR</span>.<span class="n">from_codepoints</span>([<span class="m">0xd800</span> <span class="m">0xdc00</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">codepoints</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [65536]</span>
+</pre></div>
+</div>
+<section id="str-codepoints">
+<span id="api-486dd39bdf6a9aec769ae7c5f1bd522d"></span><h3><span class="section-number">6.23.1.1. </span>Str.codepoints<a class="headerlink" href="#str-codepoints" title="Link to this heading">¶</a></h3>
+<p>`codepoints` returns a `vec` of the code points of `Str`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">codepoints</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [120 121 122]</span>
+</pre></div>
+</div>
+</section>
+<section id="str-size">
+<span id="api-45ba95ea01db2a48aaabf062a55e0dc8"></span><h3><span class="section-number">6.23.1.2. </span>Str.size<a class="headerlink" href="#str-size" title="Link to this heading">¶</a></h3>
+<p>`size` returns the number of code points in `Str` as an int num.</p>
+</section>
+<section id="str-any">
+<span id="api-fb3f401e6a199d2dab202bbacff910b7"></span><h3><span class="section-number">6.23.1.3. </span>Str.any?<a class="headerlink" href="#str-any" title="Link to this heading">¶</a></h3>
+<p>`any?` returns whether `Str` contains one or more code points.</p>
+</section>
+<section id="str-get-codepoint-ind">
+<span id="api-477220aa4bb1b49d64961b19c32f85fb"></span><h3><span class="section-number">6.23.1.4. </span>Str.get(Codepoint_ind)<a class="headerlink" href="#str-get-codepoint-ind" title="Link to this heading">¶</a></h3>
+<p>`get` returns the code point at the index of `Codepoint_ind`.</p>
+<p>The result is an int `num` which represents the code point.</p>
+<p class="rubric">Precondition</p>
+<p>`Codepoint_ind` must be an int `num` in the range [0, Str.size - 1].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">get</span>(<span class="m">0</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 120</span>
+</pre></div>
+</div>
+</section>
+<section id="str-slice-from-to">
+<span id="api-fefd35ff64b8ca2fca24de74d2d4556a"></span><h3><span class="section-number">6.23.1.5. </span>Str.slice(From To)<a class="headerlink" href="#str-slice-from-to" title="Link to this heading">¶</a></h3>
+<p>`slice` makes a slice of `Str`, and returns the slice as a `str`.</p>
+<p>The slice is made of code points in the range [From, To). The result `str` will include `To - From` code points.</p>
+<p class="rubric">Preconditions</p>
+<p>`From` and `To` must be integer `num` values.</p>
+<p>0 &lt;= From &lt;= To &lt;= Str.size</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Str</span> &lt;- <span class="s1">&#39;foobar&#39;</span>
+<span class="nv">:Slice</span> &lt;- <span class="nv">Str</span>.<span class="n">slice</span>(<span class="m">1</span> <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;oob&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-take-front-n">
+<span id="api-0f98c58ccdf0544fc9e1fc74acdde8c4"></span><h3><span class="section-number">6.23.1.6. </span>Str.take_front(N)<a class="headerlink" href="#str-take-front-n" title="Link to this heading">¶</a></h3>
+<p>`take_front` makes a `str` containing the first `N` code points of `Str`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an int `num` in the range [0, Str.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>.<span class="n">take_front</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;fo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-take-back-n">
+<span id="api-9cfe37de0dc8c7881d1e3868fc77f189"></span><h3><span class="section-number">6.23.1.7. </span>Str.take_back(N)<a class="headerlink" href="#str-take-back-n" title="Link to this heading">¶</a></h3>
+<p>`take_back` makes a `str` containing the last `N` code points of `Str`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an int `num` in the range [0, Str.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>.<span class="n">take_back</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;ar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-drop-front-n">
+<span id="api-455cbc9de23c0e9d2f49d636ee3480c7"></span><h3><span class="section-number">6.23.1.8. </span>Str.drop_front(N)<a class="headerlink" href="#str-drop-front-n" title="Link to this heading">¶</a></h3>
+<p>`drop_front` makes a `str` dropping the first `N` code points of `Str`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an int `num` in the range [0, Str.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>.<span class="n">drop_front</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;obar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-drop-back-n">
+<span id="api-3476cc045e4e1fd57ab70dae23a5b18b"></span><h3><span class="section-number">6.23.1.9. </span>Str.drop_back(N)<a class="headerlink" href="#str-drop-back-n" title="Link to this heading">¶</a></h3>
+<p>`drop_back` makes a `str` dropping the last `N` code points of `Str`.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be an int `num` in the range [0, Str.size].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>.<span class="n">drop_back</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foob&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-search-slice-slice-min-pos-config">
+<span id="api-40dc2be7e5fe3839e7c92d0948234e12"></span><h3><span class="section-number">6.23.1.10. </span>Str.search_slice(Slice Min_pos ...[$config={}])<a class="headerlink" href="#str-search-slice-slice-min-pos-config" title="Link to this heading">¶</a></h3>
+<p>`search_slice` searches the slice in `Str`, starting search from the code point index `Min_pos`, and produces `Pos` which is the code point index where the matched slice starts.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity.</p>
+<p>• C.on_error($error): default = a fun which raises an exception.</p>
+<p>`search_slice` tries to find the smallest `Pos` which is &gt;= `Min_pos`, such that `Str.slice(Pos Slice.size)` is equal to `Slice`. If such `Pos` is found, `search_slice` tail-calls $success with `Pos`. If not found, `search_slice` tail-calls $error with no arg.</p>
+<p class="rubric">Preconditions</p>
+<p>`Slice` must be a `str`.</p>
+<p>`Min_pos` must be an int `num` in the range [0, Str.size].</p>
+<p>$success must be a fun which takes an int `num`.</p>
+<p>$error must be a fun which takes no param.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foofoo&#39;</span>.<span class="n">search_slice</span>(<span class="s1">&#39;oo&#39;</span> <span class="m">0</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foofoo&#39;</span>.<span class="n">search_slice</span>(<span class="s1">&#39;oo&#39;</span> <span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 1</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foofoo&#39;</span>.<span class="n">search_slice</span>(<span class="s1">&#39;oo&#39;</span> <span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 4</span>
+
+<span class="s1">&#39;foofoo&#39;</span>.<span class="n">search_slice</span>(<span class="s1">&#39;oo&#39;</span> <span class="m">5</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   Str.search_slice(Slice Min_pos ...[$config]): slice not found</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:attempt_search</span> &lt;- {(<span class="nv">:Str</span> <span class="nv">:Min_pos</span> <span class="nv">:Slice</span>)
+  <span class="nv">Str</span>.<span class="n">search_slice</span>(<span class="nv">Slice</span> <span class="nv">Min_pos</span>){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Pos</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;found at: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Pos</span>.<span class="n">repr</span>))
+    }
+    <span class="nv">C</span>.<span class="n">on_error</span>{
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;not found&#39;</span>)
+    }
+  }
+}
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">0</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 1</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">1</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 1</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">2</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 4</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">3</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 4</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">4</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; found at: 4</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">5</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; not found</span>
+<span class="n">attempt_search</span>(<span class="s1">&#39;foofoo&#39;</span> <span class="m">6</span> <span class="s1">&#39;oo&#39;</span>)  <span class="c1"># =&gt; not found</span>
+</pre></div>
+</div>
+</section>
+<section id="str-have-prefix-prefix">
+<span id="api-85102334de1415a177070ac3bb4d240f"></span><h3><span class="section-number">6.23.1.11. </span>Str.have_prefix?(Prefix)<a class="headerlink" href="#str-have-prefix-prefix" title="Link to this heading">¶</a></h3>
+<p>`have_prefix?` returns whether `Str` has the slice `Prefix` at the front.</p>
+<p>If `Str.take_front(Prefix.size)` is equal to `Prefix`, `have_prefix?` returns true. If not, `have_prefix?` returns false.</p>
+<p class="rubric">Precondition</p>
+<p>`Prefix` must be a `str`.</p>
+</section>
+<section id="str-have-suffix-suffix">
+<span id="api-19ecc51377efe8a0d20aea4e256b8bb6"></span><h3><span class="section-number">6.23.1.12. </span>Str.have_suffix?(Suffix)<a class="headerlink" href="#str-have-suffix-suffix" title="Link to this heading">¶</a></h3>
+<p>`have_suffix?` returns whether `Str` has the slice `Suffix` at the back.</p>
+<p>If `Str.take_back(Str.size)` is equal to `Suffix`, `have_suffix?` returns true. If not, `have_suffix?` returns false.</p>
+<p class="rubric">Precondition</p>
+<p>`Suffix` must be a `str`.</p>
+</section>
+<section id="str-have-slice-slice">
+<span id="api-301c065d3c3dadc20fb88092da2f3d93"></span><h3><span class="section-number">6.23.1.13. </span>Str.have_slice?(Slice)<a class="headerlink" href="#str-have-slice-slice" title="Link to this heading">¶</a></h3>
+<p>`have_slice?` returns whether `Str` has `Slice` as a slice.</p>
+<p>If there is `Ind` such that `Str.slice(Ind Ind + Slice.size)` is equal to `Slice`, `have_slice?` returns true. If not, `have_slice?` returns false.</p>
+<p class="rubric">Precondition</p>
+<p>`Slice` must be a `str`.</p>
+</section>
+<section id="str-trim">
+<span id="api-9bb44aecdc5fd68a9e8364496d8c0bc2"></span><h3><span class="section-number">6.23.1.14. </span>Str.trim<a class="headerlink" href="#str-trim" title="Link to this heading">¶</a></h3>
+<p>`trim` returns a slice of `Str` trimming space-like characters from the front and the back.</p>
+<p>`trim` returns the longest slice of `Str` which does not start with a space-like character, and does not end with a space-like character.</p>
+<p>Space-like characters are code points in the range [U+0000, U+0020], or U+007f.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n</span><span class="s2">foobar</span><span class="se">\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foobar&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; &quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-trim-front">
+<span id="api-66d9089aa6179c5518101425973cc2ad"></span><h3><span class="section-number">6.23.1.15. </span>Str.trim_front<a class="headerlink" href="#str-trim-front" title="Link to this heading">¶</a></h3>
+<p>`trim_front` returns a slice of `Str` trimming space-like characters from the front.</p>
+<p>`trim_front` returns the longest slice of `Str` which does not start with a space-like character.</p>
+<p>See `trim` for the definition of space-like characters.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n</span><span class="s2">foobar</span><span class="se">\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim_front</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foobar\n\r\t &quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim_front</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; &quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-trim-back">
+<span id="api-b7a355573935d79eb84a9d9e6a954633"></span><h3><span class="section-number">6.23.1.16. </span>Str.trim_back<a class="headerlink" href="#str-trim-back" title="Link to this heading">¶</a></h3>
+<p>`trim_back` returns a slice of `Str` trimming space-like characters from the back.</p>
+<p>`trim_back` returns the longest slice of `Str` which does not end with a space-like character.</p>
+<p>See `trim` for the definition of space-like characters.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n</span><span class="s2">foobar</span><span class="se">\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim_back</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot; \t\r\nfoobar&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot; </span><span class="se">\t\r\n\n\r\t</span><span class="s2"> &quot;</span>.<span class="n">trim_back</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; &quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-ascii-upcase">
+<span id="api-fbe4441564a258a66c2e74b9a444187b"></span><h3><span class="section-number">6.23.1.17. </span>Str.ascii_upcase<a class="headerlink" href="#str-ascii-upcase" title="Link to this heading">¶</a></h3>
+<p>`ascii_upcase` converts code points of ASCII lowercase letters (from U+0061='a' to U+007A='z') in `Str` to the corresponding ASCII uppercase letters (from U+0041='A' to U+005A='Z').</p>
+<p>`ascii_upcase` does not change code points except for ASCII lowercase letters.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Azkaban&#39;</span>.<span class="n">ascii_upcase</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;AZKABAN&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;+-*/%&lt;&gt;&#39;</span>.<span class="n">ascii_upcase</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;+-*/%&lt;&gt;&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Товарищ&#39;</span>.<span class="n">ascii_upcase</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;Товарищ&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-ascii-downcase">
+<span id="api-7f012b4376912f2b2d94e96ec7e59d22"></span><h3><span class="section-number">6.23.1.18. </span>Str.ascii_downcase<a class="headerlink" href="#str-ascii-downcase" title="Link to this heading">¶</a></h3>
+<p>`ascii_downcase` converts code points of ASCII uppercase letters (from U+0041='A' to U+005A='Z') in `Str` to the corresponding ASCII lowercase letters (from U+0061='a' to U+007A='z').</p>
+<p>`ascii_downcase` does not change code points except for ASCII uppercase letters.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;aZKABAN&#39;</span>.<span class="n">ascii_downcase</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;azkaban&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;+-*/%&lt;&gt;&#39;</span>.<span class="n">ascii_downcase</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;+-*/%&lt;&gt;&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Товарищ&#39;</span>.<span class="n">ascii_downcase</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;Товарищ&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-format-args-str-format-config">
+<span id="api-3900a257364db84894ed1071a3054068"></span><h3><span class="section-number">6.23.1.19. </span>Str.format(... Args) / Str.format($config)<a class="headerlink" href="#str-format-args-str-format-config" title="Link to this heading">¶</a></h3>
+<p>`format` generates a str which is formatted using `Str` as a template.</p>
+<p>`format` has two overloads.</p>
+<p class="rubric">Overload: Str.format(... Args)</p>
+<p>When called with variadic args `Args`, `format` uses each element of `Args` as a positional argument.</p>
+<p>Preconditions:</p>
+<p>• `Str` must be a `str` which suffices the syntax described below.</p>
+<p>• Each element of `Args` must have `show` method.</p>
+<p class="rubric">Overload: Str.format($config)</p>
+<p>When called with $config fun, `format` uses $config as a config fun.</p>
+<p>Preconditions:</p>
+<p>• `Str` must be a `str` which suffices the syntax described below.</p>
+<p>• $config must be a fun which takes a `format_config`.</p>
+<p class="rubric">The format of the template str</p>
+<p>A template str can contain placeholders delimited by braces &quot;{&quot; and &quot;}&quot;. Str.format invokes .show(...[$config]) method of the arg corresponding to each placeholder, and emplaces the result str in the placeholder.</p>
+<p>There are following variants of placeholders.</p>
+<p>• &quot;{}&quot;: takes a positional argument, with an empty str &quot;&quot; as  the spec.</p>
+<p>• &quot;{%xxx}&quot;: takes a positional argument, with the spec &quot;xxx&quot;.</p>
+<p>• &quot;{Foo}&quot;: takes a named argument with the name &quot;Foo&quot;, with an empty str &quot;&quot; as the spec.</p>
+<p>• &quot;{Foo%xxx}&quot;: takes a named argument with the name &quot;Foo&quot;, with the spec &quot;xxx&quot;.</p>
+<p>The name str must not contain &quot;{&quot;, &quot;}&quot; and &quot;%&quot;.</p>
+<p>The spec str is passed to Show_config.spec(Spec) method. The spec str must not contain &quot;{&quot; or &quot;}&quot;.</p>
+<p>If you want to include literal &quot;{&quot; and &quot;}&quot; in the template str, escape them as &quot;{{&quot; and &quot;}}&quot;.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{} == 0x{%04x}&#39;</span>.<span class="n">format</span>(<span class="m">42</span> <span class="m">42</span>))
+<span class="c1"># =&gt; 42 == 0x002a</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{}: message: {}&#39;</span>.<span class="n">format</span>(<span class="s1">&#39;WARN&#39;</span> <span class="s1">&#39;something went wrong&#39;</span>))
+<span class="c1"># =&gt; WARN: message: something went wrong</span>
+</pre></div>
+</div>
+<p>With locale:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Str</span> &lt;- <span class="s1">&#39;Id: {%04d}, Name: {}, Elevation: {%,d} meters&#39;</span>.<span class="n">format</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;da-DK&#39;</span>))
+  <span class="nv">C</span>.<span class="n">arg</span>(<span class="m">12</span>)
+  <span class="nv">C</span>.<span class="n">arg</span>(<span class="s1">&#39;Mount Fuji&#39;</span>)
+  <span class="nv">C</span>.<span class="n">arg</span>(<span class="m">3776.24</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>)
+<span class="c1"># =&gt; Id: 0012, Name: Mount Fuji, Elevation: 3.776,24 meters</span>
+</pre></div>
+</div>
+<p>Using named args:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Str</span> &lt;- <span class="s1">&#39;Id: {Id%04d}, Name: {Name}, Elevation: {Elevation%,d} meters&#39;</span>.<span class="n">format</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;da-DK&#39;</span>))
+  <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Id&#39;</span> <span class="m">12</span>)
+  <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Name&#39;</span> <span class="s1">&#39;Mount Fuji&#39;</span>)
+  <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Elevation&#39;</span> <span class="m">3776.24</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>)
+<span class="c1"># =&gt; Id: 0012, Name: Mount Fuji, Elevation: 3.776,24 meters</span>
+</pre></div>
+</div>
+</section>
+<section id="str1-str2">
+<span id="api-dd44dbd36cae21676177062a64222853"></span><h3><span class="section-number">6.23.1.20. </span>Str1 + Str2<a class="headerlink" href="#str1-str2" title="Link to this heading">¶</a></h3>
+<p>`+` operator, or `op_add` method, makes a str containing the code points of `Str1` in the front, and the code points of `Str2` in the back.</p>
+<p class="rubric">Precondition</p>
+<p>`Str2` must be a `str`</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Str</span> &lt;- <span class="s1">&#39;foo&#39;</span> + <span class="s1">&#39;bar&#39;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foobar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-n">
+<span id="api-68e604ebb640f0871cfd486999445e93"></span><h3><span class="section-number">6.23.1.21. </span>Str * N<a class="headerlink" href="#str-n" title="Link to this heading">¶</a></h3>
+<p>`*` operator, or `op_mul` method, makes a `str` repeating `Str`, `N` times.</p>
+<p class="rubric">Precondition</p>
+<p>`N` must be a nonnegative int `num`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> * <span class="m">0</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> * <span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> * <span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foofoo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> * <span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foofoofoo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="api-e461b6f0978f21154235248e2fdda4f7">
+<span id="id1"></span><h3><span class="section-number">6.23.1.22. </span>Str1 == Str2<a class="headerlink" href="#api-e461b6f0978f21154235248e2fdda4f7" title="Link to this heading">¶</a></h3>
+<p>`==` operator, or `op_eq` method, returns whether two strings contain the same sequence of code points.</p>
+<p class="rubric">Precondition</p>
+<p>`Str1` and `Str2` must be `str` type.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> == <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> != <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> == <span class="s1">&#39;FOO&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> != <span class="s1">&#39;FOO&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="api-76164063a0a6184957b3cafcdb92dcba">
+<span id="id2"></span><h3><span class="section-number">6.23.1.23. </span>Str1 &lt;= Str2<a class="headerlink" href="#api-76164063a0a6184957b3cafcdb92dcba" title="Link to this heading">¶</a></h3>
+<p>`&lt;=` operator, or `op_le` method, compares the code points of the strings lexicographically, then returns whether `Str1` is less than or equal to `Str2`. Comparison is done based on the magnitude relationship of Unicode code points, from the front to the back.</p>
+<p>Note that the result of comparison may differ from java.lang.String.compareTo, because String.compareTo compares strings based on 16bit code units.</p>
+<p class="rubric">Precondition</p>
+<p>`Str2` must be a `str`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;fo&#39;</span> &lt;= <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;foo&#39;</span> &lt;= <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s1">&#39;fooo&#39;</span> &lt;= <span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="s2">&quot;</span><span class="se">\x{ffff}</span><span class="s2">&quot;</span> &lt;= <span class="s2">&quot;</span><span class="se">\x{10000}</span><span class="s2">&quot;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+<section id="str-show-config">
+<span id="api-ec9e7f088a1d7e78f58d776459b0e456"></span><h3><span class="section-number">6.23.1.24. </span>Str.show(...[$config={}])<a class="headerlink" href="#str-show-config" title="Link to this heading">¶</a></h3>
+<p>`show` returns `Str` itself.</p>
+<p>`show` can take an optional parameter $config, but it is never used.</p>
+<p>For the generic contract of .show methods, see `*.show(...[$config])` in this article.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">show</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   xyz</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">show</span>{})
+<span class="c1"># Output:</span>
+<span class="c1">#   xyz</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot;foo</span><span class="se">\n</span><span class="s2">bar&quot;</span>.<span class="n">show</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   foo</span>
+<span class="c1">#   bar</span>
+</pre></div>
+</div>
+</section>
+<section id="str-repr">
+<span id="api-37a73555aab4b7cde2ae69615d91f7e9"></span><h3><span class="section-number">6.23.1.25. </span>Str.repr<a class="headerlink" href="#str-repr" title="Link to this heading">¶</a></h3>
+<p>`repr` returns the string representation of `Str` for debugging.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;xyz&#39;</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; &quot;xyz&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s2">&quot;foo</span><span class="se">\n</span><span class="s2">bar&quot;</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo\nbar&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="type-format-config">
+<span id="api-de8a2420aead37088d28781b61b2b8b2"></span><h2><span class="section-number">6.23.2. </span>type format_config<a class="headerlink" href="#type-format-config" title="Link to this heading">¶</a></h2>
+<p>``format_config`` is a config val of Str.format.</p>
+<section id="format-config-arg-pos-arg">
+<span id="api-050e71243cb950523303ec0bc8d4a31d"></span><h3><span class="section-number">6.23.2.1. </span>Format_config.arg(Pos_arg)<a class="headerlink" href="#format-config-arg-pos-arg" title="Link to this heading">¶</a></h3>
+<p>`arg` method adds a positional arg.</p>
+<p>The number of invocations of `arg` method must be equal to the unnamed placeholders.</p>
+<p class="rubric">Precondition</p>
+<p>`Pos_arg` must support .show(...[$config]) method.</p>
+</section>
+<section id="format-config-named-arg-name-arg">
+<span id="api-4d7813e2056e6a081b0d42b42a01eedd"></span><h3><span class="section-number">6.23.2.2. </span>Format_config.named_arg(Name Arg)<a class="headerlink" href="#format-config-named-arg-name-arg" title="Link to this heading">¶</a></h3>
+<p>`named_arg` method adds a named arg.</p>
+<p>It is permitted to pass `Name` which is not referenced in the template str.</p>
+<p class="rubric">Preconditions</p>
+<p>`Name` must be a nonempty `str` which is accepted by regex `[a-zA-Z_][a-zA-Z0-9_?]*`.</p>
+<p>`Arg` must support .show(...[$config]) method.</p>
+<p>The set of Name1, Name2 ,,, must be a superset of the names of the named arguments in the template.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={X}, Y={Y}&#39;</span>.<span class="n">format</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;X&#39;</span> <span class="m">10</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Y&#39;</span> <span class="m">20</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Z&#39;</span> <span class="m">30</span>) <span class="c1"># Z is not in the template str, but it is OK</span>
+  }
+)
+<span class="c1"># =&gt; X=10, Y=20</span>
+</pre></div>
+</div>
+</section>
+<section id="format-config-locale-locale">
+<span id="api-d9afbf27b31c7617c898073b16f85e79"></span><h3><span class="section-number">6.23.2.3. </span>Format_config.locale(Locale)<a class="headerlink" href="#format-config-locale-locale" title="Link to this heading">¶</a></h3>
+<p>`locale` method specifies the locale. `Locale` is passed to `show` methods of each placeholder.</p>
+<p class="rubric">Precondition</p>
+<p>`Locale` must be a `locale`</p>
+</section>
+</section>
+<section id="show-config-methods">
+<span id="api-f1368a419359bab97cc47d69d26fd8fb"></span><h2><span class="section-number">6.23.3. </span>*.show(...[$config={}]) methods<a class="headerlink" href="#show-config-methods" title="Link to this heading">¶</a></h2>
+<p>This section specifies the generic contract of `show` methods of any types.</p>
+<p>`show` method is expected to return a str which represents the receiver val. While `repr` method is used for debugging messages, `show` method is used for UI messages.</p>
+<p>Usually, `show` methods are called from Str.format.</p>
+<p class="rubric">Config methods</p>
+<p>• C.locale(Locale): default = Locale.root</p>
+<p>• C.spec(Spec): default = ''</p>
+<p>`Locale` must be a `locale` type. `show` method may use the locale to localize the result.</p>
+<p>`Spec` must be a `str` type. `show` method may use the spec to vary the result. The syntax of `Spec` is dependent on the implementation of `show` method, but `show` method must at least accept an empty string '' as `Spec`.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Shown</span> &lt;- <span class="m">3776.24</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">for</span>(<span class="s1">&#39;da-DK&#39;</span>))
+  <span class="nv">S</span>.<span class="n">spec</span>(<span class="s1">&#39;,d&#39;</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Shown</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;3.776,24&quot;</span>
+</pre></div>
+</div>
+<p>`show` method can optionally provide extra config methods. For example, Num.show provides `radix` and `pad_zero` config methods:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Shown</span> &lt;- <span class="m">255</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+  <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">16</span>)
+  <span class="nv">S</span>.<span class="n">pad_zero</span>(<span class="m">4</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Shown</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;00ff&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-is-val">
+<span id="api-44ab2b46d46a323a71c6323b2cf194f0"></span><h2><span class="section-number">6.23.4. </span>STR.is?(Val)<a class="headerlink" href="#str-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a str val.</p>
+</section>
+<section id="str-from-codepoints-codepoints">
+<span id="api-9b2020a08d0489817e2f48a4a900f780"></span><h2><span class="section-number">6.23.5. </span>STR.from_codepoints(Codepoints)<a class="headerlink" href="#str-from-codepoints-codepoints" title="Link to this heading">¶</a></h2>
+<p>`from_codepoints` returns a `str` which contains the code points.</p>
+<p class="rubric">Precondition</p>
+<p>`Codepoints` must be a sequence which supports `each` method, such as a `vec` or an `iter`.</p>
+<p>Elements of `Codepoints` must be int nums in the range [0x000000, 0x10ffff].</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:STR</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Str</span> &lt;- <span class="nv">STR</span>.<span class="n">from_codepoints</span>([<span class="m">120</span> <span class="m">121</span> <span class="m">122</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;xyz&quot;</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<span class="nv">:STR</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Str</span> &lt;- <span class="nv">STR</span>.<span class="n">from_codepoints</span>(<span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">120</span> <span class="m">121</span> <span class="m">122</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Str</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;xyz&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="str-default-newline">
+<span id="api-86f7f3afcd73e25ca09df8015d75ccc6"></span><h2><span class="section-number">6.23.6. </span>STR.default_newline<a class="headerlink" href="#str-default-newline" title="Link to this heading">¶</a></h2>
+<p>`default_newline` returns the default line separator of the runtime.</p>
+<p>The result is a `str`, either &quot;\r\n&quot; or &quot;\n&quot;.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-STOPWATCH.html"><span class="section-number">6.22. </span>kink/STOPWATCH</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-TRACE.html"><span class="section-number">6.24. </span>kink/TRACE</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

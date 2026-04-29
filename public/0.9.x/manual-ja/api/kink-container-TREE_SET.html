@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.37. kink/container/TREE_SET &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.38. kink/datetime/DATETIME" href="kink-datetime-DATETIME.html" />
+    <link rel="prev" title="6.36. kink/container/TREE_MAP" href="kink-container-TREE_MAP.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.37. kink/container/TREE_SET</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-TREE_MAP.html"><span class="section-number">6.36. </span>kink/container/TREE_MAP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-datetime-DATETIME.html"><span class="section-number">6.38. </span>kink/datetime/DATETIME</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-container-tree-set">
+<h1><span class="section-number">6.37. </span>kink/container/TREE_SET<a class="headerlink" href="#kink-container-tree-set" title="Link to this heading">¶</a></h1>
+<p>平衡二分木に要素を格納するordered_setの実装を提供する。</p>
+<p>平衡二分木setは安全なデフォルトの選択肢である。これは、pushやhave?などの操作について、最悪ケースで対数オーダーの計算複雑性を保証するからである。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#tree-set-new-config" id="id2">TREE_SET.new(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#tree-set-of-elems" id="id3">TREE_SET.of(...Elems)</a></p></li>
+<li><p><a class="reference internal" href="#tree-set-from-each-eacher" id="id4">TREE_SET.from_each(Eacher)</a></p></li>
+</ul>
+</nav>
+<section id="tree-set-new-config">
+<span id="api-0dffcb8842ed6c355c0d35e82bc13e7e"></span><h2><span class="section-number">6.37.1. </span>TREE_SET.new(...[$config={}])<a class="headerlink" href="#tree-set-new-config" title="Link to this heading">¶</a></h2>
+<p>newは空の平衡二分木ordered_setを新しく作って戻す。</p>
+<p class="rubric">コンフィグメソッド</p>
+<p>C.order($in_order?): default = {(:X :Y) X &lt;= Y }</p>
+<p class="rubric">要素の比較</p>
+<p>要素は$in_order?で比較される。$in_order?は全順序関係であり、要素のドメイン内のすべてのX, Y, Zについて、次の条件を満たさなければならない。</p>
+<p>• 反射律: in_order?(X X)</p>
+<p>• 推移律: if in_order?(X Y) &amp;&amp; in_order?(Y Z) then in_order?(X Z)</p>
+<p>• 反対称律: if in_order?(X Y) &amp;&amp; in_order?(Y X) then X is equivalent to Y</p>
+<p>• 狭義の連結律: in_order?(X Y) || in_order?(Y X)</p>
+<p class="rubric">事前条件</p>
+<p>$in_order?は、ふたつの引数を取ってboolを戻す関数でなければならない。</p>
+<p class="rubric">例: デフォルトの順序</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">new</span>
+<span class="nv">Map</span>.<span class="n">push</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="nv">Map</span>.<span class="n">push</span>(<span class="s1">&#39;bar&#39;</span>)
+<span class="nv">Map</span>.<span class="n">push</span>(<span class="s1">&#39;baz&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">have?</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">have?</span>(<span class="s1">&#39;FOO&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+<span class="nv">Map</span>.<span class="n">each</span>{(<span class="nv">:Elem</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Elem</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;bar&quot;</span>
+<span class="c1">#   &quot;baz&quot;</span>
+<span class="c1">#   &quot;foo&quot;</span>
+</pre></div>
+</div>
+<p class="rubric">例: 逆順</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">new</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">order</span>{(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> &gt;= <span class="nv">Y</span> }
+}
+<span class="nv">Map</span>.<span class="n">push</span>(<span class="s1">&#39;foo&#39;</span>)
+<span class="nv">Map</span>.<span class="n">push</span>(<span class="s1">&#39;bar&#39;</span>)
+<span class="nv">Map</span>.<span class="n">push</span>(<span class="s1">&#39;baz&#39;</span>)
+<span class="nv">Map</span>.<span class="n">each</span>{(<span class="nv">:Elem</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Elem</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;foo&quot;</span>
+<span class="c1">#   &quot;baz&quot;</span>
+<span class="c1">#   &quot;bar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="tree-set-of-elems">
+<span id="api-f554745decbf2d99c2fa32c2f9049795"></span><h2><span class="section-number">6.37.2. </span>TREE_SET.of(...Elems)<a class="headerlink" href="#tree-set-of-elems" title="Link to this heading">¶</a></h2>
+<p>ofは、Elemsの要素を含む平衡二分木ordered_setを新しく作って戻す。要素は &lt;= 演算子、またはop_leメソッドで順序付けられる。</p>
+<p class="rubric">事前条件</p>
+<p>Elemsの要素は、setの要素のドメインに含まれなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">have?</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">have?</span>(<span class="s1">&#39;FOO&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+<span class="nv">Map</span>.<span class="n">each</span>{(<span class="nv">:Elem</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Elem</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;bar&quot;</span>
+<span class="c1">#   &quot;baz&quot;</span>
+<span class="c1">#   &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="tree-set-from-each-eacher">
+<span id="api-b752c0c29aaabdb7eedb11b84920c4e9"></span><h2><span class="section-number">6.37.3. </span>TREE_SET.from_each(Eacher)<a class="headerlink" href="#tree-set-from-each-eacher" title="Link to this heading">¶</a></h2>
+<p>from_eachは、Eacherの要素を含む平衡二分木ordered_setを新しく作って戻す。要素は &lt;= 演算子、つまりop_leメソッドで順序付けられる。</p>
+<p class="rubric">事前条件</p>
+<p>Eacherはeach($consume)メソッドを実装しなければならない。eachメソッドは、Eacherのそれぞれの要素について$consumeを呼び出すものでなければならない。</p>
+<p>Eacherの要素はsetの要素のドメインに含まれなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Iter</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>].<span class="n">iter</span>
+<span class="nv">:Map</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">from_each</span>(<span class="nv">Iter</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">have?</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">have?</span>(<span class="s1">&#39;FOO&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+<span class="nv">Map</span>.<span class="n">each</span>{(<span class="nv">:Elem</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Elem</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;bar&quot;</span>
+<span class="c1">#   &quot;baz&quot;</span>
+<span class="c1">#   &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-TREE_MAP.html"><span class="section-number">6.36. </span>kink/container/TREE_MAP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-datetime-DATETIME.html"><span class="section-number">6.38. </span>kink/datetime/DATETIME</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

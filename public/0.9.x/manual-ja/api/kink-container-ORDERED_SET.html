@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.34. kink/container/ORDERED_SET &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.35. kink/container/SET" href="kink-container-SET.html" />
+    <link rel="prev" title="6.33. kink/container/ORDERED_MAP" href="kink-container-ORDERED_MAP.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.34. kink/container/ORDERED_SET</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-ORDERED_MAP.html"><span class="section-number">6.33. </span>kink/container/ORDERED_MAP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-SET.html"><span class="section-number">6.35. </span>kink/container/SET</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-container-ordered-set">
+<h1><span class="section-number">6.34. </span>kink/container/ORDERED_SET<a class="headerlink" href="#kink-container-ordered-set" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-ordered-set" id="id2">ordered_set型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#set-iter-min" id="id3">Set.iter(...[Min])</a></p></li>
+<li><p><a class="reference internal" href="#set-front" id="id4">Set.front</a></p></li>
+<li><p><a class="reference internal" href="#set-back" id="id5">Set.back</a></p></li>
+<li><p><a class="reference internal" href="#set-pop-front" id="id6">Set.pop_front</a></p></li>
+<li><p><a class="reference internal" href="#set-pop-back" id="id7">Set.pop_back</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ordered-set-is-val" id="id8">ORDERED_SET.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-ordered-set">
+<span id="api-668819c2b69c05fb5654d4939a1105e7"></span><h2><span class="section-number">6.34.1. </span>ordered_set型<a class="headerlink" href="#type-ordered-set" title="Link to this heading">¶</a></h2>
+<p>ordered_setは、要素が全順序で順序付けられているような、setの部分型である。要素の同値関係は、全順序関係から導出される。</p>
+<p>setから継承された次のメソッドは、要素が順番通りに現れることを保証する。</p>
+<p>• each</p>
+<p>• all?</p>
+<p>• any?</p>
+<p>• count</p>
+<p>• fold</p>
+<p>• reduce</p>
+<p>• have_all?</p>
+<p>• have_any?</p>
+<section id="set-iter-min">
+<span id="api-2fd2b7ab6519594389ea7aec9583603d"></span><h3><span class="section-number">6.34.1.1. </span>Set.iter(...[Min])<a class="headerlink" href="#set-iter-min" title="Link to this heading">¶</a></h3>
+<p>iterメソッドは、Setの要素をSetの順番で持つiterを戻す。</p>
+<p>Minが与えられている場合、結果のiterはMinより大きいか同値の要素だけを持つ。Minが与えられない場合、結果のiterはSetのすべての要素を持つ。</p>
+<p>このメソッドは、set型のiterメソッドを拡張している。</p>
+<p class="rubric">事前条件</p>
+<p>Minは、要素の全順序の定義域に属さなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span>)
+
+<span class="nv">Set</span>.<span class="n">iter</span>.<span class="n">each</span>{(<span class="nv">:E</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>) }
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;bar&quot;</span>
+<span class="c1">#   &quot;baz&quot;</span>
+<span class="c1">#   &quot;foo&quot;</span>
+<span class="c1">#   &quot;qux&quot;</span>
+
+<span class="nv">Set</span>.<span class="n">iter</span>(<span class="s1">&#39;baz&#39;</span>).<span class="n">each</span>{(<span class="nv">:E</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>) }
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;baz&quot;</span>
+<span class="c1">#   &quot;foo&quot;</span>
+<span class="c1">#   &quot;qux&quot;</span>
+
+<span class="nv">Set</span>.<span class="n">iter</span>(<span class="s1">&#39;bazzz&#39;</span>).<span class="n">each</span>{(<span class="nv">:E</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>) }
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;foo&quot;</span>
+<span class="c1">#   &quot;qux&quot;</span>
+
+<span class="nv">Set</span>.<span class="n">iter</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">each</span>{(<span class="nv">:E</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>) }
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;foo&quot;</span>
+<span class="c1">#   &quot;qux&quot;</span>
+
+<span class="nv">Set</span>.<span class="n">iter</span>(<span class="s1">&#39;foooo&#39;</span>).<span class="n">each</span>{(<span class="nv">:E</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>) }
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;qux&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="set-front">
+<span id="api-eb09b63f8335ade2deaf65705154c4c0"></span><h3><span class="section-number">6.34.1.2. </span>Set.front<a class="headerlink" href="#set-front" title="Link to this heading">¶</a></h3>
+<p>frontは、Setの順序で最初に来る要素を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Setは空であってはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">front</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;bar&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="set-back">
+<span id="api-a0bd6260be86c5f4dd202d5e5c78fb31"></span><h3><span class="section-number">6.34.1.3. </span>Set.back<a class="headerlink" href="#set-back" title="Link to this heading">¶</a></h3>
+<p>backは、Setの順序で最後に来る要素を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Setは空であってはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">TREE_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">back</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="set-pop-front">
+<span id="api-d45f2c04b1f98e8df43a9513775ce11e"></span><h3><span class="section-number">6.34.1.4. </span>Set.pop_front<a class="headerlink" href="#set-pop-front" title="Link to this heading">¶</a></h3>
+<p>pop_frontは、Setの順序で最初に来る要素をポップして戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Setは空であってはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="nv">:Front</span> &lt;- <span class="nv">Set</span>.<span class="n">pop_front</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Front</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;bar&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; Flat_set(&quot;baz&quot; &quot;foo&quot;)</span>
+</pre></div>
+</div>
+</section>
+<section id="set-pop-back">
+<span id="api-b74c028adff7674a0e9a934e49884c31"></span><h3><span class="section-number">6.34.1.5. </span>Set.pop_back<a class="headerlink" href="#set-pop-back" title="Link to this heading">¶</a></h3>
+<p>pop_backは、Setの順序で最後に来る要素をポップして戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Setは空であってはならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
+<span class="nv">:Back</span> &lt;- <span class="nv">Set</span>.<span class="n">pop_back</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Back</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; Flat_set(&quot;bar&quot; &quot;baz&quot;)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="ordered-set-is-val">
+<span id="api-1aff98ca1aad95dc9325f81b624eb1fc"></span><h2><span class="section-number">6.34.2. </span>ORDERED_SET.is?(Val)<a class="headerlink" href="#ordered-set-is-val" title="Link to this heading">¶</a></h2>
+<p>is?は、Valがordered_setであるかどうかを戻す。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-ORDERED_MAP.html"><span class="section-number">6.33. </span>kink/container/ORDERED_MAP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-SET.html"><span class="section-number">6.35. </span>kink/container/SET</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

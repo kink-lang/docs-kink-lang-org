@@ -1,0 +1,599 @@
+================================
+kink\/datetime\/OFFSET\_DATETIME
+================================
+
+Provides offset\_datetime type\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-abb3a5484e5d90353980e35d96945d85:
+
+type offset\_datetime
+=====================
+
+An offset\_datetime represents a combination of date\-and\-time\, and UTC offset\, in the ISO 8601 calendar system without inserting leap seconds\.
+
+The date\-and\-time part is represented to nanosecond precision\. The subsecond part is represented within “second” attribute\, together with the integral second part\.
+
+The range of the date\-and\-time part is \[0001\-00\-00T00\:00\:00\.000000000\, 9999\-12\-31T23\:59\:59\.999999999\]\.
+
+The range of the UTC offset part is \[UTC\-18\:00\, UTC\+18\:00\]\.
+
+Example\:
+
+.. code:: kink
+
+    :OFFSET_DATETIME.require_from('kink/datetime/')
+    :OFFSET.require_from('kink/datetime/')
+        
+    :Odt <- OFFSET_DATETIME.new(2020 1 10 23 14 25.123456789 OFFSET.new(-(5 * 60 + 30)))
+    stdout.print_line(Odt.year.repr)    # => 2020
+    stdout.print_line(Odt.month.repr)   # => 1
+    stdout.print_line(Odt.day.repr)     # => 10
+    stdout.print_line(Odt.hour.repr)    # => 23
+    stdout.print_line(Odt.minute.repr)  # => 14
+    stdout.print_line(Odt.second.repr)  # => 25.123456789
+    stdout.print_line(Odt.day_of_week.repr) # => DAY_OF_WEEK.friday
+    stdout.print_line(Odt.datetime.repr)    # => (datetime 2020-01-10T23:14:25.123456789)
+    stdout.print_line(Odt.offset.repr)  # => (offset -05:30)
+
+.. _api-acfce2255ecc6adf737532d20cba2cfd:
+
+Odt\.year
+---------
+
+“year” method returns the year part of Odt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[1\, 9999\]\.
+
+.. _api-f6d60d95e50891257cda29f28d2edf00:
+
+Odt\.month
+----------
+
+“month” method returns the month part of Odt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[1\, 12\]\.
+
+.. _api-7738b5076f6c0cd61c0c8c2647d74143:
+
+Odt\.day
+--------
+
+“day” method returns the day part of Odt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[1\, 31\]\.
+
+.. _api-ac265877b5da9f67c48f80933a208d53:
+
+Odt\.hour
+---------
+
+“hour” method returns the hour part of Odt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[0\, 23\]\.
+
+.. _api-605281b508dd3549fdd44f3708fa9cfa:
+
+Odt\.minute
+-----------
+
+“minute” method returns the minute part of Odt\.
+
+Postcondition\:
+
+\• The result is an int num\, in the range \[0\, 59\]\.
+
+.. _api-9ad875da45b30618f9b13bc3d585e2e4:
+
+Odt\.second
+-----------
+
+“second” method returns the second part of Odt\.
+
+Postcondition\:
+
+\• The result is a num with scale\=9\, in the range \[0\.000000000\, 59\.999999999\]\.
+
+.. _api-adfbb3b2b8551d3075a59023318d6dbe:
+
+Odt\.day\_of\_week
+------------------
+
+“day\_of\_week” method returns the day of week corresponding to the date of Odt\.
+
+Postcondition\:
+
+\• The result is a day\_of\_week\. See kink\/datetime\/DAY\_OF\_WEEK\.
+
+.. _api-e1557c2174060c5bc1f5485bb16110fc:
+
+Odt\.offset
+-----------
+
+“offset” method returns the UTC offset of Odt\.
+
+Postcondition\:
+
+\• The result is a \`offset\`\. See kink\/datetime\/OFFSET\.
+
+.. _api-651d2592fdd83acb9b908e8d06098dae:
+
+Odt\.datetime
+-------------
+
+\`datetime\` returns the datetime without UTC offset\.
+
+Postcondition\:
+
+\• The result is a \`datetime\` val\. See kink\/datetime\/DATETIME\.
+
+.. _api-1f3aaa1218f6b3162970d75dc413d892:
+
+Odt\.instant
+------------
+
+\`instant\` method returns an \`instant\` val representing the point of time same as \`Odt\`\.
+
+Postcondition
+
+\• The result is an instant\. See kink\/datetime\/INSTANT\.
+
+.. _api-be8d685f81f7ae4b54a799e38cf3a452:
+
+Odt\.show\(\.\.\.\[\$config\]\)
+-------------------------------
+
+\`show\` returns a str representation of \`Odt\`\, which is intended to be used in UI messages\.
+
+Precondition\:
+
+\• \$config must be a fun which takes a \`show\_config\` value\.   See kink\/STR for \`show\_config\` type\.
+
+The spec must be
+
+\• an empty str\, or
+
+\• a str which matches \`\(\?\<Field\>\[\^\\u0020\]\+\)\(\\u0020\+\(\?\<Option\>\[\^\\u0020\]\)\)\*\`\.
+
+Specifying the empty spec is equivalent with specifying \'iso8601\'\.
+
+.. rubric:: When spec is an empty str\, or \`Field\` \= \'iso8601\'
+
+\`show\` returns a str which represents \`Odt\` by ISO 8601 format\, such as \'2001\-07\-04T01\:23\:45\.123456789\-05\:30\'\. The number of digits of the fractional part of the second is always 9\. When the offset is zero\, the offset is displayed as \'\+00\:00\'\.
+
+No \`Option\` is allowed\.
+
+.. rubric:: When \`Field\` \= \'year\'
+
+\`show\` returns a str which represents the year part of \`Odt\`\.
+
+\`Option\` can be \'0001\-9999\' \(default\) or \'00\-99\'\. The options are mutually exclusive\. When \'0001\-9999\' is specified\, the year is represented by 4 digits \(such as \'0042\' and \'1969\'\)\. When \'00\-99\' is specified\, the year is represented by the latter 2 digits \(such as \'42\' and \'69\'\)\.
+
+.. rubric:: When \`Field\` \= \'month\'
+
+\`show\` returns a str which represents the month part of \`Odt\`\.
+
+\`Option\` can be \'01\-12\' \(default\)\, \'1\-12\'\, \'full\'\, or \'short\'\. The options are mutually exclusive\. When \'01\-12\' is specified\, the month is represented by 2 digits \(such as \'01\' and \'12\'\)\. When \'1\-12\' is specified\, the month is represented by 1 or 2 digits \(such as \'1\' and \'12\'\)\. When \'full\' is specified\, the month is represented by a locale\-dependent full name \(such as \'January\' and \'December\'\)\. When \'short\' is specified\, the month is represented by a locale\-dependent short name \(such as \'Jan\' and \'Dec\'\)\.
+
+.. rubric:: When \`Field\` \= \'day\'
+
+\`show\` returns a str which represents the day part of \`Odt\`\.
+
+\`Option\` can be \'01\-31\' \(default\) or \'1\-31\'\. The options are mutually exclusive\. When \'01\-31\' is specified\, the day is represented by 2 digits \(such as \'01\' and \'31\'\)\. When \'1\-31\' is specified\, the day is represented by 1 or 2 digits \(such as \'1\' and \'31\'\)\.
+
+.. rubric:: When \`Field\` \= \'day\_of\_week\'
+
+\`show\` returns a str which represents the day of week of \`Odt\`
+
+\`Option\` can be \'full\' \(default\) or \'short\'\. The options are mutually exclusive\. When \'full\' is specified\, the day of week is represented by a locale\-dependent full name \(such as \'Monday\' and \'Sunday\'\)\. When \'short\' is specified\, the day of week is represented by a locale\-dependent long name \(such as \'Mon\' and \'Sun\'\)\.
+
+.. rubric:: When \`Field\` \= \'ampm\'
+
+\`show\` returns a locale\-dependent str which represents whether \`Odt\` is AM or PM\.
+
+No \`Option\` is accepted\.
+
+.. rubric:: When \`Field\` \= \'hour\'
+
+\`show\` returns a str which represents the hour part of \`Odt\`\.
+
+\`Option\` can be \'00\-23\'\, \'0\-23\'\, or \'1\-12\'\. The options are mutually exclusive\. When \'00\-23\' is specified\, the hour is represented by 2 digits \(such as \'00\' and \'23\'\)\. When \'0\-23\' is specified\, the hour is represented by 1 or 2 digits \(such as \'0\' and \'23\'\)\. When \'1\-12\' is specified\, the hour is represented by 1 or 2 digits as the hour in a 12\-hour clock \(such as \'1\' and \'12\'\)\.
+
+.. rubric:: When \`Field\` \= \'minute\'
+
+\`show\` returns a str which represents the minute part of \`Odt\`\.
+
+\`Option\` can be \'00\-59\' or \'0\-59\'\. The options are mutually exclusive\. When \'00\-59\' is specified\, the minute is represented by 2 digits \(such as \'00\' and \'59\'\)\. When \'0\-59\' is specified\, the minute is represented by 1 or 2 digits \(such as \'0\' and \'59\'\)\.
+
+.. rubric:: When \`Field\` \= \'second\'
+
+\`show\` returns a str which represents the second part of \`Odt\`\.
+
+\`Option\` can be \'00\-59\' \(default\)\, \'0\-59\'\, \'\.0\'\, \'\.1\'\, \'\.2\'\,\,\, \'\.8\'\, or \'\.9\' \(default\)\.
+
+\'00\-59\' and \'0\-59\' are mutually exclusive\. When \'00\-59\' is specified\, the integral part of the second is represented by 2 digits \(such as \'00\' and \'59\'\)\. When \'0\-59\' is specified\, the integral part of the second is represented by 1 or 2 digits \(such as \'0\' and \'59\'\)\.
+
+\'\.0\'\, \'\.1\'\, \'\.2\'\,\,\, \'\.8\'\, and \'\.9\' are mutually exclusive\. When \'\.0\' is specified\, the fractional part of the second is not displayed\. When \'\.1\'\, \'\.2\'\,\,\, \'\.8\'\, or \'\.9\' is specified\, the fractional part is floored to the specified scale and displayed after \'\.\'\.
+
+.. rubric:: When \`Field\` \= \'offset\'
+
+\`show\` returns a str which represents the offset part of \`Odt\`\.
+
+\`Option\` can be \'00\:00\' \(default\)\, \'0000\'\, \'noZ\' \(default\)\, and \'Z\'\.
+
+\'00\:00\' and \'0000\' are mutually exclusive\. When \'00\:00\' is specified\, the offset is represented using \'\:\' as a separator \(such as \'\+09\:00\' and \'\-05\:30\'\)\. When \'0000\' is specified\, the offset is represented without a separator \(such as \'\+0900\' and \'\-0530\'\)\.
+
+\'noZ\' and \'Z\' are mutually exclusive\. When \'noZ\' is specified\, offset\=0 is represented by \'\+00\:00\' \(if \'00\:00\' is specified\) or \'\+0000\' \(if \'0000\' is specified\)\. When \'Z\' is specified\, offset\=0 is represented by \'Z\'\.
+
+.. rubric:: Examples
+
+.. code:: kink
+
+    :LOCALE.require_from('kink/')
+    :OFFSET.require_from('kink/datetime/')
+    :OFFSET_DATETIME.require_from('kink/datetime/')
+        
+    :Odt <- OFFSET_DATETIME.new(2001 1 2 3 4 5.123456789 OFFSET.new(-(5 * 60 + 30)))
+        
+    stdout.print_line(Odt.show{(:C) C.spec('year') })       # => 2001
+    stdout.print_line(Odt.show{(:C) C.spec('year 00-99') }) # => 01
+        
+    stdout.print_line(Odt.show{(:C) C.spec('month') })          # => 01
+    stdout.print_line(Odt.show{(:C) C.spec('month 1-12') })     # => 1
+    stdout.print_line(Odt.show{(:C)
+        C.spec('month full')
+        C.locale(LOCALE.for('fr'))
+      }
+    )  # => janvier
+    stdout.print_line(Odt.show{(:C)
+        C.spec('month short')
+        C.locale(LOCALE.for('fr'))
+      }
+    )  # => janv.
+        
+    stdout.print_line(Odt.show{(:C) C.spec('day') })      # => 02
+    stdout.print_line(Odt.show{(:C) C.spec('day 1-31') }) # => 2
+        
+    stdout.print_line(Odt.show{(:C) C.spec('day_of_week') })     # => Tue
+    stdout.print_line(Odt.show{(:C)
+        C.spec('day_of_week full')
+        C.locale(LOCALE.for('fr'))
+      }
+    )  # => mardi
+    stdout.print_line(Odt.show{(:C)
+        C.spec('day_of_week short')
+        C.locale(LOCALE.for('fr'))
+      }
+    )  # => mar.
+        
+    stdout.print_line(Odt.show{(:C) C.spec('ampm') }) # => AM
+    stdout.print_line(Odt.show{(:C)
+        C.spec('ampm')
+        C.locale(LOCALE.for('ja'))
+      }
+    )  # => 午前
+        
+    stdout.print_line(Odt.show{(:C) C.spec('hour') })       # => 03
+    stdout.print_line(Odt.show{(:C) C.spec('hour 0-23') })  # => 3
+    stdout.print_line(Odt.show{(:C) C.spec('hour 1-12') })  # => 3
+        
+    stdout.print_line(Odt.show{(:C) C.spec('minute') })       # => 04
+    stdout.print_line(Odt.show{(:C) C.spec('minute 0-59') })  # => 4
+        
+    stdout.print_line(Odt.show{(:C) C.spec('second') })         # => 05.123456789
+    stdout.print_line(Odt.show{(:C) C.spec('second 0-59 .3') }) # => 5.123
+        
+    stdout.print_line(Odt.show{(:C) C.spec('offset') })         # => -05:00
+    stdout.print_line(Odt.show{(:C) C.spec('offset 0000') })    # => -0500
+    stdout.print_line(Odt.show{(:C) C.spec('offset 0000 Z') })  # => -0500
+        
+    :Utc_odt <- OFFSET_DATETIME.new(1 1 1 0 0 0 OFFSET.new(0))
+    stdout.print_line(Utc_odt.show{(:C) C.spec('offset') })         # => +00:00
+    stdout.print_line(Utc_odt.show{(:C) C.spec('offset 0000') })    # => +0000
+    stdout.print_line(Utc_odt.show{(:C) C.spec('offset Z') })       # => Z
+    stdout.print_line(Utc_odt.show{(:C) C.spec('offset 0000 Z') })  # => Z
+
+Usually\, \`show\` method is used from Str\.format\.
+
+.. code:: kink
+
+    :LOCALE.require_from('kink/')
+    :OFFSET.require_from('kink/datetime/')
+    :OFFSET_DATETIME.require_from('kink/datetime/')
+        
+    :Odt <- OFFSET_DATETIME.new(1993 3 6 3 40 20 OFFSET.new(60 * 9))
+    stdout.print_line('Odt: {}'.format(Odt))  # => Odt: 1993-03-06T03:40:20.000000000+09:00
+    stdout.print_line('{Odt%month Jan} {Odt%day 1-31}, {Odt%year} ({Odt%day_of_week})'.format{(:C)
+        C.named_arg('Odt' Odt)
+        C.locale(LOCALE.for('fr'))
+      }
+    ) # => mars 6, 1993 (samedi)
+
+.. _api-e947a49299f5eeaf935bc7024e5c879f:
+
+Odt1 \=\= Odt2
+--------------
+
+offset\_datetime values Odt1 and Odt2 are equal when\:
+
+\• They have the same civil time\, and
+
+\• They have the same UTC offset\.
+
+.. _api-740b6e0ae597c84333d43e92e531e711:
+
+Odt\.repr
+---------
+
+“repr” returns a str representation of Odt\, such as \"\(offset\_datetime 2020\-01\-10T23\:07\:04\.123456789\-05\:30\)\"
+
+.. _api-c8681d27a73e726cb2b42a741ba7ddb0:
+
+OFFSET\_DATETIME\.new\(Year Month Day Hour Minute Second Offset\)
+=================================================================
+
+“new” fun makes an offset\_datetime\, with the speicifed attributes\.
+
+\• Year must be an int num in the range \[1\, 9999\]\.
+
+\• Month must be an int num in the range \[1\, 12\]\.
+
+\• Day must be an int num\.
+
+\• The combination of Year\, Month and Day must be a valid date in ISO 8601 calendar system\.
+
+\• Hour must be an int num in the range \[0\, 23\]\.
+
+\• Minute must be an int num in the range \[0\, 59\]\.
+
+\• Second must be a num with scale\<\=9 in the range \[0\.000000000\, 59\.999999999\]\.
+
+\• Offset must be an \`offset\` val\.
+
+.. _api-11b62448224bcfa43b4a63a6ad596b58:
+
+OFFSET\_DATETIME\.is\?\(Val\)
+=============================
+
+OFFSET\_DATETIME\.is\? returns whether Val is an offset\_datetime val\.
+
+.. _api-d7fc8308e23c171765b1a39697e4fac9:
+
+OFFSET\_DATETIME\.from\_instant\_offset\(Instant Offset\)
+=========================================================
+
+\`from\_instant\_offset\` makes an \`offset\_datetime\` val representing the \`Instant\` at the \`Offset\`\.
+
+Preconditions\:
+
+\• \`Instant\` must be an \`instant\`
+
+\• \`Offset\` must be a \`offset\`
+
+\• The date and time of the resulting offset\_datetime must be in the range   \[0001\-00\-00T00\:00\:00\.000000000\, 9999\-12\-31T23\:59\:59\.999999999\]
+
+Example\:
+
+.. code:: kink
+
+    :INSTANT.require_from('kink/datetime/')
+    :OFFSET.require_from('kink/datetime/')
+    :OFFSET_DATETIME.require_from('kink/datetime/')
+        
+    :Ins <- INSTANT.new(1579580443.123456789)
+    :Odt <- OFFSET_DATETIME.from_instant_offset(Ins OFFSET.new(60 * 9))
+    stdout.print_line(Odt.repr) # => (offset_datetime 2020-01-21T13:20:43.123456789+09:00)
+
+.. _api-c87782ba025b051194f60d2b5d094c55:
+
+OFFSET\_DATETIME\.from\_instant\_timezone\(Instant Tz\)
+=======================================================
+
+\`from\_instant\_timezone\` makes an \`offset\_datetime\` val representing the \`Instant\` at the timezone\.
+
+Preconditions\:
+
+\• \`Instant\` must be an instant
+
+\• \`Tz\` must be a timezone
+
+\• The date and time of the resulting offset\_datetime must be in the range   \[0001\-00\-00T00\:00\:00\.000000000\, 9999\-12\-31T23\:59\:59\.999999999\]
+
+Example\:
+
+.. code:: kink
+
+    :INSTANT.require_from('kink/datetime/')
+    :TIMEZONE.require_from('kink/datetime/')
+    :OFFSET_DATETIME.require_from('kink/datetime/')
+        
+    :Ins <- INSTANT.new(1579580443.123456789)
+    :Pt <- TIMEZONE.for('America/Los_Angeles')
+    :Odt <- OFFSET_DATETIME.from_instant_timezone(Ins Pt)
+    stdout.print_line(Odt.repr) # => (offset_datetime 2020-01-20T20:20:43.123456789-08:00)
+
+.. _api-7459b4e5c8da98040ccd071687ed9354:
+
+OFFSET\_DATETIME\.from\_datetime\_offset\(Dt Offset\)
+=====================================================
+
+\`from\_datetime\_offset\` makes an \`offset\_datetime\` val representing the datetime at the \`Offset\`\.
+
+Preconditions\:
+
+\• \`Dt\` must be a \`datetime\` val
+
+\• \`Offset\` must be a offset
+
+Example\:
+
+.. code:: kink
+
+    :DATETIME.require_from('kink/datetime/')
+    :OFFSET.require_from('kink/datetime/')
+    :OFFSET_DATETIME.require_from('kink/datetime/')
+        
+    :Dt <- DATETIME.new(2020 1 21 13 20 43.123456789)
+    :Odt <- OFFSET_DATETIME.from_datetime_offset(Dt OFFSET.new(60 * 9))
+    stdout.print_line(Odt.repr) # => (offset_datetime 2020-01-21T13:20:43.123456789+09:00)
+
+.. _api-e05df7e359f288f2e1f6b649c23f7752:
+
+OFFSET\_DATETIME\.from\_datetime\_timezone\(Dt Tz\)
+===================================================
+
+\`from\_datetime\_timezone\` makes an \`offset\_datetime\` val representing the \`datetime\` at the \`timezone\`\.
+
+Preconditions\:
+
+\• \`Dt\` must be a \`datetime\`
+
+\• \`Tz\` must be a \`timezone\`
+
+Result\:
+
+\• If there is only one \`offset\` valid at the datetime\,   the fun produces an \`offset\_datetime\` val with the offset\.
+
+\• If there are two \`offset\` vals valid at the datetime due to transition\,   the fun produces an \`offset\_datetime\` with the offset before the transition\.
+
+\• If there is no \`offset\` valid at the datetime due to transition\,   the fun first makes an \`offset\_datetime\` with the offset before the transition \(A\)\,   then produces an \`offset\_datetime\` which represents the instant of \(A\)   at the offset after the transition\.
+
+Example\:
+
+.. code:: kink
+
+    :DATETIME.require_from('kink/datetime/')
+    :TIMEZONE.require_from('kink/datetime/')
+    :OFFSET_DATETIME.require_from('kink/datetime/')
+        
+    :Pt <- TIMEZONE.for('America/Los_Angeles')
+        
+    # winter
+    stdout.print_line(
+      OFFSET_DATETIME.from_datetime_timezone(
+        DATETIME.new(2019 1 1 08 00 00)  # UTC-08:00 is valid
+        Pt
+      ).repr
+    ) # => (offset_datetime 2019-01-01T08:00:00.000000000-08:00)
+        
+    # gap: winter -> summer
+    stdout.print_line(
+      OFFSET_DATETIME.from_datetime_timezone(
+        DATETIME.new(2019 3 10 02 30 00) # no valid offset for the date and time
+        Pt
+      ).repr
+    ) # => (offset_datetime 2019-03-10T03:30:00.000000000-07:00)
+        
+    # summer
+    stdout.print_line(
+      OFFSET_DATETIME.from_datetime_timezone(
+        DATETIME.new(2019 7 1 08 00 00)  # UTC-07:00 is valid
+        Pt
+      ).repr
+    ) # => (offset_datetime 2019-07-01T08:00:00.000000000-07:00)
+        
+    # overlap: summer -> winter
+    stdout.print_line(
+      OFFSET_DATETIME.from_datetime_timezone(
+        DATETIME.new(2019 11 3 01 30 00) # both UTC-08:00 and UTC-07:00 are valid
+        Pt
+      ).repr
+    ) # => (offset_datetime 2019-11-03T01:30:00.000000000-07:00)
+
+If you need more control over conversion\, consider using Tz\.offset\_for\_datetime\.
+
+.. _api-51a47db8ca38fee853999785a20e9213:
+
+OFFSET\_DATETIME\.parse\(Str \.\.\.\[\$config\=\{\}\]\)
+=======================================================
+
+\`parse\` parses an \`offset\_datetime\` from \`Str\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If \`Str\` is accepted by the syntax and the limiting conditions are met\, \`parse\` tail\-calls \$success with an \`offset\_datetime\` val\.
+
+If \`Str\` is not accepted by the syntax\, or the limiting conditions are not met\, \`parse\` tail\-calls \$error with no arg\.
+
+.. rubric:: Syntax and limiting conditions
+
+Syntax\: \`\{Year\}\-\{Month\}\-\{Day\}T\{Hour\}\:\{Minute\}\:\{Second\}Z\` \(offset is zero\)\, or \`\{Year\}\-\{Month\}\-\{Day\}T\{Hour\}\:\{Minute\}\:\{Second\}\{Offset\_sign\}\{Offset\_hour\}\:\{Offset\_minute\}\`\.
+
+\• \`Year\` is four decimal digits from \`0001\` to \`9999\`
+
+\• \`Month\` is two decimal digits from \`01\` to \`12\`
+
+\• \`Day\` is two decimal digits from \`01\` to \`31\`
+
+\• \`Hour\` is two decimal digits from \`00\` to \`23\`
+
+\• \`Minute\` is two decimal digits from \`00\` to \`59\`
+
+\• \`Second\` is two decimal digits from \`00\` to \`59\`\,   or \`\{Int\}\.\{Frac\}\` where \`Int\`is two decimal digits from \`00\` to \`59\`   and \`Frac\` is 1 to 9 decimal digits\.
+
+\• \`Offset\_sign\` is either \`\-\` or \`\+\`
+
+\• \`Offset\_hour\` is two decimal digits from \`00\` to \`18\`
+
+\• \`Offset\_minute\` is \`00\` if \`Offset\_hour\` is \`18\`\,   otherwise two decimal digits from \`00\` to \`59\`
+
+Limiting conditions\:
+
+\• \`Year\`\, \`Month\`\, and \`Day\` must constitute a valid date in ISO 8601 calendar system\.
+
+.. rubric:: Preconditions
+
+\• \`Str\` must be a str
+
+\• \$success must be a fun which takes an \`offset\_datetime\` val
+
+\• \$error must be a fun which takes no arg
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :OFFSET_DATETIME.require_from('kink/datetime/')
+        
+    stdout.print_line(OFFSET_DATETIME.parse('2020-11-04T12:34:56Z').repr)
+    # => (offset_datetime 2020-11-04T12:34:56.000000000+00:00)
+        
+    stdout.print_line(OFFSET_DATETIME.parse('2020-11-04T12:34:56+18:00').repr)
+    # => (offset_datetime 2020-11-04T12:34:56.000000000+18:00)
+        
+    stdout.print_line(OFFSET_DATETIME.parse('2020-11-04T12:34:56-18:00').repr)
+    # => (offset_datetime 2020-11-04T12:34:56.000000000-18:00)
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :OFFSET_DATETIME.require_from('kink/datetime/')
+        
+    OFFSET_DATETIME.parse('2020-11-04T12:34:56Z'){(:C)
+      C.on_success{(:Odt) stdout.print_line(Odt.repr) }
+      C.on_error{ stdout.print_line('error') }
+    }
+    # => (offset_datetime 2020-11-04T12:34:56.000000000+00:00)
+        
+    OFFSET_DATETIME.parse('boo'){(:C)
+      C.on_success{(:Odt) stdout.print_line(Odt.repr) }
+      C.on_error{ stdout.print_line('error') }
+    }
+    # => error
+

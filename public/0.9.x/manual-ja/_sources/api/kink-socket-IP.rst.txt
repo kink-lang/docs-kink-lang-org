@@ -1,0 +1,202 @@
+================
+kink\/socket\/IP
+================
+
+Provides ip addresses and hostname resolution of both IPv4 and IPv6\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-a3cd4e3e41e645cba28e4ff2222a1ba6:
+
+type ip
+=======
+
+\`ip\` represents an IPv4 or IPv6 address in the binary form\.
+
+.. _api-4c6034ceedcc7a2ab62de905ae3cb0e4:
+
+Ip\.bin
+-------
+
+\`bin\` method returns the ip address in type \`bin\`\.
+
+When \`Ip\` represents an IPv4 address\, \`bin\` returns a \`bin\` of size 4\.
+
+When \`Ip\` represents an IPv6 address\, \`bin\` returns a \`bin\` of size 16\.
+
+.. _api-4f27c8b1f809e1b2dfa42684b6f231b9:
+
+Ip\.protocol\_family
+--------------------
+
+\`protocol\_family\` returns the protocol family of the ip address in type \`protocol\_family\`\. The result is either PROTOCOL\_FAMILY\.ipv4 or PROTOCOL\_FAMILY\.ipv6\.
+
+.. _api-59e375bb016a0039541afa6f8de7a22f:
+
+Ip\.text
+--------
+
+\`text\` returns a text representation of the ip address \`Ip\` in type \`str\`\.
+
+When \`Ip\` is an IPv4 address\, \`text\` returns a \`str\` of the dotted decimal format\.
+
+When \`Ip\` is an IPv6 address\, \`text\` returns a \`str\` of the format defined in RFC 2732\. The result uses small case letters\, and performs no zero hextet omission\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :IP.require_from('kink/socket/')
+        
+    stdout.print_line(IP.for_hostname('127.0.0.1').text)
+    # => 127.0.0.1
+        
+    stdout.print_line(IP.for_hostname('ff02::1').text)
+    # => ff02:0000:0000:0000:0000:0000:0000:0001
+
+.. _api-e82acf2156af5fcf689e39255b19a27d:
+
+Ip\.repr
+--------
+
+\`repr\` returns a \`str\` representation of \`Ip\` for debugging purposes\, like \"\(ip 127\.0\.0\.1\)\" or \"\(ip ff02\:0000\:0000\:0000\:0000\:0000\:0000\:0001\)\"\.
+
+.. _api-62f159b80d24bc6a0be11f4b2b1706b3:
+
+X \=\= Y
+--------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether two \`ip\` values represent the same ip address\.
+
+.. _api-89595b2554e2a60f8d9c53182b984e73:
+
+IP\.new\(Bin\)
+==============
+
+\`new\` makes an \`ip\` value of the IPv4 or IPv6 address \.
+
+When the size of \`Bin\` is 4\, the created \`ip\` is an IPv4 address\. When the size of \`Bin\` is 16\, the created \`ip\` is an IPv6 address\.
+
+.. rubric:: Precondition
+
+\`Bin\` must be a \`bin\` of size 4 or 16\.
+
+.. _api-0f52f634cbbf93c4560c094915fe5c67:
+
+IP\.is\?\(Val\)
+===============
+
+\`is\?\` returns whether \`Val\` is an \`ip\` value\.
+
+.. _api-ebf9427f83d41412b00952354f81f845:
+
+IP\.for\_hostname\(Hostname \.\.\.\[\$config\=\{\}\]\)
+======================================================
+
+\`for\_hostname\` resolves the \`Hostname\` to an ip address\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If \`Hostname\` is resolved to an ip address\, \`for\_hostname\` tail\-calls \$success with an \`ip\` value\.
+
+If \`Hostname\` is not resolved to an ip address\, \`for\_hostname\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Name resolution
+
+\`Hostname\` is resolved in the following ways\.
+
+\• IPv4 address in dotted decimal format\. Ex\. 127\.0\.0\.1
+
+\• IPv6 address in the Text Representation specified in RFC 2373\. Ex\. ff06\:\:c3
+
+\• IPv6 address in the IPv6 literal address format specified in RFC 3986\. Ex\. \[ff06\:\:c3\]
+
+\• Host name\. Ex\. localhost\, www\.example\.org
+
+In general\, a single host name can be resolved to multipe ip addresses\. For example\, DNS servers might return multiple A or AAAA records\. \`for\_hostname\` uses one of those ip addresses as the result\.
+
+.. rubric:: Preconditions
+
+\`Hostname\` must be a \`str\`\.
+
+\$success must be a fun which takes an \`ip\` value\.
+
+\$error must be a fun which takes an \`exception\` value\.
+
+.. rubric:: Examples
+
+.. code:: kink
+
+    :IP.require_from('kink/socket/')
+        
+    # IPv4 address
+    stdout.print_line(IP.for_hostname('127.0.0.1').repr)
+    # => (ip 127.0.0.1)
+        
+    # IPv6 address
+    stdout.print_line(IP.for_hostname('ff06::c3').repr)
+    # => (ip ff06:0000:0000:0000:0000:0000:0000:00c3)
+        
+    # IPv6 literal address format
+    stdout.print_line(IP.for_hostname('[ff06::c3]').repr)
+    # => (ip ff06:0000:0000:0000:0000:0000:0000:00c3)
+        
+    # Host name
+    stdout.print_line(IP.for_hostname('www.example.com').repr)
+    # => (ip 93.184.215.14)
+
+.. _api-5be7f04aba36dd0bcd26272cd7ed7b77:
+
+IP\.all\_for\_hostname\(Hostname\)
+==================================
+
+\`all\_for\_hostname\` returns a \`vec\` of \`ip\` values corresponding to \`Hostname\`\, using the same name resolution mechanism with \`for\_hostname\`\.
+
+.. rubric:: Result
+
+If \`Hostname\` is resolved to no ip address\, \`all\_for\_hostname\` returns an empty \`vec\`\.
+
+If \`Hostname\` is resolved to a single ip address\, \`all\_for\_hostname\` returns a \`vec\` of size 1 which contains an \`ip\` value\.
+
+If \`Hostname\` is resolved to multiple ip addresses\, \`all\_for\_hostname\` returns a \`vec\` of multiple \`ip\` values\.
+
+.. rubric:: Precondition
+
+\`Hostname\` must be a \`str\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :IP.require_from('kink/socket/')
+        
+    stdout.print_line(IP.all_for_hostname('127.0.0.1').repr)
+    # => [(ip 127.0.0.1)]
+        
+    stdout.print_line(IP.all_for_hostname('www.example.com').repr)
+    # => [(ip 93.184.215.14) (ip 2606:2800:021f:cb07:6820:80da:af6b:8b2c)]
+
+.. _api-63aaf8893ca2242acf021fa88ce02268:
+
+IP\.any
+=======
+
+\`any\` returns in6addr\_any address\, which is the IPv6 address \`\[\:\:\]\`\.
+
+This address can be used to accept connections\, or receive datagram packets\, from any IPv4 or IPv6 hosts\.
+
+.. _api-8586b98b689768438ccf106fbed8eab7:
+
+IP\.any\_ipv4
+=============
+
+\`any\_ipv4\` returns INADDR\_ANY address\, which is the IPv4 address \`0\.0\.0\.0\`\.
+
+This address can be used to accept connections\, or receive datagram packets\, from any IPv4 hosts\.
+

@@ -1,0 +1,303 @@
+=================
+Control structure
+=================
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Branches
+========
+
+One way branch can be done by ``if`` preloaded function.
+Example:
+
+::
+
+  :print_if_positive <- {(:Num)
+    if(Num > 0){
+      stdout.print_line(Num.repr)
+    }
+  }
+
+  print_if_positive(-1) # => (no output)
+  print_if_positive(0)  # => (no output)
+  print_if_positive(1)  # => 1
+
+If you want to raise an exception based on the condition,
+you can use ``||`` or ``&&`` instead of ``if``.
+
+::
+
+  :NUM.require_from('kink/')
+
+  :fractional_part <- {(:N)
+    NUM.is?(N) || raise('N must be a num, but was {}'.format(N.repr))
+    N % 1
+  }
+
+  stdout.print_line(fractional_part(3.1415).repr)   # => 0.1415
+  stdout.print_line(fractional_part(10.00).repr)    # => 0.00
+  fractional_part('foo')  # => N must be a num, but was "foo"
+
+Two way branch can be done by ``if`` preloaded function.
+Example:
+
+::
+
+  :negative_or_not <- {(:N)
+    if(N < 0
+      { 'negative' }
+      { 'non-negative' }
+    )
+  }
+
+  stdout.print_line(negative_or_not(-1))  # => negative
+  stdout.print_line(negative_or_not(0))   # => non-negative
+  stdout.print_line(negative_or_not(1))   # => non-negative
+
+Multiway branch can be done by ``branch`` preloaded function.
+Example:
+
+::
+
+  :sign <- {(:N)
+    branch(
+      { N < 0 } { 'negative' }
+      { N == 0 } { 'zero' }
+      { true } { 'positive' }
+    )
+  }
+
+  stdout.print_line(sign(-1)) # => negative
+  stdout.print_line(sign(0))  # => zero
+  stdout.print_line(sign(1))  # => positive
+
+Note that the last condition ``{ true }`` is a catch-all condition.
+So it works like an else-block.
+
+If no condition is true,
+``branch`` raises an exception.
+
+::
+
+  :color_to_rgb <- {(:Color)
+    branch(
+      { Color == 'red' } { '#ff0000' }
+      { Color == 'green' } { '#00ff00' }
+      { Color == 'blue' } { '#0000ff' }
+    )
+  }
+
+  stdout.print_line(color_to_rgb('red'))    # => #ff0000
+  stdout.print_line(color_to_rgb('green'))  # => #00ff00
+  stdout.print_line(color_to_rgb('blue'))   # => #0000ff
+
+  color_to_rgb('purple') # => branch(...[$cond1 $then1 $cond2 $then2 ,,,]): no matching cond
+
+Loops
+=====
+
+Loop can be done by recursive :term:`tail calls <tail call>`.
+Example:
+
+::
+
+  :factorial <- {(:N)
+    :loop <- {(:I :Product)
+      if(I == N
+        { Product }
+        { loop(I + 1 Product * I) }
+      )
+    }
+    loop(1 1)
+  }
+
+  stdout.print_line(factorial(10).repr) # => 362880
+
+For the scope of ``loop`` variable,
+see :ref:`local recursive function pattern <localrecursivefunpattern>`
+section.
+
+Recursive calls of ``loop`` does not cause stack overflow, because
+
+* ``loop`` tail-calls ``if``,
+* ``if`` tail-calls the else-:term:`thunk`, and
+* the else-thunk tail-calls ``loop``.
+
+Oftentimes, using a method of a container
+or an :doc:`iterator </api/kink-iter-ITER>` is an better option than 
+writing recursive tail calls by yourself.
+For example, ``factorial`` method above can be rewritten as follows.
+
+::
+
+  :factorial <- {(:N)
+    1.up.take_front(N).fold(1){(:I :Product)
+      I * Product
+    }
+  }
+
+  stdout.print_line(factorial(10).repr) # => 362880
+
+Return and break
+================
+
+When you want to return from a function or break a loop,
+you can use :ref:`CONTROL.with_return <api-a4599f5bf37ae1ee2080db91914c982f>`.
+
+Example: Return from a function:
+
+::
+
+  :CONTROL.require_from('kink/')
+
+  :to_fizz_buzz <- {(:Num)
+    CONTROL.with_return{(:return)
+      if(Num % 15 == 0){ return{ 'fizzbuzz' } }
+      if(Num % 3 == 0){ return{ 'fizz' } }
+      if(Num % 5 == 0){ return{ 'buzz' } }
+      return{ Num.show }
+    }
+  }
+  1.up.take_front(20)
+  .map{(:N) to_fizz_buzz(N) }
+  .each{(:S) stdout.print(S + ' ') }
+  # => 1 2 fizz 4 buzz fizz 7 8 fizz buzz 11 fizz 13 14 fizzbuzz 16 17 fizz 19 buzz
+
+Example: Break a loop:
+
+::
+
+  :CONTROL.require_from('kink/')
+
+  :show_reciprocal_sum <- {(:Nums)
+    :R = CONTROL.with_return{(:break)
+      :S = Nums.fold(0){(:Sum :N)
+        if(N == 0){
+          break{ 'Zero Division' }
+        }
+        Sum + (1 / N).floor(3)
+      }
+      break{ S }
+    }
+    stdout.print_line('reciprocal sum: {}'.format(R.repr))
+  }
+
+  show_reciprocal_sum([1 2 3 4 5])     # => reciprocal sum: 2.283
+  show_reciprocal_sum([3 2 1 0 (-1)])  # => reciprocal sum: "Zero Division"
+
+When you just break the control, you should use CONTROL.with_return
+instead of directly calling reset and shift
+of :doc:`KONT_TAG </api/kink-KONT_TAG>`.
+It is because CONTROL.with_return takes care of finally blocks
+of CONTROL.with_finally.
+
+::
+
+  :CONTROL.require_from('kink/')
+
+  CONTROL.with_return{(:break)
+    CONTROL.with_finally{(:finally)
+      finally{ stdout.print_line('finally') }
+
+      stdout.print_line('begin')
+      break{}
+
+      raise('does not reach here')
+    }
+  }
+  # Output:
+  #   begin
+  #   finally
+
+  :CONTROL.require_from('kink/')
+  :KONT_TAG.require_from('kink/')
+
+  :Kont_tag <- KONT_TAG.new
+  Kont_tag.reset{
+    CONTROL.with_finally{(:finally)
+      finally{ stdout.print_line('finally') }
+
+      stdout.print_line('begin')
+      Kont_tag.shift{}
+
+      raise('does not reach here')
+    }
+  }
+  # Output:
+  #   begin
+
+Release resources
+=================
+
+When you acquire a resource, ensure it is released using
+:ref:`CONTROL.with_finally <api-29c676e2986aaddd539609b493b6faaf>`.
+
+In the next example,
+the file input and the file output are ensured to be closed after being used. 
+
+::
+
+  :FILE.require_from('kink/io/')
+  :CONTROL.require_from('kink/')
+
+  # copy /etc/os-release to /tmp/os-release-copy
+  CONTROL.with_finally{(:finally)
+    :In = FILE.open_to_read('/etc/os-release')
+    finally{ In.close }
+
+    :Out = FILE.open_to_write('/tmp/os-release-copy')
+    finally{ Out.close }
+
+    :loop <- {
+      :Max_size = 100
+      In.read(Max_size){(:C)
+        C.on_success{(:Bin)
+          Out.write(Bin)
+          loop
+        }
+        C.on_eof{}
+      }
+    }
+    loop
+  }
+
+Thunks given to ``finally`` are guaranteed to be executed,
+when the body function given to ``with_finally``, and other ``finally`` thunks
+return, raise an exception, or jumped out by CONTROL.with_return.
+``finally`` thunks are not executed,
+when aborted by ``shift`` of :doc:`kont_tag type </api/kink-KONT_TAG>`.
+
+When multiple exceptions are raised from the body function
+and ``finally`` thunks, they are chained as a single exception.
+See ``next`` and ``have_next?`` of :doc:`exception type </api/kink-EXCEPTION>`.
+Example:
+
+::
+
+  :CONTROL.require_from('kink/')
+
+  CONTROL.with_finally{(:finally)
+    finally{ raise('baz') }
+    finally{ raise('bar') }
+    raise('foo')
+  }
+  # Output:
+  #   -- chained exception 1/2
+  #   [(root)]
+  #   ,,,
+  #   {(stdin) L5 C14 raise} finally{ -->raise('baz') }
+  #   baz
+  #   -- chained exception 2/2
+  #   [(root)]
+  #   ,,,
+  #   {(stdin) L6 C14 raise} finally{ -->raise('bar') }
+  #   bar
+  #   -- main exception
+  #   [(root)]
+  #   ,,,
+  #   {(stdin) L7 C5 raise} -->raise('foo')
+  #   foo
+
+.. vim: et sw=2 sts=2

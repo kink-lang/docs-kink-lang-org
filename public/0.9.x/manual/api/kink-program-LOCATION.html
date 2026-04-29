@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.79. kink/program/LOCATION &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.80. kink/program/PROGRAM" href="kink-program-PROGRAM.html" />
+    <link rel="prev" title="6.78. kink/program/COMPILE_ERROR" href="kink-program-COMPILE_ERROR.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.79. kink/program/LOCATION</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-program-COMPILE_ERROR.html"><span class="section-number">6.78. </span>kink/program/COMPILE_ERROR</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-program-PROGRAM.html"><span class="section-number">6.80. </span>kink/program/PROGRAM</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-program-location">
+<h1><span class="section-number">6.79. </span>kink/program/LOCATION<a class="headerlink" href="#kink-program-location" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-location" id="id1">type location</a></p>
+<ul>
+<li><p><a class="reference internal" href="#loc-program" id="id2">Loc.program</a></p></li>
+<li><p><a class="reference internal" href="#loc-pos" id="id3">Loc.pos</a></p></li>
+<li><p><a class="reference internal" href="#loc-line-num" id="id4">Loc.line_num</a></p></li>
+<li><p><a class="reference internal" href="#loc-col-num" id="id5">Loc.col_num</a></p></li>
+<li><p><a class="reference internal" href="#loc-line" id="id6">Loc.line</a></p></li>
+<li><p><a class="reference internal" href="#loc-indicator" id="id7">Loc.indicator</a></p></li>
+<li><p><a class="reference internal" href="#loc-desc" id="id8">Loc.desc</a></p></li>
+<li><p><a class="reference internal" href="#loc1-loc2" id="id9">Loc1 == Loc2</a></p></li>
+<li><p><a class="reference internal" href="#loc-repr" id="id10">Loc.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#location-new-program-pos" id="id11">LOCATION.new(Program Pos)</a></p></li>
+<li><p><a class="reference internal" href="#location-empty" id="id12">LOCATION.empty</a></p></li>
+<li><p><a class="reference internal" href="#location-is-val" id="id13">LOCATION.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-location">
+<span id="api-33da096af45bcf193ac0fbc14b17592f"></span><h2><span class="section-number">6.79.1. </span>type location<a class="headerlink" href="#type-location" title="Link to this heading">¶</a></h2>
+<p>`location` is a position index of Unicode code points in a program text.</p>
+<p>A `location` consists of the following attributes:</p>
+<p>• Program: a `program`</p>
+<p>• Pos: a position index as an integer `num`.</p>
+<p class="rubric">Invariant</p>
+<p>0 &lt;= Pos &lt;= Program.text.size</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">program</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; (program name=&quot;foo.kn&quot;)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">line_num</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 2</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">col_num</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; 5</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">line</span>.<span class="n">repr</span>)        <span class="c1"># =&gt; &quot;foo(Bar)\n&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">indicator</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; &quot;foo(--&gt;Bar)&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">desc</span>.<span class="n">repr</span>)        <span class="c1"># =&gt; &quot;foo.kn L2 C5&quot;</span>
+</pre></div>
+</div>
+<section id="loc-program">
+<span id="api-15be424ef6b8eb38d1a5e9b0a12bb9c3"></span><h3><span class="section-number">6.79.1.1. </span>Loc.program<a class="headerlink" href="#loc-program" title="Link to this heading">¶</a></h3>
+<p>`program` returns `Program` attribute of `Loc`.</p>
+</section>
+<section id="loc-pos">
+<span id="api-bb0c26e1f8c51e04146d76f904ecaeea"></span><h3><span class="section-number">6.79.1.2. </span>Loc.pos<a class="headerlink" href="#loc-pos" title="Link to this heading">¶</a></h3>
+<p>`pos` returns `Pos` attribute of `Loc`.</p>
+</section>
+<section id="loc-line-num">
+<span id="api-eff147b67c5e9a53a27d7ffd01e5eaab"></span><h3><span class="section-number">6.79.1.3. </span>Loc.line_num<a class="headerlink" href="#loc-line-num" title="Link to this heading">¶</a></h3>
+<p>`line_num` returns the line number of `Loc` as an integer `num`.</p>
+<p>The line number is the number of LF characters plus one in the program text before `Loc`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">line_num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 2</span>
+</pre></div>
+</div>
+</section>
+<section id="loc-col-num">
+<span id="api-2889aaa2fe9f4306eb5cf1f9d426dfbc"></span><h3><span class="section-number">6.79.1.4. </span>Loc.col_num<a class="headerlink" href="#loc-col-num" title="Link to this heading">¶</a></h3>
+<p>`col_num` returns the column number of `Loc` as an integer `num`.</p>
+<p>The result is the number of code points plus one in the line before `Loc`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">col_num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 5</span>
+</pre></div>
+</div>
+</section>
+<section id="loc-line">
+<span id="api-8dfb32333f1e2dc722def51797e9c0b9"></span><h3><span class="section-number">6.79.1.5. </span>Loc.line<a class="headerlink" href="#loc-line" title="Link to this heading">¶</a></h3>
+<p>`line` returns the line of `Loc` as a `str`.</p>
+<p>`line` returns a slice of the program text in the range [From, To), where `From` is the code point index of the beginning of the line, and `To` is the code point index of the beginning of the next line or the end of the text. Thus, the result `str` may include an LF character as the last code point.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">line</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo(Bar)\n&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="loc-indicator">
+<span id="api-38e3b1e23fbe5a3b6764ab9f129b33f3"></span><h3><span class="section-number">6.79.1.6. </span>Loc.indicator<a class="headerlink" href="#loc-indicator" title="Link to this heading">¶</a></h3>
+<p>`indicator` returns a `str` which represents the position of `Loc` in the line.</p>
+<p>The result `str` does not contain CR or LF characters.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">indicator</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo(--&gt;Bar)&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="loc-desc">
+<span id="api-ffe45df006681d44965361ea1ce433ca"></span><h3><span class="section-number">6.79.1.7. </span>Loc.desc<a class="headerlink" href="#loc-desc" title="Link to this heading">¶</a></h3>
+<p>`desc` returns a `str` which describes the program name, the line number, and the column number.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">desc</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo.kn L2 C5&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="loc1-loc2">
+<span id="api-85e0e0d453513f3ebf57719443ad9c11"></span><h3><span class="section-number">6.79.1.8. </span>Loc1 == Loc2<a class="headerlink" href="#loc1-loc2" title="Link to this heading">¶</a></h3>
+<p>`==` operator, or `op_eq` method, returns whether two `location` values have the equal `Program` and `Pos` attributes.</p>
+</section>
+<section id="loc-repr">
+<span id="api-bc2e6f33dc15d11f44a0ce3ffa5f857c"></span><h3><span class="section-number">6.79.1.9. </span>Loc.repr<a class="headerlink" href="#loc-repr" title="Link to this heading">¶</a></h3>
+<p>`repr` returns a `str` representation of `Loc` for debugging purposes.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (location foo.kn L2 C5)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="location-new-program-pos">
+<span id="api-041d6f86b1ea0cf3e7fa525e80c59311"></span><h2><span class="section-number">6.79.2. </span>LOCATION.new(Program Pos)<a class="headerlink" href="#location-new-program-pos" title="Link to this heading">¶</a></h2>
+<p>`new` returns a `location` with the given attributes.</p>
+<p class="rubric">Preconditions</p>
+<p>`Program` must be a `program`.</p>
+<p>`Pos` must be an integer `num`.</p>
+<p>0 &lt;= Pos &lt;= Program.text.size</p>
+</section>
+<section id="location-empty">
+<span id="api-7d17f880a8882655c557d2e7910f1ede"></span><h2><span class="section-number">6.79.3. </span>LOCATION.empty<a class="headerlink" href="#location-empty" title="Link to this heading">¶</a></h2>
+<p>`empty` returns a `location` with the empty program name, the empty program text, and Pos=0.</p>
+</section>
+<section id="location-is-val">
+<span id="api-b133d93732e245701e7802169b3cbf77"></span><h2><span class="section-number">6.79.4. </span>LOCATION.is?(Val)<a class="headerlink" href="#location-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `location`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-program-COMPILE_ERROR.html"><span class="section-number">6.78. </span>kink/program/COMPILE_ERROR</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-program-PROGRAM.html"><span class="section-number">6.80. </span>kink/program/PROGRAM</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

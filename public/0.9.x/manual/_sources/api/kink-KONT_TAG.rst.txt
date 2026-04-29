@@ -1,0 +1,112 @@
+===============
+kink\/KONT\_TAG
+===============
+
+Provides shift\/reset operations of tagged delimited continuation\.
+
+Using reset\/shift pair\, the continuation can be extracted as a fun\. Example\:
+
+.. code:: kink
+
+    :KONT_TAG.require_from('kink/')
+        
+    :Tag <- KONT_TAG.new
+    :paren <- Tag.reset{
+      '(' + Tag.shift{(:k) $k } + ')'
+    }
+        
+    stdout.print_line(paren('foo')) # => (foo)
+    stdout.print_line(paren('bar')) # => (bar)
+
+If \`shift\` is not called\, \`reset\` returns the result of \$thunk\.
+
+.. code:: kink
+
+    :KONT_TAG.require_from('kink/')
+    :Tag <- KONT_TAG.new
+    :R <- Tag.reset{ 42 }
+    stdout.print_line(R.repr) # => 42
+
+Essential parts of kont\_tag methods are described as sequences of abstract instructions\. See Language specification → Evaluation section for abstract instructions and the abstract stack machine\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-30c0ec5df9d2435c0132d55f5a695215:
+
+type kont\_tag
+==============
+
+kont\_tag is a delimited continuation tag\, which is a value used to mark the delimiter of a delimited continuation\.
+
+.. _api-9877213663340a1e14488dc493151c3a:
+
+Kont\_tag\.reset\(\$thunk\)
+---------------------------
+
+\`reset\` delimits the continuation with \`Kont\_tag\`\.
+
+At the tail of \`reset\`\, the following sequence of abstract instructions is evaluated\:
+
+.. code:: kink
+
+    (val $thunk)
+    (nada)
+    (emptyvec)
+    (call call)
+    (val Kont_tag)
+    (delimit)
+
+.. _api-35db7c321b93a22b6e6164fab36bf940:
+
+Kont\_tag\.shift\(\$abort\)
+---------------------------
+
+\`shift\` makes a continuation fun delimited by \`Kont\_tag\`\, moves to \`Kont\_tag\`\, and calls \$abort with the continuation fun\.
+
+At the tail of \`shift\`\, the following sequence of abstract instructions is evaluated\:
+
+.. code:: kink
+
+    (val $abort)
+    (val Kont_tag)
+    (kont)
+    (val Kont_tag)
+    (abort)
+
+.. _api-026f553c9dd8f4e9a1fa5040ecfaa237:
+
+Kont\_tag\.can\_shift\?
+-----------------------
+
+\`can\_shift\?\` returns whether \`shift\` can be invoked for \`Kont\_tag\`\.
+
+At the tail of \`can\_shift\?\`\, the following sequence of abstract instructions is evaluated\:
+
+.. code:: kink
+
+    (val Kont_tag)
+    (canshift)
+
+.. _api-6e29542699894f4d3400bb3602f162a1:
+
+KONT\_TAG\.new
+==============
+
+\`new\` makes a kont\_tag\.
+
+.. _api-e1c8172edb1091e7d981e3dce55c7d41:
+
+KONT\_TAG\.is\?\(Val\)
+======================
+
+\`is\?\` returns whether \`Val\` is a kont\_tag\.
+
+.. _api-050aa0fa09912e8eae9b44d3068df40c:
+
+KONT\_TAG\.escape\_tag
+======================
+
+\`escape\_tag\` returns the escape tag\, which is a kont\_tag used by exceptions and CONTROL\.with\_return\.
+

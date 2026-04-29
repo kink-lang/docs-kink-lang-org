@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.57. kink/io/OUTPUT &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.58. kink/io/OUTPUT_PRINTER" href="kink-io-OUTPUT_PRINTER.html" />
+    <link rel="prev" title="6.56. kink/io/INPUT_SCANNER" href="kink-io-INPUT_SCANNER.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.57. kink/io/OUTPUT</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-INPUT_SCANNER.html"><span class="section-number">6.56. </span>kink/io/INPUT_SCANNER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-OUTPUT_PRINTER.html"><span class="section-number">6.58. </span>kink/io/OUTPUT_PRINTER</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-io-output">
+<h1><span class="section-number">6.57. </span>kink/io/OUTPUT<a class="headerlink" href="#kink-io-output" title="Link to this heading">¶</a></h1>
+<p>Companion mod for `output` vals.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-output" id="id1">type output</a></p>
+<ul>
+<li><p><a class="reference internal" href="#output-write-bin-config" id="id2">Output.write(Bin ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#output-flush-config" id="id3">Output.flush(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#output-close-config" id="id4">Output.close(...[$config={}])</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#output-is-val" id="id5">OUTPUT.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-output">
+<span id="api-bc8f76dfc800cc663466d8d67cd505ca"></span><h2><span class="section-number">6.57.1. </span>type output<a class="headerlink" href="#type-output" title="Link to this heading">¶</a></h2>
+<p>`output` is an output port of bytes to an underlying destination such as a file.</p>
+<p>An `output` provides sequential forward access to the underlying destination.</p>
+<section id="output-write-bin-config">
+<span id="api-944e31cf3d8a2cc2e2d2011fc6d0ea43"></span><h3><span class="section-number">6.57.1.1. </span>Output.write(Bin ...[$config={}])<a class="headerlink" href="#output-write-bin-config" title="Link to this heading">¶</a></h3>
+<p>`write` writes the sequence of bytes of `Bin`.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = a fun which raises an exception</p>
+<p>If every byte is written without an IO error, `write` tail-calls $success with no arg.</p>
+<p>If an IO error occurs, `write` tail-calls $error with an `exception`.</p>
+<p class="rubric">Preconditions</p>
+<p>`Bin` must be a `bin`.</p>
+<p>$success must be a fun which takes no arg.</p>
+<p>$error must be a fun which takes an `exception`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN_OUTPUT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Out</span> &lt;- <span class="nv">BIN_OUTPUT</span>.<span class="n">new</span>
+<span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>))
+<span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">4</span> <span class="m">5</span>))
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Out</span>.<span class="n">bin</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x01 0x02 0x03 0x04 0x05)</span>
+</pre></div>
+</div>
+<p class="rubric">Example: IO error</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FILE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Out</span> &lt;- <span class="nv">FILE</span>.<span class="n">open_to_write</span>(<span class="s1">&#39;/tmp/tmpfile&#39;</span>)
+<span class="nv">Out</span>.<span class="n">close</span>
+<span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Exc</span>)
+    <span class="n">stderr</span>.<span class="n">print_line</span>(<span class="nv">Exc</span>.<span class="n">message</span>)
+  }
+}
+<span class="c1"># =&gt; already closed</span>
+
+<span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>))
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [..root..]</span>
+<span class="c1">#   {..call by host..}</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   already closed</span>
+</pre></div>
+</div>
+</section>
+<section id="output-flush-config">
+<span id="api-7d2142f3e7c1d8ce5b818cfca3106651"></span><h3><span class="section-number">6.57.1.2. </span>Output.flush(...[$config={}])<a class="headerlink" href="#output-flush-config" title="Link to this heading">¶</a></h3>
+<p>`flush` writes the buffered bytes to the underlying destination.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = a fun which raises an exception</p>
+<p>If the remaining bytes are written without an IO error, `flush` tail-calls $success with no args.</p>
+<p>If an IO error occurs, `flush` tail-calls $error with an `exception`.</p>
+<p class="rubric">Precondition</p>
+<p>$success must be a fun which takes no arg.</p>
+<p>$error must be a fun which takes an `exception`.</p>
+</section>
+<section id="output-close-config">
+<span id="api-7c5fb20b020e16c19afa62c1ec1f34e5"></span><h3><span class="section-number">6.57.1.3. </span>Output.close(...[$config={}])<a class="headerlink" href="#output-close-config" title="Link to this heading">¶</a></h3>
+<p>`close` flushes the buffer, and closes the resource of the underlying destination.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = {}</p>
+<p>• C.on_error($error): default = a fun which raises an exception</p>
+<p>If the buffer is flushed, and the resource is closed without an IO error, `close` tail-calls $success with no arg.</p>
+<p>If an IO error occurs, `close` tail-calls $error with an `exception`.</p>
+<p class="rubric">Precondition</p>
+<p>$success must be a fun which takes no arg.</p>
+<p>$error must be a fun which takes an `exception`.</p>
+</section>
+</section>
+<section id="output-is-val">
+<span id="api-87ea120e3c8195feb8af6bb5e8ca846d"></span><h2><span class="section-number">6.57.2. </span>OUTPUT.is?(Val)<a class="headerlink" href="#output-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is an `output`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-INPUT_SCANNER.html"><span class="section-number">6.56. </span>kink/io/INPUT_SCANNER</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-OUTPUT_PRINTER.html"><span class="section-number">6.58. </span>kink/io/OUTPUT_PRINTER</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

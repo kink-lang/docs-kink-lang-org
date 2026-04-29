@@ -1,0 +1,322 @@
+=============
+Module system
+=============
+
+A :dfn:`module system` is a subsystem of the :term:`runtime` which manages :term:`modules <module>`.
+
+A :dfn:`module` is a value loaded by the :term:`module system`.
+Usually, a module has a set of functions of a single feature group as its variables.
+“Module” can be abbreviated to “mod.”
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Module names
+============
+
+The module name must match the regex pattern:
+``([a-z_][a-z0-9_]*/)*_*[A-Z][A-Z0-9_]*``.
+
+Examples of valid module names:
+
+* MAIN
+
+* kink/STR
+
+* kink/test/TEST
+
+* org/example/_internal/INTERNAL_MOD
+
+* com/example/_PRIVATE_MOD
+
+.. _module_base_paths:
+
+Module base paths
+=================
+
+Modules sources can be placed under directories of the file system.
+Those directories are called :dfn:`module base paths`.
+
+Module base paths are provided by :ref:`-p / --path <pathoption>` commandline option,
+or by :ref:`MOD.add_path <api-82a542809dbc766c2795a2ac99f618be>`.
+
+Module source types
+===================
+
+There are three types of module sources.
+
+Builtin component
+-----------------
+
+The runtime provides builtin components as sources of modules,
+namely builtin modules.
+You can see the specification of public builtin modules in :doc:`/api/index`.
+There can also be private builtin modules which are not parts of the public API.
+
+Kink program file
+-----------------
+
+A Kink program file under a module base path can be a source of a module.
+The path of the Kink program file must be in the form
+``{module base path}/{module name}.kn``.
+The file must be encoded in UTF-8.
+
+For example, assume ``org/example/TARAI`` is the module name,
+and the module base paths are ``/home/you/kinkmod`` and ``/usr/share/kinkmod``.
+In that case, the Kink program file can be located at one of the following paths:
+
+* ``/home/you/kinkmod/org/example/TARAI.kn``
+* ``/usr/share/kinkmod/org/example/TARAI.kn``
+
+The top level :ref:`binding <api-3a046d0b373eaacef45ecba66825bf5b>` of the program will be the module.
+See :ref:`compile_and_run <modsystem_compile_and_run>` pseudo procedure for details.
+
+.. rubric:: Example
+
+Assume you have a module source program file of ``org/example/rat/RAT`` module,
+at /home/me/mymods/org/example/rat/RAT.kn as follows.
+
+::
+
+  :new <- {(:Numer :Denom)
+    new_val(
+      ... Rat_trait
+      'Numer' Numer
+      'Denom' Denom
+    )
+  }
+
+  :Rat_trait <- [
+    'numer' {[:R]
+      R.Numer
+    }
+    'denom' {[:R]
+      R.Denom
+    }
+    'repr' {[:R]
+      '{}/{}'.format(R.numer R.denom)
+    }
+  ]
+
+Assume you have a program file client.kn at the current directory.
+client.kn uses RAT module.
+
+::
+
+  :RAT.require_from('org/example/rat/')
+
+  :Rat <- RAT.new(1 3)
+  stdout.print_line('rat: {}'.format(Rat.repr))
+
+You can run client.kn as follows.
+
+::
+
+  $ kink --path /home/me/mymods client.kn
+  rat: 1/3
+
+Since ``RAT`` module is just a top level binding, it also has non-public variables like ``Rat_trait``.
+You might want to access those non-public variables for unit testing.
+
+.. _modsystem_data_file_source:
+
+Data file
+---------
+
+A file of an arbitrary byte array under a module base path can be a
+source of a module.
+The path of the data file must be in the form
+``{module base path}/{module name}.data``.
+
+The byte array is provided as a :ref:`bin <api-82b05762775bcc1b8e8b6a637617beaf>`,
+through ``data`` function of the module.
+See :ref:`make_data_mod <modsystem_make_data_mod>` pseudo procedure for details.
+
+.. rubric:: Example
+
+Data file sources allow you to package data in any format together with modules.
+For example, assume you have a UTF-8 text file 
+/home/me/mymods/org/example/conversation/_PROMPT_TEMPLATE.data
+as follows.
+
+.. code:: none
+
+  Your name is {Name}.
+  You work in {Department}.
+  Always state your name at the beginning of a conversation.
+
+Assume you have a program file
+/home/me/mymods/org/example/conversation/TOOL.kn
+as follows.
+
+::
+
+  :_PROMPT_TEMPLATE.require_from('org/example/conversation/')
+  :CHARSET.require_from('kink/charset/')
+
+  :main <- {
+    :Bin = _PROMPT_TEMPLATE.data
+    :Template = CHARSET.utf8.bin_to_str(Bin)
+    :Prompt = Template.format{(:C)
+      C.named_arg('Name' 'John Doe')
+      C.named_arg('Department' 'Support Department')
+    }
+    stdout.print(Prompt)
+  }
+
+TOOL mod has ``main`` fun.
+So it is a :ref:`launchable module <modsystem_launchable>`.
+You can run the mod as follows.
+
+.. code:: none
+
+  $ kink --path /home/me/mymods mod:com/example/conversation/TOOL
+  Your name is John Doe.
+  You work in Support Department.
+  Always state your name at the beginning of a conversation.
+
+Module loading
+==============
+
+A module can be loaded from the module system by specifying a string
+of the module name.
+Module loading can be done by :ref:`Varref.require_from <api-63597fda3177ac30803c3405d3dd7ba7>`,
+or :ref:`MOD.require <api-36236434317e1c52d15948d18e2c4bc2>`.
+Module loading ends with three statuses: ``success``, ``not_found``, or ``compile_error``.
+
+Module loading is done as shown in the pseudo code:
+
+.. code:: ruby
+
+  if not is_associated(Mod_name) {
+    Source = find_source(Mod_name) or return not_found
+
+    if Source is a builtin component {
+      Mod = make_builtin_mod(Source)
+    } elsif Source is a Kink program file {
+      Mod = compile_and_run(Source) or return compile_error(Compile_error)
+    } else {
+      assert Source is a data file
+      Mod = make_data_mod(Source)
+    }
+
+    associate(Mod_name Mod)
+  }
+
+  return success(get_associated(Mod_name))
+
+``is_associated``
+-----------------
+
+``is_associated`` pseudo procedure returns true when the specified module name
+is already associated with a module, or returns false.
+
+``find_source``
+---------------
+
+``find_source`` pseudo procedure searches for
+the source of a module with the specified module name.
+If the search fails, the module loading process ends with ``not_found`` status.
+``find_source`` can be defined like the following pseudo code.
+
+.. code:: ruby
+
+  def find_source(Mod_name) {
+    if builtin component exists for Mod_name {
+      return the builtin component
+    }
+
+    for base_dir in module_base_paths {
+      kn_path = base_dir + '/' + Mod_name + '.kn'
+      if file kn_path exists {
+        return file kn_path as a Kink program file
+      }
+
+      data_path = base_dir + '/' + Mod_name + '.data'
+      if file data_path exists {
+        return file data_path as a data file
+      }
+    }
+
+    return not_found
+  }
+
+``make_builtin_mod``
+--------------------
+
+``make_builtin_mod`` pseudo procedure makes a module from a builtin component of the runtime.
+
+.. _modsystem_compile_and_run:
+
+``compile_and_run``
+-------------------
+
+``compile_and_run`` pseudo procedure
+:ref:`compiles the source of a module in a Kink program <api-eb38c6c06f06250d57f7c828992a2147>`,
+and makes a module using the compiled program.
+If the compilation fails, the module loading process ends with ``compile_error`` status.
+
+``compile_and_run`` can be defined like the following pseudo Kink code.
+
+::
+
+  :BINDING.require_from('kink/')
+  :CHARSET.require_from('kink/charset/')
+  :PROGRAM.require_from('kink/porgram/')
+
+  :compile_and_run <- {(:Source)
+    :Text = CHARSET.utf8.bin_to_str(Source.bin)
+    :Program = PROGRAM.new(Source.file_path Text)
+    :Mod = BINDING.new
+    Mod:repr <- _make_repr
+    :run_program = Program.compile{(:C)
+      C.binding(Mod)
+      C.on_error{(:Compile_error)
+        _end_compile_error(Compile_error)
+      }
+    }
+    run_program
+    Mod
+  }
+
+.. _modsystem_make_data_mod:
+
+``make_data_mod``
+-----------------
+
+``make_data_mod`` pseudo procedure makes a module from a byte array
+like the following pseudo Kink code.
+
+::
+
+  :make_data_mod <- {(:Source)
+    :Mod = new_val
+    :Bin = Source.bin
+    Mod:data <- {() Bin }
+    Mod:repr <- _make_repr
+    Mod
+  }
+
+``associate``
+-------------
+
+``associate`` pseudo procedure tests whether the module name is already associated with a module,
+and if not, associates the module name with the specified module.
+The test and association are performed as an atomic operation.
+
+``get_associated``
+------------------
+
+``get_associated`` pseudo procedure returns the module
+associated with the module name.
+
+.. _modsystem_launchable:
+
+Launchable module
+=================
+
+If a module have ``main`` function, it can be run from the commandline.
+See :doc:`/commandline/kink-kinkw` for details.
+
+.. vim: et sw=2 sts=2

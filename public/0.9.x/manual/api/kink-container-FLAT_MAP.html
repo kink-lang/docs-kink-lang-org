@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.28. kink/container/FLAT_MAP &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.29. kink/container/FLAT_SET" href="kink-container-FLAT_SET.html" />
+    <link rel="prev" title="6.27. kink/VEC" href="kink-VEC.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.28. kink/container/FLAT_MAP</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-VEC.html"><span class="section-number">6.27. </span>kink/VEC</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-FLAT_SET.html"><span class="section-number">6.29. </span>kink/container/FLAT_SET</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-container-flat-map">
+<h1><span class="section-number">6.28. </span>kink/container/FLAT_MAP<a class="headerlink" href="#kink-container-flat-map" title="Link to this heading">¶</a></h1>
+<p>Provides an `ordered_map` implementation which stores keys in a sorted vec.</p>
+<p>Flat map is a good choice when keys are rarely inserted or deleted, or the size of the map is small.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#flat-map-new-config" id="id1">FLAT_MAP.new(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#flat-map-of-k0-v0-k1-v1" id="id2">FLAT_MAP.of(...[K0 V0 K1 V1 ,,,])</a></p></li>
+</ul>
+</nav>
+<section id="flat-map-new-config">
+<span id="api-69fc49c96b5591cdc23427639bccaaba"></span><h2><span class="section-number">6.28.1. </span>FLAT_MAP.new(...[$config={}])<a class="headerlink" href="#flat-map-new-config" title="Link to this heading">¶</a></h2>
+<p>`new` returns a new empty flat `ordered_map`.</p>
+<p class="rubric">Config method</p>
+<p>C.order($in_order?): default = {(:X :Y) X &lt;= Y }</p>
+<p class="rubric">Comparison of keys</p>
+<p>$in_order? is used to compare keys. $in_order? must be a toal order which satisfies the following for all X, Y, and Z in the domain of keys.</p>
+<p>• reflexive: in_order?(X X)</p>
+<p>• transitive: if in_order?(X Y) &amp;&amp; in_order?(Y Z) then in_order?(X Z)</p>
+<p>• antisymmetric: if in_order?(X Y) &amp;&amp; in_order?(Y X) then X is equivalent to Y</p>
+<p>• strongly connected: in_order?(X Y) || in_order?(Y X)</p>
+<p class="rubric">Preconditions</p>
+<p>$in_order? must be a fun which takes two values and returns a `bool`.</p>
+<p class="rubric">Example: default order</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">new</span>
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span>)
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;two&#39;</span> <span class="m">2</span>)
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;three&#39;</span> <span class="m">3</span>)
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;one&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; [1]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;two&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; [2]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;TWO&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; []</span>
+</pre></div>
+</div>
+<p class="rubric">Example: custom order</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">new</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">order</span>{(<span class="nv">:X</span> <span class="nv">:Y</span>)
+    <span class="nv">X</span>.<span class="n">ascii_downcase</span> &lt;= <span class="nv">Y</span>.<span class="n">ascii_downcase</span>
+  }
+}
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span>)
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;two&#39;</span> <span class="m">2</span>)
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;three&#39;</span> <span class="m">3</span>)
+<span class="nv">Map</span>.<span class="n">set</span>(<span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;one&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; [1]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;two&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; [2]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Map</span>.<span class="n">get_opt</span>(<span class="s1">&#39;TWO&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; [2]</span>
+</pre></div>
+</div>
+</section>
+<section id="flat-map-of-k0-v0-k1-v1">
+<span id="api-af4ff8b1fee593db37120c9ba8d3e77a"></span><h2><span class="section-number">6.28.2. </span>FLAT_MAP.of(...[K0 V0 K1 V1 ,,,])<a class="headerlink" href="#flat-map-of-k0-v0-k1-v1" title="Link to this heading">¶</a></h2>
+<p>`of` makes a new flat `ordered_map` which contains the given keys and values. Keys are ordered by `&lt;=` operator, or `op_le` method.</p>
+<p>The result map has key-value pairs (K0, V0), (K1, V1), (K2, V2) ,,,.</p>
+<p class="rubric">Precondition</p>
+<p>`K0`, `K1`, `K2` ,,, must be in the domain of keys.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+
+<span class="nv">:Map</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">of</span>(<span class="s1">&#39;one&#39;</span> <span class="m">1</span> <span class="s1">&#39;two&#39;</span> <span class="m">2</span> <span class="s1">&#39;three&#39;</span> <span class="m">3</span> <span class="s1">&#39;four&#39;</span> <span class="m">4</span>)
+<span class="nv">Map</span>.<span class="n">pair_iter</span>.<span class="n">each</span>{([<span class="nv">:K</span> <span class="nv">:V</span>])
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{} =&gt; {}&#39;</span>.<span class="n">format</span>(<span class="nv">K</span>.<span class="n">repr</span> <span class="nv">V</span>.<span class="n">repr</span>))
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;four&quot; =&gt; 4</span>
+<span class="c1">#   &quot;one&quot; =&gt; 1</span>
+<span class="c1">#   &quot;three&quot; =&gt; 3</span>
+<span class="c1">#   &quot;two&quot; =&gt; 2</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-VEC.html"><span class="section-number">6.27. </span>kink/VEC</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-FLAT_SET.html"><span class="section-number">6.29. </span>kink/container/FLAT_SET</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

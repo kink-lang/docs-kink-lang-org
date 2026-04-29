@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.31. kink/container/HASH_SET &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.32. kink/container/MAP" href="kink-container-MAP.html" />
+    <link rel="prev" title="6.30. kink/container/HASH_MAP" href="kink-container-HASH_MAP.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.31. kink/container/HASH_SET</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-HASH_MAP.html"><span class="section-number">6.30. </span>kink/container/HASH_MAP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-MAP.html"><span class="section-number">6.32. </span>kink/container/MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-container-hash-set">
+<h1><span class="section-number">6.31. </span>kink/container/HASH_SET<a class="headerlink" href="#kink-container-hash-set" title="Link to this heading">¶</a></h1>
+<p>要素をハッシュテーブルに格納するsetの実装を提供する。</p>
+<p>要素が公衆から渡され得る場合、DDoS攻撃を防ぐため、ハッシュ値の分布が予測できないようにしよう。暗号学的ハッシュ関数を使い、また暗号学的なランダムデータによる値の伸長を行う必要があるかもしれない。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#hash-set-new-hash-config" id="id2">HASH_SET.new($hash ...[$config={}])</a></p></li>
+</ul>
+</nav>
+<section id="hash-set-new-hash-config">
+<span id="api-8a05adc9c1f6616809d2db3f8c098c72"></span><h2><span class="section-number">6.31.1. </span>HASH_SET.new($hash ...[$config={}])<a class="headerlink" href="#hash-set-new-hash-config" title="Link to this heading">¶</a></h2>
+<p>newは、空のハッシュsetを新しく作って戻す。</p>
+<p class="rubric">コンフィグメソッド</p>
+<p>C.eq($eq?): default = {(:X :Y) X == Y }</p>
+<p class="rubric">同値性</p>
+<p>要素を比較するには$eq?が使われる。$eq?は同値関係であり、要素の定義域内のすべてのX, Y, Zについて次の条件を満たさなければならない。</p>
+<p>• 反射律: eq?(X X)</p>
+<p>• 対称律: (if eq?(X Y) then eq?(Y X)) and (if not eq?(X Y) then not eq?(Y X))</p>
+<p>• 推移律: if eq?(X Y) and eq?(Y Z) then eq?(X Z)</p>
+<p class="rubric">ハッシュ</p>
+<p>$hashは、要素の定義域内のすべてのX, Yについて、次の条件を満たさなければならない。</p>
+<p>• if eq?(X Y) then hash(X) == hash(Y)</p>
+<p class="rubric">事前条件</p>
+<p>$hashは値をひとつ取り、整数のnumを戻す関数でなければならない。</p>
+<p>$eq?はふたつの値を取り、boolを戻す関数でなければならない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:HASH_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+<span class="nv">:VAL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:X</span> &lt;- <span class="n">new_val</span>
+<span class="nv">:Y</span> &lt;- <span class="n">new_val</span>
+<span class="nv">:Z</span> &lt;- <span class="n">new_val</span>
+
+<span class="nv">:Set</span> &lt;- <span class="nv">HASH_SET</span>.<span class="n">new</span>(<span class="nv">VAL$id_hash</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">eq</span>(<span class="nv">VAL$same?</span>)
+}
+<span class="nv">Set</span>.<span class="n">push</span>(<span class="nv">X</span>)
+<span class="nv">Set</span>.<span class="n">push</span>(<span class="nv">Y</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have?</span>(<span class="nv">X</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Set</span>.<span class="n">have?</span>(<span class="nv">Z</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-container-HASH_MAP.html"><span class="section-number">6.30. </span>kink/container/HASH_MAP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-container-MAP.html"><span class="section-number">6.32. </span>kink/container/MAP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

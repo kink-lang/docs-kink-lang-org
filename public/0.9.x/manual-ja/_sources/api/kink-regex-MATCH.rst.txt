@@ -1,0 +1,125 @@
+==================
+kink\/regex\/MATCH
+==================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-55d4005a5dec5b901f3f909ce4c3fd03:
+
+type match
+==========
+
+The result of a successful regex match or search\.
+
+\`match\` is a subtype of \`group\`\. \`match\` represents the entire slice of the matched area\.
+
+See kink\/regex\/REGEX for regexes\.
+
+See kink\/regex\/GROUP for \`group\` type\.
+
+.. _api-0c4856a35ed7d58209a65389f9a7f83d:
+
+M\.slice
+--------
+
+\`slice\` returns the sliced str of the text where the regex matches\.
+
+Example\:
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Regex <- REGEX.compile('0x[0-9a-f]+')
+    :M <- Regex.search('var x = 0xcafebabe;' 0)
+    stdout.print_line(M.slice.repr) # => "0xcafebabe"
+
+.. _api-2d7e3038f9cef5b3b78489324984e759:
+
+M\.from
+-------
+
+\`from\` returns the pos from which the regex matches in the text\.
+
+Example\:
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Regex <- REGEX.compile('0x[0-9a-f]+')
+    :M <- Regex.search('var x = 0xcafebabe;' 0)
+    stdout.print_line(M.from.repr) # => 8
+
+.. _api-6acb51cdcdfec3c43e5555c34d94ab96:
+
+M\.to
+-----
+
+\`to\` returns the pos to which the regex matches in the text\.
+
+Example\:
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Regex <- REGEX.compile('0x[0-9a-f]+')
+    :M <- Regex.search('var x = 0xcafebabe;' 0)
+    stdout.print_line(M.to.repr) # => 18
+
+.. _api-10e1a147056d6dbdb2162e03a896c5af:
+
+M\.have\_group\?\(Name\)
+------------------------
+
+M\.have\_group\? returns whether the match has the group named as \`Name\`\.
+
+Precondition\:
+
+\• \`Name\` must be a str
+
+Example\:
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Regex <- REGEX.compile('(?<Hex>0x[0-9a-f]+)|(?<Binary>0b[01]+)')
+    :M <- Regex.search('var x = 0xcafebabe;' 0)
+    stdout.print_line(M.have_group?('Hex').repr)      # => true
+    stdout.print_line(M.have_group?('Binary').repr)   # => false
+    stdout.print_line(M.have_group?('Decimal').repr)  # => false
+
+See kink\/regex\/GROUP for groups\.
+
+.. _api-bd913765e6385e3a9f397d87e4f86708:
+
+M\.group\(Name\)
+----------------
+
+\`group\` returns a \`group\` val of the named group\.
+
+Precondition\:
+
+\• \`Name\` must be a str
+
+\• The match must have the group named as \`Name\`\.
+
+Example\:
+
+.. code:: kink
+
+    :REGEX.require_from('kink/regex/')
+    :Regex <- REGEX.compile('(?<Var>[a-z]+) *= *(?<Num>[0-9]+)')
+    :M <- Regex.match('foo = 42')
+    stdout.print_line(M.group('Var').slice.repr)  # => "foo"
+    stdout.print_line(M.group('Num').slice.repr)  # => "42"
+
+See kink\/regex\/GROUP for groups\.
+
+.. _api-cb1c9e30ad2f2ed23e682fffd8baed7d:
+
+MATCH\.is\?\(Val\)
+==================
+
+\`is\?\` returns whether \`Val\` is a match val\.
+

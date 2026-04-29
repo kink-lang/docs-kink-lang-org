@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.79. kink/program/LOCATION &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.80. kink/program/PROGRAM" href="kink-program-PROGRAM.html" />
+    <link rel="prev" title="6.78. kink/program/COMPILE_ERROR" href="kink-program-COMPILE_ERROR.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.79. kink/program/LOCATION</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-program-COMPILE_ERROR.html"><span class="section-number">6.78. </span>kink/program/COMPILE_ERROR</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-program-PROGRAM.html"><span class="section-number">6.80. </span>kink/program/PROGRAM</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-program-location">
+<h1><span class="section-number">6.79. </span>kink/program/LOCATION<a class="headerlink" href="#kink-program-location" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-location" id="id2">location型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#loc-program" id="id3">Loc.program</a></p></li>
+<li><p><a class="reference internal" href="#loc-pos" id="id4">Loc.pos</a></p></li>
+<li><p><a class="reference internal" href="#loc-line-num" id="id5">Loc.line_num</a></p></li>
+<li><p><a class="reference internal" href="#loc-col-num" id="id6">Loc.col_num</a></p></li>
+<li><p><a class="reference internal" href="#loc-line" id="id7">Loc.line</a></p></li>
+<li><p><a class="reference internal" href="#loc-indicator" id="id8">Loc.indicator</a></p></li>
+<li><p><a class="reference internal" href="#loc-desc" id="id9">Loc.desc</a></p></li>
+<li><p><a class="reference internal" href="#loc1-loc2" id="id10">Loc1 == Loc2</a></p></li>
+<li><p><a class="reference internal" href="#loc-repr" id="id11">Loc.repr</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#location-new-program-pos" id="id12">LOCATION.new(Program Pos)</a></p></li>
+<li><p><a class="reference internal" href="#location-empty" id="id13">LOCATION.empty</a></p></li>
+<li><p><a class="reference internal" href="#location-is-val" id="id14">LOCATION.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-location">
+<span id="api-33da096af45bcf193ac0fbc14b17592f"></span><h2><span class="section-number">6.79.1. </span>location型<a class="headerlink" href="#type-location" title="Link to this heading">¶</a></h2>
+<p>locationは、 プログラムテキスト中の、Unicodeコードポイントの位置添字である。</p>
+<p>locationは次の属性からなる。</p>
+<p>• Program: `program`</p>
+<p>• Pos: 位置添字を表す整数のnum</p>
+<p class="rubric">不変条件</p>
+<p>0 &lt;= Pos &lt;= Program.text.size</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">program</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; (program name=&quot;foo.kn&quot;)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">line_num</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 2</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">col_num</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; 5</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">line</span>.<span class="n">repr</span>)        <span class="c1"># =&gt; &quot;foo(Bar)\n&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">indicator</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; &quot;foo(--&gt;Bar)&quot;</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">desc</span>.<span class="n">repr</span>)        <span class="c1"># =&gt; &quot;foo.kn L2 C5&quot;</span>
+</pre></div>
+</div>
+<section id="loc-program">
+<span id="api-15be424ef6b8eb38d1a5e9b0a12bb9c3"></span><h3><span class="section-number">6.79.1.1. </span>Loc.program<a class="headerlink" href="#loc-program" title="Link to this heading">¶</a></h3>
+<p>programは、LocのProgram属性を戻す。</p>
+</section>
+<section id="loc-pos">
+<span id="api-bb0c26e1f8c51e04146d76f904ecaeea"></span><h3><span class="section-number">6.79.1.2. </span>Loc.pos<a class="headerlink" href="#loc-pos" title="Link to this heading">¶</a></h3>
+<p>posは、LocのPos属性を戻す。</p>
+</section>
+<section id="loc-line-num">
+<span id="api-eff147b67c5e9a53a27d7ffd01e5eaab"></span><h3><span class="section-number">6.79.1.3. </span>Loc.line_num<a class="headerlink" href="#loc-line-num" title="Link to this heading">¶</a></h3>
+<p>line_numは、Locの行番号を整数のnumとして戻す。</p>
+<p>行番号は、プログラムテキスト中において、Locの前のLF文字の数に1を足したものである。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">line_num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 2</span>
+</pre></div>
+</div>
+</section>
+<section id="loc-col-num">
+<span id="api-2889aaa2fe9f4306eb5cf1f9d426dfbc"></span><h3><span class="section-number">6.79.1.4. </span>Loc.col_num<a class="headerlink" href="#loc-col-num" title="Link to this heading">¶</a></h3>
+<p>col_numは、Locの列番号を整数のnumとして戻す。</p>
+<p>結果は、行の中における、Locの前のコードポイントの数に1を足したものである。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">col_num</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 5</span>
+</pre></div>
+</div>
+</section>
+<section id="loc-line">
+<span id="api-8dfb32333f1e2dc722def51797e9c0b9"></span><h3><span class="section-number">6.79.1.5. </span>Loc.line<a class="headerlink" href="#loc-line" title="Link to this heading">¶</a></h3>
+<p>lineは、Locのある行をstrとして戻す。</p>
+<p>lineは、プログラムテキストの[From, To)の範囲のスライスを戻す。ここで、Fromは行の先頭のコードポイント添字で、Toは次の行の先頭もしくはテキスト末尾のコードポイント添字である。したがって結果の文字列は、末尾にLF文字を含むかもしれない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">line</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo(Bar)\n&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="loc-indicator">
+<span id="api-38e3b1e23fbe5a3b6764ab9f129b33f3"></span><h3><span class="section-number">6.79.1.6. </span>Loc.indicator<a class="headerlink" href="#loc-indicator" title="Link to this heading">¶</a></h3>
+<p>indicatorは、行中のLocの場所を示すstrを戻す。</p>
+<p>結果のstrはCRやLF文字を含まない。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">indicator</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo(--&gt;Bar)&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="loc-desc">
+<span id="api-ffe45df006681d44965361ea1ce433ca"></span><h3><span class="section-number">6.79.1.7. </span>Loc.desc<a class="headerlink" href="#loc-desc" title="Link to this heading">¶</a></h3>
+<p>descは、プログラム名、行番号、列番号を叙述するstrを戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">desc</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo.kn L2 C5&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="loc1-loc2">
+<span id="api-85e0e0d453513f3ebf57719443ad9c11"></span><h3><span class="section-number">6.79.1.8. </span>Loc1 == Loc2<a class="headerlink" href="#loc1-loc2" title="Link to this heading">¶</a></h3>
+<p>== 演算子、つまりop_eqメソッドは、ふたつのlocation値が同値のProgram属性、Pos属性を持つかどうかを戻す。</p>
+</section>
+<section id="loc-repr">
+<span id="api-bc2e6f33dc15d11f44a0ce3ffa5f857c"></span><h3><span class="section-number">6.79.1.9. </span>Loc.repr<a class="headerlink" href="#loc-repr" title="Link to this heading">¶</a></h3>
+<p>reprは、デバッグ用途のためにLocのstr表現を戻す。</p>
+<p class="rubric">例</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCATION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;foo.kn&#39;</span> <span class="s2">&quot;ping(Pong)</span><span class="se">\n</span><span class="s2">foo(Bar)</span><span class="se">\n</span><span class="s2">&quot;</span>)
+<span class="nv">:Loc</span> &lt;- <span class="nv">LOCATION</span>.<span class="n">new</span>(<span class="nv">Program</span> <span class="m">15</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Loc</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; (location foo.kn L2 C5)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="location-new-program-pos">
+<span id="api-041d6f86b1ea0cf3e7fa525e80c59311"></span><h2><span class="section-number">6.79.2. </span>LOCATION.new(Program Pos)<a class="headerlink" href="#location-new-program-pos" title="Link to this heading">¶</a></h2>
+<p>newは、与えられた属性を持つlocationを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Programはprogramでなければならない。</p>
+<p>Posは整数のnumでなければならない。</p>
+<p>0 &lt;= Pos &lt;= Program.text.size</p>
+</section>
+<section id="location-empty">
+<span id="api-7d17f880a8882655c557d2e7910f1ede"></span><h2><span class="section-number">6.79.3. </span>LOCATION.empty<a class="headerlink" href="#location-empty" title="Link to this heading">¶</a></h2>
+<p>emptyは、空のプログラム名、空のプログラムテキスト、Pos=0からなるlocationを戻す。</p>
+</section>
+<section id="location-is-val">
+<span id="api-b133d93732e245701e7802169b3cbf77"></span><h2><span class="section-number">6.79.4. </span>LOCATION.is?(Val)<a class="headerlink" href="#location-is-val" title="Link to this heading">¶</a></h2>
+<p>is?は、Valがlocationであるかどうかを戻す。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-program-COMPILE_ERROR.html"><span class="section-number">6.78. </span>kink/program/COMPILE_ERROR</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-program-PROGRAM.html"><span class="section-number">6.80. </span>kink/program/PROGRAM</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

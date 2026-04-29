@@ -1,0 +1,36 @@
+===============
+kink\/STOPWATCH
+===============
+
+Provides stopwatch fun\, which yields elapsed time\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-5cae554f144aa3e2a2b00674fc233451:
+
+STOPWATCH\.start
+================
+
+\`start\` makes a stopwatch fun\.
+
+The stopwatch fun takes no argument\, then returns the elapsed time from the invocation of \`start\` in seconds\, with precision of nanoseconds\.
+
+The result of the stopwatch fun is non\-negative num with scale\=9\.
+
+Example \(the output varies for each execution\)\:
+
+.. code:: kink
+
+    :STOPWATCH.require_from('kink/')
+    :THREAD.require_from('kink/thread/')
+        
+    :elapsed_seconds <- STOPWATCH.start
+        
+    THREAD.sleep(1)
+    stdout.print_line(elapsed_seconds.repr) # => 1.001089645
+        
+    THREAD.sleep(2)
+    stdout.print_line(elapsed_seconds.repr) # => 3.004145317
+

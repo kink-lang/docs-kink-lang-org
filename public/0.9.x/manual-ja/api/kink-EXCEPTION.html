@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.12. kink/EXCEPTION &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.13. kink/FUN" href="kink-FUN.html" />
+    <link rel="prev" title="6.11. kink/ENUM_GROUP" href="kink-ENUM_GROUP.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.12. kink/EXCEPTION</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-ENUM_GROUP.html"><span class="section-number">6.11. </span>kink/ENUM_GROUP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-FUN.html"><span class="section-number">6.13. </span>kink/FUN</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-exception">
+<h1><span class="section-number">6.12. </span>kink/EXCEPTION<a class="headerlink" href="#kink-exception" title="Link to this heading">¶</a></h1>
+<p>Mod of exceptions.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-exception" id="id2">type exception</a></p>
+<ul>
+<li><p><a class="reference internal" href="#exception-message" id="id3">Exception.message</a></p></li>
+<li><p><a class="reference internal" href="#exception-traces" id="id4">Exception.traces</a></p></li>
+<li><p><a class="reference internal" href="#exception-have-next" id="id5">Exception.have_next?</a></p></li>
+<li><p><a class="reference internal" href="#exception-next" id="id6">Exception.next</a></p></li>
+<li><p><a class="reference internal" href="#exception-raise" id="id7">Exception.raise</a></p></li>
+<li><p><a class="reference internal" href="#exception-op-add-tail" id="id8">Exception.op_add(Tail)</a></p></li>
+<li><p><a class="reference internal" href="#exception-desc-iter" id="id9">Exception.desc_iter</a></p></li>
+<li><p><a class="reference internal" href="#exception-op-eq-arg-exception" id="id10">Exception.op_eq(Arg_exception)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#exception-new-message-traces" id="id11">EXCEPTION.new(Message ...[Traces])</a></p></li>
+<li><p><a class="reference internal" href="#exception-is-val" id="id12">EXCEPTION.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-exception">
+<span id="api-08fee0648a753752ac74e092d8e9cbfd"></span><h2><span class="section-number">6.12.1. </span>type exception<a class="headerlink" href="#type-exception" title="Link to this heading">¶</a></h2>
+<p>An exception is a pair of a message str and a vec of traces.</p>
+<p>An exception can also have the `next` exception in the chain. Exception chain is used for “suppressed” exceptions by CONTROL.with_finally. It is not for exception wrapping.</p>
+<section id="exception-message">
+<span id="api-dba93da3df1180b6d7cc7bbc49f3abba"></span><h3><span class="section-number">6.12.1.1. </span>Exception.message<a class="headerlink" href="#exception-message" title="Link to this heading">¶</a></h3>
+<p>`message` returns the exception message str.</p>
+</section>
+<section id="exception-traces">
+<span id="api-34e11ffce569c0202e4d218d26949c3c"></span><h3><span class="section-number">6.12.1.2. </span>Exception.traces<a class="headerlink" href="#exception-traces" title="Link to this heading">¶</a></h3>
+<p>`traces` returns a the exception traces. The result is a vec of traces, The traces are indexed from the root to the top.</p>
+</section>
+<section id="exception-have-next">
+<span id="api-7f00e64e6227198358370c7b0bcce33a"></span><h3><span class="section-number">6.12.1.3. </span>Exception.have_next?<a class="headerlink" href="#exception-have-next" title="Link to this heading">¶</a></h3>
+<p>`have_next?` returns whether `Exception` has the next exception in the chain.</p>
+</section>
+<section id="exception-next">
+<span id="api-4e6be031a6eeac356ac71e7044139ab7"></span><h3><span class="section-number">6.12.1.4. </span>Exception.next<a class="headerlink" href="#exception-next" title="Link to this heading">¶</a></h3>
+<p>`next` returns the next exception in the chain.</p>
+<p>Precondition:</p>
+<p>• `Exception` must have the next exception in the chain.</p>
+</section>
+<section id="exception-raise">
+<span id="api-949358f64b2639e7f0ddc2f95a53aa1b"></span><h3><span class="section-number">6.12.1.5. </span>Exception.raise<a class="headerlink" href="#exception-raise" title="Link to this heading">¶</a></h3>
+<p>`raise` raises an exception.</p>
+<p>At the tail of `raise`, the following sequence of abstract instructions is evaluated:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Exception</span>)
+(<span class="n">raise</span>)
+</pre></div>
+</div>
+</section>
+<section id="exception-op-add-tail">
+<span id="api-d2d1fd878c0ae35447d9cc1bb82a089b"></span><h3><span class="section-number">6.12.1.6. </span>Exception.op_add(Tail)<a class="headerlink" href="#exception-op-add-tail" title="Link to this heading">¶</a></h3>
+<p>`op_add` concatenates the chain of `Exception` and the chain of `Tail`, and returns an exception of the new chain.</p>
+<p>Precondition:</p>
+<p>• `Tail` must be an exception.</p>
+<p>Postcondition:</p>
+<p>• The resutl is an exception.</p>
+</section>
+<section id="exception-desc-iter">
+<span id="api-168d06121a158b398f4e6f7abbf96c6b"></span><h3><span class="section-number">6.12.1.7. </span>Exception.desc_iter<a class="headerlink" href="#exception-desc-iter" title="Link to this heading">¶</a></h3>
+<p>`desc_iter` returns an iter of lines describing the exception.</p>
+<p>Each element of the iter is a str, which does NOT end with newline.</p>
+</section>
+<section id="exception-op-eq-arg-exception">
+<span id="api-3829b1b9dfc1cf2ac755316307edf339"></span><h3><span class="section-number">6.12.1.8. </span>Exception.op_eq(Arg_exception)<a class="headerlink" href="#exception-op-eq-arg-exception" title="Link to this heading">¶</a></h3>
+<p>`op_eq` returns whether the two exceptions are equal.</p>
+<p>They are equal in either of the following conditions:</p>
+<p>• Both exceptions don't have the next exception in the chain,   the message strs are equal,   and the vecs of traces are equal.</p>
+<p>• Both exceptions have the next exception in the chain,   the next exceptions are equal,   the message strs are equal,   and the vecs of traces are equal.</p>
+</section>
+</section>
+<section id="exception-new-message-traces">
+<span id="api-e8325567ca9201ecedd3460476b31fa1"></span><h2><span class="section-number">6.12.2. </span>EXCEPTION.new(Message ...[Traces])<a class="headerlink" href="#exception-new-message-traces" title="Link to this heading">¶</a></h2>
+<p>`new` makes an exception val.</p>
+<p>If `Traces` is omitted, the current traces is used.</p>
+<p>Preconditions:</p>
+<p>• `Message` must be a str</p>
+<p>• `Traces` must be a vec of traces</p>
+</section>
+<section id="exception-is-val">
+<span id="api-1b3e885ef622377d1ef6fddb9705bfbe"></span><h2><span class="section-number">6.12.3. </span>EXCEPTION.is?(Val)<a class="headerlink" href="#exception-is-val" title="Link to this heading">¶</a></h2>
+<p>Whether `Val` is an exception.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-ENUM_GROUP.html"><span class="section-number">6.11. </span>kink/ENUM_GROUP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-FUN.html"><span class="section-number">6.13. </span>kink/FUN</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

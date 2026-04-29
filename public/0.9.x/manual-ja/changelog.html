@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>12. 変更履歴 &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=8f459034"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="prev" title="11. 用語集" href="glossary.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>12. 変更履歴</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="glossary.html"><span class="section-number">11. </span>用語集</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="changelog">
+<h1><span class="section-number">12. </span>変更履歴<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
+<p>Kinkの重要な変更は、すべてこの変更履歴ページに記載される。</p>
+<p>変更履歴ページの書式は、 <a class="reference external" href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a> に準拠する。Kinkのバージョニングは、 <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a> にしたがう。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#beta" id="id18">0.9.5-beta</a></p></li>
+<li><p><a class="reference internal" href="#changes-0-9-4-beta" id="id19">0.9.4-beta</a></p></li>
+<li><p><a class="reference internal" href="#changes-0-9-3-beta" id="id20">0.9.3-beta</a></p></li>
+<li><p><a class="reference internal" href="#changes-0-9-2-beta" id="id21">0.9.2-beta</a></p></li>
+<li><p><a class="reference internal" href="#changes-0-9-1-beta" id="id22">0.9.1-beta</a></p></li>
+<li><p><a class="reference internal" href="#changes-0-9-0-beta" id="id23">0.9.0-beta</a></p></li>
+</ul>
+</nav>
+<section id="beta">
+<span id="changes-0-9-5-beta"></span><h2><span class="section-number">12.1. </span>0.9.5-beta<a class="headerlink" href="#beta" title="Link to this heading">¶</a></h2>
+<section id="added">
+<h3><span class="section-number">12.1.1. </span>追加<a class="headerlink" href="#added" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="modsystem.html#modsystem-data-file-source"><span class="std std-ref">データファイルをソースとするモジュール</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-javahost-JAVA.html#api-8085cbddb5f1d7cdeaa5f59d3dd704a8"><span class="std std-ref">Java.instance_of?</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-io-INPUT.html#api-552f89408e13a7762490240f149a03c9"><span class="std std-ref">Input.read_all</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-io-INPUT.html#api-701d0017014c8634ab5f96fdf34d53f1"><span class="std std-ref">INPUT.mixin</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-io-SCANNER.html#api-32926d746a77841b745a4c3d029804bc"><span class="std std-ref">Scanner.scan</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-io-SCANNER.html#api-f59821767c40792913ee646f25094aba"><span class="std std-ref">SCANNER.mixin</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-io-PRINTER.html#api-5ad80f5bba922e7061d0cbef80f02775"><span class="std std-ref">PRINTER.mixin</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-iter-ITER.html#api-d615ac9b98458a6f872ab3b3a232b69e"><span class="std std-ref">Iter.cycle</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-io-OUTPUT_PRINTER.html#api-131422b6152f275cd7438990f6351988"><span class="std std-ref">OUTPUT_PRINTER.new</span></a>, <a class="reference internal" href="api/kink-io-INPUT_SCANNER.html#api-d1e32a7edd5b3d1b05222e870e0f43de"><span class="std std-ref">INPUT_SCANNER.new</span></a>, <a class="reference internal" href="api/kink-io-FILE.html#api-d02fdfaa5d9aae6a7176b437e0e8befa"><span class="std std-ref">FILE.open_to_print</span></a>, and <a class="reference internal" href="api/kink-io-FILE.html#api-12d6507dc8d16fc03859fdd3220c7cd3"><span class="std std-ref">FILE.open_to_scan</span></a> のC.replace_conversion_errorオプション</p></li>
+<li><p><a class="reference internal" href="api/kink-io-OUTPUT_PRINTER.html#api-131422b6152f275cd7438990f6351988"><span class="std std-ref">OUTPUT_PRINTER.new</span></a>, <a class="reference internal" href="api/kink-io-FILE.html#api-d02fdfaa5d9aae6a7176b437e0e8befa"><span class="std std-ref">FILE.open_to_print</span></a> のC.synchronizeオプション。</p></li>
+<li><p><a class="reference internal" href="api/kink-io-FILE.html#api-fafe98441385cfb4b79326879ff4d65e"><span class="std std-ref">FILE.open_to_read</span></a>, <a class="reference internal" href="api/kink-io-FILE.html#api-12d6507dc8d16fc03859fdd3220c7cd3"><span class="std std-ref">open_to_scan</span></a>, <a class="reference internal" href="api/kink-io-FILE.html#api-fdfdfc98095e167314e45585ce156a49"><span class="std std-ref">open_to_write</span></a>, <a class="reference internal" href="api/kink-io-FILE.html#api-d02fdfaa5d9aae6a7176b437e0e8befa"><span class="std std-ref">open_to_print</span></a> にC.no_bufferオプションを追加。</p></li>
+<li><p><a class="reference internal" href="api/kink-BIN.html#api-0587341c37a10bc7dd4025ce72743805"><span class="std std-ref">BIN.from_each</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-socket-TCP.html#api-8c98880928c126a3d40debb61fb8ad06"><span class="std std-ref">Tcp.close_unless_connected</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-socket-TCP.html#api-169281f7a502b89a6fdce4a7b89a81fc"><span class="std std-ref">Tcp.connect</span></a> のC.on_closedオプション</p></li>
+<li><p><a class="reference internal" href="api/kink-socket-TCP_SERVER.html#api-bde119861121c16817231556655d9b69"><span class="std std-ref">Tcp_server.cancel_accept</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-socket-TCP_SERVER.html#api-f1bf946fc0ddfbd067eecaf8ca2e9a7c"><span class="std std-ref">Tcp_server.accept</span></a> のC.on_canceledオプション</p></li>
+<li><p><a class="reference internal" href="api/kink-VEC.html#api-9c1a3a7b764fa70187afe30654617332"><span class="std std-ref">Vec.with_elems</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-STR.html#api-fb3f401e6a199d2dab202bbacff910b7"><span class="std std-ref">Str.any?</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-BIN.html#api-ebed43145e5d610e70c443c5fff6c17f"><span class="std std-ref">Bin.any?</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-container-MAP.html#api-26f66670e9967d093cad31eecd1d180a"><span class="std std-ref">Map.any?</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-container-MAP.html#api-e5ea465da899b1f60c757a0130e60bef"><span class="std std-ref">Map.get</span></a> の省略可能なパラメータ$if_absent</p></li>
+<li><p><a class="reference internal" href="api/kink-VEC.html#api-6523915a7e48a2c692e24abff5a9a9f1"><span class="std std-ref">Vec.just</span></a> の省略可能なパラメータ$if_empty</p></li>
+<li><p><a class="reference internal" href="api/kink-VEC.html#api-ad3ac9a2915cdc73f1eb27dfbe1f0ef2"><span class="std std-ref">Vec.clear</span></a> の省略可能なパラメータ <code class="docutils literal notranslate"><span class="pre">From</span></code> と <code class="docutils literal notranslate"><span class="pre">To</span></code></p></li>
+<li><p><a class="reference internal" href="api/kink-TRACE.html#api-1542d05f7994da8df342930c3fc85acf"><span class="std std-ref">TRACE.new</span></a> のC.tailオプション</p></li>
+<li><p>新しい型: <a class="reference internal" href="api/kink-program-PROGRAM.html#api-b5fb44e96da396ab4b14ecad497a3748"><span class="std std-ref">program</span></a>, <a class="reference internal" href="api/kink-program-COMPILE_ERROR.html#api-90981ed8c8e11e27e7d317361c204f62"><span class="std std-ref">compile_error</span></a> 。それにともなうAPIの変更。</p></li>
+<li><p><a class="reference internal" href="api/kink-javahost-METHOD_HANDLE.html#api-2d21ac41d5bf17b211c947ba5962eca4"><span class="std std-ref">METHOD_HANDLE.proxy</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-javahost-JAVA.html#api-b1e32ad9d629e1428f9e2519196b83a2"><span class="std std-ref">JAVA.runtime</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-REF.html"><span class="doc">kink/REF</span></a></p></li>
+</ul>
+</section>
+<section id="changed">
+<h3><span class="section-number">12.1.2. </span>変更<a class="headerlink" href="#changed" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>プログラムテキストの中で、キャリッジリターン(U+000d)はラインフィード(U+000a)の前にだけ現れられるようにした</p></li>
+<li><p>リッチ<a class="reference internal" href="language/syntax.html#str-token"><span class="std std-ref">文字列トークン</span></a>の中の <code class="docutils literal notranslate"><span class="pre">\x{xxxxxx}</span></code> 記法で、サロゲートコードが指定できないようにした</p></li>
+<li><p><a class="reference internal" href="api/kink-CONTROL.html#api-a4599f5bf37ae1ee2080db91914c982f"><span class="std std-ref">CONTROL.with_finally</span></a> の$bodyが$returnを呼ばずに終われないようにした</p></li>
+<li><p><a class="reference internal" href="api/kink-BIN_HASHER.html"><span class="doc">BIN_HASHER</span></a> のAPIを改善</p></li>
+<li><p><a class="reference internal" href="api/kink-PROCESS.html#api-fba1d75304fad638028d6567d2bd5837"><span class="std std-ref">PROCESS.exit</span></a> が[0, 255]の終了ステータスのみを受け付けるようにした</p></li>
+<li><p><a class="reference internal" href="api/kink-PROCESS.html#api-92659775fbe91963da598772d1f02434"><span class="std std-ref">Process.wait</span></a> の戻す終了ステータスを符号なしにした</p></li>
+<li><p><a class="reference internal" href="api/kink-io-INPUT_SCANNER.html"><span class="doc">input_scanner</span></a> のscan_xxxメソッドがデコードエラーの際に$errorを呼ぶようにした</p></li>
+<li><p><a class="reference internal" href="api/kink-io-OUTPUT_PRINTER.html"><span class="doc">output_printer</span></a> のprint_xxxメソッドがエンコードエラーの際に$errorを呼ぶようにした</p></li>
+<li><p><a class="reference internal" href="api/kink-CHARSET.html#api-e15dddbdc2cb0195a47b2dae841f0172"><span class="std std-ref">Charset.bin_to_str</span></a> がデコードエラーの際に例外を投げるようにした</p></li>
+<li><p><a class="reference internal" href="api/kink-CHARSET.html#api-590e3a6ff9d9a23d587075b43669a876"><span class="std std-ref">Charset.str_to_bin</span></a> がエンコードエラーの際に例外を投げるようにした</p></li>
+<li><p>Str.runesを <a class="reference internal" href="api/kink-STR.html#api-486dd39bdf6a9aec769ae7c5f1bd522d"><span class="std std-ref">.codepoints</span></a> に改名</p></li>
+<li><p>STR.from_runesを <a class="reference internal" href="api/kink-STR.html#api-9b2020a08d0489817e2f48a4a900f780"><span class="std std-ref">.from_codepoints</span></a> に改名</p></li>
+<li><p>JAVA.read_only_byte_bufferを <a class="reference internal" href="api/kink-javahost-JAVA.html#api-94d74e84a15500dacc000e8516b4c999"><span class="std std-ref">JAVA.byte_buffer</span></a> に改名</p></li>
+<li><p>VAL.val_idを <a class="reference internal" href="api/kink-VAL.html#api-2d36b72d68d811f56ce0ba7352a8818a"><span class="std std-ref">VAL.id_hash</span></a> に改名</p></li>
+<li><p><a class="reference internal" href="api/kink-STR.html#api-37a73555aab4b7cde2ae69615d91f7e9"><span class="std std-ref">Str.repr</span></a> が、 対になっていないサロゲートコードユニットを、 <code class="docutils literal notranslate"><span class="pre">\x{dxxx}</span></code> で表現するようにした</p></li>
+<li><p><a class="reference internal" href="api/kink-BINDING.html#api-1d3113732916cec85c49ef707586cb23"><span class="std std-ref">stderr</span></a> はエンコードエラーを代替バイト列に置き換えるようにした</p></li>
+<li><p><a class="reference internal" href="api/kink-BINDING.html#api-1d3113732916cec85c49ef707586cb23"><span class="std std-ref">stderr</span></a> は同期化されるようにした</p></li>
+<li><p>Vec.chunk, Iter.chunk, IFUN.chunkを、 <a class="reference internal" href="api/kink-VEC.html#api-aa4ccd1dae957de037c5a4795fcc7df5"><span class="std std-ref">Vec.unconcat</span></a>, <a class="reference internal" href="api/kink-iter-ITER.html#api-41349a38ad9d63c669bd8df6ff4dcb15"><span class="std std-ref">Iter.unconcat</span></a>, <a class="reference internal" href="api/kink-iter-IFUN.html#api-1568b429ec04b9367393789d70c86e42"><span class="std std-ref">IFUN.unconcat</span></a> に改名</p></li>
+<li><p><a class="reference internal" href="api/kink-iter-IFUN.html#api-cb943c256a7d78283fb6008bee85e0e5"><span class="std std-ref">IFUN.cycle</span></a> がサンクでなくifunを取るようにした</p></li>
+<li><p>Dyn.bindを <a class="reference internal" href="api/kink-DYN.html#api-2c27f8f74ce3dab7f33b5d9ca1950786"><span class="std std-ref">Dyn.with</span></a> に改名</p></li>
+<li><p><a class="reference internal" href="api/kink-javahost-JAVA.html#api-03ee2ace909fd91eacc651a9ad79897a"><span class="std std-ref">JAVA.char</span></a>, <a class="reference internal" href="api/kink-javahost-JAVA.html#api-d1e5a7af107a5cb61b33feacd980c2d5"><span class="std std-ref">byte</span></a>, <a class="reference internal" href="api/kink-javahost-JAVA.html#api-2fc6b56fcac8415c42d9c704f024fafb"><span class="std std-ref">short</span></a>, <a class="reference internal" href="api/kink-javahost-JAVA.html#api-000436967a852ce467bbb9e721efef6f"><span class="std std-ref">int</span></a>, <a class="reference internal" href="api/kink-javahost-JAVA.html#api-6b26b2272eabd07991c052c23df12077"><span class="std std-ref">long</span></a>, <a class="reference internal" href="api/kink-javahost-JAVA.html#api-c5e20eff0b1332393ceec0a0ece9e7c9"><span class="std std-ref">big_integer</span></a> が整数のみを取るようにした。最初の5つは上下の値域も検証するようにした。</p></li>
+<li><p><a class="reference internal" href="api/kink-tls-TLS.html#api-76f659c5f204bcc5803a95348eb6d612"><span class="std std-ref">Tls.input</span></a>, <a class="reference internal" href="api/kink-tls-TLS.html#api-0a2ab2064ccff8b81e4912f65c211dc6"><span class="std std-ref">Tls.output</span></a>, <a class="reference internal" href="api/kink-socket-TCP.html#api-68766f039f7c19637a23ace23fb91f13"><span class="std std-ref">Tcp.input</span></a>, <a class="reference internal" href="api/kink-socket-TCP.html#api-ae45015f3f0129c7d60cdd8fa71e61fa"><span class="std std-ref">Tcp.output</span></a>, <a class="reference internal" href="api/kink-javahost-JAVA_CHANNEL_INPUT.html#api-36a6c637d53a52e6f539c9cb961ea1ca"><span class="std std-ref">JAVA_CHANNEL_INPUT.new</span></a>, <a class="reference internal" href="api/kink-javahost-JAVA_CHANNEL_OUTPUT.html#api-2b4a180ab64898175218543ee74c25cc"><span class="std std-ref">JAVA_CHANNEL_OUTPUT.new</span></a> がMax_buf_size=0を拒否するようにした。</p></li>
+<li><p>IP_ADDRESS を <a class="reference internal" href="api/kink-socket-IP.html"><span class="doc">IP</span></a> に改名。</p></li>
+<li><p>IP_ADDRESS_PORT を <a class="reference internal" href="api/kink-socket-IP_PORT.html"><span class="doc">IP_PORT</span></a> に改名。</p></li>
+<li><p><a class="reference internal" href="api/kink-VEC.html#api-11af723e0870efb38f34d5275664b3f9"><span class="std std-ref">Vec.any?</span></a>, <a class="reference internal" href="api/kink-iter-ITER.html#api-fe630704531294ad4f5249c4176fa990"><span class="std std-ref">Iter.any?</span></a>, <a class="reference internal" href="api/kink-container-SET.html#api-edeae5d88aa8bffb3dcd74e23424afb5"><span class="std std-ref">Set.any?</span></a> のパラメータを省略可能にした。</p></li>
+<li><p>Varref.have_val?を <a class="reference internal" href="api/kink-VARREF.html#api-76b0760cfb86b823ba19b86b27802ba7"><span class="std std-ref">Varref.any?</span></a> に改名。</p></li>
+<li><p>Dyn.have_val?を <a class="reference internal" href="api/kink-DYN.html#api-68457ea90ac062e2c2b824aae11911a8"><span class="std std-ref">Dyn.any?</span></a> に改名。</p></li>
+<li><p>kink/charset/CHASETを <a class="reference internal" href="api/kink-CHARSET.html"><span class="doc">kink/CHARSET</span></a> に移動。</p></li>
+<li><p>Atomic.getを <a class="reference internal" href="api/kink-thread-ATOMIC.html#api-b3f8858290eed55096f0c6e4224cbbe8"><span class="std std-ref">Atomic.load</span></a> に改名。</p></li>
+<li><p>Atomic.setを <a class="reference internal" href="api/kink-thread-ATOMIC.html#api-060528159d8a1a31a749798dea82cea2"><span class="std std-ref">Atomic.op_store</span></a> に改名。</p></li>
+<li><p>Map.get_maybeを <a class="reference internal" href="api/kink-container-MAP.html#api-630f4d0db9fbd3d93575a6967dc6b4e2"><span class="std std-ref">Map.get_opt</span></a> に改名。</p></li>
+<li><p>不等号演算子が、 <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> / <code class="docutils literal notranslate"><span class="pre">op_lt</span></code> ではなく <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code> / <code class="docutils literal notranslate"><span class="pre">op_le</span></code> にコンパイルされるようにした。</p></li>
+<li><p>Set.push_eachを <a class="reference internal" href="api/kink-container-SET.html#api-81a0643d94216924bffb14257b663f13"><span class="std std-ref">Set.append</span></a> に改名。</p></li>
+<li><p>Java.static_typeを <a class="reference internal" href="api/kink-javahost-JAVA.html#api-deb3eecb723aef46d1abb40358fe6b6e"><span class="std std-ref">Java.type</span></a> に改名。</p></li>
+<li><p>Java_throw.thrownを <a class="reference internal" href="api/kink-javahost-JAVA_THROW.html#api-84973c81a5112a0af9a1dc4f3ceb2b28"><span class="std std-ref">Java_throw.throwable</span></a> に改名。</p></li>
+<li><p><a class="reference internal" href="api/kink-javahost-JAVA_PROXY.html#api-e983bebce8034ca135e11da64358ffed"><span class="std std-ref">JAVA_PROXY.new</span></a> が、第一のインタフェースで型付けされた <a class="reference internal" href="api/kink-javahost-JAVA.html#api-bdcf8aa519e365f452da2436eacd19e7"><span class="std std-ref">java</span></a> 値を戻すようにした。また、プロキシがObjectのメソッド、インタフェースのdefaultメソッドについて、デフォルトの実装を提供するようにした。</p></li>
+<li><p><a class="reference internal" href="api/kink-socket-TCP.html#api-ef70d6f9a0acc6c56641c1359f1b6951"><span class="std std-ref">TCP_NODELAY</span></a>のようなソケットオプションを、<a class="reference internal" href="api/kink-REF.html#api-a7bb87ccff07365043328fc9f076ecc9"><span class="std std-ref">ref</span></a>値として提供するようにした。</p></li>
+</ul>
+</section>
+<section id="removed">
+<h3><span class="section-number">12.1.3. </span>削除<a class="headerlink" href="#removed" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>複数行にわたる文字列リテラル</p></li>
+<li><p>Java.typable_as?</p></li>
+<li><p>Java.copy_from_bin</p></li>
+<li><p>INPUT.read_all</p></li>
+<li><p>Scanner.scan_rune</p></li>
+<li><p>FILE.resolve</p></li>
+<li><p>Vec.scan, .scan_inside</p></li>
+<li><p>Iter.scan, .scan_inside, .fetcher_thunk</p></li>
+<li><p>ITER.cycle</p></li>
+<li><p>IFUN.scan, .scan_inside, fetcher_thunk</p></li>
+<li><p>Vec.with_just_or</p></li>
+<li><p>Vec.just_or</p></li>
+<li><p>Vec.clear_slice</p></li>
+<li><p>*.empty?</p></li>
+<li><p>Map.get_or</p></li>
+<li><p>Map.set_pairs</p></li>
+<li><p>FLAT_MAP.from_pairs</p></li>
+<li><p>TREE_MAP.from_pairs</p></li>
+<li><p>Trace.on_tail</p></li>
+<li><p>Trace.snip?</p></li>
+<li><p>JavaメソッドTraceVal.isSnip()</p></li>
+<li><p>Javaメソッドvm.trace.isSnip()</p></li>
+<li><p>Java.dynamic_type</p></li>
+<li><p>JAVA.runtime_class_loader</p></li>
+<li><p>METHOD_HANDLE.nop .return .throw .params .result</p></li>
+</ul>
+</section>
+</section>
+<section id="changes-0-9-4-beta">
+<span id="id2"></span><h2><span class="section-number">12.2. </span>0.9.4-beta<a class="headerlink" href="#changes-0-9-4-beta" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h3><span class="section-number">12.2.1. </span>追加<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/kink-iter-ITER.html#api-3ab44720e374a52836fdd24ac39db2d1"><span class="std std-ref">Iter + Iter</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-iter-IFUN.html#api-174dad688c763676d10f2b6ffa216451"><span class="std std-ref">IFUN.join</span></a></p></li>
+<li><p><a class="reference internal" href="api/kink-VEC.html#api-c31469da21f944429a8cf92a5403ec4f"><span class="std std-ref">Vec.iter</span></a> に、省略可能な <code class="docutils literal notranslate"><span class="pre">From</span></code> と <code class="docutils literal notranslate"><span class="pre">To</span></code> パラーメタを追加。</p></li>
+<li><p><a class="reference internal" href="api/kink-container-ORDERED_SET.html#api-2fd2b7ab6519594389ea7aec9583603d"><span class="std std-ref">Ordered_set.iter</span></a> に省略可能な <code class="docutils literal notranslate"><span class="pre">Min</span></code> パラメータを追加。</p></li>
+<li><p><a class="reference internal" href="api/kink-container-ORDERED_MAP.html#api-33c96f85ef8e3c608fccab2e06618c93"><span class="std std-ref">Ordered_map.key_iter</span></a> と <a class="reference internal" href="api/kink-container-ORDERED_MAP.html#api-59ee186c19f6fad7a99cdecb2d43e526"><span class="std std-ref">Ordered_map.pair_iter</span></a> に省略可能な <code class="docutils literal notranslate"><span class="pre">Min_key</span></code> パラメータを追加。</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3><span class="section-number">12.2.2. </span>変更<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Kinkdocの節のIDを64バイトから32バイトにした</p></li>
+<li><p>現在のトレースで例外を作る場合、 <a class="reference internal" href="api/kink-EXCEPTION.html#api-e8325567ca9201ecedd3460476b31fa1"><span class="std std-ref">EXCEPTION.new</span></a> の2番目のパラメータは省略できるようにした。</p></li>
+<li><p><a class="reference internal" href="api/kink-VEC.html#api-2df32705c7bfd54f55ac6f4e6b827746"><span class="std std-ref">Vec.reduce</span></a> などのreduceメソッドが、maybe_vecを戻す代わりに、空のストリームのための継続を省略可能な引数として取るようにした。</p></li>
+<li><p>Vec.revを <a class="reference internal" href="api/kink-VEC.html#api-935ab420e28fb248fb8aae6d385b54a0"><span class="std std-ref">.reverse</span></a> に改名。</p></li>
+<li><p>Vec.push_each_xxx の各メソッドを append_each_xxx に改名。</p></li>
+<li><p><a class="reference internal" href="api/kink-STR.html#api-40dc2be7e5fe3839e7c92d0948234e12"><span class="std std-ref">Str.search_slice</span></a> がコンフィグ関数を取り、またデフォルトで maybe_vec ではなく添字それ自体を戻すようにした。</p></li>
+<li><p><a class="reference internal" href="api/kink-regex-REGEX.html#api-2d4798ecb84f6b0444dc3418bb4960f4"><span class="std std-ref">Regex.match</span></a> と <a class="reference internal" href="api/kink-regex-REGEX.html#api-2c5cd9d4f21d040cbf6462c97c5f4897"><span class="std std-ref">Regex.search</span></a> がコンフィグ関数を取り、またデフォルトでmaybe_vecではなくmatchを戻すようにした。</p></li>
+<li><p><a class="reference internal" href="api/kink-NUM.html#api-8cd45d8a05be4d520333c05a5c5ad0df"><span class="std std-ref">NUM.parse_int</span></a> と <a class="reference internal" href="api/kink-NUM.html#api-5f79a184c60f413c3f03d9064c1a8bbd"><span class="std std-ref">NUM.parse_decimal</span></a> がコンフィグ関数を取り、またデフォルトでmaybe_vecではなくnumを戻すようにした。</p></li>
+<li><p><a class="reference internal" href="api/kink-datetime-OFFSET_DATETIME.html#api-51a47db8ca38fee853999785a20e9213"><span class="std std-ref">OFFSET_DATETIME.parse</span></a> がコンフィグ関数を取り、またデフォルトでoffset_datetimeを戻すようにした。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_present</span></code> メソッドを <code class="docutils literal notranslate"><span class="pre">on_success</span></code> に、 <code class="docutils literal notranslate"><span class="pre">on_absent</span></code> メソッドを <code class="docutils literal notranslate"><span class="pre">on_error</span></code> に改名。</p></li>
+<li><p>Scanner.scan_rune がmaybe_vecではなくコードポイントを戻すようにした。</p></li>
+<li><p><a class="reference internal" href="api/kink-io-SCANNER.html#api-24486798989c12e30cd33e07a794967a"><span class="std std-ref">Scanner.scan_line</span></a> がmaybe_vecではなく行を戻すようにした。</p></li>
+<li><p><a class="reference internal" href="api/kink-io-INPUT.html#api-e8341e8b849b1926919895693dc3c07e"><span class="std std-ref">Input.read</span></a> がmaybe_vecではなくbinを戻すようにした。</p></li>
+<li><p>$errorに文字列を渡していた関数とメソッドが、例外を渡すようにした: <a class="reference internal" href="api/kink-io-FILE.html"><span class="doc">FILE モジュール</span></a> の関数、 <a class="reference internal" href="api/kink-io-INPUT.html#api-0edb5d0790c366443607931bec431fe4"><span class="std std-ref">input</span></a> のメソッド、 <a class="reference internal" href="api/kink-io-OUTPUT.html#api-bc8f76dfc800cc663466d8d67cd505ca"><span class="std std-ref">output</span></a> のメソッド、 <a class="reference internal" href="api/kink-io-SCANNER.html#api-8d9c7e1d1138bb082067424a205e115b"><span class="std std-ref">scanner</span></a> のメソッド、 <a class="reference internal" href="api/kink-io-PRINTER.html#api-d8ea895f044d55406b23b4ecacf9b0ef"><span class="std std-ref">printer</span></a> のメソッド、  <a class="reference internal" href="api/kink-PROCESS.html#api-382f762afb4d1fd1261301a4d54b00a4"><span class="std std-ref">PROCESS.start</span></a> 、ソケットフレームワーク、TLSフレームワーク。</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3><span class="section-number">12.2.3. </span>削除<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>ITER.chain</p></li>
+<li><p>IFUN.chain</p></li>
+<li><p>Vec.iter_from</p></li>
+<li><p>Vec.search</p></li>
+<li><p>Ordered_set.iter_from</p></li>
+<li><p>Ordered_map.key_iter_from</p></li>
+<li><p>Ordered_map.pair_iter_from</p></li>
+</ul>
+</section>
+</section>
+<section id="changes-0-9-3-beta">
+<span id="id6"></span><h2><span class="section-number">12.3. </span>0.9.3-beta<a class="headerlink" href="#changes-0-9-3-beta" title="Link to this heading">¶</a></h2>
+<section id="id7">
+<h3><span class="section-number">12.3.1. </span>追加<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>最低限の TLS サポート</p></li>
+<li><p><a class="reference internal" href="api/kink-javahost-METHOD_HANDLE.html"><span class="doc">METHOD_HANDLE</span></a> モジュール</p></li>
+<li><p><a class="reference internal" href="api/kink-CONTROL.html#api-a4599f5bf37ae1ee2080db91914c982f"><span class="std std-ref">CONTROL.with_return</span></a></p></li>
+</ul>
+</section>
+<section id="id8">
+<h3><span class="section-number">12.3.2. </span>変更<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>TCP_CONNECTION を <a class="reference internal" href="api/kink-socket-TCP.html"><span class="doc">TCP</span></a> に改名</p></li>
+<li><p>UDP_SOCKET を <a class="reference internal" href="api/kink-socket-UDP.html"><span class="doc">UDP</span></a> に改名</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3><span class="section-number">12.3.3. </span>削除<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>CONTROL.with_break。CONTROL.with_return で置き換えた。</p></li>
+<li><p>ノンブロッキングIO。 <a class="reference internal" href="api/kink-thread-THREAD.html#api-5a3cd7825e00c60cbb00217cd891f196"><span class="std std-ref">THREAD.spawn_io</span></a> によるバーチャルスレッドの方が良い抽象であるため。</p></li>
+</ul>
+</section>
+</section>
+<section id="changes-0-9-2-beta">
+<span id="id10"></span><h2><span class="section-number">12.4. </span>0.9.2-beta<a class="headerlink" href="#changes-0-9-2-beta" title="Link to this heading">¶</a></h2>
+<section id="id11">
+<h3><span class="section-number">12.4.1. </span>追加<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/kink-random-PRNG.html#api-167f0c53a577b515b5a01450a63185c2"><span class="std std-ref">Prng.jump</span></a></p></li>
+</ul>
+</section>
+<section id="id12">
+<h3><span class="section-number">12.4.2. </span>変更<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Maven成果物のデプロイを、OSSRHから、Portal OSSRH Staging APIを介したCentral Portalへのデプロイに変更。</p></li>
+</ul>
+</section>
+</section>
+<section id="changes-0-9-1-beta">
+<span id="id13"></span><h2><span class="section-number">12.5. </span>0.9.1-beta<a class="headerlink" href="#changes-0-9-1-beta" title="Link to this heading">¶</a></h2>
+<section id="id14">
+<h3><span class="section-number">12.5.1. </span>追加<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>JAVA.runtime_class_loader</p></li>
+<li><p><a class="reference internal" href="api/kink-javahost-JAVA.html#api-c3c0d3752dd6273532d79005e7497eaa"><span class="std std-ref">JAVA.class</span></a> の引数にコンフィグ関数を追加。</p></li>
+<li><p><a class="reference internal" href="api/kink-doc-DOC_PARSE_TOOL.html"><span class="doc">kink/doc/DOC_PARSE_TOOL</span></a> モジュールに <code class="docutils literal notranslate"><span class="pre">--output</span></code> スイッチを追加。</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3><span class="section-number">12.5.2. </span>変更<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/kink-javahost-JAVA.html#api-c3c0d3752dd6273532d79005e7497eaa"><span class="std std-ref">JAVA.class</span></a> のアクセス権を、 org.kink_lang.kink モジュールの静的アクセスから、無名モジュールのリフレクションアクセス相当に変更。</p></li>
+<li><p><a class="reference internal" href="api/kink-STR.html#api-37a73555aab4b7cde2ae69615d91f7e9"><span class="std std-ref">Str.repr</span></a>, <a class="reference internal" href="api/kink-VEC.html#api-97b5493e30b9b5d7d421ed0d4c007f3e"><span class="std std-ref">Vec.repr</span></a>, Set.repr, Map.repr メソッドが、あまりに長い結果を戻さないようにした。</p></li>
+<li><p><a class="reference internal" href="api/kink-BIN.html#api-82b05762775bcc1b8e8b6a637617beaf"><span class="std std-ref">bin</span></a> 型と <a class="reference internal" href="api/kink-STR.html#api-88bfa8d53b158d62e93928353ba002c1"><span class="std std-ref">str</span></a> 型の値の内部構造を改善。</p></li>
+</ul>
+</section>
+</section>
+<section id="changes-0-9-0-beta">
+<span id="id16"></span><h2><span class="section-number">12.6. </span>0.9.0-beta<a class="headerlink" href="#changes-0-9-0-beta" title="Link to this heading">¶</a></h2>
+<section id="id17">
+<h3><span class="section-number">12.6.1. </span>変更<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Kink の最初のベータリリース。</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="glossary.html"><span class="section-number">11. </span>用語集</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

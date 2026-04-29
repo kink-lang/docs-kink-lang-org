@@ -1,0 +1,207 @@
+=======================
+kink\/program\/LOCATION
+=======================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-33da096af45bcf193ac0fbc14b17592f:
+
+type location
+=============
+
+\`location\` is a position index of Unicode code points in a program text\.
+
+A \`location\` consists of the following attributes\:
+
+\• Program\: a \`program\`
+
+\• Pos\: a position index as an integer \`num\`\.
+
+.. rubric:: Invariant
+
+0 \<\= Pos \<\= Program\.text\.size
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :LOCATION.require_from('kink/program/')
+    :PROGRAM.require_from('kink/program/')
+        
+    :Program <- PROGRAM.new('foo.kn' "ping(Pong)\nfoo(Bar)\n")
+    :Loc <- LOCATION.new(Program 15)
+    stdout.print_line(Loc.program.repr)     # => (program name="foo.kn")
+    stdout.print_line(Loc.line_num.repr)    # => 2
+    stdout.print_line(Loc.col_num.repr)     # => 5
+    stdout.print_line(Loc.line.repr)        # => "foo(Bar)\n"
+    stdout.print_line(Loc.indicator.repr)   # => "foo(-->Bar)"
+    stdout.print_line(Loc.desc.repr)        # => "foo.kn L2 C5"
+
+.. _api-15be424ef6b8eb38d1a5e9b0a12bb9c3:
+
+Loc\.program
+------------
+
+\`program\` returns \`Program\` attribute of \`Loc\`\.
+
+.. _api-bb0c26e1f8c51e04146d76f904ecaeea:
+
+Loc\.pos
+--------
+
+\`pos\` returns \`Pos\` attribute of \`Loc\`\.
+
+.. _api-eff147b67c5e9a53a27d7ffd01e5eaab:
+
+Loc\.line\_num
+--------------
+
+\`line\_num\` returns the line number of \`Loc\` as an integer \`num\`\.
+
+The line number is the number of LF characters plus one in the program text before \`Loc\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :LOCATION.require_from('kink/program/')
+    :PROGRAM.require_from('kink/program/')
+        
+    :Program <- PROGRAM.new('foo.kn' "ping(Pong)\nfoo(Bar)\n")
+    :Loc <- LOCATION.new(Program 15)
+    stdout.print_line(Loc.line_num.repr) # => 2
+
+.. _api-2889aaa2fe9f4306eb5cf1f9d426dfbc:
+
+Loc\.col\_num
+-------------
+
+\`col\_num\` returns the column number of \`Loc\` as an integer \`num\`\.
+
+The result is the number of code points plus one in the line before \`Loc\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :LOCATION.require_from('kink/program/')
+    :PROGRAM.require_from('kink/program/')
+        
+    :Program <- PROGRAM.new('foo.kn' "ping(Pong)\nfoo(Bar)\n")
+    :Loc <- LOCATION.new(Program 15)
+    stdout.print_line(Loc.col_num.repr) # => 5
+
+.. _api-8dfb32333f1e2dc722def51797e9c0b9:
+
+Loc\.line
+---------
+
+\`line\` returns the line of \`Loc\` as a \`str\`\.
+
+\`line\` returns a slice of the program text in the range \[From\, To\)\, where \`From\` is the code point index of the beginning of the line\, and \`To\` is the code point index of the beginning of the next line or the end of the text\. Thus\, the result \`str\` may include an LF character as the last code point\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :LOCATION.require_from('kink/program/')
+    :PROGRAM.require_from('kink/program/')
+        
+    :Program <- PROGRAM.new('foo.kn' "ping(Pong)\nfoo(Bar)\n")
+    :Loc <- LOCATION.new(Program 15)
+    stdout.print_line(Loc.line.repr) # => "foo(Bar)\n"
+
+.. _api-38e3b1e23fbe5a3b6764ab9f129b33f3:
+
+Loc\.indicator
+--------------
+
+\`indicator\` returns a \`str\` which represents the position of \`Loc\` in the line\.
+
+The result \`str\` does not contain CR or LF characters\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :LOCATION.require_from('kink/program/')
+    :PROGRAM.require_from('kink/program/')
+        
+    :Program <- PROGRAM.new('foo.kn' "ping(Pong)\nfoo(Bar)\n")
+    :Loc <- LOCATION.new(Program 15)
+    stdout.print_line(Loc.indicator.repr) # => "foo(-->Bar)"
+
+.. _api-ffe45df006681d44965361ea1ce433ca:
+
+Loc\.desc
+---------
+
+\`desc\` returns a \`str\` which describes the program name\, the line number\, and the column number\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :LOCATION.require_from('kink/program/')
+    :PROGRAM.require_from('kink/program/')
+        
+    :Program <- PROGRAM.new('foo.kn' "ping(Pong)\nfoo(Bar)\n")
+    :Loc <- LOCATION.new(Program 15)
+    stdout.print_line(Loc.desc.repr) # => "foo.kn L2 C5"
+
+.. _api-85e0e0d453513f3ebf57719443ad9c11:
+
+Loc1 \=\= Loc2
+--------------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether two \`location\` values have the equal \`Program\` and \`Pos\` attributes\.
+
+.. _api-bc2e6f33dc15d11f44a0ce3ffa5f857c:
+
+Loc\.repr
+---------
+
+\`repr\` returns a \`str\` representation of \`Loc\` for debugging purposes\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :LOCATION.require_from('kink/program/')
+    :PROGRAM.require_from('kink/program/')
+        
+    :Program <- PROGRAM.new('foo.kn' "ping(Pong)\nfoo(Bar)\n")
+    :Loc <- LOCATION.new(Program 15)
+    stdout.print_line(Loc.repr)  # => (location foo.kn L2 C5)
+
+.. _api-041d6f86b1ea0cf3e7fa525e80c59311:
+
+LOCATION\.new\(Program Pos\)
+============================
+
+\`new\` returns a \`location\` with the given attributes\.
+
+.. rubric:: Preconditions
+
+\`Program\` must be a \`program\`\.
+
+\`Pos\` must be an integer \`num\`\.
+
+0 \<\= Pos \<\= Program\.text\.size
+
+.. _api-7d17f880a8882655c557d2e7910f1ede:
+
+LOCATION\.empty
+===============
+
+\`empty\` returns a \`location\` with the empty program name\, the empty program text\, and Pos\=0\.
+
+.. _api-b133d93732e245701e7802169b3cbf77:
+
+LOCATION\.is\?\(Val\)
+=====================
+
+\`is\?\` returns whether \`Val\` is a \`location\`\.
+

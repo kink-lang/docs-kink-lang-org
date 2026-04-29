@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>7.5. Control structure &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="7.6. Error handling" href="error.html" />
+    <link rel="prev" title="7.4. Typing" href="typing.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>7.5. Control structure</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="typing.html"><span class="section-number">7.4. </span>Typing</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="error.html"><span class="section-number">7.6. </span>Error handling</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="control-structure">
+<h1><span class="section-number">7.5. </span>Control structure<a class="headerlink" href="#control-structure" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#branches" id="id1">Branches</a></p></li>
+<li><p><a class="reference internal" href="#loops" id="id2">Loops</a></p></li>
+<li><p><a class="reference internal" href="#return-and-break" id="id3">Return and break</a></p></li>
+<li><p><a class="reference internal" href="#release-resources" id="id4">Release resources</a></p></li>
+</ul>
+</nav>
+<section id="branches">
+<h2><span class="section-number">7.5.1. </span>Branches<a class="headerlink" href="#branches" title="Link to this heading">¶</a></h2>
+<p>One way branch can be done by <code class="docutils literal notranslate"><span class="pre">if</span></code> preloaded function.
+Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:print_if_positive</span> &lt;- {(<span class="nv">:Num</span>)
+  <span class="n">if</span>(<span class="nv">Num</span> &gt; <span class="m">0</span>){
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Num</span>.<span class="n">repr</span>)
+  }
+}
+
+<span class="n">print_if_positive</span>(-<span class="m">1</span>) <span class="c1"># =&gt; (no output)</span>
+<span class="n">print_if_positive</span>(<span class="m">0</span>)  <span class="c1"># =&gt; (no output)</span>
+<span class="n">print_if_positive</span>(<span class="m">1</span>)  <span class="c1"># =&gt; 1</span>
+</pre></div>
+</div>
+<p>If you want to raise an exception based on the condition,
+you can use <code class="docutils literal notranslate"><span class="pre">||</span></code> or <code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">if</span></code>.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:fractional_part</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="nv">NUM</span>.<span class="n">is?</span>(<span class="nv">N</span>) || <span class="n">raise</span>(<span class="s1">&#39;N must be a num, but was {}&#39;</span>.<span class="n">format</span>(<span class="nv">N</span>.<span class="n">repr</span>))
+  <span class="nv">N</span> % <span class="m">1</span>
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">fractional_part</span>(<span class="m">3.1415</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 0.1415</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">fractional_part</span>(<span class="m">10.00</span>).<span class="n">repr</span>)    <span class="c1"># =&gt; 0.00</span>
+<span class="n">fractional_part</span>(<span class="s1">&#39;foo&#39;</span>)  <span class="c1"># =&gt; N must be a num, but was &quot;foo&quot;</span>
+</pre></div>
+</div>
+<p>Two way branch can be done by <code class="docutils literal notranslate"><span class="pre">if</span></code> preloaded function.
+Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:negative_or_not</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="n">if</span>(<span class="nv">N</span> &lt; <span class="m">0</span>
+    { <span class="s1">&#39;negative&#39;</span> }
+    { <span class="s1">&#39;non-negative&#39;</span> }
+  )
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">negative_or_not</span>(-<span class="m">1</span>))  <span class="c1"># =&gt; negative</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">negative_or_not</span>(<span class="m">0</span>))   <span class="c1"># =&gt; non-negative</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">negative_or_not</span>(<span class="m">1</span>))   <span class="c1"># =&gt; non-negative</span>
+</pre></div>
+</div>
+<p>Multiway branch can be done by <code class="docutils literal notranslate"><span class="pre">branch</span></code> preloaded function.
+Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:sign</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="n">branch</span>(
+    { <span class="nv">N</span> &lt; <span class="m">0</span> } { <span class="s1">&#39;negative&#39;</span> }
+    { <span class="nv">N</span> == <span class="m">0</span> } { <span class="s1">&#39;zero&#39;</span> }
+    { <span class="n">true</span> } { <span class="s1">&#39;positive&#39;</span> }
+  )
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">sign</span>(-<span class="m">1</span>)) <span class="c1"># =&gt; negative</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">sign</span>(<span class="m">0</span>))  <span class="c1"># =&gt; zero</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">sign</span>(<span class="m">1</span>))  <span class="c1"># =&gt; positive</span>
+</pre></div>
+</div>
+<p>Note that the last condition <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">true</span> <span class="pre">}</span></code> is a catch-all condition.
+So it works like an else-block.</p>
+<p>If no condition is true,
+<code class="docutils literal notranslate"><span class="pre">branch</span></code> raises an exception.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:color_to_rgb</span> &lt;- {(<span class="nv">:Color</span>)
+  <span class="n">branch</span>(
+    { <span class="nv">Color</span> == <span class="s1">&#39;red&#39;</span> } { <span class="s1">&#39;#ff0000&#39;</span> }
+    { <span class="nv">Color</span> == <span class="s1">&#39;green&#39;</span> } { <span class="s1">&#39;#00ff00&#39;</span> }
+    { <span class="nv">Color</span> == <span class="s1">&#39;blue&#39;</span> } { <span class="s1">&#39;#0000ff&#39;</span> }
+  )
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">color_to_rgb</span>(<span class="s1">&#39;red&#39;</span>))    <span class="c1"># =&gt; #ff0000</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">color_to_rgb</span>(<span class="s1">&#39;green&#39;</span>))  <span class="c1"># =&gt; #00ff00</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">color_to_rgb</span>(<span class="s1">&#39;blue&#39;</span>))   <span class="c1"># =&gt; #0000ff</span>
+
+<span class="n">color_to_rgb</span>(<span class="s1">&#39;purple&#39;</span>) <span class="c1"># =&gt; branch(...[$cond1 $then1 $cond2 $then2 ,,,]): no matching cond</span>
+</pre></div>
+</div>
+</section>
+<section id="loops">
+<h2><span class="section-number">7.5.2. </span>Loops<a class="headerlink" href="#loops" title="Link to this heading">¶</a></h2>
+<p>Loop can be done by recursive <a class="reference internal" href="../glossary.html#term-tail-call"><span class="xref std std-term">tail calls</span></a>.
+Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:factorial</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="nv">:loop</span> &lt;- {(<span class="nv">:I</span> <span class="nv">:Product</span>)
+    <span class="n">if</span>(<span class="nv">I</span> == <span class="nv">N</span>
+      { <span class="nv">Product</span> }
+      { <span class="n">loop</span>(<span class="nv">I</span> + <span class="m">1</span> <span class="nv">Product</span> * <span class="nv">I</span>) }
+    )
+  }
+  <span class="n">loop</span>(<span class="m">1</span> <span class="m">1</span>)
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">factorial</span>(<span class="m">10</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 362880</span>
+</pre></div>
+</div>
+<p>For the scope of <code class="docutils literal notranslate"><span class="pre">loop</span></code> variable,
+see <a class="reference internal" href="variable.html#localrecursivefunpattern"><span class="std std-ref">local recursive function pattern</span></a>
+section.</p>
+<p>Recursive calls of <code class="docutils literal notranslate"><span class="pre">loop</span></code> does not cause stack overflow, because</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">loop</span></code> tail-calls <code class="docutils literal notranslate"><span class="pre">if</span></code>,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">if</span></code> tail-calls the else-<a class="reference internal" href="../glossary.html#term-thunk"><span class="xref std std-term">thunk</span></a>, and</p></li>
+<li><p>the else-thunk tail-calls <code class="docutils literal notranslate"><span class="pre">loop</span></code>.</p></li>
+</ul>
+<p>Oftentimes, using a method of a container
+or an <a class="reference internal" href="../api/kink-iter-ITER.html"><span class="doc">iterator</span></a> is an better option than
+writing recursive tail calls by yourself.
+For example, <code class="docutils literal notranslate"><span class="pre">factorial</span></code> method above can be rewritten as follows.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:factorial</span> &lt;- {(<span class="nv">:N</span>)
+  <span class="m">1</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="nv">N</span>).<span class="n">fold</span>(<span class="m">1</span>){(<span class="nv">:I</span> <span class="nv">:Product</span>)
+    <span class="nv">I</span> * <span class="nv">Product</span>
+  }
+}
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">factorial</span>(<span class="m">10</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 362880</span>
+</pre></div>
+</div>
+</section>
+<section id="return-and-break">
+<h2><span class="section-number">7.5.3. </span>Return and break<a class="headerlink" href="#return-and-break" title="Link to this heading">¶</a></h2>
+<p>When you want to return from a function or break a loop,
+you can use <a class="reference internal" href="../api/kink-CONTROL.html#api-a4599f5bf37ae1ee2080db91914c982f"><span class="std std-ref">CONTROL.with_return</span></a>.</p>
+<p>Example: Return from a function:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:to_fizz_buzz</span> &lt;- {(<span class="nv">:Num</span>)
+  <span class="nv">CONTROL</span>.<span class="n">with_return</span>{(<span class="nv">:return</span>)
+    <span class="n">if</span>(<span class="nv">Num</span> % <span class="m">15</span> == <span class="m">0</span>){ <span class="n">return</span>{ <span class="s1">&#39;fizzbuzz&#39;</span> } }
+    <span class="n">if</span>(<span class="nv">Num</span> % <span class="m">3</span> == <span class="m">0</span>){ <span class="n">return</span>{ <span class="s1">&#39;fizz&#39;</span> } }
+    <span class="n">if</span>(<span class="nv">Num</span> % <span class="m">5</span> == <span class="m">0</span>){ <span class="n">return</span>{ <span class="s1">&#39;buzz&#39;</span> } }
+    <span class="n">return</span>{ <span class="nv">Num</span>.<span class="n">show</span> }
+  }
+}
+<span class="m">1</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">20</span>)
+.<span class="n">map</span>{(<span class="nv">:N</span>) <span class="n">to_fizz_buzz</span>(<span class="nv">N</span>) }
+.<span class="n">each</span>{(<span class="nv">:S</span>) <span class="n">stdout</span>.<span class="n">print</span>(<span class="nv">S</span> + <span class="s1">&#39; &#39;</span>) }
+<span class="c1"># =&gt; 1 2 fizz 4 buzz fizz 7 8 fizz buzz 11 fizz 13 14 fizzbuzz 16 17 fizz 19 buzz</span>
+</pre></div>
+</div>
+<p>Example: Break a loop:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:show_reciprocal_sum</span> &lt;- {(<span class="nv">:Nums</span>)
+  <span class="nv">:R</span> = <span class="nv">CONTROL</span>.<span class="n">with_return</span>{(<span class="nv">:break</span>)
+    <span class="nv">:S</span> = <span class="nv">Nums</span>.<span class="n">fold</span>(<span class="m">0</span>){(<span class="nv">:Sum</span> <span class="nv">:N</span>)
+      <span class="n">if</span>(<span class="nv">N</span> == <span class="m">0</span>){
+        <span class="n">break</span>{ <span class="s1">&#39;Zero Division&#39;</span> }
+      }
+      <span class="nv">Sum</span> + (<span class="m">1</span> / <span class="nv">N</span>).<span class="n">floor</span>(<span class="m">3</span>)
+    }
+    <span class="n">break</span>{ <span class="nv">S</span> }
+  }
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;reciprocal sum: {}&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">repr</span>))
+}
+
+<span class="n">show_reciprocal_sum</span>([<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>])     <span class="c1"># =&gt; reciprocal sum: 2.283</span>
+<span class="n">show_reciprocal_sum</span>([<span class="m">3</span> <span class="m">2</span> <span class="m">1</span> <span class="m">0</span> (-<span class="m">1</span>)])  <span class="c1"># =&gt; reciprocal sum: &quot;Zero Division&quot;</span>
+</pre></div>
+</div>
+<p>When you just break the control, you should use CONTROL.with_return
+instead of directly calling reset and shift
+of <a class="reference internal" href="../api/kink-KONT_TAG.html"><span class="doc">KONT_TAG</span></a>.
+It is because CONTROL.with_return takes care of finally blocks
+of CONTROL.with_finally.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">CONTROL</span>.<span class="n">with_return</span>{(<span class="nv">:break</span>)
+  <span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+    <span class="n">finally</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;finally&#39;</span>) }
+
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;begin&#39;</span>)
+    <span class="n">break</span>{}
+
+    <span class="n">raise</span>(<span class="s1">&#39;does not reach here&#39;</span>)
+  }
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   begin</span>
+<span class="c1">#   finally</span>
+
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:KONT_TAG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Kont_tag</span> &lt;- <span class="nv">KONT_TAG</span>.<span class="n">new</span>
+<span class="nv">Kont_tag</span>.<span class="n">reset</span>{
+  <span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+    <span class="n">finally</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;finally&#39;</span>) }
+
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;begin&#39;</span>)
+    <span class="nv">Kont_tag</span>.<span class="n">shift</span>{}
+
+    <span class="n">raise</span>(<span class="s1">&#39;does not reach here&#39;</span>)
+  }
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   begin</span>
+</pre></div>
+</div>
+</section>
+<section id="release-resources">
+<h2><span class="section-number">7.5.4. </span>Release resources<a class="headerlink" href="#release-resources" title="Link to this heading">¶</a></h2>
+<p>When you acquire a resource, ensure it is released using
+<a class="reference internal" href="../api/kink-CONTROL.html#api-29c676e2986aaddd539609b493b6faaf"><span class="std std-ref">CONTROL.with_finally</span></a>.</p>
+<p>In the next example,
+the file input and the file output are ensured to be closed after being used.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FILE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="c1"># copy /etc/os-release to /tmp/os-release-copy</span>
+<span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="nv">:In</span> = <span class="nv">FILE</span>.<span class="n">open_to_read</span>(<span class="s1">&#39;/etc/os-release&#39;</span>)
+  <span class="n">finally</span>{ <span class="nv">In</span>.<span class="n">close</span> }
+
+  <span class="nv">:Out</span> = <span class="nv">FILE</span>.<span class="n">open_to_write</span>(<span class="s1">&#39;/tmp/os-release-copy&#39;</span>)
+  <span class="n">finally</span>{ <span class="nv">Out</span>.<span class="n">close</span> }
+
+  <span class="nv">:loop</span> &lt;- {
+    <span class="nv">:Max_size</span> = <span class="m">100</span>
+    <span class="nv">In</span>.<span class="n">read</span>(<span class="nv">Max_size</span>){(<span class="nv">:C</span>)
+      <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Bin</span>)
+        <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">Bin</span>)
+        <span class="n">loop</span>
+      }
+      <span class="nv">C</span>.<span class="n">on_eof</span>{}
+    }
+  }
+  <span class="n">loop</span>
+}
+</pre></div>
+</div>
+<p>Thunks given to <code class="docutils literal notranslate"><span class="pre">finally</span></code> are guaranteed to be executed,
+when the body function given to <code class="docutils literal notranslate"><span class="pre">with_finally</span></code>, and other <code class="docutils literal notranslate"><span class="pre">finally</span></code> thunks
+return, raise an exception, or jumped out by CONTROL.with_return.
+<code class="docutils literal notranslate"><span class="pre">finally</span></code> thunks are not executed,
+when aborted by <code class="docutils literal notranslate"><span class="pre">shift</span></code> of <a class="reference internal" href="../api/kink-KONT_TAG.html"><span class="doc">kont_tag type</span></a>.</p>
+<p>When multiple exceptions are raised from the body function
+and <code class="docutils literal notranslate"><span class="pre">finally</span></code> thunks, they are chained as a single exception.
+See <code class="docutils literal notranslate"><span class="pre">next</span></code> and <code class="docutils literal notranslate"><span class="pre">have_next?</span></code> of <a class="reference internal" href="../api/kink-EXCEPTION.html"><span class="doc">exception type</span></a>.
+Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="n">finally</span>{ <span class="n">raise</span>(<span class="s1">&#39;baz&#39;</span>) }
+  <span class="n">finally</span>{ <span class="n">raise</span>(<span class="s1">&#39;bar&#39;</span>) }
+  <span class="n">raise</span>(<span class="s1">&#39;foo&#39;</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   -- chained exception 1/2</span>
+<span class="c1">#   [(root)]</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   {(stdin) L5 C14 raise} finally{ --&gt;raise(&#39;baz&#39;) }</span>
+<span class="c1">#   baz</span>
+<span class="c1">#   -- chained exception 2/2</span>
+<span class="c1">#   [(root)]</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   {(stdin) L6 C14 raise} finally{ --&gt;raise(&#39;bar&#39;) }</span>
+<span class="c1">#   bar</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [(root)]</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   {(stdin) L7 C5 raise} --&gt;raise(&#39;foo&#39;)</span>
+<span class="c1">#   foo</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="typing.html"><span class="section-number">7.4. </span>Typing</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="error.html"><span class="section-number">7.6. </span>Error handling</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

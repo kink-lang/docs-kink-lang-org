@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.81. kink/random/CSRNG &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.82. kink/random/PRNG" href="kink-random-PRNG.html" />
+    <link rel="prev" title="6.80. kink/program/PROGRAM" href="kink-program-PROGRAM.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.81. kink/random/CSRNG</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-program-PROGRAM.html"><span class="section-number">6.80. </span>kink/program/PROGRAM</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-random-PRNG.html"><span class="section-number">6.82. </span>kink/random/PRNG</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-random-csrng">
+<h1><span class="section-number">6.81. </span>kink/random/CSRNG<a class="headerlink" href="#kink-random-csrng" title="Link to this heading">¶</a></h1>
+<p>Cryptographically secure random number generators.</p>
+<p>When you have to make such as random nonces, salts, or session ids, use this mod to get an RNG.</p>
+<p>RNGs created by this mod might or might not use hardware entropy source. Thus, CSRNG.new, `gen_int`, `gen_bin`, and `gen_bool` migt or might not block.</p>
+<p>See kink/random/RNG for `rng` type.</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#csrng-new" id="id2">CSRNG.new</a></p></li>
+</ul>
+</nav>
+<section id="csrng-new">
+<span id="api-b53613f85081cb975872061565be20e0"></span><h2><span class="section-number">6.81.1. </span>CSRNG.new<a class="headerlink" href="#csrng-new" title="Link to this heading">¶</a></h2>
+<p>`new` makes a cryptographically secure rng val. See kink/random/RNG mod for the result type `rng`.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CSRNG</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/random/&#39;</span>)
+<span class="nv">:VEC</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Rng</span> &lt;- <span class="nv">CSRNG</span>.<span class="n">new</span>
+<span class="nv">:Nums</span> &lt;- <span class="nv">VEC</span>.<span class="n">from_each</span>(<span class="m">10</span>.<span class="n">times</span>.<span class="n">map</span>{ <span class="nv">Rng</span>.<span class="n">gen_int</span>(<span class="m">100</span>) })
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Nums</span>.<span class="n">repr</span>)
+<span class="c1"># Output varies for each execution:</span>
+<span class="c1">#   [67 47 21 39 98 26 45 37 7 95]</span>
+</pre></div>
+</div>
+<p>The result rng val is not thread-safe. Thus, use of a single rng val from multiple threads must be synchronized.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-program-PROGRAM.html"><span class="section-number">6.80. </span>kink/program/PROGRAM</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-random-PRNG.html"><span class="section-number">6.82. </span>kink/random/PRNG</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+======================
+kink\/program\/PROGRAM
+======================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-b5fb44e96da396ab4b14ecad497a3748:
+
+type program
+============
+
+\`program\` is a pair of a program name and a program text\.
+
+.. _api-8f848dfaf90c2e797c71fd666c14cbf4:
+
+P\.name
+-------
+
+\`name\` returns the program name as a \`str\`\.
+
+.. _api-45f6d2c611eccd488db0e507ebe36cc3:
+
+P\.text
+-------
+
+\`text\` returns the program text as a \`str\`\.
+
+.. _api-eb38c6c06f06250d57f7c828992a2147:
+
+P\.compile\(\.\.\.\[\$config\=\{\}\]\)
+--------------------------------------
+
+\`compile\` compiles \`P\` into a fun\.
+
+Config methods\:
+
+\• C\.binding\(Binding\)\: default \= BINDING\.new
+
+\• C\.locale\(Locale\)\: default \= LOCALE\.root
+
+\• C\.on\_success\(\$success\)\: default \= VAL\$identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the program is compiled to a fun\, \`compile\` tail\-calls \$success with the fun\.
+
+If a compile error occurs\, \`compile\` tail\-calls \$error with a \`compile\_error\`\. \`Program\` attribute of the \`location\` values of the \`compile\_error\` will be equal to \`P\`\.
+
+.. rubric:: Compile
+
+The program text is transformed to a sequence of abstract instructions\, as specified in ”Language specification” chapter of the manual\.
+
+Then\, every occurrence of \`\(binding\)\` instruction in the sequence is replaced with \`\(val Binding\)\`\. The replacement is done only on the outermost sequence\, and not on nested sequences\.
+
+The result fun will contain the sequence of abstract instructions after the replacement\.
+
+.. rubric:: Preconditions
+
+\`Binding\` must be a \`binding\`\.
+
+\`Locale\` must be a \`locale\`\.
+
+\$success must be a fun which takes a fun\.
+
+\$error must be a fun which takes a \`compile\_error\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BINDING.require_from('kink/')
+    :LOCALE.require_from('kink/')
+    :PROGRAM.require_from('kink/program/')
+        
+    :P <- PROGRAM.new('add.kn' '10 + 20')
+    :fun <- P.compile{(:C)
+      C.locale(LOCALE.for('ja-JP'))
+      C.on_error{(:Err)
+        raise('unexpected compile error: {}'.format(Err.desc))
+      }
+    }
+    :R <- fun
+    stdout.print_line(R.repr)  # => 30
+
+.. _api-15ff0713b5e0bca44395bcdf5a5aa024:
+
+P1 \=\= P2
+----------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`P1\` and \`P2\` have the equal program name and the program text\.
+
+.. rubric:: Precondition
+
+\`P2\` must be a \`program\`\.
+
+.. _api-a0d6b247e440f89ec6c1aacd191ae3b7:
+
+PROGRAM\.new\(Name Text\)
+=========================
+
+\`new\` returns a new \`program\`\, with \`Name\` as the program name\, and \`Text\` as the program text\.
+
+.. rubric:: Preconditions
+
+\`Name\` must be a \`str\`\.
+
+\`Text\` must be a \`str\`\.
+
+.. _api-1537de127b01900a9c05c4e38a95b69e:
+
+PROGRAM\.is\?\(Val\)
+====================
+
+\`is\?\` returns whether \`Val\` is a \`program\`\.
+

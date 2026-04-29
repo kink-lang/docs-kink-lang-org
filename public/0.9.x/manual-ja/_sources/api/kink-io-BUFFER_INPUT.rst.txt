@@ -1,0 +1,25 @@
+=======================
+kink\/io\/BUFFER\_INPUT
+=======================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-a528d5ee6cbcd641615ba653008dd0ac:
+
+BUFFER\_INPUT\.new\(Wrapped\_input \.\.\.\[Max\_buf\_size\]\)
+=============================================================
+
+\`new\` returns a \`input\` which performs userspace buffering in front of the underlying \`Wrapped\_input\`\.
+
+Bytes read from \`Wrapped\_input\` will be once buffered before provided to the caller\.
+
+\`Max\_buf\_size\` is used as the preferred buffer size\. The actual buffer size will not exceed \`Max\_buf\_size\`\. If not specified\, a default size will be used\.
+
+.. rubric:: Preconditions
+
+\`Wrapped\_input\` must be an \`input\`\.
+
+\`Max\_buf\_size\` must be a positive int \`num\`\.
+

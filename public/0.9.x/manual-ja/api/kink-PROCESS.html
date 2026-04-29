@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.19. kink/PROCESS &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.20. kink/REF" href="kink-REF.html" />
+    <link rel="prev" title="6.18. kink/NUM_DIV" href="kink-NUM_DIV.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.19. kink/PROCESS</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-NUM_DIV.html"><span class="section-number">6.18. </span>kink/NUM_DIV</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-REF.html"><span class="section-number">6.20. </span>kink/REF</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-process">
+<h1><span class="section-number">6.19. </span>kink/PROCESS<a class="headerlink" href="#kink-process" title="Link to this heading">¶</a></h1>
+<p>Control the current process and subprocesses.</p>
+<p class="rubric">About exit statuses</p>
+<p>In POSIX compliant systems, only the least 8 bits of the exit status can be usable [1]. To comply with that restriction, PROCESS.exit only accepts int nums in [0, 255].</p>
+<p>In Windows API, the exit status is a 32bit unsigned integer [2]. To be able to handle that, the range of Process.wait is defined as [0, 4294967295]. Note that, although Windows API specifies the exit status as unsigned, cmd.exe and PowerShell treat the exit status as signed.</p>
+<p>[1] https://pubs.opengroup.org/onlinepubs/9799919799/functions/wait.html</p>
+<p>[2] https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#process-pid" id="id2">PROCESS.pid</a></p></li>
+<li><p><a class="reference internal" href="#process-env-env-name" id="id3">PROCESS.env(Env_name)</a></p></li>
+<li><p><a class="reference internal" href="#process-have-env-env-name" id="id4">PROCESS.have_env?(Env_name)</a></p></li>
+<li><p><a class="reference internal" href="#process-exit-exit-status" id="id5">PROCESS.exit(Exit_status)</a></p></li>
+<li><p><a class="reference internal" href="#process-start-command-and-args-config" id="id6">PROCESS.start(Command_and_args ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#type-start-config" id="id7">type start_config</a></p>
+<ul>
+<li><p><a class="reference internal" href="#c-stdin-inherit" id="id8">C.stdin_inherit</a></p></li>
+<li><p><a class="reference internal" href="#c-stdin-from-pipe" id="id9">C.stdin_from_pipe</a></p></li>
+<li><p><a class="reference internal" href="#c-stdin-from-file-file-path" id="id10">C.stdin_from_file(File_path)</a></p></li>
+<li><p><a class="reference internal" href="#c-stdout-inherit" id="id11">C.stdout_inherit</a></p></li>
+<li><p><a class="reference internal" href="#c-stdout-to-pipe" id="id12">C.stdout_to_pipe</a></p></li>
+<li><p><a class="reference internal" href="#c-stdout-to-overwrite-file-path" id="id13">C.stdout_to_overwrite(File_path)</a></p></li>
+<li><p><a class="reference internal" href="#c-stdout-to-append-file-path" id="id14">C.stdout_to_append(File_path)</a></p></li>
+<li><p><a class="reference internal" href="#c-stderr-inherit" id="id15">C.stderr_inherit</a></p></li>
+<li><p><a class="reference internal" href="#c-stderr-to-pipe" id="id16">C.stderr_to_pipe</a></p></li>
+<li><p><a class="reference internal" href="#c-stderr-to-overwrite-file-path" id="id17">C.stderr_to_overwrite(File_path)</a></p></li>
+<li><p><a class="reference internal" href="#c-stderr-to-append-file-path" id="id18">C.stderr_to_append(File_path)</a></p></li>
+<li><p><a class="reference internal" href="#c-stderr-to-stdout" id="id19">C.stderr_to_stdout</a></p></li>
+<li><p><a class="reference internal" href="#c-dir-dir-path" id="id20">C.dir(Dir_path)</a></p></li>
+<li><p><a class="reference internal" href="#c-set-env-env-name-env-val" id="id21">C.set_env(Env_name Env_val)</a></p></li>
+<li><p><a class="reference internal" href="#c-unset-env-env-name" id="id22">C.unset_env(Env_name)</a></p></li>
+<li><p><a class="reference internal" href="#c-on-success-success" id="id23">C.on_success($success)</a></p></li>
+<li><p><a class="reference internal" href="#c-on-error-error" id="id24">C.on_error($error)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#type-process" id="id25">type process</a></p>
+<ul>
+<li><p><a class="reference internal" href="#p-wait-config" id="id26">P.wait(...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#p-stdin" id="id27">P.stdin</a></p></li>
+<li><p><a class="reference internal" href="#p-stdout" id="id28">P.stdout</a></p></li>
+<li><p><a class="reference internal" href="#p-stderr" id="id29">P.stderr</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="process-pid">
+<span id="api-b5f2e480fce00d4fd85ef2ee776bd550"></span><h2><span class="section-number">6.19.1. </span>PROCESS.pid<a class="headerlink" href="#process-pid" title="Link to this heading">¶</a></h2>
+<p>`pid` returns the current process id in an int num.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PROCESS</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">PROCESS</span>.<span class="n">pid</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 123</span>
+</pre></div>
+</div>
+</section>
+<section id="process-env-env-name">
+<span id="api-6439105bf1ebf7c1174f53e9b6e65107"></span><h2><span class="section-number">6.19.2. </span>PROCESS.env(Env_name)<a class="headerlink" href="#process-env-env-name" title="Link to this heading">¶</a></h2>
+<p>`env` returns the str of the environment variable specified by `Env_name`.</p>
+<p>Preconditions:</p>
+<p>• `Env_name` must be a str</p>
+<p>• The process must have the specified environment variable</p>
+<p>Case sensitivity of `Env_name` depends on the host system. Typically, it is case sensitive on Unix systems, and case insensitive on Windows systems.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PROCESS</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">PROCESS</span>.<span class="n">env</span>(<span class="s1">&#39;PATH&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; &quot;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="process-have-env-env-name">
+<span id="api-e4c76dff294932419c991191e6b40601"></span><h2><span class="section-number">6.19.3. </span>PROCESS.have_env?(Env_name)<a class="headerlink" href="#process-have-env-env-name" title="Link to this heading">¶</a></h2>
+<p>`have_env?` returns whether the process has the environment variable specified by `Env_name`.</p>
+<p>Precondition:</p>
+<p>• `Env_name` must be a str</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PROCESS</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">PROCESS</span>.<span class="n">have_env?</span>(<span class="s1">&#39;PATH&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">PROCESS</span>.<span class="n">have_env?</span>(<span class="s1">&#39;NO_SUCH_ENV&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+<p>Case sensitivity of `Env_name` depends on the host system. Typically, it is case sensitive on Unix systems, and case insensitive on Windows systems.</p>
+</section>
+<section id="process-exit-exit-status">
+<span id="api-fba1d75304fad638028d6567d2bd5837"></span><h2><span class="section-number">6.19.4. </span>PROCESS.exit(Exit_status)<a class="headerlink" href="#process-exit-exit-status" title="Link to this heading">¶</a></h2>
+<p>`exit` terminates the process running the runtime system with the `Exit_status`.</p>
+<p class="rubric">Precondition</p>
+<p>• `Exit_status` must be an int num in the range [0, 255].</p>
+</section>
+<section id="process-start-command-and-args-config">
+<span id="api-382f762afb4d1fd1261301a4d54b00a4"></span><h2><span class="section-number">6.19.5. </span>PROCESS.start(Command_and_args ...[$config={}])<a class="headerlink" href="#process-start-command-and-args-config" title="Link to this heading">¶</a></h2>
+<p>`start` launches a subprocess by the command specified by `Command_and_args`.</p>
+<p>If `start` succeeds to launch a subprocess, it tail-calls $success with the `process` val which represents the launched subprocess. $success is provided by C.on_success, or VAL.identity by default.</p>
+<p>If `start` fails to launch a subprocess, it tail-calls $error with an `exception`. $error is provided by C.on_error, or {(:Exc) Exc.raise } by default.</p>
+<p class="rubric">Preconditions</p>
+<p>• `Command_and_args` must be a vec of strs</p>
+<p>• `Command_and_args` must contain at least one element</p>
+<p>• $config, if given, must be a fun which takes a val of `start_config` type</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PROCESS</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Ls</span> &lt;- <span class="nv">PROCESS</span>.<span class="n">start</span>([<span class="s1">&#39;ls&#39;</span> <span class="s1">&#39;-1&#39;</span> <span class="s1">&#39;/&#39;</span>]) <span class="c1"># command: ls -1 /</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ls</span>.<span class="n">wait</span>) <span class="c1"># =&gt; 0</span>
+</pre></div>
+</div>
+<p>The source of the standard input and the destination of the standard output and standard error of the subprocess can be configured.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PROCESS</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:INPUT_SCANNER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Lines</span> &lt;- <span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="nv">:Ls</span> = <span class="nv">PROCESS</span>.<span class="n">start</span>([<span class="s1">&#39;ls&#39;</span> <span class="s1">&#39;-1&#39;</span> <span class="s1">&#39;/&#39;</span>]){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">stdout_to_pipe</span>
+  }
+  <span class="n">finally</span>{ <span class="nv">Ls</span>.<span class="n">wait</span> }
+  <span class="nv">:Stdout</span> = <span class="nv">Ls</span>.<span class="n">stdout</span>
+  <span class="n">finally</span>{ <span class="nv">Stdout</span>.<span class="n">close</span> }
+  <span class="nv">:Scanner</span> = <span class="nv">INPUT_SCANNER</span>.<span class="n">new</span>(<span class="nv">Stdout</span> <span class="nv">CHARSET</span>.<span class="n">utf8</span>)
+  <span class="nv">:loop</span> &lt;- {(<span class="nv">:Lines</span>)
+    <span class="nv">Scanner</span>.<span class="n">scan_line</span>{(<span class="nv">:C</span>)
+      <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:L</span>) <span class="n">loop</span>(<span class="nv">Lines</span> + [<span class="nv">L</span>]) }
+      <span class="nv">C</span>.<span class="n">on_eof</span>{ <span class="nv">Lines</span> }
+    }
+  }
+  <span class="n">loop</span>([])
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Lines</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;bin\n&quot; &quot;boot\n&quot; &quot;dev\n&quot; &quot;etc\n&quot; &quot;home\n&quot; ,,,]</span>
+</pre></div>
+</div>
+<p>See `start_config` for details.</p>
+</section>
+<section id="type-start-config">
+<span id="api-80ea487e6fc6a729cb74d168606b4f2d"></span><h2><span class="section-number">6.19.6. </span>type start_config<a class="headerlink" href="#type-start-config" title="Link to this heading">¶</a></h2>
+<p>Config val type of PROCESS.start.</p>
+<p>Invocation of stdin_xxx methods overwrites configuration of precedent invocation of stdin_xxx methods. In the next example, the subprocess reads stdin from /etc/passwd.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:PROCESS</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Process</span> &lt;- <span class="nv">PROCESS</span>.<span class="n">start</span>([<span class="s1">&#39;grep&#39;</span> <span class="s1">&#39;nologin&#39;</span>]){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">stdin_from_pipe</span> <span class="c1"># pipe is not used</span>
+  <span class="nv">C</span>.<span class="n">stdin_from_file</span>(<span class="s1">&#39;/etc/passwd&#39;</span>)
+}
+<span class="nv">Process</span>.<span class="n">wait</span>
+<span class="c1"># Output:</span>
+<span class="c1">#   daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin</span>
+<span class="c1">#   bin:x:2:2:bin:/bin:/usr/sbin/nologin</span>
+<span class="c1">#   ...</span>
+</pre></div>
+</div>
+<p>The same is true for stdout_xxx and stderr_xxx methods.</p>
+<section id="c-stdin-inherit">
+<span id="api-0bfd72551ddf47be76f52374da779597"></span><h3><span class="section-number">6.19.6.1. </span>C.stdin_inherit<a class="headerlink" href="#c-stdin-inherit" title="Link to this heading">¶</a></h3>
+<p>`stdin_inherit` specifies that the subprocess inherits standard input from the current process.</p>
+<p>This is the default option for the standard input.</p>
+</section>
+<section id="c-stdin-from-pipe">
+<span id="api-9a73b2310741032ffb3f5616281a7aeb"></span><h3><span class="section-number">6.19.6.2. </span>C.stdin_from_pipe<a class="headerlink" href="#c-stdin-from-pipe" title="Link to this heading">¶</a></h3>
+<p>`stdin_from_pipe` specifies that bytes of the standard input of the subprocess comes from the pipe output of the current process.</p>
+<p>If you specify `stdin_from_pipe`, you can call P.stdin to get the pipe linked to the subprocess.</p>
+</section>
+<section id="c-stdin-from-file-file-path">
+<span id="api-0f6a2ba3317a1199ad1c04eb47eea3d4"></span><h3><span class="section-number">6.19.6.3. </span>C.stdin_from_file(File_path)<a class="headerlink" href="#c-stdin-from-file-file-path" title="Link to this heading">¶</a></h3>
+<p>`stdin_from_file` specifies that bytes of the standard input of the subprocess comes from the file on `File_path`.</p>
+<p>Precondition:</p>
+<p>• `File_path` must be a str.</p>
+<p>If the file cannot be opened, PROCESS.start fails.</p>
+</section>
+<section id="c-stdout-inherit">
+<span id="api-707fba7dd89e8c5e01a32735c80f83b9"></span><h3><span class="section-number">6.19.6.4. </span>C.stdout_inherit<a class="headerlink" href="#c-stdout-inherit" title="Link to this heading">¶</a></h3>
+<p>`stdout_inherit` specifies that the subprocess inherits the standard output of the current process.</p>
+<p>This is the default option for the standard output.</p>
+</section>
+<section id="c-stdout-to-pipe">
+<span id="api-f8e7b29843bb21640ed477ec44d0b10e"></span><h3><span class="section-number">6.19.6.5. </span>C.stdout_to_pipe<a class="headerlink" href="#c-stdout-to-pipe" title="Link to this heading">¶</a></h3>
+<p>`stdout_to_pipe` specifies that the standard output of the subprocess goes to the pipe input of the current process.</p>
+<p>If you specify `stdout_to_pipe`, you can call P.stdout to get the pipe input linked to the subprocess.</p>
+</section>
+<section id="c-stdout-to-overwrite-file-path">
+<span id="api-ddd0fe027c89d7428ad9ce9acfea0509"></span><h3><span class="section-number">6.19.6.6. </span>C.stdout_to_overwrite(File_path)<a class="headerlink" href="#c-stdout-to-overwrite-file-path" title="Link to this heading">¶</a></h3>
+<p>`stdout_to_overwrite` specifies that the standard output of the subprocess goes to a file specified by `File_path` by OVERWRITE mode.</p>
+<p>Precondition:</p>
+<p>• `File_path` must be a str</p>
+<p>If the file cannot be opened, PROCESS.start fails.</p>
+<p>See kink/io/FILE for OVERWRITE mode.</p>
+</section>
+<section id="c-stdout-to-append-file-path">
+<span id="api-0f2a911b6664f730518f398113b8f787"></span><h3><span class="section-number">6.19.6.7. </span>C.stdout_to_append(File_path)<a class="headerlink" href="#c-stdout-to-append-file-path" title="Link to this heading">¶</a></h3>
+<p>`stdout_to_append` specifies that the standard output of the subprocess goes to a file specified by `File_path` by APPEND mode.</p>
+<p>Precondition:</p>
+<p>• `File_path` must be a str</p>
+<p>If the file cannot be opened, PROCESS.start fails.</p>
+<p>See kink/io/FILE for APPEND mode.</p>
+</section>
+<section id="c-stderr-inherit">
+<span id="api-bffd926fe8c4c3c7a3800dd224ccb6c4"></span><h3><span class="section-number">6.19.6.8. </span>C.stderr_inherit<a class="headerlink" href="#c-stderr-inherit" title="Link to this heading">¶</a></h3>
+<p>`stderr_inherit` specifies that the subprocess inherits the standard error of the current process.</p>
+<p>This is the default option for the standard error.</p>
+</section>
+<section id="c-stderr-to-pipe">
+<span id="api-ff45f65ea68b5ee121438229f7d36856"></span><h3><span class="section-number">6.19.6.9. </span>C.stderr_to_pipe<a class="headerlink" href="#c-stderr-to-pipe" title="Link to this heading">¶</a></h3>
+<p>`stderr_to_pipe` specifies that the standard error of the subprocess goes to the pipe input of the current process.</p>
+<p>If you specify `stderr_to_pipe`, you can call P.stderr to get the pipe input liked to the subprocess.</p>
+</section>
+<section id="c-stderr-to-overwrite-file-path">
+<span id="api-192d72474670790a9894807101a296ec"></span><h3><span class="section-number">6.19.6.10. </span>C.stderr_to_overwrite(File_path)<a class="headerlink" href="#c-stderr-to-overwrite-file-path" title="Link to this heading">¶</a></h3>
+<p>`stderr_to_overwrite` specifies that the standard error of the subprocess goes to a file specified by `File_path` by OVERWRITE mode.</p>
+<p>Precondition:</p>
+<p>• `File_path` must be a str</p>
+<p>If the file cannot be opened, PROCESS.start fails.</p>
+<p>See kink/io/FILE for OVERWRITE mode.</p>
+</section>
+<section id="c-stderr-to-append-file-path">
+<span id="api-26ae4f6545b9ba52eabcb022d4b6f3b0"></span><h3><span class="section-number">6.19.6.11. </span>C.stderr_to_append(File_path)<a class="headerlink" href="#c-stderr-to-append-file-path" title="Link to this heading">¶</a></h3>
+<p>`stderr_to_append` specifies that the standard error of the subprocess goes to a file specified by `File_path` by APPEND mode.</p>
+<p>Precondition:</p>
+<p>• `File_path` must be a str</p>
+<p>If the file cannot be opened, PROCESS.start fails.</p>
+<p>See kink/io/FILE for APPEND mode.</p>
+</section>
+<section id="c-stderr-to-stdout">
+<span id="api-fad113949683b114b665617758fe05a8"></span><h3><span class="section-number">6.19.6.12. </span>C.stderr_to_stdout<a class="headerlink" href="#c-stderr-to-stdout" title="Link to this heading">¶</a></h3>
+<p>`stderr_to_stdout` specifies that the standard error of the subprocess goes to its standard output.</p>
+<p>It is similar to specifying `2&gt;&amp;1` in Unix sh.</p>
+</section>
+<section id="c-dir-dir-path">
+<span id="api-51276d6a731ad8ea3aa68b2eb1cc2a06"></span><h3><span class="section-number">6.19.6.13. </span>C.dir(Dir_path)<a class="headerlink" href="#c-dir-dir-path" title="Link to this heading">¶</a></h3>
+<p>`dir` specifies `Dir_path` as the working directory of the subprocess.</p>
+<p>Precondition:</p>
+<p>• Dir_path must be a str</p>
+<p>If the subprocess cannot change directory to `Dir_path`, PROCESS.start fails.</p>
+</section>
+<section id="c-set-env-env-name-env-val">
+<span id="api-a89a07b4f2f9d26c04e76cce6ea4616a"></span><h3><span class="section-number">6.19.6.14. </span>C.set_env(Env_name Env_val)<a class="headerlink" href="#c-set-env-env-name-env-val" title="Link to this heading">¶</a></h3>
+<p>`set_env` specifies that the subprocess has the environment variable with the name `Env_name` and the value `Env_val`.</p>
+<p>Preconditions:</p>
+<p>• `Env_name` must be a str</p>
+<p>• `Env_val` must be a str</p>
+<p>Case sensitivity of `Env_name` depends on the host system. Typically, it is case sensitive on Unix systems, and case insensitive on Windows systems.</p>
+</section>
+<section id="c-unset-env-env-name">
+<span id="api-e7c35e55fa4487dd2b698aeb10a92606"></span><h3><span class="section-number">6.19.6.15. </span>C.unset_env(Env_name)<a class="headerlink" href="#c-unset-env-env-name" title="Link to this heading">¶</a></h3>
+<p>`unset_env` specifies that the subprocess does not have the environment variable with the name `Env_name`.</p>
+<p>Precondition:</p>
+<p>• `Env_name` must be a str</p>
+<p>Case sensitivity of `Env_name` depends on the host system. Typically, it is case sensitive on Unix systems, and case insensitive on Windows systems.</p>
+</section>
+<section id="c-on-success-success">
+<span id="api-77692b4f3259374e4dfb6f6ea58d513d"></span><h3><span class="section-number">6.19.6.16. </span>C.on_success($success)<a class="headerlink" href="#c-on-success-success" title="Link to this heading">¶</a></h3>
+<p>`on_success` sets $success.</p>
+<p>Precondition:</p>
+<p>• $success must be a fun which takes a `process`.</p>
+</section>
+<section id="c-on-error-error">
+<span id="api-086cec733abbbe4cfbcdaea74635fd8a"></span><h3><span class="section-number">6.19.6.17. </span>C.on_error($error)<a class="headerlink" href="#c-on-error-error" title="Link to this heading">¶</a></h3>
+<p>`on_error` sets $error.</p>
+<p>Precondition:</p>
+<p>• $error must be a fun which takes an `exception`.</p>
+</section>
+</section>
+<section id="type-process">
+<span id="api-13c6afa4353859d00ede48dc409fe636"></span><h2><span class="section-number">6.19.7. </span>type process<a class="headerlink" href="#type-process" title="Link to this heading">¶</a></h2>
+<p>`process` is a type of subprocesses launched by PROCESS.start.</p>
+<section id="p-wait-config">
+<span id="api-92659775fbe91963da598772d1f02434"></span><h3><span class="section-number">6.19.7.1. </span>P.wait(...[$config={}])<a class="headerlink" href="#p-wait-config" title="Link to this heading">¶</a></h3>
+<p>`wait` waits until the exit status of the subprocess is available, or it reaches the timeout.</p>
+<p>Config methods:</p>
+<p>• C.timeout(Timeout_seconds)</p>
+<p>• C.on_success($success_cont): default = VAL.identity</p>
+<p>• C.on_timeout($timeout_cont): default = a fun which raises an exception</p>
+<p>`Timeout_seconds` is a non-negative num of arbitrary scale. It is used as the seconds until the timeout. If the timeout is reached before the exit status becomes available, `wait` tail-calls $timeout_cont with no arg.</p>
+<p>`Timeout_seconds` migh be adjusted to an appropriate value by `wait`. If C.timeout is not called, `wait` never reaches the timeout.</p>
+<p>If the exit status becomes available within the timeout. `wait` tail-calls $success_cont with the exit status as an int num in the range [0, 4294967295].</p>
+<p class="rubric">Preconditions</p>
+<p>• `Timeout_seconds` must be a non-negative num</p>
+<p>• $success_cont must be a fun which takes an int num in the range [0, 4294967295]</p>
+<p>• $timeout_cont must be a fun which takes no arg</p>
+</section>
+<section id="p-stdin">
+<span id="api-4951dcd80af57c5e36544bab32fbf8e7"></span><h3><span class="section-number">6.19.7.2. </span>P.stdin<a class="headerlink" href="#p-stdin" title="Link to this heading">¶</a></h3>
+<p>`stdin` returns the pipe `output` linked to the standard input of the subprocess.</p>
+<p>Precondition:</p>
+<p>• C.stdin_from_pipe must be called for the `start_config` val.</p>
+</section>
+<section id="p-stdout">
+<span id="api-14b13c4bbf795d794ac91db3695cc310"></span><h3><span class="section-number">6.19.7.3. </span>P.stdout<a class="headerlink" href="#p-stdout" title="Link to this heading">¶</a></h3>
+<p>`stdout` returns the pipe `input` linked to the standard output of the subprocess.</p>
+<p>Precondition:</p>
+<p>• C.stdout_to_pipe must be called for the `start_config` val.</p>
+</section>
+<section id="p-stderr">
+<span id="api-6682bcbdfce779a5b1727742732623bd"></span><h3><span class="section-number">6.19.7.4. </span>P.stderr<a class="headerlink" href="#p-stderr" title="Link to this heading">¶</a></h3>
+<p>`stderr` returns the pipe `input` linked to the standard error of the subprocess.</p>
+<p>Precondition:</p>
+<p>• C.stderr_to_pipe must be called for the `start_config` val.</p>
+</section>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-NUM_DIV.html"><span class="section-number">6.18. </span>kink/NUM_DIV</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-REF.html"><span class="section-number">6.20. </span>kink/REF</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

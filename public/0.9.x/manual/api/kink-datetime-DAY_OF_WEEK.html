@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.39. kink/datetime/DAY_OF_WEEK &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.40. kink/datetime/INSTANT" href="kink-datetime-INSTANT.html" />
+    <link rel="prev" title="6.38. kink/datetime/DATETIME" href="kink-datetime-DATETIME.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.39. kink/datetime/DAY_OF_WEEK</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-datetime-DATETIME.html"><span class="section-number">6.38. </span>kink/datetime/DATETIME</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-datetime-INSTANT.html"><span class="section-number">6.40. </span>kink/datetime/INSTANT</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-datetime-day-of-week">
+<h1><span class="section-number">6.39. </span>kink/datetime/DAY_OF_WEEK<a class="headerlink" href="#kink-datetime-day-of-week" title="Link to this heading">¶</a></h1>
+<p>Provides day_of_week type.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-day-of-week" id="id1">type day_of_week</a></p>
+<ul>
+<li><p><a class="reference internal" href="#d-name" id="id2">D.name</a></p></li>
+<li><p><a class="reference internal" href="#d-num" id="id3">D.num</a></p></li>
+<li><p><a class="reference internal" href="#d-repr" id="id4">D.repr</a></p></li>
+<li><p><a class="reference internal" href="#d1-d2-d1-d2-d1-d2-d1-d2-d1-d2-d1-d2" id="id5">D1 &lt; D2, D1 &lt;= D2, D1 != D2, D1 == D2, D1 &gt;= D2, D1 &gt; D2</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#day-of-week-monday" id="id6">DAY_OF_WEEK.monday</a></p></li>
+<li><p><a class="reference internal" href="#day-of-week-tuesday" id="id7">DAY_OF_WEEK.tuesday</a></p></li>
+<li><p><a class="reference internal" href="#day-of-week-wednesday" id="id8">DAY_OF_WEEK.wednesday</a></p></li>
+<li><p><a class="reference internal" href="#day-of-week-thursday" id="id9">DAY_OF_WEEK.thursday</a></p></li>
+<li><p><a class="reference internal" href="#day-of-week-friday" id="id10">DAY_OF_WEEK.friday</a></p></li>
+<li><p><a class="reference internal" href="#day-of-week-saturday" id="id11">DAY_OF_WEEK.saturday</a></p></li>
+<li><p><a class="reference internal" href="#day-of-week-sunday" id="id12">DAY_OF_WEEK.sunday</a></p></li>
+<li><p><a class="reference internal" href="#day-of-week-is-val" id="id13">DAY_OF_WEEK.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#day-of-week-from-num-num" id="id14">DAY_OF_WEEK.from_num(Num)</a></p></li>
+</ul>
+</nav>
+<section id="type-day-of-week">
+<span id="api-c313176e591b4a7974436c0c0a0f69f0"></span><h2><span class="section-number">6.39.1. </span>type day_of_week<a class="headerlink" href="#type-day-of-week" title="Link to this heading">¶</a></h2>
+<p>A day_of_week is one of:</p>
+<p>• Monday (DAY_OF_WEEK.monday)</p>
+<p>• Tuesday (DAY_OF_WEEK.tuesday)</p>
+<p>• Wednesday (DAY_OF_WEEK.wednesday)</p>
+<p>• Thursday (DAY_OF_WEEK.thursday)</p>
+<p>• Friday (DAY_OF_WEEK.friday)</p>
+<p>• Saturday (DAY_OF_WEEK.saturday)</p>
+<p>• Sunday (DAY_OF_WEEK.sunday)</p>
+<section id="d-name">
+<span id="api-7a18b3f83a56c046223a7ca3b77d204a"></span><h3><span class="section-number">6.39.1.1. </span>D.name<a class="headerlink" href="#d-name" title="Link to this heading">¶</a></h3>
+<p>“name” method returns the name of the day_of_week, such as &quot;monday&quot;, &quot;tuesday&quot; and &quot;wednesday&quot;.</p>
+<p>Postcondition:</p>
+<p>• The result is a str which consists of ASCII lowercase letters.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DAY_OF_WEEK</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">DAY_OF_WEEK</span>.<span class="n">friday</span>.<span class="n">name</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;friday&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="d-num">
+<span id="api-21df9c8c4869e8b0ae4c96b00d51f080"></span><h3><span class="section-number">6.39.1.2. </span>D.num<a class="headerlink" href="#d-num" title="Link to this heading">¶</a></h3>
+<p>“num” method returns the int num of the day of week, with 1 being Monday, and 7 being Sunday.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DAY_OF_WEEK</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">DAY_OF_WEEK</span>.<span class="n">friday</span>.<span class="n">num</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 5</span>
+</pre></div>
+</div>
+</section>
+<section id="d-repr">
+<span id="api-f33991589c789d4aac49cbc28b87d4fe"></span><h3><span class="section-number">6.39.1.3. </span>D.repr<a class="headerlink" href="#d-repr" title="Link to this heading">¶</a></h3>
+<p>“repr” method returns the str representation of the day of the week, such as &quot;DAY_OF_WEEK.monday&quot;.</p>
+</section>
+<section id="d1-d2-d1-d2-d1-d2-d1-d2-d1-d2-d1-d2">
+<span id="api-e7026aa352bf469e2cf3d7a6dd5d20fb"></span><h3><span class="section-number">6.39.1.4. </span>D1 &lt; D2, D1 &lt;= D2, D1 != D2, D1 == D2, D1 &gt;= D2, D1 &gt; D2<a class="headerlink" href="#d1-d2-d1-d2-d1-d2-d1-d2-d1-d2-d1-d2" title="Link to this heading">¶</a></h3>
+<p>day_of_week values can be compared in the following total order.</p>
+<p>• monday</p>
+<p>• tuesday</p>
+<p>• wednesday</p>
+<p>• thursday</p>
+<p>• friday</p>
+<p>• saturday</p>
+<p>• sunday</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DAY_OF_WEEK</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">DAY_OF_WEEK</span>.<span class="n">wednesday</span> &lt; <span class="nv">DAY_OF_WEEK</span>.<span class="n">thursday</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">DAY_OF_WEEK</span>.<span class="n">thursday</span> == <span class="nv">DAY_OF_WEEK</span>.<span class="n">thursday</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">DAY_OF_WEEK</span>.<span class="n">friday</span> &gt; <span class="nv">DAY_OF_WEEK</span>.<span class="n">thursday</span>).<span class="n">repr</span>)     <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="day-of-week-monday">
+<span id="api-afcb3eab3f5f825fc9cf403594bff724"></span><h2><span class="section-number">6.39.2. </span>DAY_OF_WEEK.monday<a class="headerlink" href="#day-of-week-monday" title="Link to this heading">¶</a></h2>
+<p>“monday” fun returns a day_of_week val with the following attributes:</p>
+<p>• name: &quot;monday&quot;</p>
+<p>• num: 1</p>
+</section>
+<section id="day-of-week-tuesday">
+<span id="api-e8240bb84bfd144321ddc87017b726a1"></span><h2><span class="section-number">6.39.3. </span>DAY_OF_WEEK.tuesday<a class="headerlink" href="#day-of-week-tuesday" title="Link to this heading">¶</a></h2>
+<p>“tuesday” fun returns a day_of_week val with the following attributes:</p>
+<p>• name: &quot;tuesday&quot;</p>
+<p>• num: 2</p>
+</section>
+<section id="day-of-week-wednesday">
+<span id="api-a670f8b38d1efde308cdf51372d78a6e"></span><h2><span class="section-number">6.39.4. </span>DAY_OF_WEEK.wednesday<a class="headerlink" href="#day-of-week-wednesday" title="Link to this heading">¶</a></h2>
+<p>“wednesday” fun returns a day_of_week val with the following attributes:</p>
+<p>• name: &quot;wednesday&quot;</p>
+<p>• num: 3</p>
+</section>
+<section id="day-of-week-thursday">
+<span id="api-4589e4e177cd3b6f240b103ec0e7b10e"></span><h2><span class="section-number">6.39.5. </span>DAY_OF_WEEK.thursday<a class="headerlink" href="#day-of-week-thursday" title="Link to this heading">¶</a></h2>
+<p>“thursday” fun returns a day_of_week val with the following attributes:</p>
+<p>• name: &quot;thursday&quot;</p>
+<p>• num: 4</p>
+</section>
+<section id="day-of-week-friday">
+<span id="api-21183783ee85f44fb5793c1d8d2417e3"></span><h2><span class="section-number">6.39.6. </span>DAY_OF_WEEK.friday<a class="headerlink" href="#day-of-week-friday" title="Link to this heading">¶</a></h2>
+<p>“friday” fun returns a day_of_week val with the following attributes:</p>
+<p>• name: &quot;friday&quot;</p>
+<p>• num: 5</p>
+</section>
+<section id="day-of-week-saturday">
+<span id="api-e1059f592381f98335e6115eff5c6be5"></span><h2><span class="section-number">6.39.7. </span>DAY_OF_WEEK.saturday<a class="headerlink" href="#day-of-week-saturday" title="Link to this heading">¶</a></h2>
+<p>“saturday” fun returns a day_of_week val with the following attributes:</p>
+<p>• name: &quot;saturday&quot;</p>
+<p>• num: 6</p>
+</section>
+<section id="day-of-week-sunday">
+<span id="api-a9c111be6bc03b5798ca4f6eae381f28"></span><h2><span class="section-number">6.39.8. </span>DAY_OF_WEEK.sunday<a class="headerlink" href="#day-of-week-sunday" title="Link to this heading">¶</a></h2>
+<p>“sunday” fun returns a day_of_week val with the following attributes:</p>
+<p>• name: &quot;sunday&quot;</p>
+<p>• num: 7</p>
+</section>
+<section id="day-of-week-is-val">
+<span id="api-ba10c027e9252229dcc50aa81b30c01b"></span><h2><span class="section-number">6.39.9. </span>DAY_OF_WEEK.is?(Val)<a class="headerlink" href="#day-of-week-is-val" title="Link to this heading">¶</a></h2>
+<p>DAY_OF_WEEK.is? fun returns whether Val is a day_of_week val.</p>
+</section>
+<section id="day-of-week-from-num-num">
+<span id="api-32e9a795c45535e4221092bc8f269cc0"></span><h2><span class="section-number">6.39.10. </span>DAY_OF_WEEK.from_num(Num)<a class="headerlink" href="#day-of-week-from-num-num" title="Link to this heading">¶</a></h2>
+<p>`from_num` returns a `day_of_week` val `num` attribute of which is equal to `Num`.</p>
+<p>Precondition:</p>
+<p>• `Num` must be an int num in the range [1, 7]</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:DAY_OF_WEEK</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/datetime/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">DAY_OF_WEEK</span>.<span class="n">from_num</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; DAY_OF_WEEK.monday</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">DAY_OF_WEEK</span>.<span class="n">from_num</span>(<span class="m">7</span>).<span class="n">repr</span>) <span class="c1"># =&gt; DAY_OF_WEEK.sunday</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-datetime-DATETIME.html"><span class="section-number">6.38. </span>kink/datetime/DATETIME</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-datetime-INSTANT.html"><span class="section-number">6.40. </span>kink/datetime/INSTANT</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

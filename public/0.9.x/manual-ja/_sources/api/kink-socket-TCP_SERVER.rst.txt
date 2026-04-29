@@ -1,0 +1,249 @@
+=========================
+kink\/socket\/TCP\_SERVER
+=========================
+
+Provides listening sockets of TCP\/IP\, or stream based Unix Domain Socket\.
+
+.. rubric:: Example
+
+The following program spawns a TCP\/IP server and a client\. The server sets socket options SO\_REUSEADDR and SO\_RCVBUF\. The client sends bytes \[1\, 2\, 3\] to the server\.
+
+.. code:: kink
+
+    :TCP.require_from('kink/socket/')
+    :TCP_SERVER.require_from('kink/socket/')
+    :IP.require_from('kink/socket/')
+    :IP_PORT.require_from('kink/socket/')
+    :THREAD.require_from('kink/thread/')
+    :BIN.require_from('kink/')
+    :CONTROL.require_from('kink/')
+        
+    :spawn_client <- {(:Server_addr)
+      THREAD.spawn_io{
+        CONTROL.with_finally{(:finally)
+          :Tcp = TCP.open
+          finally{ Tcp.close }
+        
+          Tcp.connect(Server_addr)
+          :Out = Tcp.output
+          finally{ Out.close }
+        
+          Out.write(BIN.of(1 2 3))
+        }
+      }
+    }
+        
+    CONTROL.with_finally{(:finally)
+      :Server = TCP_SERVER.open
+      finally{ Server.close }
+        
+      Server.so_reuseaddr <- true
+      Server.so_rcvbuf <- 1024
+      stdout.print_line(Server.so_reuseaddr.load.repr) # => true
+      stdout.print_line(Server.so_rcvbuf.load.repr)    # => 1152
+        
+      Server.bind_listen(IP_PORT.new(IP.for_hostname('::1') 0))
+      :Server_addr = Server.local_address
+      spawn_client(Server_addr)
+        
+      :Tcp = Server.accept
+      finally{ Tcp.close }
+      :In = Tcp.input
+      finally{ In.close }
+        
+      :Bin = In.read_all
+      stdout.print_line(Bin.repr) # => (bin 0x01 0x02 0x03)
+    }
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-9f72a653e3ef14c78f6736d88f8d1713:
+
+type tcp\_server
+================
+
+A \`tcp\_server\` is a listening socket of TCP\/IP\, or stream based Unix Domain Socket\.
+
+.. _api-3c7480aecadccff72f61aa4709201cd8:
+
+Serv\.bind\_listen\(Local \.\.\.\[\$config\_fun\=\{\}\]\)
+---------------------------------------------------------
+
+\`bind\_listen\` binds the local address to the listening socket\, and changes the socket to listening mode\.
+
+Config methods\:
+
+\• C\.backlog\(Backlog\)\: default \= the runtime default
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the socket is changed to listening mode\, \`bind\_listen\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`bind\_listen\` tail\-calls \$error with an \`exception\`\.
+
+\`Backlog\` is used as a preferred maximum number of connections which are established but not accepted\.
+
+.. rubric:: Preconditions
+
+\`Local\` must be a \`socket\_address\` whose protocol family is acceptable by the socket\.
+
+\`Backlog\` must be a positive integer \`num\`\.
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-f1bf946fc0ddfbd067eecaf8ca2e9a7c:
+
+Serv\.accept\(\.\.\.\[\$config\=\{\}\]\)
+----------------------------------------
+
+\`accept\` method accepts an incoming connection\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\• C\.on\_cancelled\(\$cancelled\)\: default \= a function which raises an exception
+
+\`accept\` method waits until a connection becomes established\, an IO error occurs\, or it is cancelled\.
+
+If a connection is established\, \`accept\` tail\-calls \$success with a \`tcp\` value of the connecting socket\.
+
+If an IO error occurs\, \`accept\` tail\-calls \$error with an \`exception\`\.
+
+If \`accept\` is cancelled\, \`accept\` tail\-calls \$cancelled with no arg\.
+
+.. rubric:: Precondition
+
+The socket must be in listening mode\.
+
+\$success must be a function which takes a \`tcp\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+\$cancelled must be a thunk\.
+
+.. _api-bde119861121c16817231556655d9b69:
+
+Serv\.cancel\_accept
+--------------------
+
+\`cancel\_accept\` cancels the current or the next \`accept\` operation of this listening socket\.
+
+If no other thread is blocked in \`accept\` operation\, the next invocation of \`accept\` will be cancelled\.
+
+If a single thread is blocked in \`accept\` operation\, the invocation of \`accept\` will be cancelled\.
+
+If multiple threads are blocked in \`accept\` operation\, one of them will be cancelled\.
+
+.. _api-a2eccffc92ce28df07028cafa832603b:
+
+Serv\.close\(\.\.\.\[\$config\=\{\}\]\)
+---------------------------------------
+
+\`close\` closes the listening socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the socket is closed successfully\, \`close\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`close\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-16078e255991f3074289bc0c880543c8:
+
+Serv\.local\_address\(\.\.\.\[\$config\=\{\}\]\)
+------------------------------------------------
+
+\`local\_address\` retrieves the \`socket\_address\` of the local address of the listening socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If the local address is available\, \`local\_address\` tail\-calls \$success with the \`socket\_address\`\.
+
+If an IO error occurs\, \`local\_address\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a function which takes a \`socket\_address\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-6edceaf45300c52d102e65fdba707476:
+
+Serv\.so\_reuseaddr
+-------------------
+
+\`so\_reuseaddr\` returns a \`ref\` of a \`bool\` of SO\_REUSEADDR option\.
+
+For usage of socket options\, see the example program at the beginning of this module\.
+
+.. rubric:: Precondition
+
+The protocol family must be ipv4 or ipv6\.
+
+.. _api-f721d27ab313be4c3b263f5b37a4fada:
+
+Serv\.so\_rcvbuf
+----------------
+
+\`so\_rcvbuf\` returns a \`ref\` of a non\-negative integer \`num\` of SO\_RCVBUF option\.
+
+For usage of socket options\, see the example program at the beginning of this module\.
+
+.. _api-2017de1f02765db49e4d8d878f435e30:
+
+TCP\_SERVER\.open\(\.\.\.\[Protocol\_family\=PROTOCOL\_FAMILY\.ipv6 \$config\=\{\}\]\)
+======================================================================================
+
+\`open\` method makes a new listening socket\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+\• C\.on\_unsupported\(\$unsupported\)\: default \= a function which tail\-calls \$error with an \`exception\`
+
+If a listening socket is created\, \`open\` tail\-calls \$success with a \`tcp\_server\` of the listening socket\.
+
+If an IO error occurs\, \`open\` tail\-calls \$error with an \`exception\`\.
+
+If the runtime does not support \`Protocol\_family\`\, \`open\` tail\-calls \$unsupported with no arg\.
+
+.. rubric:: Preconditions
+
+\`Protocol\_family\` must be a \`protocol\_family\`\.
+
+\$success must be a function which takes a \`tcp\_server\`\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-5ba1cd7aad2ca42fd330f9f8f279b427:
+
+TCP\_SERVER\.is\?\(Val\)
+========================
+
+\`is\?\` method returns whether \`Val\` is a tcp\_server\.
+

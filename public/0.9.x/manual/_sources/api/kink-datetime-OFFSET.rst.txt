@@ -1,0 +1,146 @@
+======================
+kink\/datetime\/OFFSET
+======================
+
+Provides \`offset\` type\, which is offset of civil time from UTC\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-1908172871107bebc7ba46c6ae1a2465:
+
+type offset
+===========
+
+A offset is an offset of civil time from UTC in Java Time\-Scale\, with minute precision\.
+
+The range of offset is \[UTC\-18\:00\, UTC\+18\:00\]\.
+
+Example\:
+
+.. code:: kink
+
+    :OFFSET.require_from('kink/datetime/')
+        
+    :Utc <- OFFSET.new(0)
+    stdout.print_line(Utc.sign.repr)    # => "+"
+    stdout.print_line(Utc.hour.repr)    # => 0
+    stdout.print_line(Utc.minute.repr)  # => 0
+        
+    :Plus_8_45 <- OFFSET.new(525)
+    stdout.print_line(Plus_8_45.sign.repr)    # => "+"
+    stdout.print_line(Plus_8_45.hour.repr)    # => 8
+    stdout.print_line(Plus_8_45.minute.repr)  # => 45
+        
+    :Minus_2_30 <- OFFSET.new(-150)
+    stdout.print_line(Minus_2_30.sign.repr)   # => "-"
+    stdout.print_line(Minus_2_30.hour.repr)   # => 2
+    stdout.print_line(Minus_2_30.minute.repr) # => 30
+
+.. _api-4ea12eabe28211b821aeb0a7f4e4f940:
+
+O\.op\_eq\(Arg\)
+----------------
+
+Two offsets are equal when they have the same total minutes\.
+
+.. _api-b0f9293477a7834f4dc6e7787553e12a:
+
+O\.total\_minutes
+-----------------
+
+“total\_minutes” method returns the offset as minutes\.
+
+.. _api-77021b11bcf530df6a92073cb36e3e90:
+
+O\.sign
+-------
+
+“sign” method returns the sign mark of the offset\.
+
+The method returns \"\+\" if the offset is greater than or equal to zero\, or \"\-\" if it is less than zero\.
+
+For example\,
+
+\• Returns \"\+\" for \+00\:00
+
+\• Returns \"\+\" for \+08\:45
+
+\• Returns \"\-\" for \-02\:30
+
+.. _api-adfa93cdee5ff388393f3feb8e95b399:
+
+O\.hour
+-------
+
+“hour” method returns the hour part of the offset when it is analyzed to the sign\, hours and minutes\.
+
+For example\,
+
+\• Returns 0 for \+00\:00
+
+\• Returns 8 for \+08\:45
+
+\• Returns 2 for \-02\:30
+
+Postcondition\:
+
+\• The result is an int num which is in the range \[0\, 18\]
+
+.. _api-d8f4495ee08f906d1e21a66074364f02:
+
+O\.minute
+---------
+
+“minute” method returns the minute part of the offset when it is analyzed to the sign\, hours and minutes\.
+
+For example\,
+
+\• Returns 0 for \+00\:00
+
+\• Returns 45 for \+08\:45
+
+\• Returns 30 for \-02\:30
+
+Postcondition\:
+
+\• The result is an int num which is in the range \[0\, 59\]
+
+.. _api-39fbb8e9fbd55b58c4e24831726a8959:
+
+O\.repr
+-------
+
+\`repr\` method returns the string representation of the offset\.
+
+For example\,
+
+\• Returns \"\(offset \+00\:00\)\" for \+00\:00
+
+\• Returns \"\(offset \+08\:45\)\" for \+08\:45
+
+\• Returns \"\(offset \-02\:30\)\" for \-02\:30
+
+.. _api-67b81f21c39c54674051a56cf20d2287:
+
+OFFSET\.new\(Total\_minutes\)
+=============================
+
+\`new\` fun makes a \`offset\` val with Total\_minutes as the offset in minutes from UTC\.
+
+Preconditions\:
+
+\• Total\_minutes must be an int num
+
+\• Total\_minutes must be greater than or equal to \-1080 \(UTC\-18\:00\)
+
+\• Total\_minutes must be less than or equal to 1080 \(UTC\+18\:00\)
+
+.. _api-8931fec4d19d7d1f5f5a119986e3ec3b:
+
+OFFSET\.is\?\(Val\)
+===================
+
+OFFSET\.is\? returns whether Val is a \`offset\` val\.
+

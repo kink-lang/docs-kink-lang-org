@@ -1,0 +1,134 @@
+================
+kink\/io\/OUTPUT
+================
+
+Companion mod for \`output\` vals\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-bc8f76dfc800cc663466d8d67cd505ca:
+
+type output
+===========
+
+\`output\` is an output port of bytes to an underlying destination such as a file\.
+
+An \`output\` provides sequential forward access to the underlying destination\.
+
+.. _api-944e31cf3d8a2cc2e2d2011fc6d0ea43:
+
+Output\.write\(Bin \.\.\.\[\$config\=\{\}\]\)
+---------------------------------------------
+
+\`write\` writes the sequence of bytes of \`Bin\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If every byte is written without an IO error\, \`write\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`write\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Bin\` must be a \`bin\`\.
+
+\$success must be a fun which takes no arg\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN_OUTPUT.require_from('kink/io/')
+    :BIN.require_from('kink/')
+        
+    :Out <- BIN_OUTPUT.new
+    Out.write(BIN.of(1 2 3))
+    Out.write(BIN.of(4 5))
+    stdout.print_line(Out.bin.repr) # => (bin 0x01 0x02 0x03 0x04 0x05)
+
+.. rubric:: Example\: IO error
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+    :BIN.require_from('kink/')
+    :CONTROL.require_from('kink/')
+        
+    :Out <- FILE.open_to_write('/tmp/tmpfile')
+    Out.close
+    Out.write(BIN.of(1 2 3)){(:C)
+      C.on_error{(:Exc)
+        stderr.print_line(Exc.message)
+      }
+    }
+    # => already closed
+        
+    Out.write(BIN.of(1 2 3))
+    # Output:
+    #   -- main exception
+    #   [..root..]
+    #   {..call by host..}
+    #   ,,,
+    #   already closed
+
+.. _api-7d2142f3e7c1d8ce5b818cfca3106651:
+
+Output\.flush\(\.\.\.\[\$config\=\{\}\]\)
+-----------------------------------------
+
+\`flush\` writes the buffered bytes to the underlying destination\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the remaining bytes are written without an IO error\, \`flush\` tail\-calls \$success with no args\.
+
+If an IO error occurs\, \`flush\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Precondition
+
+\$success must be a fun which takes no arg\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. _api-7c5fb20b020e16c19afa62c1ec1f34e5:
+
+Output\.close\(\.\.\.\[\$config\=\{\}\]\)
+-----------------------------------------
+
+\`close\` flushes the buffer\, and closes the resource of the underlying destination\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the buffer is flushed\, and the resource is closed without an IO error\, \`close\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`close\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Precondition
+
+\$success must be a fun which takes no arg\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. _api-87ea120e3c8195feb8af6bb5e8ca846d:
+
+OUTPUT\.is\?\(Val\)
+===================
+
+\`is\?\` returns whether \`Val\` is an \`output\`\.
+

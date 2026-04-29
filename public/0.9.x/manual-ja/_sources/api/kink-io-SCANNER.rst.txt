@@ -1,0 +1,203 @@
+=================
+kink\/io\/SCANNER
+=================
+
+Companion mod of scanners\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-8d9c7e1d1138bb082067424a205e115b:
+
+type scanner
+============
+
+\`scanner\` is an input port for strings or Unicode code points\. A scanner provides sequential forward access to the underlying source\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+    :CHARSET.require_from('kink/')
+    :CONTROL.require_from('kink/')
+        
+    CONTROL.with_finally{(:finally)
+      :S = FILE.open_to_scan('/etc/passwd' CHARSET.utf8)
+      # result of FILE.open_to_scan also supports .close method of input type
+      finally{ S.close }
+        
+      S.scan_line{
+        C.on_success{(:Line)
+          stdout.print_line(Line.repr)
+        }
+        C.on_eof{ stdout.print_line('no line found') }
+      }
+    }
+    # => "root:x:0:0:root:/root:/bin/bash\n"
+
+.. _api-32926d746a77841b745a4c3d029804bc:
+
+Scanner\.scan\(Max\_codepoints \.\.\.\[\$config\]\)
+---------------------------------------------------
+
+\`scan\` reads a \`str\` consisting of up to \`Max\_codepoints\` code points\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_eof\(\$eof\)\: default \= a fun which raises an exception
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the end\-of\-file has not been reached\, \`scan\` tail\-calls \$success with a \`str\` read from the source\.
+
+If the end\-of\-file has been reached\, \`scan\` tail\-calls \$eof with no arg\.
+
+If an IO error occurs\, \`scan\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a fun which takes a \`str\`\.
+
+\$eof must be a fun which takes no arg\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :STR_SCANNER.require_from('kink/io/')
+        
+    :S <- STR_SCANNER.new("foo\nbar")
+    :loop <- {(:Vec)
+      S.scan(3){(:C)
+        C.on_success{(:Line) loop(Vec + [Line]) }
+        C.on_eof{ Vec }
+      }
+    }
+    :Result <- loop([])
+    stdout.print_line(Result.repr)  # => ["foo" "\nba" "r"]
+
+.. _api-24486798989c12e30cd33e07a794967a:
+
+Scanner\.scan\_line\(\.\.\.\[\$config\=\{\}\]\)
+-----------------------------------------------
+
+\`scan\_line\` reads a \`str\` until \"\\n\" or the end\-of\-file is reached\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_eof\(\$eof\)\: default \= a fun which raises an exception
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If \"\\n\" is reached\, \`scan\_line\` tail\-calls \$success with a \`str\`\. The \`str\` contains \"\\n\" at the back\.
+
+If the end\-of\-file has been reached\, \`scan\_line\` tail\-calls \$eof with no arg\.
+
+If an IO error occurs\, \`scan\_line\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a fun which takes a \`str\`\.
+
+\$eof must be a fun which takes no arg\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :STR_SCANNER.require_from('kink/io/')
+        
+    :S <- STR_SCANNER.new("foo\nbar")
+    :loop <- {(:Vec)
+      S.scan_line{(:C)
+        C.on_success{(:Line) loop(Vec + [Line]) }
+        C.on_eof{ Vec }
+      }
+    }
+    :Result <- loop([])
+    stdout.print_line(Result.repr)  # => ["foo\n" "bar"]
+
+.. _api-9e49e339b0e3d2271feb6d22ed83df69:
+
+Scanner\.scan\_all\(\.\.\.\[\$config\=\{\}\]\)
+----------------------------------------------
+
+\`scan\_all\` reads a \`str\` until the end\-of\-file\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the end\-of\-file has been reached\, \`scan\_all\` tail\-calls \$success with a \`str\` read from the source\.
+
+If an IO error occurs\, \`scan\_all\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a fun which takes a \`str\`
+
+\$error must be a fun which takes an \`exception\`
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :STR_SCANNER.require_from('kink/io/')
+        
+    :S <- STR_SCANNER.new("foo\nbar")
+    stdout.print_line(S.scan_all.repr)   # => "foo\nbar"
+    stdout.print_line(S.scan_all.repr)   # => ""
+    stdout.print_line(S.scan_all.repr)   # => ""
+
+.. rubric:: Example\: IO error
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+    :CHARSET.require_from('kink/')
+    :CONTROL.require_from('kink/')
+        
+    :S <- FILE.open_to_scan('/etc/passwd' CHARSET.utf8)
+    S.close
+    S.scan_all{(:C)
+      C.on_error{(:Exc)
+        stderr.print_line(Exc.message)
+      }
+    }
+    # => already closed
+        
+    S.scan_all
+    # Output:
+    #   -- main exception
+    #   [..root..]
+    #   {..call by host..}
+    #   ,,,
+    #   {builtin:kink-mods/kink/EXCEPTION.kn L117 C13 current_traces} { TRACE.-->current_traces }
+    #   already closed
+
+.. _api-d81ad89a8b435a36ffed4b54849ac30f:
+
+SCANNER\.is\?\(Val\)
+====================
+
+\`is\?\` returns whether \`Val\` is a \`scanner\`\.
+
+.. _api-f59821767c40792913ee646f25094aba:
+
+SCANNER\.mixin
+==============
+
+\`\`mixin\`\` returns a mixin trait which provides an implementation of Scanner\.scan\_all\. \`scan\_all\` will be implemented using \`scan\` method\.
+

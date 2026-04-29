@@ -1,0 +1,34 @@
+=====================
+kink\/io\/BIN\_OUTPUT
+=====================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-465e4fe593d4e259bdb3e5433529b2d4:
+
+BIN\_OUTPUT\.new
+================
+
+\`new\` makes an \`output\` which builds a \`bin\`\.
+
+The result \`output\` also provides \`bin\` method\. It returns a \`bin\` val which joins bytes passed to \`write\` method\.
+
+\.flush and \.close methods of the result \`output\` do nothing\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :BIN_OUTPUT.require_from('kink/io/')
+    :BIN.require_from('kink/')
+        
+    :make_bin <- {
+      :Out = BIN_OUTPUT.new
+      Out.write(BIN.of(1 2 3))
+      Out.write(BIN.of(4))
+      Out.bin
+    }
+    stdout.print_line(make_bin.repr) # => (bin 0x01 0x02 0x03 0x04)
+

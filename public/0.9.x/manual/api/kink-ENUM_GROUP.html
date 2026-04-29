@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.11. kink/ENUM_GROUP &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.12. kink/EXCEPTION" href="kink-EXCEPTION.html" />
+    <link rel="prev" title="6.10. kink/DYN" href="kink-DYN.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.11. kink/ENUM_GROUP</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-DYN.html"><span class="section-number">6.10. </span>kink/DYN</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-EXCEPTION.html"><span class="section-number">6.12. </span>kink/EXCEPTION</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-enum-group">
+<h1><span class="section-number">6.11. </span>kink/ENUM_GROUP<a class="headerlink" href="#kink-enum-group" title="Link to this heading">¶</a></h1>
+<p>Generation of enum values.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ENUM_GROUP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Eg</span> &lt;- <span class="nv">ENUM_GROUP</span>.<span class="n">new</span>(<span class="s1">&#39;FILE_TYPE&#39;</span>)
+
+<span class="nv">Eg</span>.<span class="n">register</span>(<span class="nv">:file</span>)
+<span class="nv">Eg</span>.<span class="n">register</span>(<span class="nv">:directory</span>)
+<span class="nv">Eg</span>.<span class="n">register</span>(<span class="nv">:symbolic_link</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">file</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; FILE_TYPE.file</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">file</span> == <span class="n">file</span>).<span class="n">repr</span>)      <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">file</span> == <span class="n">directory</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-enum-group" id="id1">type enum_group</a></p>
+<ul>
+<li><p><a class="reference internal" href="#enum-group-new-member-name" id="id2">Enum_group.new_member(Name)</a></p></li>
+<li><p><a class="reference internal" href="#enum-group-register-varref" id="id3">Enum_group.register(Varref)</a></p></li>
+<li><p><a class="reference internal" href="#enum-group-name" id="id4">Enum_group.name</a></p></li>
+<li><p><a class="reference internal" href="#enum-group-all" id="id5">Enum_group.all</a></p></li>
+<li><p><a class="reference internal" href="#enum-group-have-val" id="id6">Enum_group.have?(Val)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#enum-group-new-name" id="id7">ENUM_GROUP.new(Name)</a></p></li>
+</ul>
+</nav>
+<section id="type-enum-group">
+<span id="api-14915eddb04b3d010297bd669824d8b7"></span><h2><span class="section-number">6.11.1. </span>type enum_group<a class="headerlink" href="#type-enum-group" title="Link to this heading">¶</a></h2>
+<p>An `enum_group` is a generator of a set of enum values.</p>
+<section id="enum-group-new-member-name">
+<span id="api-59b5c6a5db3e6dfe87ead6d043591275"></span><h3><span class="section-number">6.11.1.1. </span>Enum_group.new_member(Name)<a class="headerlink" href="#enum-group-new-member-name" title="Link to this heading">¶</a></h3>
+<p>`new_member` returns a new enum value of the enum group. `Name` is used as the name of the enum value.</p>
+<p>The result enum value provides the following methods:</p>
+<p>• M.op_eq(Arg): returns whether `M` and `Arg` are the same enum value.   `Arg` must be a member of the same enum group as one of `M`.</p>
+<p>• M.repr: returns a str like in the format of '{group name}.{enum name}',   like 'PROTOCOL_FAMILY.ipv6'.</p>
+<p class="rubric">Precondition</p>
+<p>• `Name` must be a str.</p>
+</section>
+<section id="enum-group-register-varref">
+<span id="api-435f62220362afd78bd05939fb766851"></span><h3><span class="section-number">6.11.1.2. </span>Enum_group.register(Varref)<a class="headerlink" href="#enum-group-register-varref" title="Link to this heading">¶</a></h3>
+<p>`register` makes a new enum value, and sets a constant fun which returns the enum value to `Varref`.</p>
+<p class="rubric">Precondition</p>
+<p>• `Varref` must be a varref.</p>
+</section>
+<section id="enum-group-name">
+<span id="api-bd974959328220875cfcf53265d01a7d"></span><h3><span class="section-number">6.11.1.3. </span>Enum_group.name<a class="headerlink" href="#enum-group-name" title="Link to this heading">¶</a></h3>
+<p>`name` returns the name of the enum group.</p>
+</section>
+<section id="enum-group-all">
+<span id="api-62607da2bd5113ff080fa2d99b50a022"></span><h3><span class="section-number">6.11.1.4. </span>Enum_group.all<a class="headerlink" href="#enum-group-all" title="Link to this heading">¶</a></h3>
+<p>`all` returns all the enum values of the enum group, in the order that the members were created.</p>
+</section>
+<section id="enum-group-have-val">
+<span id="api-dd3fb1341be629eeadd81cc3eed414c0"></span><h3><span class="section-number">6.11.1.5. </span>Enum_group.have?(Val)<a class="headerlink" href="#enum-group-have-val" title="Link to this heading">¶</a></h3>
+<p>`have?` returns whether `Val` is a member of the enum group.</p>
+</section>
+</section>
+<section id="enum-group-new-name">
+<span id="api-1f683b942e1437f94bb0b639d357b83b"></span><h2><span class="section-number">6.11.2. </span>ENUM_GROUP.new(Name)<a class="headerlink" href="#enum-group-new-name" title="Link to this heading">¶</a></h2>
+<p>`new` makes a new `enum_group`.</p>
+<p>`Name` is used as the name of the enum group.</p>
+<p class="rubric">Precondition</p>
+<p>• `Name` must be a str.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-DYN.html"><span class="section-number">6.10. </span>kink/DYN</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-EXCEPTION.html"><span class="section-number">6.12. </span>kink/EXCEPTION</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

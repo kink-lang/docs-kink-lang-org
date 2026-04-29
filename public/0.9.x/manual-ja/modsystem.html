@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>5. モジュールシステム &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+    <script src="_static/documentation_options.js?v=8f459034"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="6. 組み込みライブラリAPI" href="api/index.html" />
+    <link rel="prev" title="4. Object system" href="object.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>5. モジュールシステム</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="object.html"><span class="section-number">4. </span>Object system</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="api/index.html"><span class="section-number">6. </span>組み込みライブラリAPI</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="module-system">
+<h1><span class="section-number">5. </span>モジュールシステム<a class="headerlink" href="#module-system" title="Link to this heading">¶</a></h1>
+<p><em class="dfn">モジュールシステム</em> は <a class="reference internal" href="glossary.html#term-runtime"><span class="xref std std-term">ランタイム</span></a> のサブシステムで、 <a class="reference internal" href="glossary.html#term-module"><span class="xref std std-term">モジュール</span></a> を管理する。</p>
+<p><em class="dfn">module</em> は <a class="reference internal" href="glossary.html#term-module-system"><span class="xref std std-term">モジュールシステム</span></a> によってロードされる値である。通常、モジュールはひとつの機能グループに属する関数の集合を、変数として持つ。「モジュール」は「mod」と略される。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#module-names" id="id3">モジュール名</a></p></li>
+<li><p><a class="reference internal" href="#module-base-paths" id="id4">モジュール基底パス集合</a></p></li>
+<li><p><a class="reference internal" href="#module-source-types" id="id5">モジュールソースの種別</a></p>
+<ul>
+<li><p><a class="reference internal" href="#builtin-component" id="id6">組み込み部品</a></p></li>
+<li><p><a class="reference internal" href="#kink-program-file" id="id7">Kinkプログラムファイル</a></p></li>
+<li><p><a class="reference internal" href="#data-file" id="id8">データファイル</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#module-loading" id="id9">モジュールのロード</a></p>
+<ul>
+<li><p><a class="reference internal" href="#is-associated" id="id10"><code class="docutils literal notranslate"><span class="pre">is_associated</span></code></a></p></li>
+<li><p><a class="reference internal" href="#find-source" id="id11"><code class="docutils literal notranslate"><span class="pre">find_source</span></code></a></p></li>
+<li><p><a class="reference internal" href="#make-builtin-mod" id="id12"><code class="docutils literal notranslate"><span class="pre">make_builtin_mod</span></code></a></p></li>
+<li><p><a class="reference internal" href="#compile-and-run" id="id13"><code class="docutils literal notranslate"><span class="pre">compile_and_run</span></code></a></p></li>
+<li><p><a class="reference internal" href="#make-data-mod" id="id14"><code class="docutils literal notranslate"><span class="pre">make_data_mod</span></code></a></p></li>
+<li><p><a class="reference internal" href="#associate" id="id15"><code class="docutils literal notranslate"><span class="pre">associate</span></code></a></p></li>
+<li><p><a class="reference internal" href="#get-associated" id="id16"><code class="docutils literal notranslate"><span class="pre">get_associated</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#launchable-module" id="id17">起動可能モジュール</a></p></li>
+</ul>
+</nav>
+<section id="module-names">
+<h2><span class="section-number">5.1. </span>モジュール名<a class="headerlink" href="#module-names" title="Link to this heading">¶</a></h2>
+<p>モジュール名は次の正規表現パターンを満たさなければならない:  <code class="docutils literal notranslate"><span class="pre">([a-z_][a-z0-9_]*/)*_*[A-Z][A-Z0-9_]*</span></code></p>
+<p>有効なモジュール名の例:</p>
+<ul class="simple">
+<li><p>MAIN</p></li>
+<li><p>kink/STR</p></li>
+<li><p>kink/test/TEST</p></li>
+<li><p>org/example/_internal/INTERNAL_MOD</p></li>
+<li><p>com/example/_PRIVATE_MOD</p></li>
+</ul>
+</section>
+<section id="module-base-paths">
+<span id="id2"></span><h2><span class="section-number">5.2. </span>モジュール基底パス集合<a class="headerlink" href="#module-base-paths" title="Link to this heading">¶</a></h2>
+<p>モジュールのソースはファイルシステム上のディレクトリに配置できる。これらディレクトリの一覧を <em class="dfn">モジュール基底パス集合</em> と呼ぶ。</p>
+<p>モジュール基底パス集合は <a class="reference internal" href="commandline/kink-kinkw.html#pathoption"><span class="std std-ref">-p / --path</span></a> コマンドラインオプションか、 <a class="reference internal" href="api/kink-MOD.html#api-82a542809dbc766c2795a2ac99f618be"><span class="std std-ref">MOD.add_path</span></a> によって指定される。</p>
+</section>
+<section id="module-source-types">
+<h2><span class="section-number">5.3. </span>モジュールソースの種別<a class="headerlink" href="#module-source-types" title="Link to this heading">¶</a></h2>
+<p>モジュールのソースには3つの種別がある。</p>
+<section id="builtin-component">
+<h3><span class="section-number">5.3.1. </span>組み込み部品<a class="headerlink" href="#builtin-component" title="Link to this heading">¶</a></h3>
+<p>ランタイムはモジュールのソースとなる組み込み部品を提供する。これらモジュールは組み込みモジュールと呼ばれる。公開の組み込みモジュールの仕様については、 <a class="reference internal" href="api/index.html"><span class="doc">組み込みライブラリAPI</span></a> を参照。組み込みモジュールには公開APIに含まれない、非公開のモジュールも存在する。</p>
+</section>
+<section id="kink-program-file">
+<h3><span class="section-number">5.3.2. </span>Kinkプログラムファイル<a class="headerlink" href="#kink-program-file" title="Link to this heading">¶</a></h3>
+<p>モジュール基底パス上のKinkプログラムファイルはモジュールのソースになり得る。Kinkプログラムファイルのパスは次の形式でなければならない:  <code class="docutils literal notranslate"><span class="pre">{module</span> <span class="pre">base</span> <span class="pre">path}/{module</span> <span class="pre">name}.kn</span></code> 。ファイルはUTF-8でエンコードされていなければならない。</p>
+<p>例として、 <code class="docutils literal notranslate"><span class="pre">org/example/TARAI</span></code> をモジュール名としよう。また、モジュール基底パス集合は <code class="docutils literal notranslate"><span class="pre">/home/you/kinkmod</span></code> と <code class="docutils literal notranslate"><span class="pre">/usr/share/kinkmod</span></code> だとしよう。このとき、Kinkプログラムファイルは次のパスに配置できる。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/home/you/kinkmod/org/example/TARAI.kn</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/usr/share/kinkmod/org/example/TARAI.kn</span></code></p></li>
+</ul>
+<p>プログラムのトップレベルの <a class="reference internal" href="api/kink-BINDING.html#api-3a046d0b373eaacef45ecba66825bf5b"><span class="std std-ref">束縛</span></a> がモジュールになる。詳細は <a class="reference internal" href="#modsystem-compile-and-run"><span class="std std-ref">compile_and_run</span></a> 疑似手続きを見よ。</p>
+<p class="rubric">例</p>
+<p>次に示す <code class="docutils literal notranslate"><span class="pre">org/example/rat/RAT</span></code> モジュールのソースのプログラムファイルが、 /home/me/mymods/org/example/rat/RAT.kn にあるとする。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:new</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
+  <span class="n">new_val</span>(
+    ... <span class="nv">Rat_trait</span>
+    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
+    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
+  )
+}
+
+<span class="nv">:Rat_trait</span> &lt;- [
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Numer</span>
+  }
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Denom</span>
+  }
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>]
+    <span class="s1">&#39;{}/{}&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>)
+  }
+]
+</pre></div>
+</div>
+<p>プログラムファイルclient.knが、カレントディレクトリにあるとする。client.knはRATモジュールを使う。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:RAT</span>.<span class="n">require_from</span>(<span class="s1">&#39;org/example/rat/&#39;</span>)
+
+<span class="nv">:Rat</span> &lt;- <span class="nv">RAT</span>.<span class="n">new</span>(<span class="m">1</span> <span class="m">3</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;rat: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Rat</span>.<span class="n">repr</span>))
+</pre></div>
+</div>
+<p>client.knはつぎのように実行できる。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">$ kink</span> --<span class="n">path</span> /<span class="n">home</span>/<span class="n">me</span>/<span class="n">mymods</span> <span class="n">client</span>.<span class="n">kn</span>
+<span class="n">rat</span>: <span class="m">1</span>/<span class="m">3</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RAT</span></code> モジュールは単にトップレベルの束縛なので、 <code class="docutils literal notranslate"><span class="pre">Rat_trait</span></code> など非公開の変数も持っている。単体テストの際には、これら非公開の変数にアクセスするのが有用かもしれない。</p>
+</section>
+<section id="data-file">
+<span id="modsystem-data-file-source"></span><h3><span class="section-number">5.3.3. </span>データファイル<a class="headerlink" href="#data-file" title="Link to this heading">¶</a></h3>
+<p>モジュール基底パス上にある、任意のバイト列のファイルがモジュールのソースになり得る。データファイルのパスは次の形式でなければならない:  <code class="docutils literal notranslate"><span class="pre">{module</span> <span class="pre">base</span> <span class="pre">path}/{module</span> <span class="pre">name}.data</span></code></p>
+<p>バイト列は <a class="reference internal" href="api/kink-BIN.html#api-82b05762775bcc1b8e8b6a637617beaf"><span class="std std-ref">バイナリ</span></a> として、モジュールの <code class="docutils literal notranslate"><span class="pre">data</span></code> 関数を通して提供される。詳細は <a class="reference internal" href="#modsystem-make-data-mod"><span class="std std-ref">make_data_mod</span></a> 疑似手続きを見よ。</p>
+<p class="rubric">例</p>
+<p>データファイルのソースを使うと、任意の形式のデータをモジュールとともに配布できる。たとえば、次のようなUTF-8のテキストファイルが /home/me/mymods/org/example/conversation/_PROMPT_TEMPLATE.data にあるとする。</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Your name is {Name}.
+You work in {Department}.
+Always state your name at the beginning of a conversation.
+</pre></div>
+</div>
+<p>次に示すプログラムファイル /home/me/mymods/org/example/conversation/TOOL.kn があるとする。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:_PROMPT_TEMPLATE</span>.<span class="n">require_from</span>(<span class="s1">&#39;org/example/conversation/&#39;</span>)
+<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/charset/&#39;</span>)
+
+<span class="nv">:main</span> &lt;- {
+  <span class="nv">:Bin</span> = <span class="nv">_PROMPT_TEMPLATE</span>.<span class="n">data</span>
+  <span class="nv">:Template</span> = <span class="nv">CHARSET</span>.<span class="n">utf8</span>.<span class="n">bin_to_str</span>(<span class="nv">Bin</span>)
+  <span class="nv">:Prompt</span> = <span class="nv">Template</span>.<span class="n">format</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Name&#39;</span> <span class="s1">&#39;John Doe&#39;</span>)
+    <span class="nv">C</span>.<span class="n">named_arg</span>(<span class="s1">&#39;Department&#39;</span> <span class="s1">&#39;Support Department&#39;</span>)
+  }
+  <span class="n">stdout</span>.<span class="n">print</span>(<span class="nv">Prompt</span>)
+}
+</pre></div>
+</div>
+<p>TOOL モジュールは <code class="docutils literal notranslate"><span class="pre">main</span></code> 関数を持っているから、 <a class="reference internal" href="#modsystem-launchable"><span class="std std-ref">起動可能モジュール</span></a> だ。TOOLモジュールは次のように実行できる。</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ kink --path /home/me/mymods mod:com/example/conversation/TOOL
+Your name is John Doe.
+You work in Support Department.
+Always state your name at the beginning of a conversation.
+</pre></div>
+</div>
+</section>
+</section>
+<section id="module-loading">
+<h2><span class="section-number">5.4. </span>モジュールのロード<a class="headerlink" href="#module-loading" title="Link to this heading">¶</a></h2>
+<p>モジュールは、モジュール名を指定して、モジュールシステムからロードできる。モジュールのロードは  <a class="reference internal" href="api/kink-VARREF.html#api-63597fda3177ac30803c3405d3dd7ba7"><span class="std std-ref">Varref.require_from</span></a> または <a class="reference internal" href="api/kink-MOD.html#api-36236434317e1c52d15948d18e2c4bc2"><span class="std std-ref">MOD.require</span></a> で実行できる。モジュールのロードは三つの状態で終了する: <code class="docutils literal notranslate"><span class="pre">success</span></code>, <code class="docutils literal notranslate"><span class="pre">not_found</span></code>, <code class="docutils literal notranslate"><span class="pre">compile_error</span></code></p>
+<p>モジュールのロードは、次の疑似コードに示すように行われる:</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">is_associated</span><span class="p">(</span><span class="no">Mod_name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="no">Source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find_source</span><span class="p">(</span><span class="no">Mod_name</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">not_found</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="no">Source</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">builtin</span><span class="w"> </span><span class="n">component</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="no">Mod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_builtin_mod</span><span class="p">(</span><span class="no">Source</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">elsif</span><span class="w"> </span><span class="no">Source</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="no">Kink</span><span class="w"> </span><span class="n">program</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="no">Mod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compile_and_run</span><span class="p">(</span><span class="no">Source</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">compile_error</span><span class="p">(</span><span class="no">Compile_error</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">assert</span><span class="w"> </span><span class="no">Source</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">file</span>
+<span class="w">    </span><span class="no">Mod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">make_data_mod</span><span class="p">(</span><span class="no">Source</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">associate</span><span class="p">(</span><span class="no">Mod_name</span><span class="w"> </span><span class="no">Mod</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">return</span><span class="w"> </span><span class="n">success</span><span class="p">(</span><span class="n">get_associated</span><span class="p">(</span><span class="no">Mod_name</span><span class="p">))</span>
+</pre></div>
+</div>
+<section id="is-associated">
+<h3><span class="section-number">5.4.1. </span><code class="docutils literal notranslate"><span class="pre">is_associated</span></code><a class="headerlink" href="#is-associated" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">is_associated</span></code> 疑似手続きは、指定されたモジュール名に既にモジュールが紐付いているときに真を、そうでないときに偽を戻す。</p>
+</section>
+<section id="find-source">
+<h3><span class="section-number">5.4.2. </span><code class="docutils literal notranslate"><span class="pre">find_source</span></code><a class="headerlink" href="#find-source" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">find_source</span></code> 疑似手続きは、 指定されたモジュール名に対応するモジュールのソースを探索する。探索が失敗した場合、モジュールのロードの手順は <code class="docutils literal notranslate"><span class="pre">not_found</span></code> の状態で終了する。 <code class="docutils literal notranslate"><span class="pre">find_source</span></code> は次の疑似コードのように定義できる。</p>
+<div class="highlight-ruby notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">find_source</span><span class="p">(</span><span class="no">Mod_name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="n">builtin</span><span class="w"> </span><span class="n">component</span><span class="w"> </span><span class="n">exists</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="no">Mod_name</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">builtin</span><span class="w"> </span><span class="n">component</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="n">base_dir</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">module_base_paths</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">kn_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">base_dir</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="no">Mod_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;.kn&#39;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">kn_path</span><span class="w"> </span><span class="n">exists</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">kn_path</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="no">Kink</span><span class="w"> </span><span class="n">program</span><span class="w"> </span><span class="n">file</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">base_dir</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="no">Mod_name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;.data&#39;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">data_path</span><span class="w"> </span><span class="n">exists</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">data_path</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">file</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">not_found</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="make-builtin-mod">
+<h3><span class="section-number">5.4.3. </span><code class="docutils literal notranslate"><span class="pre">make_builtin_mod</span></code><a class="headerlink" href="#make-builtin-mod" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">make_builtin_mod</span></code> 疑似手続きは、ランタイムの組み込み部品からモジュールを作る。</p>
+</section>
+<section id="compile-and-run">
+<span id="modsystem-compile-and-run"></span><h3><span class="section-number">5.4.4. </span><code class="docutils literal notranslate"><span class="pre">compile_and_run</span></code><a class="headerlink" href="#compile-and-run" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">compile_and_run</span></code> 疑似手続きは、 <a class="reference internal" href="api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">モジュールのソースをコンパイルし</span></a> 、コンパイルされたプログラムからモジュールを作る。コンパイルが失敗した場合、モジュールのロードの手順は <code class="docutils literal notranslate"><span class="pre">compile_error</span></code> の状態で終了する。</p>
+<p><code class="docutils literal notranslate"><span class="pre">compile_and_run</span></code> は次の疑似Kinkコードのように定義できる。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BINDING</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/charset/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/porgram/&#39;</span>)
+
+<span class="nv">:compile_and_run</span> &lt;- {(<span class="nv">:Source</span>)
+  <span class="nv">:Text</span> = <span class="nv">CHARSET</span>.<span class="n">utf8</span>.<span class="n">bin_to_str</span>(<span class="nv">Source</span>.<span class="n">bin</span>)
+  <span class="nv">:Program</span> = <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="nv">Source</span>.<span class="n">file_path</span> <span class="nv">Text</span>)
+  <span class="nv">:Mod</span> = <span class="nv">BINDING</span>.<span class="n">new</span>
+  <span class="nv">Mod:repr</span> &lt;- <span class="n">_make_repr</span>
+  <span class="nv">:run_program</span> = <span class="nv">Program</span>.<span class="n">compile</span>{(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">binding</span>(<span class="nv">Mod</span>)
+    <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Compile_error</span>)
+      <span class="n">_end_compile_error</span>(<span class="nv">Compile_error</span>)
+    }
+  }
+  <span class="n">run_program</span>
+  <span class="nv">Mod</span>
+}
+</pre></div>
+</div>
+</section>
+<section id="make-data-mod">
+<span id="modsystem-make-data-mod"></span><h3><span class="section-number">5.4.5. </span><code class="docutils literal notranslate"><span class="pre">make_data_mod</span></code><a class="headerlink" href="#make-data-mod" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">make_data_mod</span></code> 疑似手続きは、次の疑似Kinkコードのようにして、バイト列からモジュールを作る。</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:make_data_mod</span> &lt;- {(<span class="nv">:Source</span>)
+  <span class="nv">:Mod</span> = <span class="n">new_val</span>
+  <span class="nv">:Bin</span> = <span class="nv">Source</span>.<span class="n">bin</span>
+  <span class="nv">Mod:data</span> &lt;- {() <span class="nv">Bin</span> }
+  <span class="nv">Mod:repr</span> &lt;- <span class="n">_make_repr</span>
+  <span class="nv">Mod</span>
+}
+</pre></div>
+</div>
+</section>
+<section id="associate">
+<h3><span class="section-number">5.4.6. </span><code class="docutils literal notranslate"><span class="pre">associate</span></code><a class="headerlink" href="#associate" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">associate</span></code> 疑似手続きは、モジュール名が既にモジュールに紐付いているかをテストし、紐付いていない場合、モジュール名を指定されたモジュールに紐付ける。テストと紐付けはアトミック操作として実行される。</p>
+</section>
+<section id="get-associated">
+<h3><span class="section-number">5.4.7. </span><code class="docutils literal notranslate"><span class="pre">get_associated</span></code><a class="headerlink" href="#get-associated" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">get_associated</span></code> 疑似手続きは、モジュール名に紐付いたモジュールを戻す。</p>
+</section>
+</section>
+<section id="launchable-module">
+<span id="modsystem-launchable"></span><h2><span class="section-number">5.5. </span>起動可能モジュール<a class="headerlink" href="#launchable-module" title="Link to this heading">¶</a></h2>
+<p>モジュールが <code class="docutils literal notranslate"><span class="pre">main</span></code> 関数を持っているとき、そのモジュールはコマンドラインから起動できる。詳細は <a class="reference internal" href="commandline/kink-kinkw.html"><span class="doc">kink and kinkw commands</span></a> を見よ。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="object.html"><span class="section-number">4. </span>Object system</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="api/index.html"><span class="section-number">6. </span>組み込みライブラリAPI</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

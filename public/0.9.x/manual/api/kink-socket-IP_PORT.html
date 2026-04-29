@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.90. kink/socket/IP_PORT &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.91. kink/socket/PROTOCOL_FAMILY" href="kink-socket-PROTOCOL_FAMILY.html" />
+    <link rel="prev" title="6.89. kink/socket/IP" href="kink-socket-IP.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.90. kink/socket/IP_PORT</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-IP.html"><span class="section-number">6.89. </span>kink/socket/IP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-PROTOCOL_FAMILY.html"><span class="section-number">6.91. </span>kink/socket/PROTOCOL_FAMILY</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-socket-ip-port">
+<h1><span class="section-number">6.90. </span>kink/socket/IP_PORT<a class="headerlink" href="#kink-socket-ip-port" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-ip-port" id="id1">type ip_port</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ipp-ip" id="id2">Ipp.ip</a></p></li>
+<li><p><a class="reference internal" href="#ipp-port" id="id3">Ipp.port</a></p></li>
+<li><p><a class="reference internal" href="#ipp-protocol-family" id="id4">Ipp.protocol_family</a></p></li>
+<li><p><a class="reference internal" href="#x-y" id="id5">X == Y</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ip-port-new-ip-port" id="id6">IP_PORT.new(Ip Port)</a></p></li>
+<li><p><a class="reference internal" href="#ip-port-is-val" id="id7">IP_PORT.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-ip-port">
+<span id="api-4b514a78777cecaf5b651499abeeae2e"></span><h2><span class="section-number">6.90.1. </span>type ip_port<a class="headerlink" href="#type-ip-port" title="Link to this heading">¶</a></h2>
+<p>`ip_port` is a pair of an IP address and a port number. `ip_port` is a subtype of type `socket_address`.</p>
+<p>Port number of 0 indicates that an ephemeral port should be assigned in `bind` operations, like Udp_socket.bind, Tcp.bind, and Tcp_server.bind_listen.</p>
+<section id="ipp-ip">
+<span id="api-7bca52bb9efd9fbae066d3f7c18f25d6"></span><h3><span class="section-number">6.90.1.1. </span>Ipp.ip<a class="headerlink" href="#ipp-ip" title="Link to this heading">¶</a></h3>
+<p>`ip` method returns the IP address, in type `ip`.</p>
+</section>
+<section id="ipp-port">
+<span id="api-29a5fdb6aff241e636843ae8238e6697"></span><h3><span class="section-number">6.90.1.2. </span>Ipp.port<a class="headerlink" href="#ipp-port" title="Link to this heading">¶</a></h3>
+<p>`port` returns the port number as an integer `num`.</p>
+</section>
+<section id="ipp-protocol-family">
+<span id="api-c993a8c45f0cc172f8bc8820c530a831"></span><h3><span class="section-number">6.90.1.3. </span>Ipp.protocol_family<a class="headerlink" href="#ipp-protocol-family" title="Link to this heading">¶</a></h3>
+<p>`protocol_family` returns either PROTOCOL_FAMILY.ipv4 or PROTOCOL_FAMILY.ipv6.</p>
+</section>
+<section id="x-y">
+<span id="api-0f9dbe9884b2751dec62d4261b554728"></span><h3><span class="section-number">6.90.1.4. </span>X == Y<a class="headerlink" href="#x-y" title="Link to this heading">¶</a></h3>
+<p>`==` operator, or `op_eq` method, returns whether `Y` is an `ip_port`, and `X` and `Y` have the same IP address and the same port number.</p>
+<p class="rubric">Precondition</p>
+<p>`Y` must be a `socket_address`.</p>
+</section>
+</section>
+<section id="ip-port-new-ip-port">
+<span id="api-315a4e9a43b17642f6ec36c9ca42e7ef"></span><h2><span class="section-number">6.90.2. </span>IP_PORT.new(Ip Port)<a class="headerlink" href="#ip-port-new-ip-port" title="Link to this heading">¶</a></h2>
+<p>`new` makes a new `ip_port` value.</p>
+<p class="rubric">Preconditions</p>
+<p>`Ip` must be an `ip`.</p>
+<p>`Port` must be an integer `num` in the range [0, 65535].</p>
+</section>
+<section id="ip-port-is-val">
+<span id="api-154dd5a193193cc04256886bb76a11eb"></span><h2><span class="section-number">6.90.3. </span>IP_PORT.is?(Val)<a class="headerlink" href="#ip-port-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is an `ip_port`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-socket-IP.html"><span class="section-number">6.89. </span>kink/socket/IP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-socket-PROTOCOL_FAMILY.html"><span class="section-number">6.91. </span>kink/socket/PROTOCOL_FAMILY</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

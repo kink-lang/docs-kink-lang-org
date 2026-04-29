@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.86. kink/regex/REGEX &#8212; Kink 0.9.5-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.87. kink/repl/REPL" href="kink-repl-REPL.html" />
+    <link rel="prev" title="6.85. kink/regex/MATCH" href="kink-regex-MATCH.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.5-beta</span></a></h1>
+        <h2 class="heading"><span>6.86. kink/regex/REGEX</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-regex-MATCH.html"><span class="section-number">6.85. </span>kink/regex/MATCH</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-repl-REPL.html"><span class="section-number">6.87. </span>kink/repl/REPL</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-regex-regex">
+<h1><span class="section-number">6.86. </span>kink/regex/REGEX<a class="headerlink" href="#kink-regex-regex" title="Link to this heading">¶</a></h1>
+<p>The mod provides a regular expression engine backed by java.util.regex package.</p>
+<p>The syntax of regex patterns is same as one of Java. See:</p>
+<p>https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html</p>
+<p>There are three basic types.</p>
+<p>• regex:   A regular expression pattern.   A regex val provides features such as matching, searching,   replacing and splitting.</p>
+<p>• match:   A result of a successful matching. A regex_match contains groups.   See kink/regex/MATCH for details.</p>
+<p>• group:   A slice in the matched text,   which can be the entire slice of the regex_match,   or a slice of a named capturing group.   See kink/regex/GROUP for details.</p>
+<p>`match` type is a subtype of `group`, which represents the entire slice of the matched area.</p>
+<p>Regexes handle indices of code points, in contrast to java.util.regex which handles indices of UTF-16 code units.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+<span class="nv">:Num_regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;0x(?&lt;Hex&gt;[0-9a-f]+)|(?&lt;Dec&gt;[0-9]+)&#39;</span>)
+<span class="nv">Num_regex</span>.<span class="n">search_all</span>(<span class="s1">&#39;0xa5a5 42 0xcafe&#39;</span>).<span class="n">each</span>{(<span class="nv">:Match</span>)
+  <span class="n">if</span>(<span class="nv">Match</span>.<span class="n">have_group?</span>(<span class="s1">&#39;Hex&#39;</span>)
+    { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Hex: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Match</span>.<span class="n">group</span>(<span class="s1">&#39;Hex&#39;</span>).<span class="n">slice</span>)) }
+    { <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Dec: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Match</span>.<span class="n">group</span>(<span class="s1">&#39;Dec&#39;</span>).<span class="n">slice</span>)) }
+  )
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   Hex: a5a5</span>
+<span class="c1">#   Dec: 42</span>
+<span class="c1">#   Hex: cafe</span>
+</pre></div>
+</div>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-regex" id="id2">type regex</a></p>
+<ul>
+<li><p><a class="reference internal" href="#regex-pattern" id="id3">Regex.pattern</a></p></li>
+<li><p><a class="reference internal" href="#regex-accept-text" id="id4">Regex.accept?(Text)</a></p></li>
+<li><p><a class="reference internal" href="#regex-match-text-config" id="id5">Regex.match(Text ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#regex-search-text-start-pos-config" id="id6">Regex.search(Text Start_pos ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#regex-search-all-text" id="id7">Regex.search_all(Text)</a></p></li>
+<li><p><a class="reference internal" href="#regex-replace-all-text-match-to-str" id="id8">Regex.replace_all(Text $match_to_str)</a></p></li>
+<li><p><a class="reference internal" href="#regex-split-text-max-field-count" id="id9">Regex.split(Text ...[Max_field_count])</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#regex-compile-pattern-config" id="id10">REGEX.compile(Pattern ...[$config])</a></p></li>
+<li><p><a class="reference internal" href="#regex-is-val" id="id11">REGEX.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#regex-escape-str" id="id12">REGEX.escape(Str)</a></p></li>
+</ul>
+</nav>
+<section id="type-regex">
+<span id="api-e32b8c16bd0e859f4e3f682680e9ae73"></span><h2><span class="section-number">6.86.1. </span>type regex<a class="headerlink" href="#type-regex" title="Link to this heading">¶</a></h2>
+<p>`regex` is a type of immutable regular expression pattern.</p>
+<p>`regex` provides features such as matching, searching, replacing and splitting.</p>
+<section id="regex-pattern">
+<span id="api-b3b9e570d28891e2e479697327ccc5b7"></span><h3><span class="section-number">6.86.1.1. </span>Regex.pattern<a class="headerlink" href="#regex-pattern" title="Link to this heading">¶</a></h3>
+<p>`pattern` returns the pattern str from which the regex is made.</p>
+<p>== Example =a=</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+<span class="nv">:Regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;.*&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Regex</span>.<span class="n">pattern</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;.*&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="regex-accept-text">
+<span id="api-badea547f1a1a1f2a26b3ea16e61716d"></span><h3><span class="section-number">6.86.1.2. </span>Regex.accept?(Text)<a class="headerlink" href="#regex-accept-text" title="Link to this heading">¶</a></h3>
+<p>`accept?` returns whether the entire `Text` str matches the pattern of the regex</p>
+<p>Precondition:</p>
+<p>• `Text` must be a str.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+<span class="nv">:Verb_regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;[a-z_][a-z0-9_?]*&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Verb_regex</span>.<span class="n">accept?</span>(<span class="s1">&#39;white_light&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Verb_regex</span>.<span class="n">accept?</span>(<span class="s1">&#39;&lt;black_heat&gt;&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+</pre></div>
+</div>
+</section>
+<section id="regex-match-text-config">
+<span id="api-2d4798ecb84f6b0444dc3418bb4960f4"></span><h3><span class="section-number">6.86.1.3. </span>Regex.match(Text ...[$config={}])<a class="headerlink" href="#regex-match-text-config" title="Link to this heading">¶</a></h3>
+<p>`match` tries to match the regex to the entire `Text` str.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity.</p>
+<p>• C.on_error($error): default = a fun which raises an exception.</p>
+<p>If matched, `match` tail-calls $success with a val of `match` type.</p>
+<p>If not matched, `match` tail-calls $error with no arg.</p>
+<p class="rubric">Preconditions</p>
+<p>• `Text` must be a str.</p>
+<p>• $success must be a fun which takes a `match` val.</p>
+<p>• $error must be a fun which takes no arg.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+
+<span class="nv">:Regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;(?&lt;Int&gt;[0-9]+)\.(?&lt;Frac&gt;[0-9]+)&#39;</span>)
+<span class="nv">:M</span> &lt;- <span class="nv">Regex</span>.<span class="n">match</span>(<span class="s1">&#39;3.14&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Int={} Frac={}&#39;</span>.<span class="n">format</span>(<span class="nv">M</span>.<span class="n">group</span>(<span class="s1">&#39;Int&#39;</span>).<span class="n">slice</span> <span class="nv">M</span>.<span class="n">group</span>(<span class="s1">&#39;Frac&#39;</span>).<span class="n">slice</span>))
+<span class="c1"># Output:</span>
+<span class="c1">#   Int=3 Frac=14</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+
+<span class="nv">:Hex_regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;0x(?&lt;Digits&gt;[0-9a-f]+)&#39;</span>)
+<span class="nv">:handle</span> &lt;- {(<span class="nv">:Text</span>)
+  <span class="nv">Hex_regex</span>.<span class="n">match</span>(<span class="nv">Text</span>){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Match</span>)
+      <span class="nv">:Entire</span> = <span class="nv">Match</span>.<span class="n">slice</span>
+      <span class="nv">:Digits</span> = <span class="nv">Match</span>.<span class="n">group</span>(<span class="s1">&#39;Digits&#39;</span>).<span class="n">slice</span>
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;hex={} digits={}&#39;</span>.<span class="n">format</span>(<span class="nv">Entire</span>.<span class="n">repr</span> <span class="nv">Digits</span>.<span class="n">repr</span>))
+    }
+    <span class="nv">C</span>.<span class="n">on_error</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;unmatched&#39;</span>) }
+  }
+}
+<span class="n">handle</span>(<span class="s1">&#39;0xa5a5&#39;</span>) <span class="c1"># =&gt; hex=&quot;0xa5a5&quot; digits=&quot;a5a5&quot;</span>
+<span class="n">handle</span>(<span class="s1">&#39;&lt;0xff&gt;&#39;</span>) <span class="c1"># =&gt; unmatched</span>
+</pre></div>
+</div>
+</section>
+<section id="regex-search-text-start-pos-config">
+<span id="api-2c5cd9d4f21d040cbf6462c97c5f4897"></span><h3><span class="section-number">6.86.1.4. </span>Regex.search(Text Start_pos ...[$config={}])<a class="headerlink" href="#regex-search-text-start-pos-config" title="Link to this heading">¶</a></h3>
+<p>`search` searches for the first slice of the `Text` which the regex matches. The search starts from `Start_pos`.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = a fun which raises an exception</p>
+<p>If the search succeeds, `search` tail-calls $success with a `match` val.</p>
+<p>If the search fails, `search` tail-calls $error with no arg.</p>
+<p class="rubric">Preconditions</p>
+<p>• `Text` must be a str</p>
+<p>• `Start_pos` must be an int num in the range [0, Text.size]</p>
+<p>• $success must be a fun which takes a `match` val</p>
+<p>• $error must be a fun which takes no arg</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+
+<span class="nv">:Regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;[a-z]+&#39;</span>)
+<span class="nv">:First_match</span> &lt;- <span class="nv">Regex</span>.<span class="n">search</span>(<span class="s1">&#39;foo bar baz&#39;</span> <span class="m">0</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">First_match</span>.<span class="n">slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; &quot;foo&quot;</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+
+<span class="nv">:Hex_regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;0x[0-9a-f]+&#39;</span>)
+<span class="nv">:handle</span> &lt;- {(<span class="nv">:Text</span> <span class="nv">:Start_pos</span>)
+  <span class="nv">Hex_regex</span>.<span class="n">search</span>(<span class="nv">Text</span> <span class="nv">Start_pos</span>){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Match</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;from={} to={}&#39;</span>.<span class="n">format</span>(<span class="nv">Match</span>.<span class="n">from</span> <span class="nv">Match</span>.<span class="n">to</span>))
+    }
+    <span class="nv">C</span>.<span class="n">on_error</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;not found&#39;</span>) }
+  }
+}
+<span class="nv">:Program</span> &lt;- <span class="s1">&#39;0xca 0xfe&#39;</span>
+<span class="n">handle</span>(<span class="nv">Program</span> <span class="m">2</span>) <span class="c1"># =&gt; from=5 to=9</span>
+<span class="n">handle</span>(<span class="nv">Program</span> <span class="m">6</span>) <span class="c1"># =&gt; not found</span>
+</pre></div>
+</div>
+</section>
+<section id="regex-search-all-text">
+<span id="api-9ef5776bd51fc7e310ddc75679f41736"></span><h3><span class="section-number">6.86.1.5. </span>Regex.search_all(Text)<a class="headerlink" href="#regex-search-all-text" title="Link to this heading">¶</a></h3>
+<p>`search_all` searches for all the slices of the `Text` which the regex matches, and returns an iter of `match` vals for the found slices.</p>
+<p>The first search is attempted from the beginning of the Text.</p>
+<p>If a search from `Ind` results in a `match` for an empty slice, the next search is attempted from (Ind + 1). Otherwise, the next search is attempted from `Match.to` of the current `match`.</p>
+<p class="rubric">Precondition</p>
+<p>• `Text` must be a str.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+<span class="nv">:Hex_regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;0x[0-9a-f]+&#39;</span>)
+<span class="nv">:Program</span> &lt;- <span class="s1">&#39;0xca 0xfe&#39;</span>
+<span class="nv">Hex_regex</span>.<span class="n">search_all</span>(<span class="nv">Program</span>)
+.<span class="n">map</span>{(<span class="nv">:M</span>) <span class="nv">M</span>.<span class="n">slice</span> }
+.<span class="n">each</span>{(<span class="nv">:Hex</span>)
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Hex</span>.<span class="n">repr</span>)
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   &quot;0xca&quot;</span>
+<span class="c1">#   &quot;0xfe&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="regex-replace-all-text-match-to-str">
+<span id="api-c5fb7eb660309b86c9e5de338c404808"></span><h3><span class="section-number">6.86.1.6. </span>Regex.replace_all(Text $match_to_str)<a class="headerlink" href="#regex-replace-all-text-match-to-str" title="Link to this heading">¶</a></h3>
+<p>`replace_all` replaces all the slices of the `Text` which the regex matches.</p>
+<p>Searching is done in the way same as `search_all`.</p>
+<p>Matched slices are replaced by $match_to_str. $match_to_str must take a `match`, and return a str.</p>
+<p class="rubric">Precondition</p>
+<p>• `Text` must be a str.</p>
+<p class="rubric">Example</p>
+<p>Convert hex literals to decimal:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+<span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:Hex_regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;0x(?&lt;Digits&gt;[0-9a-f]+)&#39;</span>)
+
+<span class="nv">:Program</span> &lt;- <span class="s1">&#39;0xca 0xfe&#39;</span>
+<span class="nv">:Decimal_program</span> &lt;- <span class="nv">Hex_regex</span>.<span class="n">replace_all</span>(<span class="nv">Program</span>){(<span class="nv">:M</span>)
+  <span class="nv">:Digits</span> = <span class="nv">M</span>.<span class="n">group</span>(<span class="s1">&#39;Digits&#39;</span>).<span class="n">slice</span>
+  <span class="nv">:N</span> = <span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="nv">Digits</span>){(<span class="nv">:C</span>) <span class="nv">C</span>.<span class="n">radix</span>(<span class="m">16</span>) }
+  <span class="nv">N</span>.<span class="n">show</span>
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Decimal_program</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; &quot;202 254&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="regex-split-text-max-field-count">
+<span id="api-7b06c7750e5600354c9e72621ad71df0"></span><h3><span class="section-number">6.86.1.7. </span>Regex.split(Text ...[Max_field_count])<a class="headerlink" href="#regex-split-text-max-field-count" title="Link to this heading">¶</a></h3>
+<p>`split` splits `Text` into a vec of str vals, using the regex as the pattern of delimiters.</p>
+<p>If `Max_field_count` is specified, spliting is performed at most `Max_field_count - 1` times. Thus, the number of fields is no more than `Max_field_count`.</p>
+<p>If `Max_field_count` is not specified, splitting is performed on all the matches.</p>
+<p class="rubric">Precondition</p>
+<p>• `Max_field_count` must be an int num greater than or equal to 1</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+<span class="nv">:Sep_regex</span> &lt;- <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39; *, *&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sep_regex</span>.<span class="n">split</span>(<span class="s1">&#39;foo, bar, baz&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot;]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sep_regex</span>.<span class="n">split</span>(<span class="s1">&#39;foo, bar&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot;]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sep_regex</span>.<span class="n">split</span>(<span class="s1">&#39;foo&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot;]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sep_regex</span>.<span class="n">split</span>(<span class="s1">&#39;&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;&quot;]</span>
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sep_regex</span>.<span class="n">split</span>(<span class="s1">&#39;foo, bar, baz&#39;</span> <span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar, baz&quot;]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sep_regex</span>.<span class="n">split</span>(<span class="s1">&#39;foo, bar&#39;</span> <span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot;]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sep_regex</span>.<span class="n">split</span>(<span class="s1">&#39;foo&#39;</span> <span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot;]</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sep_regex</span>.<span class="n">split</span>(<span class="s1">&#39;&#39;</span> <span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;&quot;]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="regex-compile-pattern-config">
+<span id="api-345987b2f55607253e0d7ea3e8c19fb8"></span><h2><span class="section-number">6.86.2. </span>REGEX.compile(Pattern ...[$config])<a class="headerlink" href="#regex-compile-pattern-config" title="Link to this heading">¶</a></h2>
+<p>`compile` makes a regex from `Pattern`.</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity.</p>
+<p>• C.on_error($error): default = a fun which raises an exception.</p>
+<p>If `Pattern` can be compiled as a regex, `compile` tail-calls $success with the created regex val.</p>
+<p>If compilation hits a syntax error, `compile` tail-calls $error with (Error_msg, Ind), where `Error_msg` is a str of the error message str, and `Ind` is an int num of the index of the error place in `Pattern`.</p>
+<p class="rubric">Preconditions</p>
+<p>• Pattern must be a str.</p>
+<p>• $config must be a fun which takes a conf val.</p>
+<p>• $success must be a fun which takes a `regex` val.</p>
+<p>• $error must be a fun which takes (str, int num).</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;[a-z]*&#39;</span>).<span class="n">repr</span>)
+<span class="c1"># =&gt; (regex &quot;[a-z]*&quot;)</span>
+
+<span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="s1">&#39;(**)&#39;</span>)
+<span class="c1"># Output:</span>
+<span class="c1">#   ...</span>
+<span class="c1">#   {builtin:kink-mods/kink/regex/REGEX.kn L444 C7 error} --&gt;error(Msg Ind)</span>
+<span class="c1">#   {builtin:kink-mods/kink/regex/REGEX.kn L476 C5 raise} --&gt;raise(&#39;REGEX.compile(Pattern ...[$config]): syntax error: {}: {}&#39;.format(Msg Place_desc))</span>
+<span class="c1">#   REGEX.compile(Pattern ...[$config]): syntax error: Dangling meta character &#39;*&#39;: (--&gt;**)</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+
+<span class="nv">:try_compile</span> &lt;- {(<span class="nv">:Pattern</span>)
+  <span class="nv">REGEX</span>.<span class="n">compile</span>(<span class="nv">Pattern</span>){(<span class="nv">:C</span>)
+    <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Regex</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;compiled: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Regex</span>.<span class="n">repr</span>))
+    }
+    <span class="nv">C</span>.<span class="n">on_error</span>{(<span class="nv">:Msg</span> <span class="nv">:Ind</span>)
+      <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;error at index={}: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Ind</span> <span class="nv">Msg</span>))
+    }
+  }
+}
+
+<span class="n">try_compile</span>(<span class="s1">&#39;[a-z]*&#39;</span>)
+<span class="c1"># =&gt; compiled: (regex &quot;[a-z]*&quot;)</span>
+
+<span class="n">try_compile</span>(<span class="s1">&#39;(**)&#39;</span>)
+<span class="c1"># =&gt; error at index=1: Dangling meta character &#39;*&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="regex-is-val">
+<span id="api-330c7e83624136455520351a2cb0220d"></span><h2><span class="section-number">6.86.3. </span>REGEX.is?(Val)<a class="headerlink" href="#regex-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether the `Val` is a regex val.</p>
+</section>
+<section id="regex-escape-str">
+<span id="api-bb37a3a3a301a44096d21d94adcde895"></span><h2><span class="section-number">6.86.4. </span>REGEX.escape(Str)<a class="headerlink" href="#regex-escape-str" title="Link to this heading">¶</a></h2>
+<p>`escape` escapes regex special characters in `Str`. The result can be used as an arg of REGEX.compile, or can be embedded in a regex pattern.</p>
+<p>Precondition:</p>
+<p>• `Str` must be a str.</p>
+<p>Example:</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
+
+<span class="nv">:Escaped</span> &lt;- <span class="nv">REGEX</span>.<span class="n">escape</span>(<span class="s1">&#39;int main() { puts(&quot;hello\n&quot;); }&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Escaped</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; &quot;\\Qint main() { puts(\&quot;hello\\n\&quot;); }\\E&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-regex-MATCH.html"><span class="section-number">6.85. </span>kink/regex/MATCH</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-repl-REPL.html"><span class="section-number">6.87. </span>kink/repl/REPL</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

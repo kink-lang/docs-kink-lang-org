@@ -1,0 +1,19 @@
+===========
+Commandline
+===========
+
+This chapter describes usage of kink command, and REPL.
+
+.. toctree::
+  :maxdepth: 2
+
+  kink-kinkw
+  repl
+
+
+For laucnhable mods, see the docs of the mods.
+
+- :doc:`kink/test/TEST_TOOL </api/kink-test-TEST_TOOL>` : executes unit tests
+- :doc:`kink/doc/DOC_PARSE_TOOL </api/kink-doc-DOC_PARSE_TOOL>` : parses kink doc and produces JSON
+
+.. vim: et sw=2 sts=2 et

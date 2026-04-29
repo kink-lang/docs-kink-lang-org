@@ -1,0 +1,213 @@
+==============================
+kink\/javahost\/METHOD\_HANDLE
+==============================
+
+Provides utility functions to manipulate java\.lang\.MethodHandle\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-da049b659d2c72c5322320a8dd5f038b:
+
+METHOD\_HANDLE\.invoke\(Mh Args \.\.\.\[\$config\=\{\}\]\)
+==========================================================
+
+\`invoke\` invokes the method handle \`Mh\` by MethodHandle\.invokeWithArguments\. \`Args\` is passed as the arguments\.
+
+Unlike Java\.call\_method\, \.call\_static\, and \.new\, \`type\` attributes of the elements of \`Args\` don\'t need to specify the parameter types\. For example\, they all can be java\.lang\.Object\. It is because the type information is stored in the method handle itself\.
+
+A \`java\_call\_config\` value is passed to \$config\. See kink\/javahost\/JAVA for \`java\_call\_config\` type\.
+
+.. rubric:: Result
+
+1\)  If the return type of the method handle is a reference type \`rt\`\,     and the invocation returns \`resultObj\`\,     \`invoke\` tail\-calls the success continuation with a \`java\` value \(resultObj\, rt\)\.
+
+2\)  If the return type \`pt\` of the method handle is     char\, boolean\, byte\, short\, int\, long\, float or double\,     and the invocation returns a value\,     \`invoke\` tail\-calls the success continuation with a \`java\` value     \(box\, pt\)\, where \`box\` is a wrapper instance of the returned value\.
+
+3\)  If the return type of the method handle is void\,     and the invocation returns\,     \`invoke\` tail\-calls the success continuation with no arg\.
+
+4\)  If the invocation terminates throwing a Java exception \`exceptionObj\`\,     and the exception is an instance of one or more exception types specified     by invocations of C\.catch\,     \`invoke\` tail\-calls the error continuation corresponding     to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
+
+5\)  If the invocation terminates throwing a Java exception\,     and no exception type passed to C\.catch matches the thrown exception\,     \`invoke\` raises a Kink exception\.
+
+.. rubric:: Preconditions
+
+\`Mh\` must be an \`java\` value of \(mh\, \*\)\, where \`mh\` is an instance of MethodHandle\.
+
+\`Args\` must be a \`vec\` of \`java\` values\. \`objectReference\` attributes of the elements must be typable\-as the corresponding parameter types of \`mh\`\.
+
+\$config must be a function which takes a \`java\_call\_config\`\.
+
+.. _api-e03a5352f457fb0a7b58cb79fc751f2b:
+
+METHOD\_HANDLE\.instance\_method\(Owner\_class Method\_name Param\_classes Ret\_class \.\.\.\[\$config\=\{\}\]\)
+================================================================================================================
+
+\`instance\_method\` looks up a method handle of a public instance method\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_no\_such\_method\(\$no\_such\_method\)\: default \= a function which raises an exception
+
+\• C\.on\_illegal\_access\(\$illegal\_access\)\: default \= a function which raises an exception
+
+\`instance\_method\` looks up a method using MethodHandles\.publicLookup\(\)\.findVirtual\, where \`Owner\_class\` is the class which owns the method\, \`Method\_name\` is the name of the method\, \`Param\_classes\` is the parameter types\, and \`Ret\_class\` is the type of the returned value\.
+
+.. rubric:: Result
+
+If the specified public method is found\, \`instance\_method\` tail\-calls \$success with a \`java\` value \(mh\, MethodHandle\)\, where \`mh\` is the method handle of the method\. The parameter types of the method handle will be \`\[Owner\_class\] \+ Param\_classes\`\, and the return type will be \`Ret\_class\`\.
+
+If an exception \`nsme\` of NoSuchMethodException is thrown\, \`instance\_method\` tail\-calls \$no\_such\_method with a \`java\` value \(nsme\, NoSuchMethodException\)\.
+
+If an exception \`iae\` of IllegalAccessException is thrown\, \`instance\_method\` tail\-calls \$illegal\_access with a \`java\` value \(iae\, IllegalAccessException\)\.
+
+.. rubric:: Preconditions
+
+\`Owner\_class\` must be a \`java\` value \(oc\, \*\)\, where \`oc\` is an instance of java\.lang\.Class\.
+
+\`Method\_name\` must be a \`str\`\.
+
+\`Param\_classes\` must be a \`vec\` of \`java\` values \(pc\, \*\)\, where \`pc\` is an instance of java\.lang\.Class
+
+\`Ret\_class\` must be a \`java\` val \(rc\, \*\)\, where \`rc\` is an instance of java\.lang\.Class\.
+
+.. _api-8be8501d3a7591111e17b9be5062c871:
+
+METHOD\_HANDLE\.static\_method\(Owner\_class Method\_name Param\_classes Ret\_class \.\.\.\[\$config\=\{\}\]\)
+==============================================================================================================
+
+\`static\_method\` looks up a method handle of a public static method\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_no\_such\_method\(\$no\_such\_method\)\: default \= a function which raises an exception
+
+\• C\.on\_illegal\_access\(\$illegal\_access\)\: default \= a function which raises an exception
+
+\`static\_method\` looks up a method using MethodHandles\.publicLookup\(\)\.findStatic\, where \`Owner\_class\` is the class which owns the method\, \`Method\_name\` is the name of the method\, \`Param\_classes\` is the parameter types\, and \`Ret\_class\` is the type of the returned value\.
+
+.. rubric:: Result
+
+If the specified method is found\, \`static\_method\` tail\-calls \$success with a \`java\` value \(mh\, MethodHandle\)\, where \`mh\` is the method handle of the method\. The parameter types of the method handle will be \`Param\_classes\`\, and the return type will be \`Ret\_class\`\.
+
+If an exception \`nsme\` of NoSuchMethodException is thrown\, \`instance\_method\` tail\-calls \$no\_such\_method with a \`java\` value \(nsme\, NoSuchMethodException\)\.
+
+If an exception \`iae\` of IllegalAccessException is thrown\, \`instance\_method\` tail\-calls \$illegal\_access with a \`java\` value \(iae\, IllegalAccessException\)\.
+
+.. rubric:: Preconditions
+
+\`Owner\_class\` must be a \`java\` value \(oc\, \*\)\, where \`oc\` is an instance of java\.lang\.Class\.
+
+\`Method\_name\` must be a \`str\`\.
+
+\`Param\_classes\` must be a \`vec\` of \`java\` values \(pc\, \*\)\, where \`pc\` is an instance of java\.lang\.Class
+
+\`Ret\_class\` must be a \`java\` val \(rc\, \*\)\, where \`rc\` is an instance of java\.lang\.Class\.
+
+.. _api-2ee05d9149217fe22727d6b276608eac:
+
+METHOD\_HANDLE\.constructor\(Owner\_class Param\_classes \.\.\.\[\$config\=\{\}\]\)
+===================================================================================
+
+\`constructor\` looks up a method handle of a public constructor\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_no\_such\_method\(\$no\_such\_method\)\: default \= a function which raises an exception
+
+\• C\.on\_illegal\_access\(\$illegal\_access\)\: default \= a function which raises an exception
+
+\`constructor\` looks up a constructor using MethodHandles\.publicLookup\(\)\.findConstructor\, by \`Owner\_class\` as the owner of the consturctor\, and \`Param\_classes\` as the parameter types\.
+
+.. rubric:: Result
+
+If the specified constructor is found\, \`constructor\` tail\-calls \$success with a \`java\` value \(mh\, MethodHandle\)\, where \`mh\` is the method handle of the constructor\. The parameter types of the method handle will be \`Param\_classes\`\, and the return type will be \`Owner\_class\`\.
+
+If an exception \`nsme\` of NoSuchMethodException is thrown\, \`constructor\` tail\-calls \$no\_such\_method with a \`java\` value \(nsme\, NoSuchMethodException\)\.
+
+If an exception \`iae\` of IllegalAccessException is thrown\, \`constructor\` tail\-calls \$illegal\_access with a \`java\` value \(iae\, IllegalAccessException\)\.
+
+.. rubric:: Preconditions
+
+\`Owner\_class\` must be a \`java\` value \(oc\, \*\)\, where \`oc\` is an instance of java\.lang\.Class\.
+
+\`Param\_classes\` must be a \`vec\` of \`java\` values \(pc\, \*\)\, where \`pc\` is an instance of java\.lang\.Class
+
+\$success\, \$no\_such\_method\, and \$illegal\_access must be functions which take a \`java\` value\.
+
+.. _api-2d21ac41d5bf17b211c947ba5962eca4:
+
+METHOD\_HANDLE\.proxy\(Param\_classes Ret\_class \$handler\)
+============================================================
+
+\`proxy\` returns a method handle which delegates the procedure to a Kink function \$handler\.
+
+The result is a \`java\` value \(mh\, MethodHandle\)\, where \`mh\` is a method handle which delegates the procedure to \$handler\. The parameter types of the method handle will be \`Param\_classes\`\, and the return type will be \`Ret\_class\`\.
+
+.. rubric:: Invocation of the method handle
+
+When the method handle is invoked\, a new abstract stack machine is created\, and \$handler is called in the abstract stack machine\.
+
+The arguments of the invocation are passed as the arguments of \$handler\. The arguments are passed as \`java\` values \(arg\, argType\)\. Here\, \`argType\` is the corresponding parameter type of the method handle\. If \`argType\` is a reference type\, \`arg\` is the passed argument itself\. If \`argType\` is a primitive type\, \`arg\` is a wrapper instance which wraps the argument\.
+
+.. rubric:: To return from the invocation
+
+If the return type of the method handle is a reference type\, to order that the invocation return a value \`ref\` of the reference type\, \$handler must return a \`java\` value \(ref\, \*\)\.
+
+If the return type of the method handle is char\, boolean\, byte\, short\, int\, long\, float\, or double\, to order that the invocation return a value \`primitive\`\, \$handler must return a \`java\` value \(wrapper\, \*\)\, where \`wrapper\` is a wrapper instance object which wraps \`primitive\`\.
+
+If the return type of the method handle is void\, to order that the invocation return\, \$handler must return any value other than \`java\_throw\`\.
+
+.. rubric:: To throw a Java Throwable from the invocation
+
+To order that the invocation throw a Java Throwable\, \$handler must return a \`java\_throw\`\.
+
+.. rubric:: Preconditions
+
+\`Param\_classes\` must be a \`vec\` of \`java\` values \(pc\, \*\)\, where \`pc\` is an instance of java\.lang\.Class
+
+\`Ret\_class\` must be a \`java\` val \(rc\, \*\)\, where \`rc\` is an instance of java\.lang\.Class\.
+
+.. rubric:: Example\: return an int
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :METHOD_HANDLE.require_from('kink/javahost/')
+        
+    :Mh <- METHOD_HANDLE.proxy([JAVA.int_class JAVA.int_class] JAVA.int_class){(:X :Y)
+      :Sum = X.to_kink_num + Y.to_kink_num
+      JAVA.int(Sum)
+    }
+        
+    :R <- METHOD_HANDLE.invoke(Mh [JAVA.int(10) JAVA.int(20)])
+    stdout.print_line(R.repr) # => (java "30" as int)
+
+.. rubric:: Example\: throw an exception
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :JAVA_THROW.require_from('kink/javahost/')
+    :METHOD_HANDLE.require_from('kink/javahost/')
+        
+    :RuntimeException_class <- JAVA.class('java.lang.RuntimeException')
+        
+    :Mh <- METHOD_HANDLE.proxy([] JAVA.void_class){
+      JAVA_THROW.new(RuntimeException_class.new(JAVA.string('bang!')))
+    }
+        
+    METHOD_HANDLE.invoke(Mh []){(:C)
+      C.catch(RuntimeException_class){(:Rte)
+        stdout.print_line('thrown: {}'.format(Rte.repr))
+      }
+    }
+    # => thrown: (java "java.lang.RuntimeException: bang!" as java.lang.RuntimeException)
+

@@ -1,0 +1,41 @@
+====================================
+kink\/javahost\/JAVA\_STREAM\_OUTPUT
+====================================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-88ce4afab8ce2e256a08ca3f00105d77:
+
+JAVA\_STREAM\_OUTPUT\.new\(Stream\)
+===================================
+
+\`new\` makes an \`output\` val which wraps a Java OutputStream object specified by \`Stream\` arg\.
+
+Preconditions\:
+
+\• \`Stream\` must be a java val
+
+\• The object reference of \`Stream\` must be an instance of java\.io\.OutputStream\.
+
+Example\:
+
+.. code:: kink
+
+    :JAVA.require_from('kink/javahost/')
+    :JAVA_STREAM_OUTPUT.require_from('kink/javahost/')
+    :CONTROL.require_from('kink/')
+    :BIN.require_from('kink/')
+        
+    :Baos_class <- JAVA.class('java.io.ByteArrayOutputStream')
+    :Baos <- Baos_class.new
+    CONTROL.with_finally{(:finally)
+      :Out = JAVA_STREAM_OUTPUT.new(Baos)
+      finally{ Out.close }
+      Out.write(BIN.of(1 2 3))
+      Out.write(BIN.of(4 5))
+    }
+    :Bin <- Baos.call_method('toByteArray').to_kink_bin
+    stdout.print_line(Bin.repr) # => (bin 0x01 0x02 0x03 0x04 0x05)
+

@@ -1,0 +1,582 @@
+==============
+kink\/io\/FILE
+==============
+
+Operates files in the filesystem\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-fafe98441385cfb4b79326879ff4d65e:
+
+FILE\.open\_to\_read\(Path \.\.\.\[\$config\=\{\}\]\)
+=====================================================
+
+\`open\_to\_read\` opens the file specified by \`Path\` as a byte input stream\. The result supports \`input\` type\.
+
+Config methods\:
+
+\• C\.no\_buffer \/ C\.buffer\(Max\_buf\_size\)
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+When the file is opened\, \`open\_to\_read\` tail\-calls \$success with an \`input\`\.
+
+If an IO error occurs\, \`open\_to\_read\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Buffering
+
+The result \`input\` performs userspace buffering by default\.
+
+To limit the buffer size\, call C\.buffer\. The byte length of the buffer does not exceed \`Max\_buf\_size\`\.
+
+To disable userspace buffering\, call C\.no\_buffer\.
+
+.. rubric:: Preconditions
+
+\`Path\` must be a \`str\`\.
+
+\`Max\_buf\_size\` must be a positive int \`num\`\.
+
+\$success must be a fun which takes an \`input\`\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+    :CONTROL.require_from('kink/')
+        
+    CONTROL.with_finally{(:finally)
+      :In = FILE.open_to_read('/dev/urandom')
+      finally{ In.close }
+      :Bin = In.read(10)
+      stdout.print_line(Bin.repr)
+    }
+    # Output differs each time:
+    #   (bin 0xbe 0x62 0xe8 0x75 0xd4 0x88 0xd4 0xfc 0xc4 0x31)
+        
+    :Result <- FILE.open_to_read('/no/such/file'){(:O)
+      O.on_error{(:Exc) 'error: {}'.format(Exc.message) }
+    }
+    stdout.print_line(Result.repr)
+    # => "error: cannot open to read: \"/no/such/file\""
+
+.. _api-12d6507dc8d16fc03859fdd3220c7cd3:
+
+FILE\.open\_to\_scan\(Path Charset \.\.\.\[\$config\=\{\}\]\)
+=============================================================
+
+\`open\_to\_scan\` opens the file specified by \`Path\` as a character input stream\. The result supports both \`scanner\` and \`input\` types\.
+
+Config methods\:
+
+\• C\.no\_buffer \/ C\.buffer\(Max\_buf\_size\)
+
+\• C\.replace\_conversion\_error
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the file is opened\, \`open\_to\_scan\` tail\-calls \$success with the scanner\+input\.
+
+If an IO error occurs\, \`open\_to\_scan\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Buffering
+
+The result scanner\+input performs userspace buffering by default\.
+
+To limit the buffer size\, call C\.buffer\. The byte length of the buffer does not exceed \`Max\_buf\_size\`\.
+
+To disable userspace buffering\, call C\.no\_buffer\.
+
+.. rubric:: String decoding
+
+\`Charset\` is used to decode bytes into strings\.
+
+When \`scan\_line\` or \`scan\` methods detect malformed byte sequence or a character which cannot be mapped to Unicode\, an IO error occurs by default\.
+
+If C\.replace\_conversion\_error is called\, \`scan\` and \`scan\_line\` insert replacement character sequence into the string instead of an IO error\.
+
+.. rubric:: Preconditions
+
+\`Path\` must be a \`str\`\.
+
+\`Charset\` must be a \`charset\`\.
+
+\`Max\_buf\_size\` must be a positive int num\.
+
+\$success must be a fun which takes a scanner\+input
+
+\$error must be a fun which takes an \`exception\`
+
+.. _api-fdfdfc98095e167314e45585ce156a49:
+
+FILE\.open\_to\_write\(Path \.\.\.\[\$config\=\{\}\]\)
+======================================================
+
+\`open\_to\_write\` opens the file specified by \`Path\` as a byte output stream\. The result supports \`output\` type\.
+
+Config methods\:
+
+\• C\.append
+
+\• C\.no\_buffer \/ C\.buffer\(Max\_buf\_size\)
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the file is successfully opened\, \`open\_to\_write\` tail\-calls \$success with an \`output\`\.
+
+If an IO error occurs\, \`open\_to\_write\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Truncation and creation
+
+If the specified file exists\, by default\, \`open\_to\_write\` truncates the file to length 0\.
+
+If the specified file exists\, and C\.append is called\, \`open\_to\_write\` opens the file without truncating the content\. The file pointer is set at the end of the file\.
+
+If the specified file does not exist\, \`open\_to\_write\` makes a new empty file\.
+
+.. rubric:: Buffering
+
+The result \`output\` performs userspace buffering by default\.
+
+To limit the buffer size\, call C\.buffer\. The byte length of the buffer does not exceed \`Max\_buf\_size\`\.
+
+To disable userspace buffering\, call C\.no\_buffer\.
+
+.. rubric:: Preconditions
+
+\`Path\` must be a \`str\`\.
+
+\`Max\_buf\_size\` must be a positive int \`num\`\.
+
+\$success must be a fun which takes an \`output\`\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+    :CONTROL.require_from('kink/')
+    :CHARSET.require_from('kink/')
+        
+    CONTROL.with_finally{(:finally)
+      :Out = FILE.open_to_write('/dev/stdout')
+      finally{ Out.close }
+      Out.write(CHARSET.ascii.str_to_bin("hello\n"))
+    }
+    # => hello
+
+.. _api-d02fdfaa5d9aae6a7176b437e0e8befa:
+
+FILE\.open\_to\_print\(Path Charset Newline \.\.\.\[\$config\=\{\}\]\)
+======================================================================
+
+\`open\_to\_print\` opens the file specified by \`Path\` as a character output stream\. The result supports both \`printer\` and \`output\` types\.
+
+Config methods\:
+
+\• C\.append
+
+\• C\.no\_buffer \/ C\.buffer\(Max\_buf\_size\)
+
+\• C\.flush\_on\_print
+
+\• C\.replace\_conversion\_error
+
+\• C\.synchronize
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If a file is successfully open\, \`open\_to\_print\` tail\-calls \$success with a printer\+output\.
+
+If an IO error occurs\, \`open\_to\_print\` tail\-calls \$error with an \`exception\`\.
+
+\`Newline\` will be used by \`printe\_line\` method as the line separator\.
+
+.. rubric:: Truncation and creation
+
+If the specified file exists\, by default\, \`open\_to\_print\` truncates the file to length 0\.
+
+If the specified file exists\, and C\.append is called\, \`open\_to\_print\` opens the file without truncating the content\. The file pointer is set at the end of the file\.
+
+If the specified file does not exist\, \`open\_to\_print\` makes a new empty file\.
+
+.. rubric:: Buffering
+
+The printer\+output performs userspace buffering by default\.
+
+To limit the buffer size\, call C\.buffer\. The byte length of the buffer does not exceed \`Max\_buf\_size\`\.
+
+To disable userspace buffering\, call C\.no\_buffer\.
+
+If C\.flush\_on\_print is called\, and the printer\+output is bufferred\, the printer\+output flushes the buffer after each invocation of \`print\` and \`print\_line\`\.
+
+.. rubric:: String encoding
+
+\`Charset\` will be used to encode strings to bytes\.
+
+When a string cannot be encoded\, by default\, an IO error occurs\.
+
+If C\.replace\_conversion\_error is called\, \`print\` and \`print\_line\` methods write replacement byte sequence instead of an IO error\.
+
+.. rubric:: Synchronization
+
+If C\.synchronize is called\, \`write\`\, \`flush\`\, \`print\`\, \`print\_line\`\, and \`close\` methods are serialized by a single mutex\.
+
+.. rubric:: Preconditions
+
+\`Path\` must be a \`str\`\.
+
+\`Charset\` must be a \`charset\`\.
+
+\`Newline\` must be a \`str\`\.
+
+\`Max\_buf\_size\` must be a positive int \`num\`\.
+
+\$success must be a fun which takes a printer\+output\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. _api-8be892a018ed31a7936442857b2b217a:
+
+FILE\.mkdir\(Path \.\.\.\[\$config\=\{\}\]\)
+============================================
+
+\`mkdir\` makes a directory named \`Path\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If a directory is successfully made\, \`mkdir\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`mkdir\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Path\` must be a \`str\`\.
+
+\$success must be a fun which takes no arg\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. _api-43f040646fa640559c055d713955cf3e:
+
+FILE\.rm\(Path \.\.\.\[\$config\=\{\}\]\)
+=========================================
+
+\`rm\` removes an filesystem entry named \`Path\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the filesystem entry is successfully removed\, \`rm\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`rm\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Path\` must be a str\.
+
+\$success must be a fun which takes no arg\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. _api-50cf9a438a1dc4954679784c603ad7ed:
+
+FILE\.ls\(Dir\_path \.\.\.\[\$config\=\{\}\]\)
+==============================================
+
+\`ls\` fetches the entries directly under the directory specified by \`Dir\_path\`\. The paths of the entries will have the parts of \`Dir\_path\` as the leading parts\. \`ls\` returns a \`vec\` of the paths of the entries\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If entries are fetched successfully\, \`ls\` tail\-calls \$success with a \`vec\` of the paths\.
+
+If an IO error occurs\, \`ls\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Dir\_path\` must be a str\.
+
+\$success must be a fun which takes a \`vec\`\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+        
+    stdout.print_line(FILE.ls('/home').repr) # => ["/home/jake" "/home/elwood"]
+    stdout.print_line(FILE.ls('bin').repr)   # => ["bin/kinkw.exe" "bin/kink.exe" "bin/kink"]
+
+.. _api-f3b384b1b6a82bda811aca0cc1896233:
+
+FILE\.ln\_s\(Target\_path Link\_path \.\.\.\[\$config\=\{\}\]\)
+===============================================================
+
+\`ln\_s\` makes a symbolic link on \`Link\_path\` which is linked to \`Target\_path\`\.
+
+The name of the fun stems from the UNIX command “ln \-s target link”\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If a symbolic link is successfully made\, \`ln\_s\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`ln\_s\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Target\_path\` must be a \`str\`\.
+
+\`Link\_path\` must be a \`str\`\.
+
+\$success must be a fun which takes no arg\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    $ kink script:":FILE.require_from('kink/io/') FILE.ln_s('target' 'link')"
+        
+    $ readlink link
+    target
+
+.. _api-3ba272fdc252dcbe228ad93bcfb4bc46:
+
+FILE\.readlink\(Link\_path \.\.\.\[\$config\=\{\}\]\)
+=====================================================
+
+\`readlink\` fetches the target path of the symbolic link named \`Link\_path\`\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the symlink is successfully read\, \`readlink\` tail\-calls \$success with a \`str\` of the target path\.
+
+If an IO error occurs\, \`readlink\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Link\_path\` must be a \`str\`\.
+
+\$success must be a fun which takes a \`str\`\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    $ ln -s target link
+        
+    $ kink script:":FILE.require_from('kink/io/') stdout.print_line(FILE.readlink('link'))"
+    target
+
+.. _api-fc42f8751b290ee0543f933667b40316:
+
+FILE\.realpath\(Path \.\.\.\[\$config\=\{\}\]\)
+===============================================
+
+\`realpath\` fetches the absolute real path of \`Path\`\, resolving symlinks\, hardlinks like \'\.\.\'\, duplicated path separators\, and so on\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If the real path is successfully read\, \`realpath\` tail\-calls \$success with a \`str\` of the real path\.
+
+If an IO error occurs\, \`realpath\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Path\` must be a \`str\`\.
+
+\$success must be a fun which takes a \`str\` of the real path\.
+
+\$error must be a fun which takes an \`exception\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+        
+    stdout.print_line(FILE.realpath('/usr/local/bin/..')) # => /usr/local
+
+.. _api-b7c09d5c4194843678b26f99672c0547:
+
+FILE\.basename\(Path\)
+======================
+
+\`basename\` returns the name of the filesystem entry at the last part of \`Path\`\.
+
+If \`Path\` does not contain such an entry\, \`basename\` returns an empty \`str\`\.
+
+.. rubric:: Precondition
+
+\`Path\` must be a \`str\`\.
+
+.. rubric:: Examples
+
+On a Unix like system\:
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+        
+    :base <- {(:Path)
+      :Base = FILE.basename(Path)
+      stdout.print_line(Base)
+    }
+    base('bin/kink') # => kink
+    base('/home') # => home
+    base('/') # =>
+
+On Windows\:
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+        
+    :base <- {(:Path)
+      :Base = FILE.basename(Path)
+      stdout.print_line(Base)
+    }
+    base('bin/kink.exe')  # => kink.exe
+    base('bin\kink.exe')  # => kink.exe
+    base('C:\Users')  # => Users
+    base('C:/Users')  # => Users
+    base('C:foo')  # => foo
+    base('C:\')    # =>
+    base('C:/')    # =>
+    base('C:')     # =>
+
+.. _api-bba9cfc8b3aa5485b3364f2cadef1e52:
+
+FILE\.dirname\(Path\)
+=====================
+
+\`dirname\` returns the path excluding the name of the filesystem entry of the last part of \`Path\`\.
+
+If \`Path\` does not contain such an filesystem entry\, \`dirname\` returns the path which is semantically equivalent to \`Path\`\.
+
+.. rubric:: Precondition
+
+\`Path\` must be a \`str\`\.
+
+.. rubric:: Examples
+
+On a Unix like system\:
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+        
+    :dir <- {(:Path)
+      :Dir = FILE.dirname(Path)
+      stdout.print_line(Dir)
+    }
+    dir('bin/kink') # => bin
+    dir('/home') # => /
+    dir('/') # => /
+
+On Windows\:
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+        
+    :dir <- {(:Path)
+      :Dir = FILE.dirname(Path)
+      stdout.print_line(Dir)
+    }
+    dir('bin/kink.exe')  # => bin
+    dir('bin\kink.exe')  # => bin
+    dir('C:\Users')  # => C:\
+    dir('C:/Users')  # => C:\
+    dir('C:foo')  # => C:
+    dir('C:\')    # => C:\
+    dir('C:/')    # => C:\
+    dir('C:')     # => C:
+
+.. _api-456322b6d4ea1b8f3a7c7ed33789dabc:
+
+FILE\.pwd
+=========
+
+\`pwd\` returns the absolute path of the current directory\.
+
+.. _api-672d7852f77f95031369a6684836d39e:
+
+FILE\.separator
+===============
+
+\`separator\` returns the path separator of the host system\.
+
+The result is either \"\/\" or \"\\\"\.
+
+.. _api-3e8ddfb486d1e0cbcd9ae9018c759bcb:
+
+FILE\.file\?\(Path\)
+====================
+
+\`file\?\` returns whether the current process can determine the filesystem entry named \`Path\` is a regular file\.
+
+.. _api-9c2c304b066d350e512c7fc9558dd3ad:
+
+FILE\.dir\?\(Path\)
+===================
+
+\`dir\?\` returns whether the current process can determine the filesystem entry named \`Path\` is a directory\.
+
+.. _api-24dbf6720ad0007fd385abd4a4c2df43:
+
+FILE\.symlink\?\(Path\)
+=======================
+
+\`symlink\?\` returns whether the current process can determine the filesystem entry named \`Path\` is a symbolic link\.
+
+.. _api-d937d3f320d7a00c37c569a332072bde:
+
+FILE\.present\?\(Path\)
+=======================
+
+\`present\?\` returns whether the current process can determine the filesystem entry named \`Path\` exists\.
+

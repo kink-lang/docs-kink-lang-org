@@ -1,0 +1,454 @@
+======
+Syntax
+======
+This chapter describes how program texts are syntactically analyzed.
+
+.. contents::
+  :local:
+  :backlinks: none
+
+Steps of analysis
+=================
+A :dfn:`program text` is a sequence of `unicode scalar values
+<https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G25539>`_.
+
+A program text is first sliced to a sequence of morphemes
+using longest possible matching from the start to the end.
+
+Next the morpheme sequence is reduced to a sequence of tokens,
+filtering out non-token morphemes.
+
+And then, the token sequence is parsed as
+a :token:`program` abstract source tree.
+
+Morphemes
+=========
+
+Whitespace and comments
+-----------------------
+
+.. csv-table::
+    :header: Regular expression, Morpheme category
+    :delim: /
+
+    :regexp:`\\u0020|\\u000a|\\u000d\\u000a` / Whitespace
+    :regexp:`#[^\\u000d\\u000a]*`            / Comment
+
+
+:dfn:`Whitespace` is used to make a program text easy to read
+and to separate tokens from each other.
+Space (U+0020), LF (U+000a), and CR+LF (U+000d, U+000a)
+are whitespace character sequences.
+
+.. note::
+
+  Horizontal tab (U+0009) is not a valid whitespace character.
+  This design decision is intended to avoid bikeshed discussion about indentation.
+
+
+The categories of morphemes ``(``, ``[`` and ``{`` may
+differ when they are located after whitespace characters.
+See :ref:`the description of token types <token_type>` for detail.
+
+.. _comment:
+
+:dfn:`Comments` are used to describe the program text.
+A number sign ``#`` (U+0023) indicates a start of a comment.
+The comment continues till the end of the line,
+which is before the CR or LF character or the end of the program text.
+Comments are treated as whitespace characters.
+
+::
+
+    stdout.print_line('foo'*2)      # => foofoo
+
+    stdout.print_line( 'foo' * 2 )  # => foofoo
+
+    # Comment line
+    do_something  # trailing comment
+
+Whitespace characters and comments are not tokens.
+
+.. _symbol_token:
+
+Symbol tokens
+-------------
+
+.. csv-table::
+    :header: Regular expression, Morpheme category
+    :delim: |
+
+    :regexp:`[a-z_][a-z0-9_?]*` | Fun symbol token
+    :regexp:`([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*`  | Data symbol token
+
+
+A :dfn:`symbol token` consists of a leading ascii letter (a-zA-Z) or an underscore ``_`` (U+005f),
+and a trailing sequence of zero or more ascii letters (a-zA-Z), ascii digits (0-9),
+underscores ``_`` (U+005f) and question marks ``?`` (U+0x3f).
+
+There are two types of symbol tokens: function symbol tokens and data symbol tokens.
+
+A :dfn:`function symbol token` is a symbol token which represents a :term:`function symbol`.
+Function symbols are commonly used for names of variables which contain functions.
+The following are exmaples of function symbols.
+
+- ``any?``
+- ``_loop``
+- ``take_5``
+
+A :dfn:`data symbol token` is a symbol token which represents a :term:`data symbol`.
+Data symbols are commonly used for names of variables which contain ordinary values.
+The following are examples of data symbols.
+
+- ``More_lines?``
+- ``ArrayList_class``
+- ``FLAT_MAP``
+- ``_HASH_TABLE``
+- ``rarely_Used``
+
+.. _num_token:
+
+Num tokens
+----------
+
+.. csv-table::
+    :header: Regular expression, Morpheme category
+    :delim: |
+
+    :regexp:`[0-9][0-9_]*(\\.[0-9][0-9_]*)?(?![a-zA-Z0-9_?])`  | Num token (base10)
+    :regexp:`0b_*[01][01_]*(?![a-zA-Z0-9_?])`                  | Num token (base2)
+    :regexp:`0x_*[0-9a-f][0-9a-f_]*(?![a-zA-Z0-9_?])`          | Num token (base16)
+
+There are three types of :dfn:`num tokens`: base10, base16 and base2.
+A base10 num token represents a num in decimal,
+base16 in hexadecimal,
+and base2 in binary.
+
+The fractional part can be represented only by base10 num tokens.
+Digits before the period ``.`` (U+002e) represents the integer portion,
+and digits after the period represents the fractional portion.
+
+Underscore characters ``_`` (U+005f) can be placed for spacing.
+
+These are examples of num tokens, each of which represents 42.
+
+- ``42``
+- ``42__``
+- ``0042``
+- ``0x2a``
+- ``0b_10_1010``
+
+These are examples of num tokens with the fractional portion.
+
+- ``0.0``
+- ``0.001``
+- ``3.141_592_653``
+
+All base10, base2 and base16 num tokens cannot be directly followed
+by a character which can form a symbol.
+This limitation is represented as :regexp:`(?![a-zA-Z0-9_?])`.
+Thus, for example, a code fragment ``24h`` causes a syntax error.
+
+.. note::
+
+  Without this rule, for example, ``0b123`` is parsed as ``0b1`` and ``23``.
+  It is certainly error prone.
+
+Each num token represents a number the scale of which is the count of digits of the fractional portion,
+and the mantissa of which is the integer made of the digits.
+
+.. _str_token:
+
+String tokens
+-------------
+
+.. csv-table::
+    :header: Regular expression, Morpheme category
+    :delim: /
+
+    :regexp:`'(''\|[^'\\u000d\\000a])*'` / String token (simple)
+    :regexp:`"([^"\\u000d\\u000a\\\\]|\\\\[0abtnvfre"\\\\]|\\\\x\\{[0-9a-f]{1,6}\\})*"` / String token (rich)
+
+There are two types of :dfn:`string tokens`: simple and rich.
+
+In a :dfn:`simple string token`, any characters between the two single quotation marks ``'`` (U+0027)
+are the content of the string.
+If you want to include a single quotation mark itself in the string,
+put two consecutive single quotation marks.
+
+These are examples of simple string tokens.
+
+- ``'Hello world'``
+- ``'Let''s go!'`` (this represents ``"Let's go!"``)
+
+In a :dfn:`rich string token`, characters between the two double quotation marks ``"`` (U+0022)
+are the content of the string.
+In the token, a sequence of characters prefixed by a backslash \\ (U+005c) represents
+a special character, such as a line feed (``\n``) or a double quotation mark (``\"``).
+
+These are examples of rich string tokens.
+
+- ``"Let's go!"``
+- ``"GET /index.html HTTP/1.1\r\nHost: host.example.org\r\n"``
+
+Here is a list of :dfn:`backslash notations`.
+
+.. list-table::
+    :header-rows: 1
+    :widths: 20 20 60
+
+    * - Notation
+      - Unicode
+      - Description
+    * - ``\0``
+      - U+0000
+      - Null character
+    * - ``\a``
+      - U+0007
+      - Bell
+    * - ``\b``
+      - U+0008
+      - Backspace
+    * - ``\t``
+      - U+0009
+      - Horizontal tab
+    * - ``\n``
+      - U+000a
+      - Line feed
+    * - ``\v``
+      - U+000b
+      - Vertical tab
+    * - ``\f``
+      - U+000c
+      - Form feed
+    * - ``\r``
+      - U+000d
+      - Carriage return
+    * - ``\e``
+      - U+001b
+      - Escape
+    * - ``\"``
+      - U+0022
+      - Double quotation mark ``"``
+    * - ``\\``
+      - U+005c
+      - Backslash ``\``
+    * - ``\x{xxxxxx}``
+      - U+xxxxxx
+      - Character specified by a
+        `Unicode scalar value <https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G25539>`_.
+        xxxxxx are one to six hexadecimal digits (0-9a-f),
+        which represent an integer in the range 0 to d7ff\ `16`:sub:,
+        or e000\ `16`:sub: to 10ffff\ `16`:sub:, inclusive.
+
+.. note::
+
+  As specified in the regex patterns,
+  neither a simple string token nor a rich string token can span multiple program lines.
+  That is for simplicity of lexical analysis in external tools such as editor plugins.
+  If you want to use a text which spans multiple lines,
+  consider using a rich str token with backslash notation,
+  or making a :ref:`data file module <modsystem_data_file_source>`.
+
+.. _binding_token:
+
+Binding token
+-------------
+
+.. csv-table::
+    :header: Regular expression, Morpheme category
+    :delim: /
+
+    :regexp:`\\binding(?![a-zA-Z0-9_?])` / Binding token
+
+A :dfn:`binding token` is literally ``\binding``.
+It is used for a binding expression.
+
+.. _punctuation_operator:
+
+Punctuation marks and operators
+-------------------------------
+
+Tokens other than described above are :dfn:`punctuation marks` or :dfn:`operators`.
+
+Some morphemes, like ``$``, are reduced to different tokens depending on
+whether it is placed just after a whitespace character or not.
+If the morpheme is placed after a whitespace character,
+the token is represented with a prefix ``ws``,
+like ``ws$``.
+If the morpheme is not placed after a whitespace character,
+the token is represented with a prefix ``nows``, like ``nows$``.
+
+Other morphemes, like ``==``, are reduced to a single token
+not depending on whether it is placed just after a whitespace character or not.
+Those tokens are represented literally like ``==``.
+
+The list of punctuation marks and operators:
+
+.. csv-table::
+    :header: Token, Note
+    :delim: ;
+
+    ``!``     ; ``op_lognot`` operator
+    ``~``     ; ``op_not`` operator
+    ``<-``    ; ``op_store`` operator
+    ``||``    ; ``op_logor`` operator
+    ``&&``    ; ``op_logand`` operator
+    ``==``    ; ``op_eq`` operator
+    ``!=``    ; not-equal operator
+    ``<``     ; less-than operator
+    ``>``     ; greater-than operator
+    ``<=``    ; ``op_le`` operator
+    ``>=``    ; greater-than-or-equal-to operator
+    ``|``     ; ``op_or`` operator
+    ``^``     ; ``op_xor`` operator
+    ``&``     ; ``op_and`` operator
+    ``<<``    ; ``op_shl`` operator
+    ``>>``    ; ``op_shr`` operator
+    ``+``     ; ``op_add`` operator
+    ``-``     ; ``op_sub`` operator, or ``op_minus`` operator
+    ``*``     ; ``op_mul`` operator
+    ``/``     ; ``op_div`` operator
+    ``//``    ; ``op_intdiv`` operator
+    ``%``     ; ``op_rem`` operator
+    ``=``     ; Let clauses
+    ``nows:`` ; Local variable references
+    ``ws:``   ; Member variable references
+    ``nows$`` ; Local variable load of a :term:`function symbol`
+    ``ws$``   ; Member variable load of a :term:`function symbol`
+    ``.``     ; Access to variables or functions
+    ``...``   ; Elements spreading
+    ``nows[`` ; Vectors, formal receivers, or actual receivers
+    ``ws[``   ; Vectors
+    ``]``     ; Closing
+    ``nows{`` ; Function expressions or function arguments
+    ``ws{``   ; Function expressions 
+    ``}``     ; Closing
+    ``nows(`` ; Parentheses expressions, formal arguments, or actual arguments
+    ``ws(``   ; Parentheses expressions
+    ``)``     ; Closing
+
+.. _abstract_source_tree:
+
+Abstract source tree
+====================
+The list describes the parsing rule of the :token:`program` abstract source tree, or AST,
+from the token sequence of a program text.
+
+There are several shift/reduce conflicts in the rules, and the parser always choose to shift.
+
+.. productionlist::
+    program: `toplevel`
+    toplevel: `empty`
+            : `expression` `toplevel`
+    seq: `empty` 
+       : `substantial_seq`
+    substantial_seq: `expression`
+                   : `expression` `substantial_seq`
+                   : `expression` '=' `expression` `substantial_seq`
+    expression: `store_op`
+    store_op: `logor_op`
+            : `logor_op` '<-' `logor_op`
+    logor_op: `logand_op`
+            : `logand_op` '||' `logor_op`
+    logand_op: `relation_op`
+             : `relation_op` '&&' `logand_op`
+    relation_op: `add_op`
+               : `add_op` '==' `add_op`
+               : `add_op` '!=' `add_op`
+               : `add_op` '<' `add_op`
+               : `add_op` '>' `add_op`
+               : `add_op` '<=' `add_op`
+               : `add_op` '>=' `add_op`
+    add_op: `multiply_op`
+          : `add_op` '+' `multiply_op`
+          : `add_op` '-' `multiply_op`
+          : `add_op` '|' `multiply_op`
+          : `add_op` '^' `multiply_op`
+    multiply_op: `unary_op`
+               : `multiply_op` '*' `unary_op`
+               : `multiply_op` '/' `unary_op`
+               : `multiply_op` '//' `unary_op`
+               : `multiply_op` '%' `unary_op`
+               : `multiply_op` '&' `unary_op`
+               : `multiply_op` '<<' `unary_op`
+               : `multiply_op` '>>' `unary_op`
+    unary_op: `primary`
+            : '-' `unary_op`
+            : '!' `unary_op`
+            : '~' `unary_op`
+    primary: `num`
+           : `str`
+           : `binding`
+           : `paren`
+           : `vec`
+           : `fun`
+           : `local_load`
+           : `member_load`
+           : `local_varref`
+           : `member_varref`
+           : `local_call`
+           : `member_call`
+    num: NUM
+    str: STRING
+    binding: BINDING
+    paren: 'nows(' `seq` ')'
+         : 'ws(' `seq` ')'
+    vec: 'nows[' `vec_body` ']'
+       : 'ws[' `vec_body` ']'
+    fun: 'nows{' `fun_body` '}'
+       : 'ws{' `fun_body` '}'
+    local_load: DATA_SYM | nows'$' FUN_SYM | ws'$' FUN_SYM
+    local_varref: 'nows:' DATA_SYM
+                : 'ws:' DATA_SYM
+                : 'nows:' FUN_SYM
+                : 'ws:' FUN_SYM
+    local_call: FUN_SYM `recv` `args`
+    member_load: `primary` '.' DATA_SYM
+             : `primary` 'nows$' FUN_SYM
+    member_varref: `primary` 'nows:' DATA_SYM
+               : `primary` 'nows:' FUN_SYM
+    member_call: `primary` '.' FUN_SYM `recv` `args`
+    recv: `empty`
+        : 'nows[' `expression` ']'
+    args: `paren_args` `fun_args`
+    paren_args: `empty`
+              : 'nows(' `vec_body` ')'
+    fun_args: `empty`
+            : `fun_arg` `fun_args`
+    fun_arg: 'nows{' `fun_body` '}'
+    vec_body: `empty`
+             : `elements_producer` `vec_body`
+    elements_producer: `expression`
+                     : '...' `expression`
+    fun_body: `formal_receiver` `formal_args` `seq`
+    formal_receiver: `empty`
+                   : 'nows[' `expression` ']'
+    formal_args: `empty`
+               : 'nows(' `vec_body` ')'
+    empty:
+
+.. _token_type:
+
+The following identifiers represent token types.
+
+.. list-table::
+    :header-rows: 1
+    :widths: 40 60
+
+    * - Token type
+      - Description
+    * - FUN_SYM
+      - :ref:`Function symbol token <symbol_token>` such as ``print``
+    * - DATA_SYM
+      - :ref:`Data symbol token <symbol_token>` such as ``Count``
+    * - NUM
+      - :ref:`Num token <num_token>` such as ``42`` or ``3.14159``
+    * - STRING
+      - :ref:`String token <str_token>` such as ``'Peng!'``
+    * - BINDING
+      - :ref:`Binding token <binding_token>` ``\binding``
+    * - Those enclosed by single quotation marks
+      - :ref:`Punctuation marks or operators <punctuation_operator>`
+
+.. vim: et sw=2 sts=2 et

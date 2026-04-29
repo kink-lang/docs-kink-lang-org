@@ -1,0 +1,173 @@
+=================
+kink\/io\/PRINTER
+=================
+
+Companion mod for printers\.
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-d8ea895f044d55406b23b4ecacf9b0ef:
+
+type printer
+============
+
+\`printer\` is an output port of strings\.
+
+\`printer\` provides sequential forward operations to the underlying destination\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :STR_PRINTER.require_from('kink/io/')
+        
+    :P <- STR_PRINTER.new("\r\n")
+    P.print_line('foo')
+    P.print('bar')
+    stdout.print_line(P.str.repr) # => "foo\r\nbar"
+
+.. _api-edaa10271780cbbc9cab44ed72c0440c:
+
+Printer\.print\(Str \.\.\.\[\$config\=\{\}\]\)
+----------------------------------------------
+
+\`print\` writes \`Str\`\.
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If \`Str\` is written without an IO error\, \`print\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`print\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Str\` must be a \`str\`
+
+\$success must be a fun which takes no arg
+
+\$error must be a fun which takes an \`exception\`
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :STR_PRINTER.require_from('kink/io/')
+        
+    :P <- STR_PRINTER.new("\r\n")
+    P.print('foo')
+    P.print('bar')
+    stdout.print_line(P.str.repr) # => "foobar"
+
+.. rubric:: Example\: IO error
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+    :CONTROL.require_from('kink/')
+    :CHARSET.require_from('kink/')
+        
+    :P <- FILE.open_to_print('/tmp/print.txt' CHARSET.utf8 "\r\n")
+    P.close
+        
+    P.print('foo'){(:C)
+      C.on_error{(:Exc)
+        stderr.print_line(Exc.message)
+      }
+    }
+    # => already closed
+        
+    P.print('foo')
+    # Output:
+    #   -- main exception
+    #   [..root..]
+    #   {..call by host..}
+    #   ,,,
+    #   already closed
+
+.. _api-1e74d93bb125eb9549fbf441b9149972:
+
+Printer\.print\_line\(Str \.\.\.\[\$config\=\{\}\]\)
+----------------------------------------------------
+
+\`print\_line\` writes \`Str\` and \`newline\`\.
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+
+If \`Str\` and \`newline\` are written without an IO error\, \`print\_line\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`print\_line\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\`Str\` must be a \`str\`
+
+\$success must be a fun which takes no arg
+
+\$error must be a fun which takes an \`exception\`
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :STR_PRINTER.require_from('kink/io/')
+        
+    :P <- STR_PRINTER.new("\r\n")
+    P.print_line('foo')
+    P.print_line('bar')
+    stdout.print_line(P.str.repr) # => "foo\r\nbar\r\n"
+
+.. rubric:: Example\: IO error
+
+.. code:: kink
+
+    :FILE.require_from('kink/io/')
+    :CONTROL.require_from('kink/')
+    :CHARSET.require_from('kink/')
+        
+    :P <- FILE.open_to_print('/tmp/print.txt' CHARSET.utf8 "\r\n")
+    P.close
+        
+    P.print_line('foo'){(:C)
+      C.on_error{(:Exc)
+        stderr.print_line(Exc.message)
+      }
+    }
+    # => already closed
+        
+    P.print_line('foo')
+    # Output:
+    #   -- main exception
+    #   [..root..]
+    #   {..call by host..}
+    #   ,,,
+    #   already closed
+
+.. _api-751b4c96dc9c080abfc22c9c6f14d79f:
+
+Printer\.newline
+----------------
+
+\`newline\` returns a \`str\` of the newline used by \`print\_line\`\.
+
+.. _api-aaea316f54d42c6a53f6cadbf8d02585:
+
+PRINTER\.is\?\(Val\)
+====================
+
+\`is\?\` returns whether \`Val\` is a \`printer\`\.
+
+.. _api-5ad80f5bba922e7061d0cbef80f02775:
+
+PRINTER\.mixin
+==============
+
+\`mixin\` returns a mixin trait which provides Printer\.print\_line method\.
+
+\`print\_line\` will be implemented using \`newline\` and \`print\` methods\.
+
