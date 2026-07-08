@@ -11,9 +11,28 @@ kink\/container\/SET
 type set
 ========
 
-\`set\` is an abstract type of containers of unique elements\. Elements must be unique in the \`set\`\, in the equivalence relation defined by the implementation\.
+\`set\` is an abstract type of containers of unique elements\.
 
-\`ordered\_set\` is a subtype of \`set\` which supports total ordering of elements\. See kink\/container\/ORDERED\_SET\.
+Elements must be unique in the \`set\`\, in an equivalence relation among elements\.
+
+.. rubric:: Equivalence relation of elements
+
+The equivalence relation of elements\, \`equivalent\-to\`\, must suffice the following conditions for all X\, Y\, and Z in the domain of elements\.
+
+\• reflexive\: X equivalent\-to X
+
+\• symmetric\: \(if X equivalent\-to Y then Y equivalent\-to X\) and \(if not \(X equivalent\-to Y\) then not \(Y equivalent\-to X\)\)
+
+\• transitive\: if X equivalent\-to Y and Y equivalent\-to Z then X equivalent\-to Z
+
+.. _api-f420248378e51ba85fb8402790f24948:
+
+Set\.eq
+-------
+
+\`eq\` returns the function of the equivalence relation of elements of \`Set\`\.
+
+The result function\, \$equivalent\_to\?\, is a function which takes two args \`X\` and \`Y\`\. \`equivalent\_to\?\(X Y\)\` returns the bool value of \`X equivalent\-to Y\`\, where \`equivalent\-to\` is the equivalence relation of elements of \`Set\`\.
 
 .. _api-2d702c4c238e10b4e1521da50bdf47fd:
 
@@ -406,4 +425,31 @@ SET\.is\?\(Val\)
 ================
 
 \`is\?\` returns whether \`Val\` is a \`set\`\.
+
+.. _api-d7bd98ddc71645200b6fb8804071424d:
+
+SET\.mixin
+==========
+
+\`mixin\` returns a mixin trait which provides default implementations of the following \`set\` methods\.
+
+\• each
+
+\• all\?
+
+\• any\?
+
+\• count
+
+\• fold
+
+\• reduce
+
+\• have\_all\?
+
+\• have\_any\?
+
+\• append
+
+\• op\_eq \/ \`\=\=\` operator
 

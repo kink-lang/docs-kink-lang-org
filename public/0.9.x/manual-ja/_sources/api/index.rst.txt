@@ -15,7 +15,6 @@ Types are described in the page of its companion module\. For example\, methods 
     kink-BIN_HASHER
     kink-BOOL
     kink-CHARSET
-    kink-COMPARE
     kink-CONFIG_FUN_RUNNER
     kink-CONTROL
     kink-DYN
@@ -27,6 +26,7 @@ Types are described in the page of its companion module\. For example\, methods 
     kink-MOD
     kink-NUM
     kink-NUM_DIV
+    kink-ORDER
     kink-PROCESS
     kink-REF
     kink-RUNTIME
@@ -41,8 +41,8 @@ Types are described in the page of its companion module\. For example\, methods 
     kink-container-HASH_MAP
     kink-container-HASH_SET
     kink-container-MAP
-    kink-container-ORDERED_MAP
-    kink-container-ORDERED_SET
+    kink-container-ORDER_MAP
+    kink-container-ORDER_SET
     kink-container-SET
     kink-container-TREE_MAP
     kink-container-TREE_SET
@@ -58,11 +58,18 @@ Types are described in the page of its companion module\. For example\, methods 
     kink-doc-model-SECTION
     kink-doc-render-html-HTML_RENDER_TOOL
     kink-doc-render-sphinx-SPHINX_RENDER_TOOL
+    kink-http-HTTP
+    kink-http-MEDIA_TYPE
+    kink-http-REQ
+    kink-http-REQ_CONTENT
+    kink-http-RESP
+    kink-http-RESP_CONTENT
     kink-io-BIN_INPUT
     kink-io-BIN_OUTPUT
     kink-io-BUFFER_INPUT
     kink-io-BUFFER_OUTPUT
     kink-io-FILE
+    kink-io-GENERATOR_INPUT
     kink-io-INPUT
     kink-io-INPUT_SCANNER
     kink-io-OUTPUT

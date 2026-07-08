@@ -12,9 +12,9 @@ Host system integration provided by JAVA module is meant to be seamfull\. There 
 
 There are several reasons behind the design\.
 
-1\)  Kink is fundamentally different from Java\,     both in the object system and the execution semantics\.     Thus\, seamless integration is hard to achieve\.
+1\)  Kink is fundamentally different from Java\, both in the object system and the execution semantics\. Thus\, seamless integration is hard to achieve\.
 
-2\)  Generally\, larger applications can be designed more simply     when there is a boundary between separate systems\.
+2\)  Generally\, larger applications can be designed more simply when there is a boundary between separate systems\.
 
 3\)  With a clear boundary\, Kink can evolve independent of Java\.
 
@@ -28,7 +28,7 @@ When an object reference \`R\` is typable\-as a class object \`T\`\, one of the 
 
 \• \`T\` is a class object of a reference type\, and \`R\` is null\.
 
-\• \`R\` is an instance of Boolean\, Character\, Byte\, Short\,   Integer\, Long\, Float\, or Double\,   and \`T\` is a class object of the corresponding primitive type\.
+\• \`R\` is an instance of Boolean\, Character\, Byte\, Short\, Integer\, Long\, Float\, or Double\, and \`T\` is a class object of the corresponding primitive type\.
 
 Hereinafter\, we refer to a class object and the type which the class object represents interchangeably\.
 
@@ -595,15 +595,15 @@ The instance method is looked up by \`J\.type\.getMethod\(Method\_name\, A0\.typ
 
 .. rubric:: Result
 
-1\)  If the declared return type of the method is a reference type \`rt\`\,     and the method terminates without throwing an exception\,     \`call\_method\` tail\-calls the success continuation with a \`java\` value \(resultObj\, rt\)\,     where \`resultObj\` is the returned value of the method\.
+1\)  If the declared return type of the method is a reference type \`rt\`\, and the method terminates without throwing an exception\, \`call\_method\` tail\-calls the success continuation with a \`java\` value \(resultObj\, rt\)\, where \`resultObj\` is the returned value of the method\.
 
-2\)  If the declared return type \`pt\` of the method is     char\, boolean\, byte\, short\, int\, long\, float or double\,     and the method terminates without throwing an exception\,     \`call\_method\` tail\-calls the success continuation with a \`java\` value \(resultObj\, pt\)\,     where \`resultObj\` is a wrapper instance of the returned value\.
+2\)  If the declared return type \`pt\` of the method is char\, boolean\, byte\, short\, int\, long\, float or double\, and the method terminates without throwing an exception\, \`call\_method\` tail\-calls the success continuation with a \`java\` value \(resultObj\, pt\)\, where \`resultObj\` is a wrapper instance of the returned value\.
 
-3\)  If the declared return type the method is void\,     and the method terminates without throwing an exception\,     \`call\_method\` tail\-calls the success continuation with no arg\.
+3\)  If the declared return type the method is void\, and the method terminates without throwing an exception\, \`call\_method\` tail\-calls the success continuation with no arg\.
 
-4\)  If the method terminates throwing a Java exception \`exceptionObj\`\,     and the exception is an instance of one or more exception types specified     by invocations of C\.catch\,     \`call\_method\` tail\-calls the error continuation corresponding     to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
+4\)  If the method terminates throwing a Java exception \`exceptionObj\`\, and the exception is an instance of one or more exception types specified by invocations of C\.catch\, \`call\_method\` tail\-calls the error continuation corresponding to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
 
-5\)  If the method terminates throwing a Java exception\,     and no exception type passed to C\.catch matches the thrown exception\,     \`call\_method\` raises a Kink exception\.
+5\)  If the method terminates throwing a Java exception\, and no exception type passed to C\.catch matches the thrown exception\, \`call\_method\` raises a Kink exception\.
 
 If C\.on\_success is not called for the config value\, and the declared return type of the method is void\, \{ nada \} is used as the default success continuation\.
 
@@ -759,11 +759,11 @@ When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the public 
 
 .. rubric:: Result
 
-1\)  If a new instance \`resultObj\` is created\,     \`new\` tail\-calls the success continuation with a \`java\` value     \(resultObj\, ownerClass\)\.
+1\)  If a new instance \`resultObj\` is created\, \`new\` tail\-calls the success continuation with a \`java\` value \(resultObj\, ownerClass\)\.
 
-2\)  If the constructor terminates throwing a Java exception \`exceptionObj\`\,     and the exception is an instance of one or more exception types specified     by invocations of C\.catch\,     \`new\` tail\-calls the error continuation corresponding     to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
+2\)  If the constructor terminates throwing a Java exception \`exceptionObj\`\, and the exception is an instance of one or more exception types specified by invocations of C\.catch\, \`new\` tail\-calls the error continuation corresponding to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
 
-3\)  If the constructor terminates throwing a Java exception\,     and no exception type passed to C\.catch matches the thrown exception\,     \`new\` raises a Kink exception\.
+3\)  If the constructor terminates throwing a Java exception\, and no exception type passed to C\.catch matches the thrown exception\, \`new\` raises a Kink exception\.
 
 If C\.on\_success is not called for the config value\, VAL\.identity is used as the default success continuation\.
 
@@ -884,6 +884,19 @@ The result will be a \`java\` value \(byteBuffer\, java\.nio\.ByteBuffer\)\. \`b
 .. rubric:: Precondition
 
 \`Bin\` must be a \`bin\`\.
+
+.. _api-4105de46f68b0c0680892bb0adf45401:
+
+JAVA\.runtime\_exception\(Exc\)
+===============================
+
+\`runtime\_exception\` returns a Java RuntimeException converted from the Kink exception\.
+
+The result will be a \`java\` value \(rte\, java\.lang\.RuntimeException\)\, where \`rte\` is a RuntimeException instance\.
+
+.. rubric:: Precondition
+
+\`Exc\` must be an \`exception\`\.
 
 .. _api-573e951a5ce4533f3e960a19340cc367:
 
@@ -1132,30 +1145,18 @@ JAVA\.void\_class
 
 \`void\_class\` returns a \`java\` value \(void\.class\, java\.lang\.Class\)\.
 
-.. _api-c3c0d3752dd6273532d79005e7497eaa:
+.. _api-a12b423b2635f4afc13ad91df4411c9b:
 
-JAVA\.class\(Class\_name \.\.\.\[\$config\=\{\}\]\)
-===================================================
+JAVA\.class\(Class\_name\)
+==========================
 
 \`class\` looks up a class by the binary name \`Class\_name\`\.
 
-Config methods\:
-
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
-
-\• C\.on\_error\(\$error\)\: default \= a function which raises an exception
-
-\`class\` function loads the specified class\, using the reflection access of the unnamed module of the class loader from which org\.kink\_lang\.kink\.Vm class of the current runtime is loaded\.
-
-If the class \`klass\` is found\, \`class\` tail\-calls \$success with a \`java\` value \(klass\, java\.lang\.Class\)\.
-
-If the class is not found\, \`class\` tail\-calls \$error with no arg\.
+\`class\` function loads the specified class\, using the reflection access of the unnamed module of the class loader from which org\.kink\_lang\.kink\.Vm class of the current runtime is loaded\. If the class \`klass\` is found\, \`class\` returns a \`java\` value \(klass\, java\.lang\.Class\)\.
 
 .. rubric:: Preconditions
 
 \`Class\_name\` must be a \`str\` value\.
 
-\$success must be a function which takes a \`java\` value\.
-
-\$error must be a thunk\.
+The class specified by \`Class\_name\` must be available from the class loader which loaded the runtime\. The class must be public\.
 

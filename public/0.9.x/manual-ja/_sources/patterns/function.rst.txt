@@ -213,13 +213,13 @@ Optional and variadic parameters
 --------------------------------
 
 If you want to take optional arguments after mandatory ones,
-you can use ``Varref.opt`` as follows.
+you can use :ref:`Varref.opt <api-a6b43b4c86defa1c7e8594a542d1c2fa>` as follows.
 
 ::
 
   :posix_locale_tag <- {(:Lang :Opt_territory.opt :Opt_charset.opt)
-    :Territory = Opt_territory.just_or{ 'US' }
-    :Charset = Opt_charset.just_or{ 'UTF-8' }
+    :Territory = Opt_territory.just{ 'US' }
+    :Charset = Opt_charset.just{ 'UTF-8' }
     stdout.print_line('{}-{}.{}'.format(Lang Territory Charset))
   }
 
@@ -228,21 +228,20 @@ you can use ``Varref.opt`` as follows.
   posix_locale_tag('en')      # => en-US.UTF-8
 
 As shown above, if an argument is given to the optional parameter,
-a single element vec containing the argument is passed to the variable.
+a single element :term:`vector` containing the argument is stored in the variable.
 If no argument is given to the optional parameter,
-an empty vec is passed to the variable.
+an empty vector is stored in the variable.
+See :doc:`OPT_PARAM </api/kink-param-OPT_PARAM>` for details.
 
-See :doc:`kink/param/OPT_PARAM </api/kink-param-OPT_PARAM>` for details.
-
-If you want to take variadic arguments at the end of the arguments list,
-you can use ``Varref.rest`` as follows.
+If you want to take an arbitrary number of arguments at the end of the argument list,
+you can use :ref:`Varref.rest <api-58a0d84a3d4a63aee83546415f4bd5f5>` as follows.
 
 ::
 
   :commandline <- {(:Command :Args.rest)
-    stdout.prine_line('command: {}'.format(Command))
-    Args.size.times{(:I)
-      stdout.prine_line('arg #{}: {}'.format(I Args.get(I)))
+    stdout.print_line('command: {}'.format(Command))
+    Args.size.times.each{(:I)
+      stdout.print_line('arg #{}: {}'.format(I Args.get(I)))
     }
   }
 
@@ -252,16 +251,16 @@ you can use ``Varref.rest`` as follows.
   #   arg #0: -ltr
   #   arg #1: /etc
 
-See :doc:`kink/param/REST_PARAM </api/kink-param-REST_PARAM>` for details.
+See :doc:`REST_PARAM </api/kink-param-REST_PARAM>` for details.
 
-You can take both optional and variadic arguments.
+You can use Varref.opt and Varref.rest at the same time.
 
 ::
 
   :take_opt_variadic <- {(:Mandatory :Opt.opt :Rest.rest)
-    stdout.prine_line('Mandatory {}'.format(Mandatory.repr))
-    stdout.prine_line('Opt {}'.format(Opt.repr))
-    stdout.prine_line('Rest {}'.format(Rest.repr))
+    stdout.print_line('Mandatory {}'.format(Mandatory.repr))
+    stdout.print_line('Opt {}'.format(Opt.repr))
+    stdout.print_line('Rest {}'.format(Rest.repr))
   }
 
   take_opt_variadic('foo' 'bar' 'baz' 'qux')
@@ -270,26 +269,24 @@ You can take both optional and variadic arguments.
   #   Opt ["bar"]
   #   Rest ["baz" "qux"]
 
+.. _config_fun:
+
 Config functions
 ----------------
 
-When positional optional parameters are not flexible enough,
-a config function can be used.
+When optional parameters are not flexible enough,
+a :dfn:`config function` can be used.
 
 For example,
 :ref:`Program.compile <api-eb38c6c06f06250d57f7c828992a2147>` can take
-a binding, a locale, and other optional values,
-and each can be omitted independently.
-For that case, optional parameters are not appropriate.
-Assuming that the parameter list is
-``(Text, opt Binding, opt Locale)``,
-you cannot omit only ``Binding`` while specifying ``Locale``.
+a :term:`binding`, a :ref:`locale <api-668468443c02606ede61892045a1c7de>`, and other optional values.
+Those values can be omitted independently.
 
-So, Program.compile takes an optional config function
-at the end of the parameter list.
-The client of Program.compile can specify a binding, a locale,
-and a program name,
-by calling methods of a config val, which is passed to the config function.
+To do that, Program.compile takes an optional config function
+at the end of the argument list.
+The caller of Program.compile can specify a binding, a locale, and other optinal values
+by calling methods of a :dfn:`config value`, which is passed to the config function.
+A method of a config value is referred to as a :dfn:`config method`.
 
 ::
 
@@ -305,20 +302,15 @@ by calling methods of a config val, which is passed to the config function.
   }
   print_num # => 42
 
-Here, the parameter of Program.compile is a config function.
+Here, the argument of Program.compile is a config function.
 The parameter ``C`` of the config function is a config value.
 
-If you provide a function which takes a config function,
-and the config value is simple enough,
-you can use :doc:`kink/CONFIG_FUN_RUNNER </api/kink-CONFIG_FUN_RUNNER>`.
+You can use :ref:`CONFIG_FUN_RUNNER.new <api-b4d17f2da72d9c23d4f740ff5423c00f>`
+to run a config function which takes a typical config value.
 
 .. note::
 
-  Config functions can be seen as an alternative aproach to named parameters
-  of other languages.
-  The most notable advantage of config functions is that they don't need
-  a dedicated syntax.
-  A config function is just the last argument passed to the configured function.
+  Config functions act as an alternative to named parameters in other languages.
 
 Function result
 ===============

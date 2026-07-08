@@ -204,15 +204,15 @@ Test\.run\(\.\.\.\[\$config\_fun\=\{\}\]\)
 
 Precondition\:
 
-\• \$config\_fun must be a fun which takes \`run\_config\`\.
+\• \$config\_fun must be a fun which takes \`test\_run\_config\`\.
 
 Result\:
 
-\• If the test thunk returns without raising an exception\,  or being skipped by TEST\.skip\,  \`run\` tail\-calls the success cont\.
+\• If the test thunk returns without raising an exception\, or being skipped by TEST\.skip\, \`run\` tail\-calls the success cont\.
 
-\• If the test thunk raises an exception\,   \`run\` tail\-calls the error cont with the exception\.
+\• If the test thunk raises an exception\, \`run\` tail\-calls the error cont with the exception\.
 
-\• If TEST\.skip is called during the invocation of the test thunk\,   \`run\` tail\-calls the skip cont\.
+\• If TEST\.skip is called during the invocation of the test thunk\, \`run\` tail\-calls the skip cont\.
 
 .. _api-7e096744389fc29f47858c702cc9ad39:
 
@@ -263,27 +263,27 @@ TEST\.is\?\(Val\)
 
 \`is\?\` returns whether \`Val\` is a test\.
 
-.. _api-d3f2d7091cbc34324a2a45924eb496e4:
+.. _api-dd5b2e5aaabdb0de0454da8fda8d0c30:
 
-type run\_config
-================
+type test\_run\_config
+======================
 
-The config val type of Test\.run\.
+\`test\_run\_config\` is a config value of Test\.run\.
 
-.. _api-9be4d821ec5b5d810591334542cd0396:
+.. _api-f984b4d9c4f2c1b7376ae3803f94f0b1:
 
-C\.labels\(Labels\)
--------------------
+C\.label\(Label\)
+-----------------
 
-\`labels\` sets \`Labels\` as the test label set of the test thunk invocation\.
+\`label\` adds \`Label\` to the set of test labels\.
 
-Precondition\:
+\`label\` method can be called multiple times to add multiple labels\.
 
-\• \`Labels\` must be a set of strs\.
+.. rubric:: Precondition
 
-If \`labels\` is not called\, an empty set is used as the test label set\.
+\`Label\` must be a \`str\`\.
 
-.. _api-badea21551180f5b53e38ab0c0230f06:
+.. _api-9116090480dc0d20f477b74510a9060b:
 
 C\.on\_success\(\$success\_cont\)
 ---------------------------------
@@ -296,7 +296,7 @@ Precondition\:
 
 If \`on\_success\` is not called\, a NOP thunk \{\} is used as the success cont\.
 
-.. _api-9247c38fc8da3d167acca88b571f55a9:
+.. _api-9f8e9a9e5345b2e5f2d5d77874d5aa8d:
 
 C\.on\_error\(\$error\_cont\)
 -----------------------------
@@ -309,7 +309,7 @@ Precondition\:
 
 If \`on\_error\` is not called\, a fallback function is used\. The fallback function raises the exception passed as the parameter\.
 
-.. _api-885bf536e3c395bf3fad84ec2a5e5957:
+.. _api-e3a8add49dc6b73f6b445ea1f2b5add6:
 
 C\.on\_skip\(\$skip\_cont\)
 ---------------------------

@@ -2,7 +2,7 @@
 kink\/container\/TREE\_SET
 ==========================
 
-Provides an \`ordered\_set\` implementation which stores all the elements in a balanced binary tree\.
+Provides an \`order\_set\` implementation which stores all the elements in a balanced binary tree\.
 
 Tree set is a safe default choice\, because it guarantees logarithmic worst\-case computational complexity for operations like \.push and \.have\?\.
 
@@ -15,27 +15,19 @@ Tree set is a safe default choice\, because it guarantees logarithmic worst\-cas
 TREE\_SET\.new\(\.\.\.\[\$config\=\{\}\]\)
 ==========================================
 
-\`new\` returns a new empty tree \`ordered\_set\`\.
+\`new\` returns a new empty tree \`order\_set\`\.
 
 .. rubric:: Config method
 
-C\.order\(\$in\_order\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
+C\.order\(\$up\_to\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 
-.. rubric:: Comparison of elements
+.. rubric:: Total order relation
 
-\$in\_order\? is used to compare elements\. \$in\_order\? must be a toal order which satisfies the following for all X\, Y\, and Z in the domain of elements\.
-
-\• reflexive\: in\_order\?\(X X\)
-
-\• transitive\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y Z\) then in\_order\?\(X Z\)
-
-\• antisymmetric\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y X\) then X is equivalent to Y
-
-\• strongly connected\: in\_order\?\(X Y\) \|\| in\_order\?\(Y X\)
+\$up\_to\? must be a function which takes two args X and Y\. \`up\_to\?\(X Y\)\` must return the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total order relation of elements\.
 
 .. rubric:: Precondition
 
-\$in\_order\? must be a fun which takes two values and returns a \`bool\`\.
+\$up\_to\? must be a function which takes two values and returns a \`bool\`\.
 
 .. rubric:: Example\: default order
 
@@ -82,7 +74,7 @@ C\.order\(\$in\_order\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 TREE\_SET\.of\(\.\.\.Elems\)
 ============================
 
-\`of\` makes a new tree \`ordered\_set\` which contains the values of \`Elems\`\. The elements of are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
+\`of\` makes a new tree \`order\_set\` which contains the values of \`Elems\`\. The elements of are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
 
 .. rubric:: Precondition
 
@@ -110,7 +102,7 @@ The elements of \`Elems\` must be in the domain of the elements of the set\.
 TREE\_SET\.from\_each\(Eacher\)
 ===============================
 
-\`from\_each\` makes a new empty tree \`ordered\_set\` containing the elements of \`Eacher\`\. The elements are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
+\`from\_each\` makes a new empty tree \`order\_set\` containing the elements of \`Eacher\`\. The elements are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
 
 .. rubric:: Precondition
 

@@ -15,7 +15,7 @@ JAVA\_PROXY\.new\(Interface \$handler \.\.\.\[\$config\=\{\}\]\)
 
 Config methods\:
 
-\• C\.also\_implement\(Also\_implement\)\: default \= \[\]
+\• C\.also\_implement\(Also\_implement\)\: can be called multiple times
 
 \• C\.override\_tostring
 
@@ -29,7 +29,7 @@ Config methods\:
 
 \• C\.on\_error\(\$error\)\: default \= a function which raises an exception
 
-The created Java object will be an instance of java\.lang\.reflect\.Proxy\, which implements \`Interface\` and interfaces in \`Also\_implement\`\.
+The created Java object will be an instance of java\.lang\.reflect\.Proxy\, which implements \`Interface\`\. If C\.also\_implement is called\, the class of the proxy also implements interfaces given as \`Also\_implement\`\.
 
 If proxy creation succeeds\, \`new\` tail\-calls \$success with a \`java\` value \(proxy\, Interface\)\, where \`proxy\` is the created instance\.
 
@@ -85,7 +85,7 @@ To order that the invocation throw a Java Throwable\, \$handler must return a \`
 
 \`Interface\` must be a \`java\` value \(cl\, \*\)\, where \`cl\` is an instance of java\.lang\.Class\.
 
-\`Also\_implement\` must be a \`vec\` of \`java\` values \(cl\, \*\)\, where \`cl\` is an instance of java\.lang\.Class\.
+\`Also\_implement\` must be a \`java\` value \(cl\, \*\)\, where \`cl\` is an instance of java\.lang\.Class\.
 
 \$success must be a function which takes a \`java\` value\.
 

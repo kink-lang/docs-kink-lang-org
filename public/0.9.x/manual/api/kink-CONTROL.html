@@ -5,30 +5,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.9. kink/CONTROL &#8212; Kink 0.9.5-beta</title>
+    <title>6.8. kink/CONTROL &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/documentation_options.js?v=6ce99075"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="6.10. kink/DYN" href="kink-DYN.html" />
-    <link rel="prev" title="6.8. kink/CONFIG_FUN_RUNNER" href="kink-CONFIG_FUN_RUNNER.html" /> 
+    <link rel="next" title="6.9. kink/DYN" href="kink-DYN.html" />
+    <link rel="prev" title="6.7. kink/CONFIG_FUN_RUNNER" href="kink-CONFIG_FUN_RUNNER.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
-        <h2 class="heading"><span>6.9. kink/CONTROL</span></h2>
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.8. kink/CONTROL</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-CONFIG_FUN_RUNNER.html"><span class="section-number">6.8. </span>kink/CONFIG_FUN_RUNNER</a>
+        «&#160;&#160;<a href="kink-CONFIG_FUN_RUNNER.html"><span class="section-number">6.7. </span>kink/CONFIG_FUN_RUNNER</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-DYN.html"><span class="section-number">6.10. </span>kink/DYN</a>&#160;&#160;»
+        <a href="kink-DYN.html"><span class="section-number">6.9. </span>kink/DYN</a>&#160;&#160;»
         </p>
 
       </div>
@@ -36,7 +36,7 @@
         
         
   <section id="kink-control">
-<h1><span class="section-number">6.9. </span>kink/CONTROL<a class="headerlink" href="#kink-control" title="Link to this heading">¶</a></h1>
+<h1><span class="section-number">6.8. </span>kink/CONTROL<a class="headerlink" href="#kink-control" title="Link to this heading">¶</a></h1>
 <p>The mod which provides various control funs.</p>
 <nav class="contents local" id="contents">
 <ul class="simple">
@@ -47,7 +47,7 @@
 </ul>
 </nav>
 <section id="control-try-body-cont-returned-cont-raised">
-<span id="api-a6e09ce11834a45ca32157ca739083ee"></span><h2><span class="section-number">6.9.1. </span>CONTROL.try($body $cont_returned $cont_raised)<a class="headerlink" href="#control-try-body-cont-returned-cont-raised" title="Link to this heading">¶</a></h2>
+<span id="api-a6e09ce11834a45ca32157ca739083ee"></span><h2><span class="section-number">6.8.1. </span>CONTROL.try($body $cont_returned $cont_raised)<a class="headerlink" href="#control-try-body-cont-returned-cont-raised" title="Link to this heading">¶</a></h2>
 <p>`try` traps an exception raised within invocation of $body.</p>
 <p>Preconditions:</p>
 <p>• $body must be a thunk fun</p>
@@ -115,7 +115,7 @@
 <p>`try` internally uses kink/KONT_TAG.escape_tag to trap an exception.</p>
 </section>
 <section id="control-while-cond-body">
-<span id="api-a9b17d47fee600f79293b1bfa745e1e9"></span><h2><span class="section-number">6.9.2. </span>CONTROL.while($cond $body)<a class="headerlink" href="#control-while-cond-body" title="Link to this heading">¶</a></h2>
+<span id="api-a9b17d47fee600f79293b1bfa745e1e9"></span><h2><span class="section-number">6.8.2. </span>CONTROL.while($cond $body)<a class="headerlink" href="#control-while-cond-body" title="Link to this heading">¶</a></h2>
 <p>CONTROL.while calls $body repeatedly while $cond returns true.</p>
 <p>Preconditions:</p>
 <p>• $cond must be a thunk fun which returns a bool</p>
@@ -137,7 +137,7 @@
 </div>
 </section>
 <section id="control-with-finally-body">
-<span id="api-29c676e2986aaddd539609b493b6faaf"></span><h2><span class="section-number">6.9.3. </span>CONTROL.with_finally($body)<a class="headerlink" href="#control-with-finally-body" title="Link to this heading">¶</a></h2>
+<span id="api-29c676e2986aaddd539609b493b6faaf"></span><h2><span class="section-number">6.8.3. </span>CONTROL.with_finally($body)<a class="headerlink" href="#control-with-finally-body" title="Link to this heading">¶</a></h2>
 <p>`with_finally` provides functionality of resource releases at the end of the procedure which uses the resources.</p>
 <p>`with_finally` calls $body with $finally fun, and returns the result of $body. Within the invocation of $body, $finally can be called with $cleanup thunk.</p>
 <p>$cleanup thunk is ensured to be called after the invocation of $body ends in the following ways:</p>
@@ -214,11 +214,11 @@
 <p>Here, __ensure__ does the following:</p>
 <p>• Executes __rest__.</p>
 <p>• If __rest__ returns a val, __ensure__ calls $cleanup.</p>
-<p>• If __rest__ is terminated by $return fun of CONTROL.with_return with a thunk `T`,   __ensure__ calls $cleanup and calls return(T).</p>
-<p>• If __rest__ raises an exception `E`,   __ensure__ calls $cleanup within a guard of CONTROL.try.   If $cleanup returns a val, __ensure__ raises `E`.   If $cleanup raises an exception `F`, __ensure__raises `E+F`.</p>
+<p>• If __rest__ is terminated by $return fun of CONTROL.with_return with a thunk `T`, __ensure__ calls $cleanup and calls return(T).</p>
+<p>• If __rest__ raises an exception `E`, __ensure__ calls $cleanup within a guard of CONTROL.try. If $cleanup returns a val, __ensure__ raises `E`. If $cleanup raises an exception `F`, __ensure__raises `E+F`.</p>
 </section>
 <section id="control-with-return-body">
-<span id="api-a4599f5bf37ae1ee2080db91914c982f"></span><h2><span class="section-number">6.9.4. </span>CONTROL.with_return($body)<a class="headerlink" href="#control-with-return-body" title="Link to this heading">¶</a></h2>
+<span id="api-a4599f5bf37ae1ee2080db91914c982f"></span><h2><span class="section-number">6.8.4. </span>CONTROL.with_return($body)<a class="headerlink" href="#control-with-return-body" title="Link to this heading">¶</a></h2>
 <p>`with_return` provides functionality of early-return.</p>
 <p>`with_return` calls $body with a fun. Here we call the fun as $return. You can call $return with a thunk, $cont, to end the invocation of `with_return`. `with_return` tail-calls $cont. Thus, the result of the thunk will be the result of `with_return`.</p>
 <p>Example:</p>
@@ -281,11 +281,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-CONFIG_FUN_RUNNER.html"><span class="section-number">6.8. </span>kink/CONFIG_FUN_RUNNER</a>
+        «&#160;&#160;<a href="kink-CONFIG_FUN_RUNNER.html"><span class="section-number">6.7. </span>kink/CONFIG_FUN_RUNNER</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-DYN.html"><span class="section-number">6.10. </span>kink/DYN</a>&#160;&#160;»
+        <a href="kink-DYN.html"><span class="section-number">6.9. </span>kink/DYN</a>&#160;&#160;»
         </p>
 
       </div>

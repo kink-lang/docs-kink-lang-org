@@ -48,11 +48,11 @@ Precondition\:
 
 Result\:
 
-\• If there is only one \`offset\` valid at \`Datetime\`\,   \`offset\_for\_datetime\` tail\-calls \$single\_cont with the \`offset\`\.
+\• If there is only one \`offset\` valid at \`Datetime\`\, \`offset\_for\_datetime\` tail\-calls \$single\_cont with the \`offset\`\.
 
-\• If there are two \`offset\` vals valid at \`Datetime\` due to transition\,   \`offset\_for\_datetime\` tail\-calls \$overlap\_cont with the offset before the transition\,   and the offset after the transition\.
+\• If there are two \`offset\` vals valid at \`Datetime\` due to transition\, \`offset\_for\_datetime\` tail\-calls \$overlap\_cont with the offset before the transition\, and the offset after the transition\.
 
-\• If there is no \`offset\` valid at \`Datetime\` due to transition\,   \`offset\_for\_datetime\` tail\-calls \$gap\_cont with the offset before the transition\,   and the offset after the transition\.
+\• If there is no \`offset\` valid at \`Datetime\` due to transition\, \`offset\_for\_datetime\` tail\-calls \$gap\_cont with the offset before the transition\, and the offset after the transition\.
 
 .. _api-6be3fa397391362f2a206f85f3400b2c:
 

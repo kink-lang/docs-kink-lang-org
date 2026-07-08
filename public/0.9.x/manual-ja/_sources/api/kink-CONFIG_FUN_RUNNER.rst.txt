@@ -2,9 +2,9 @@
 kink\/CONFIG\_FUN\_RUNNER
 =========================
 
-Read simple configuration from a config function as a map\.
+Runs a config function to get a map\.
 
-Example\:
+.. rubric:: Example
 
 .. code:: kink
 
@@ -14,7 +14,7 @@ Example\:
       :config = Config.just{ {} }
       :Map = _run_config_fun($config)
         
-      :Append? = Map.have_key?('append')
+      :Append? = Map.get('append')
       stdout.print('Append? = {}'.format(Append?.repr))
         
       Map.get_opt('buffer').with_elems(
@@ -57,85 +57,165 @@ Example\:
     :local:
     :backlinks: none
 
-.. _api-0974c779d31c6b60c767f47118dc8174:
+.. _api-b4d17f2da72d9c23d4f740ff5423c00f:
 
-CONFIG\_FUN\_RUNNER\.new\(\$runner\_config\_fun\)
-=================================================
+CONFIG\_FUN\_RUNNER\.new\(\$config\)
+====================================
 
-\`new\` makes a function to get simple setup from config functions\. Methods of config values are specified by \$runner\_config\_fun\.
+\`new\` returns a runner function\. The runner function will take a config function\, and return a \`map\` of the configuration\.
 
-Precondition\:
+.. rubric:: Behavior of the runner function
 
-\• \$runner\_config\_fun must be a function which takes a \`runner\_config\` value\.
+You can pass a config function as the argument of the runner function\, The config value\, which is passed to the config function\, will have methods specified by \$config\.
 
-\`new\` returns a function\. Let\'s call this a runner function\. The runner function takes a config function\, which takes a config value containing the methods specified by \$runner\_config\_fun\. The runner function calls the config function with a config value\, and returns a result map\. See methods of \`runner\_config\` type for entries of the result map\.
+The runner function returns a \`map\`\. The keys of the map will be \`str\` values of the names of config methods\. Equivalence of keys is determined by equality of \`str\` values\. See methods of type \`config\_fun\_runner\_config\` for entries of the map\.
 
-.. _api-c3d4a867c36cefa94b42c2f9555ffcf9:
+.. rubric:: Precondition
 
-type runner\_config
-===================
+\$config must be a function which takes a \`config\_fun\_runner\_config\` value\.
 
-Config value for CONFIG\_FUN\_RUNNER\.new\.
+.. _api-aabda35da7c3add65062a718dc05f842:
 
-.. _api-129409def001d7c30b4700f8314a9f44:
+type config\_fun\_runner\_config
+================================
 
-Rc\.no\_arg\(Method\_name\)
----------------------------
+\`config\_fun\_runner\_config\` is a config value for CONFIG\_FUN\_RUNNER\.new\.
 
-\`no\_arg\` specifies that a config value has a method with the specified \`Method\_name\`\, and the method does not take an argument\.
-
-Precondition\:
-
-\• \`Method\_name\` must be a str\.
-
-When the created method is called for a config value\, an unspecified value is set to the result map associated with \`Method\_name\` as the key\.
-
-.. _api-e91eae2bb8f17f2348028aa85c16869c:
+.. _api-b7564ace708cba9b29430bc9a987f445:
 
 Rc\.req\_arg\(Method\_name \.\.\.\[\$validate\=\{\}\]\)
 -------------------------------------------------------
 
-\`req\_arg\` specifies that a config value has a method with the specified \`Method\_name\`\, and the method takes an argument\.
+\`req\_arg\` specifies that the config value will have a config method with the specified \`Method\_name\`\. The config method will take a mandatory argument\.
 
-Preconditions\:
+.. rubric:: If the config method is not called
 
-\• \`Method\_name\` must be a str\.
+If the config method is not called\, the map will not have an entry with key \`Method\_name\`\.
 
-\• \$validate must be a fun which takes an argument\.
+.. rubric:: When the config method is called
 
-When the created method is called for a config value\, the argument of the method is set to the result map\, associated with \`Method\_name\` as the key\.
+The config method calls \$validate with the argument of the config method\. If the argument is not acceptable\, \$validate must raise an exception\.
 
-\$validate is called with the method argument before the value is set\, so that it can validate the argument\. If the method argument is not acceptable\, \$validate can raise an exception\. The result of \$validate is ignored\.
+If \$validate does not raise an exception\, an entry is set to the map\, with \`Method\_name\` as the key\, and the argument of the config method as the value\.
 
-.. _api-f61b0f1497afd3d280b379d022712bef:
+.. rubric:: Preconditions
+
+\`Method\_name\` must be a \`str\`\.
+
+\$validate must be a function which takes an argument\.
+
+.. _api-0d5ce4a52c87be8b750c64736850ba5e:
 
 Rc\.req\_fun\(Method\_name\)
 ----------------------------
 
-\`req\_fun\` specifies that a config value has a method with the specified \`Method\_name\`\, the method takes an argument\, and the method validates that the argument is a fun\.
+\`req\_fun\` specifies that a config value will have a method with the specified \`Method\_name\`\. The config method will take a function as a mandatory argument\.
 
-Besides validation\, the behavior of the added method is same with one added by \`req\_arg\`\.
+.. rubric:: If the config method is not called
+
+If the config method is not called\, the map will not have an entry with key \`Method\_name\`\.
+
+.. rubric:: When the config method is called
+
+The config method validates that the argument is a function\.
+
+Besides validation\, the behavior of the config method is same with one added by \`req\_arg\`\.
 
 .. rubric:: Precondition
 
-\• \`Method\_name\` must be a str\.
+\`Method\_name\` must be a \`str\`\.
 
-.. _api-a3dd8b5aa8e05ceb8be0bcc9e7956064:
+.. _api-6b1c821f119c15f9670068b33a6653af:
+
+Rc\.no\_arg\(Method\_name\)
+---------------------------
+
+\`no\_arg\` specifies that the config value will have a config method with the specified \`Method\_name\`\. The config method will take no argument\.
+
+.. rubric:: If the config method is not called
+
+If the config method is not called\, the map will have an entry with \`Method\_name\` as the key\, and false as the value\.
+
+.. rubric:: When the config method is called
+
+When the config method is called\, an entry is set to the map with \`Method\_name\` as the key\, and true as the value\.
+
+.. rubric:: Precondition
+
+\`Method\_name\` must be a \`str\`\.
+
+.. _api-ae80e8888427cadcd46971c35bfbbf74:
 
 Rc\.opt\_arg\(Method\_name \$make\_default \.\.\.\[\$validate\=\{\}\]\)
 -----------------------------------------------------------------------
 
-\`opt\_arg\` specifies that a config value has a method with the specified \`Method\_name\`\, and the method takes an optional argument\.
+\`opt\_arg\` specifies that a config value will have a config method with the specified \`Method\_name\`\. The config method will take an optional argument\.
 
-Preconditions\:
+.. rubric:: If the config method is not called
 
-\• \`Method\_name\` must be a str
+If the config method is not called\, the map will not have an entry with key \`Method\_name\`\.
 
-\• \$make\_default must be a thunk\.
+.. rubric:: If an argument is not passed to the config method
 
-\• \$validate must be a fun which takes an argument\.
+If the config method is called with no argument\, the config method calls \$make\_default with no argument\.
 
-When the created method is called with an argument\, the argument is set to the result map\, associated with \`Method\_name\` as the key\. If the method is called without an argument\, a value created by \$make\_default is set to the result map\, associated with \`Method\_name\` as the key\.
+Then\, an entry is set to the map\, with \`Method\_name\` as the key\, and the result of \$make\_default as the value\.
 
-\$validate is called with the method argument before the value is set\, so that it can validate the argument\. If the method argument is not acceptable\, \$validate can raise an exception\. The result of \$validate is ignored\.
+.. rubric:: If an argument is passed to the config method
+
+If the config method is called with an argument\, the config method calls \$validate with the argument\. If the argument is not acceptable\, \$validate must raise an exception\.
+
+If \$validate does not raise an exception\, an entry is set to the map\, with \`Method\_name\` as the key\, and the argument of the config method as the value\.
+
+.. rubric:: Preconditions
+
+\`Method\_name\` must be a \`str\`\.
+
+\$make\_default must be a thunk\.
+
+\$validate must be a function which takes an argument\.
+
+.. _api-2763ecca57f2fef071929e1ab9c7c730:
+
+Rc\.multi\_args\(Method\_name \.\.\.\[\$validate\=\{\}\]\)
+----------------------------------------------------------
+
+\`multi\_args\` specifies that a config value will have a config method with the specified \`Method\_name\`\.
+
+The config method can be called multiple times\, with arbitrary number of arguments\. The arguments are stored in a vector \`M\` of vectors\.
+
+.. rubric:: If the config method is not called
+
+If the config method is not called\, the map will have an entry with \`Method\_name\` as the key\, and an empty vector \[\]\, which is \`M\`\,  as the value\.
+
+.. rubric:: When the config method is called
+
+The config method calls \$validate with the arguments of the config method\. If the arguments are not acceptable\, \$validate must raise an exception\.
+
+If \$validate does not raise an exception\, a vector of the arguments is pushed to the vector \`M\` at the back\.
+
+.. rubric:: Precondition
+
+\`Method\_name\` must be a \`str\`\.
+
+\$validate must be a function which takes an argument\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :CONFIG_FUN_RUNNER.require_from('kink/')
+    :STR.require_from('kink/')
+        
+    :run <- CONFIG_FUN_RUNNER.new{(:C)
+      C.multi_args('attr'){(:Name :Val)
+        STR.is?(Name) || raise('Name must be a str, but was {}'.format(Name.repr))
+      }
+    }
+        
+    :Map <- run{(:C)
+      C.attr('loglevel' 'INFO')
+      C.attr('timeout' 42)
+    }
+    stdout.print_line(Map.get('attr').repr) # => [["loglevel" "INFO"] ["timeout" 42]]
 

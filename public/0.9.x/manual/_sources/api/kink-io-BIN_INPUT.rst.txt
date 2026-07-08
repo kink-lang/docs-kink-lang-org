@@ -15,7 +15,7 @@ BIN\_INPUT\.new\(Bin\)
 
 \`new\` returns an \`input\` which extracts bytes from \`Bin\`\.
 
-Closing the \`input\` returned by \`new\` does nothing\.
+If the \`input\` is closed\, read operation causes an IO error\, like other implementations based on system resources\.
 
 .. rubric:: Precondition
 
@@ -26,9 +26,13 @@ Closing the \`input\` returned by \`new\` does nothing\.
 .. code:: kink
 
     :BIN.require_from('kink/')
+    :CONTROL.require_from('kink/')
     :BIN_INPUT.require_from('kink/io/')
         
-    :In <- BIN_INPUT.new(BIN.of(1 2 3 4 5 6))
-    stdout.print_line(In.read(3).repr)   # => (bin 0x01 0x02 0x03)
-    stdout.print_line(In.read_all.repr)  # => (bin 0x04 0x05 0x06)
+    CONTROL.with_finally{(:finally)
+      :In = BIN_INPUT.new(BIN.of(1 2 3 4 5 6))
+      finally{ In.close }
+      stdout.print_line(In.read(3).repr)   # => (bin 0x01 0x02 0x03)
+      stdout.print_line(In.read_all.repr)  # => (bin 0x04 0x05 0x06)
+    }
 

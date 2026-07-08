@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.51. kink/http/MEDIA_TYPE &#8212; Kink 0.9.6-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=6ce99075"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.52. kink/http/REQ" href="kink-http-REQ.html" />
+    <link rel="prev" title="6.50. kink/http/HTTP" href="kink-http-HTTP.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.51. kink/http/MEDIA_TYPE</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-http-HTTP.html"><span class="section-number">6.50. </span>kink/http/HTTP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-http-REQ.html"><span class="section-number">6.52. </span>kink/http/REQ</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-http-media-type">
+<h1><span class="section-number">6.51. </span>kink/http/MEDIA_TYPE<a class="headerlink" href="#kink-http-media-type" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-media-type" id="id1">type media_type</a></p>
+<ul>
+<li><p><a class="reference internal" href="#mt-type" id="id2">Mt.type</a></p></li>
+<li><p><a class="reference internal" href="#mt-subtype" id="id3">Mt.subtype</a></p></li>
+<li><p><a class="reference internal" href="#mt-params" id="id4">Mt.params</a></p></li>
+<li><p><a class="reference internal" href="#mt-charset" id="id5">Mt.charset</a></p></li>
+<li><p><a class="reference internal" href="#mt1-mt2" id="id6">Mt1 == Mt2</a></p></li>
+<li><p><a class="reference internal" href="#mt-show-config" id="id7">Mt.show(...[$config={}])</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#media-type-new-type-subtype-config" id="id8">MEDIA_TYPE.new(Type Subtype ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#media-type-parse-str-config" id="id9">MEDIA_TYPE.parse(Str ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#media-type-is-val" id="id10">MEDIA_TYPE.is?(Val)</a></p></li>
+</ul>
+</nav>
+<section id="type-media-type">
+<span id="api-2ff9cad3aa4a71dfd3a9e63a5df6f6f1"></span><h2><span class="section-number">6.51.1. </span>type media_type<a class="headerlink" href="#type-media-type" title="Link to this heading">¶</a></h2>
+<p>`media_type` is a media type of data.</p>
+<p>`media_type` can represent the following metadata.</p>
+<p>• `media-type` value of Content-Type header field of an HTTP request/response [RFC 9110 - 8.3.1].</p>
+<p>• `media-range` value of Accept header field of an HTTP request, including `q` parameter [RFC 9110 - 12.5.1].</p>
+<p>• Content-Type header field value of a part of a multipart entity [RFC 2046 - 5.1].</p>
+<section id="mt-type">
+<span id="api-d9e8f43857a5329eb4275b5034f37e60"></span><h3><span class="section-number">6.51.1.1. </span>Mt.type<a class="headerlink" href="#mt-type" title="Link to this heading">¶</a></h3>
+<p>`type` method returns the `type` part of the media type as a `str`.</p>
+<p>The result `str` is a “token” defined in [RFC 9110 - 5.6.2].</p>
+</section>
+<section id="mt-subtype">
+<span id="api-93f604b7907dc0103bafcaea9c2acb25"></span><h3><span class="section-number">6.51.1.2. </span>Mt.subtype<a class="headerlink" href="#mt-subtype" title="Link to this heading">¶</a></h3>
+<p>`subtype` method returns the `subtype` part of the media type as a `str`.</p>
+<p>The result `str` is a “token” defined in [RFC 9110 - 5.6.2].</p>
+</section>
+<section id="mt-params">
+<span id="api-c42d27f2ca7347125029e3e8356f7665"></span><h3><span class="section-number">6.51.1.3. </span>Mt.params<a class="headerlink" href="#mt-params" title="Link to this heading">¶</a></h3>
+<p>`params` returns a `map` from the parameter names to the corresponding parameter values.</p>
+<p>The keys of the `map` are case-insensitive, as defined in [RFC 9110 - 5.6.6].</p>
+</section>
+<section id="mt-charset">
+<span id="api-0f14159309e34d70f02a05c8852445e5"></span><h3><span class="section-number">6.51.1.4. </span>Mt.charset<a class="headerlink" href="#mt-charset" title="Link to this heading">¶</a></h3>
+<p>`charset` method returns the `charset` of the media type.</p>
+<p>If the `Mt` has “charset” parameter, and the value is valid as a charset name, `charset` method returns the `charset` value for the name.</p>
+<p>If `Mt` does not have “charset” parameter, or the value is not valid as a charset name, `charset` method returns UTF-8.</p>
+<p class="rubric">The default charset</p>
+<p>Falling back to UTF-8 is not a standardized way. If it is not what you want, write custom code.</p>
+<p>• [RFC 2046 - 4.1.2] (MIME part 2) specifies the default charset is US-ASCII, which is a subset of UTF-8.</p>
+<p>• [RFC 9110 - 8.3.2] (HTTP Semantics) does not specify any default charset.</p>
+<p>• [RFC 7231 - Appendix B] (obsoleted; HTTP 1.1) says the default charset is “whatever the media type definition says”.</p>
+</section>
+<section id="mt1-mt2">
+<span id="api-c703ba3ca327183bb6a7c60def8128a4"></span><h3><span class="section-number">6.51.1.5. </span>Mt1 == Mt2<a class="headerlink" href="#mt1-mt2" title="Link to this heading">¶</a></h3>
+<p>`==` operator, or `op_eq` method, returns whether `Mt1` and `Mt2` have the equal type, the equal subtype, and the equal parameters.</p>
+<p class="rubric">Precondition</p>
+<p>`Mt2` must be a `media_type`.</p>
+</section>
+<section id="mt-show-config">
+<span id="api-801bd3aee7b2f6a085a8231f8c660c74"></span><h3><span class="section-number">6.51.1.6. </span>Mt.show(...[$config={}])<a class="headerlink" href="#mt-show-config" title="Link to this heading">¶</a></h3>
+<p>`show` returns the `str` representation of the media type which can be embedded in header fields.</p>
+<p>$config is ignored, since the format of the result is fixed.</p>
+<p>For the generic contract of .show methods, see `*.show(...[$config])` in kink/STR.</p>
+<p class="rubric">Media type parameters</p>
+<p>Parameter names are output in lower case, like `charset` or `q`.</p>
+<p>If the media type has parameter `q`, it always appears last in the result, in accordance with Accept/Accept-* headers [RFC 9110 - 12.5].</p>
+<p>Parameter values are quoted only when they contain backslash `\` or double quotation `&quot;`.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:MEDIA_TYPE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/http/&#39;</span>)
+
+<span class="nv">:Mt1</span> &lt;- <span class="nv">MEDIA_TYPE</span>.<span class="n">new</span>(<span class="s1">&#39;application&#39;</span> <span class="s1">&#39;octet-stream&#39;</span>).<span class="n">show</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Mt1</span>.<span class="n">show</span>)
+<span class="c1"># =&gt; application/octet-stream</span>
+
+<span class="nv">:Mt2</span> &lt;- <span class="nv">MEDIA_TYPE</span>.<span class="n">new</span>(<span class="s1">&#39;text&#39;</span> <span class="s1">&#39;plain&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">param</span>(<span class="s1">&#39;CHARSET&#39;</span> <span class="s1">&#39;UTF-8&#39;</span>)
+  <span class="nv">C</span>.<span class="n">param</span>(<span class="s1">&#39;x_newline&#39;</span> <span class="s1">&#39;crlf&#39;</span>)
+  <span class="nv">C</span>.<span class="n">param</span>(<span class="s1">&#39;q&#39;</span> <span class="s1">&#39;0.4&#39;</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Mt2</span>.<span class="n">show</span>)
+<span class="c1"># =&gt; text/plain; charset=UTF-8; x_newline=crlf; q=0.4</span>
+
+<span class="nv">:Mt3</span> &lt;- <span class="nv">MEDIA_TYPE</span>.<span class="n">new</span>(<span class="s1">&#39;multipart&#39;</span> <span class="s1">&#39;form-data&#39;</span>){(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">param</span>(<span class="s1">&#39;boundary&#39;</span> <span class="s1">&#39;abcd--\--wxyz&#39;</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Mt3</span>.<span class="n">show</span>)
+<span class="c1"># =&gt; multipart/form-data; boundary=&quot;abcd--\\--wxyz&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="media-type-new-type-subtype-config">
+<span id="api-58538846a48dd11e285fa40721fbcbbb"></span><h2><span class="section-number">6.51.2. </span>MEDIA_TYPE.new(Type Subtype ...[$config={}])<a class="headerlink" href="#media-type-new-type-subtype-config" title="Link to this heading">¶</a></h2>
+<p>`new` returns a new `media_type`.</p>
+<p>Config method:</p>
+<p>• C.param(Name Val): can be called multiple times.</p>
+<p>`Type` will be the `type` part, and `Subtype` will be the `subtype` part of the media type.</p>
+<p>`Name` and `Val` will be the name and the value of each media type parameter.</p>
+<p class="rubric">Preconditions</p>
+<p>`Type` must be a `str` of a “token” defined in [RFC 9110 - 5.6.2].</p>
+<p>`Subtype` must be a `str` of a “token” defined in [RFC 9110 - 5.6.2].</p>
+<p>`Name` must be a `str` of a “token” defined in [RFC 9110 - 5.6.2].</p>
+<p>`Val` must be a `str` of code points U+0009 and U+0020-U+00ff. This assumes the content of a “quoted-string” of [RFC 9110 - 5.6.4] is decoded by ISO-8859-1 charset.</p>
+</section>
+<section id="media-type-parse-str-config">
+<span id="api-ea144b6b2747d6747474f590da14a8e5"></span><h2><span class="section-number">6.51.3. </span>MEDIA_TYPE.parse(Str ...[$config={}])<a class="headerlink" href="#media-type-parse-str-config" title="Link to this heading">¶</a></h2>
+<p>`parse` parses `Str` as a `media_type` based on the syntax of “media-type” defined in [RFC 9110 - 8.3.1].</p>
+<p>Config methods:</p>
+<p>• C.on_success($success): default = VAL.identity</p>
+<p>• C.on_error($error): default = a function which raises an exception</p>
+<p>If `Str` is successfully parsed, `parse` tail-calls $success with a `media_type`.</p>
+<p>If `Str` cannot be parsed, `parse` tail-calls $error with no arg.</p>
+<p class="rubric">Handling of “obs-text”</p>
+<p>Code points U+0080-U+00ff are permitted as parameter values when double-quoted. It assumes that “obs-text” bytes defined in [RFC 9110 - 5.5] are decoded by ISO-8859-1 charset.</p>
+<p class="rubric">Preconditions</p>
+<p>`Str` must be a `str`.</p>
+<p>$success must be a function which takes a `media_type`.</p>
+<p>$error must be a thunk.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:MEDIA_TYPE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/http/&#39;</span>)
+
+<span class="nv">:Mt</span> &lt;- <span class="nv">MEDIA_TYPE</span>.<span class="n">parse</span>(<span class="s1">&#39;text/html; charset=UTF-8&#39;</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Mt</span>.<span class="n">repr</span>)
+<span class="c1"># =&gt; (media_type type=&quot;text&quot; subtype=&quot;html&quot; params=(flat_map &quot;charset&quot;=&gt;&quot;UTF-8&quot;))</span>
+</pre></div>
+</div>
+</section>
+<section id="media-type-is-val">
+<span id="api-eb3952f59650cc0efb265612087598de"></span><h2><span class="section-number">6.51.4. </span>MEDIA_TYPE.is?(Val)<a class="headerlink" href="#media-type-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `media_type`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-http-HTTP.html"><span class="section-number">6.50. </span>kink/http/HTTP</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-http-REQ.html"><span class="section-number">6.52. </span>kink/http/REQ</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

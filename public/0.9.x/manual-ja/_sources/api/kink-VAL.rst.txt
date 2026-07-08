@@ -127,7 +127,7 @@ VAL\.same\?\(X Y\)
 VAL\.var\_syms\(Val\)
 =====================
 
-\`var\_syms\` does variable\-symbols operation\, and returns the set of syms of the vars of \`Val\`\.
+\`var\_syms\` performs variable\-symbols operation\, and returns the set of symbols of the variables of \`Val\`\.
 
 The result is a \`set\` of \`str\` values\.
 

@@ -10,11 +10,11 @@ https\:\/\/docs\.oracle\.com\/en\/java\/javase\/21\/docs\/api\/java\.base\/java\
 
 There are three basic types\.
 
-\• regex\:   A regular expression pattern\.   A regex val provides features such as matching\, searching\,   replacing and splitting\.
+\• regex\: A regular expression pattern\. A regex val provides features such as matching\, searching\, replacing and splitting\.
 
-\• match\:   A result of a successful matching\. A regex\_match contains groups\.   See kink\/regex\/MATCH for details\.
+\• match\: A result of a successful matching\. A regex\_match contains groups\. See kink\/regex\/MATCH for details\.
 
-\• group\:   A slice in the matched text\,   which can be the entire slice of the regex\_match\,   or a slice of a named capturing group\.   See kink\/regex\/GROUP for details\.
+\• group\: A slice in the matched text\, which can be the entire slice of the regex\_match\, or a slice of a named capturing group\. See kink\/regex\/GROUP for details\.
 
 \`match\` type is a subtype of \`group\`\, which represents the entire slice of the matched area\.
 

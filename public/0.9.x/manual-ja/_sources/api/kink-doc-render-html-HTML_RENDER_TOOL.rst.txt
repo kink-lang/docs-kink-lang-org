@@ -2,21 +2,25 @@
 kink\/doc\/render\/html\/HTML\_RENDER\_TOOL
 ===========================================
 
-Launcheable mod to render a kink doc to a single HTML file\.
+Launcheable module to render a kinkdoc document to a single HTML file\.
 
-Usage\: kink \[Kink\_options\]\.\.\. mod\:kink\/doc\/render\/html\/HTML\_RENDER\_TOOL \[Mod\_options\] \<JSON \>HTML
+.. rubric:: Usage
 
-The command reads the kink doc JSON from the standard input\, converts it to a single HTML file\, and writes it to the standard output\.
+.. code:: kink
+
+    kink [Kink_options]... mod:kink/doc/render/html/HTML_RENDER_TOOL [Mod_options] <JSON >HTML
+
+The command reads kinkdoc JSON data from the standard input\, converts it to a single HTML file\, and writes it to the standard output\.
 
 .. rubric:: Mod\_options
 
-\• \-\-style \{Style\_file\_path\} \: gives the file path of the alternative CSS file\.   The file content must be encoded by UTF\-8\.   It is inserted in the style element of the HTML file\.
+\• \-\-style \{Style\_file\_path\} \: gives the file path of a CSS file\. The file content must be encoded in UTF\-8\. It is inserted in the style element of the HTML file\.
 
-\• \-\-template \{Template\_file\_path\} \: gives the file path of the alternative   HTML template file\.   See the next section for details\.
+\• \-\-template \{Template\_file\_path\} \: gives the file path of the HTML template file\. See the next section for details\.
 
 .. rubric:: HTML template content
 
-The HTML template must be encoded by UTF\-8\, and be a Str\.format template string\. It can contain placeholders \`\{Title\}\` for the HTML\-escaped document title\, \`\{Style\}\` for the CSS\, and \`\{Body\}\` for the content of \<body\> element\.
+The HTML template must be encoded in UTF\-8\, and be a Str\.format template string\. It can contain placeholders \`\{Title\}\` for the HTML\-escaped document title\, \`\{Style\}\` for the CSS\, and \`\{Body\}\` for the content of \<body\> element\.
 
 The default template is as follows\:
 
@@ -38,7 +42,7 @@ The default template is as follows\:
 
 .. rubric:: Exit statuses
 
-If the command generates an HTML file successfully\, it exits with 0 as the exit status\.
+If the command succeeds\, it exits with 0 as the exit status\.
 
 If not\, the command exits with a non\-zero exit status\.
 
@@ -59,5 +63,5 @@ If not\, the command exits with a non\-zero exit status\.
 HTML\_RENDER\_TOOL\.main\(Argv\)
 ================================
 
-Launcher of the mod\.
+\`main\` is the launcher function of the module\.
 

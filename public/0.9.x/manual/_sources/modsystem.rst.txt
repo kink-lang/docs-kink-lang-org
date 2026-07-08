@@ -54,6 +54,8 @@ namely builtin modules.
 You can see the specification of public builtin modules in :doc:`/api/index`.
 There can also be private builtin modules which are not parts of the public API.
 
+.. _module_source_program_file:
+
 Kink program file
 -----------------
 

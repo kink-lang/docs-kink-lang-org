@@ -16,6 +16,7 @@ org.kink_lang.kink.internal.intrinsicsupport
 org.kink_lang.kink.internal.mod.java
 org.kink_lang.kink.internal.mod.random
 org.kink_lang.kink.internal.mod.stopwatch
+org.kink_lang.kink.internal.net
 org.kink_lang.kink.internal.num
 org.kink_lang.kink.internal.ovis
 org.kink_lang.kink.internal.program.ast

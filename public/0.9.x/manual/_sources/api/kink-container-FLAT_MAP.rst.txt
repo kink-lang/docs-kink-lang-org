@@ -2,7 +2,7 @@
 kink\/container\/FLAT\_MAP
 ==========================
 
-Provides an \`ordered\_map\` implementation which stores keys in a sorted vec\.
+Provides an \`order\_map\` implementation which stores keys in a sorted vector\.
 
 Flat map is a good choice when keys are rarely inserted or deleted\, or the size of the map is small\.
 
@@ -15,27 +15,19 @@ Flat map is a good choice when keys are rarely inserted or deleted\, or the size
 FLAT\_MAP\.new\(\.\.\.\[\$config\=\{\}\]\)
 ==========================================
 
-\`new\` returns a new empty flat \`ordered\_map\`\.
+\`new\` returns a new empty flat \`order\_map\`\.
 
 .. rubric:: Config method
 
-C\.order\(\$in\_order\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
+C\.order\(\$up\_to\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 
-.. rubric:: Comparison of keys
+.. rubric:: Total order relation of keys
 
-\$in\_order\? is used to compare keys\. \$in\_order\? must be a toal order which satisfies the following for all X\, Y\, and Z in the domain of keys\.
-
-\• reflexive\: in\_order\?\(X X\)
-
-\• transitive\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y Z\) then in\_order\?\(X Z\)
-
-\• antisymmetric\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y X\) then X is equivalent to Y
-
-\• strongly connected\: in\_order\?\(X Y\) \|\| in\_order\?\(Y X\)
+\$up\_to\? must be a function which takes two args X and Y\. \`up\_to\?\(X Y\)\` must return the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total order relation of keys\.
 
 .. rubric:: Preconditions
 
-\$in\_order\? must be a fun which takes two values and returns a \`bool\`\.
+\$up\_to\? must be a function which takes two values and returns a \`bool\`\.
 
 .. rubric:: Example\: default order
 
@@ -76,7 +68,7 @@ C\.order\(\$in\_order\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 FLAT\_MAP\.of\(\.\.\.\[K0 V0 K1 V1 \,\,\,\]\)
 =============================================
 
-\`of\` makes a new flat \`ordered\_map\` which contains the given keys and values\. Keys are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
+\`of\` makes a new flat \`order\_map\` which contains the given keys and values\. Keys are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
 
 The result map has key\-value pairs \(K0\, V0\)\, \(K1\, V1\)\, \(K2\, V2\) \,\,\,\.
 

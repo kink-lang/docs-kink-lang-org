@@ -21,15 +21,15 @@ A \`java\_call\_config\` value is passed to \$config\. See kink\/javahost\/JAVA 
 
 .. rubric:: Result
 
-1\)  If the return type of the method handle is a reference type \`rt\`\,     and the invocation returns \`resultObj\`\,     \`invoke\` tail\-calls the success continuation with a \`java\` value \(resultObj\, rt\)\.
+1\)  If the return type of the method handle is a reference type \`rt\`\, and the invocation returns \`resultObj\`\, \`invoke\` tail\-calls the success continuation with a \`java\` value \(resultObj\, rt\)\.
 
-2\)  If the return type \`pt\` of the method handle is     char\, boolean\, byte\, short\, int\, long\, float or double\,     and the invocation returns a value\,     \`invoke\` tail\-calls the success continuation with a \`java\` value     \(box\, pt\)\, where \`box\` is a wrapper instance of the returned value\.
+2\)  If the return type \`pt\` of the method handle is char\, boolean\, byte\, short\, int\, long\, float or double\, and the invocation returns a value\, \`invoke\` tail\-calls the success continuation with a \`java\` value \(box\, pt\)\, where \`box\` is a wrapper instance of the returned value\.
 
-3\)  If the return type of the method handle is void\,     and the invocation returns\,     \`invoke\` tail\-calls the success continuation with no arg\.
+3\)  If the return type of the method handle is void\, and the invocation returns\, \`invoke\` tail\-calls the success continuation with no arg\.
 
-4\)  If the invocation terminates throwing a Java exception \`exceptionObj\`\,     and the exception is an instance of one or more exception types specified     by invocations of C\.catch\,     \`invoke\` tail\-calls the error continuation corresponding     to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
+4\)  If the invocation terminates throwing a Java exception \`exceptionObj\`\, and the exception is an instance of one or more exception types specified by invocations of C\.catch\, \`invoke\` tail\-calls the error continuation corresponding to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
 
-5\)  If the invocation terminates throwing a Java exception\,     and no exception type passed to C\.catch matches the thrown exception\,     \`invoke\` raises a Kink exception\.
+5\)  If the invocation terminates throwing a Java exception\, and no exception type passed to C\.catch matches the thrown exception\, \`invoke\` raises a Kink exception\.
 
 .. rubric:: Preconditions
 

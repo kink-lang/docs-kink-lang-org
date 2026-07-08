@@ -224,9 +224,9 @@ Here\, \_\_ensure\_\_ does the following\:
 
 \• If \_\_rest\_\_ returns a val\, \_\_ensure\_\_ calls \$cleanup\.
 
-\• If \_\_rest\_\_ is terminated by \$return fun of CONTROL\.with\_return with a thunk \`T\`\,   \_\_ensure\_\_ calls \$cleanup and calls return\(T\)\.
+\• If \_\_rest\_\_ is terminated by \$return fun of CONTROL\.with\_return with a thunk \`T\`\, \_\_ensure\_\_ calls \$cleanup and calls return\(T\)\.
 
-\• If \_\_rest\_\_ raises an exception \`E\`\,   \_\_ensure\_\_ calls \$cleanup within a guard of CONTROL\.try\.   If \$cleanup returns a val\, \_\_ensure\_\_ raises \`E\`\.   If \$cleanup raises an exception \`F\`\, \_\_ensure\_\_raises \`E\+F\`\.
+\• If \_\_rest\_\_ raises an exception \`E\`\, \_\_ensure\_\_ calls \$cleanup within a guard of CONTROL\.try\. If \$cleanup returns a val\, \_\_ensure\_\_ raises \`E\`\. If \$cleanup raises an exception \`F\`\, \_\_ensure\_\_raises \`E\+F\`\.
 
 .. _api-a4599f5bf37ae1ee2080db91914c982f:
 

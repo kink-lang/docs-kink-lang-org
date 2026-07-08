@@ -1,66 +1,82 @@
 <!DOCTYPE html>
 
-<html lang="ja" data-content_root="../">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.33. kink/container/ORDERED_MAP &#8212; Kink 0.9.5-beta</title>
+    <title>6.33. kink/container/ORDER_MAP &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/documentation_options.js?v=6ce99075"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/translations.js?v=4dbe4bdc"></script>
-    <link rel="index" title="索引" href="../genindex.html" />
-    <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="6.34. kink/container/ORDERED_SET" href="kink-container-ORDERED_SET.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.34. kink/container/ORDER_SET" href="kink-container-ORDER_SET.html" />
     <link rel="prev" title="6.32. kink/container/MAP" href="kink-container-MAP.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
-        <h2 class="heading"><span>6.33. kink/container/ORDERED_MAP</span></h2>
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.33. kink/container/ORDER_MAP</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
         «&#160;&#160;<a href="kink-container-MAP.html"><span class="section-number">6.32. </span>kink/container/MAP</a>
         &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
+        <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-container-ORDERED_SET.html"><span class="section-number">6.34. </span>kink/container/ORDERED_SET</a>&#160;&#160;»
+        <a href="kink-container-ORDER_SET.html"><span class="section-number">6.34. </span>kink/container/ORDER_SET</a>&#160;&#160;»
         </p>
 
       </div>
       <div class="content" role="main">
         
         
-  <section id="kink-container-ordered-map">
-<h1><span class="section-number">6.33. </span>kink/container/ORDERED_MAP<a class="headerlink" href="#kink-container-ordered-map" title="Link to this heading">¶</a></h1>
-<nav class="contents local" id="id1">
+  <section id="kink-container-order-map">
+<h1><span class="section-number">6.33. </span>kink/container/ORDER_MAP<a class="headerlink" href="#kink-container-order-map" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#type-ordered-map" id="id2">ordered_map型</a></p>
+<li><p><a class="reference internal" href="#type-order-map" id="id1">type order_map</a></p>
 <ul>
+<li><p><a class="reference internal" href="#map-order" id="id2">Map.order</a></p></li>
 <li><p><a class="reference internal" href="#map-key-iter-min-key" id="id3">Map.key_iter(...[Min_key])</a></p></li>
 <li><p><a class="reference internal" href="#map-pair-iter-min-key" id="id4">Map.pair_iter(...[Min_key])</a></p></li>
 <li><p><a class="reference internal" href="#map-front-key" id="id5">Map.front_key</a></p></li>
 <li><p><a class="reference internal" href="#map-back-key" id="id6">Map.back_key</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#ordered-map-is-val" id="id7">ORDERED_MAP.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#order-map-is-val" id="id7">ORDER_MAP.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#order-map-mixin" id="id8">ORDER_MAP.mixin</a></p></li>
 </ul>
 </nav>
-<section id="type-ordered-map">
-<span id="api-c739611a6f4828963065637a4ef9f43e"></span><h2><span class="section-number">6.33.1. </span>ordered_map型<a class="headerlink" href="#type-ordered-map" title="Link to this heading">¶</a></h2>
-<p>ordered_mapは、キーの全順序をサポートするmapの部分型である。キーの同値関係は、全順序から導出される。</p>
+<section id="type-order-map">
+<span id="api-0cbf7955b1e3c250b6742cf3a51d866d"></span><h2><span class="section-number">6.33.1. </span>type order_map<a class="headerlink" href="#type-order-map" title="Link to this heading">¶</a></h2>
+<p>`order_map` is a subtype of `map` type which supports total ordering of keys. Equivalence relation of keys is derived from the toal order.</p>
+<p class="rubric">Total order relation of keys</p>
+<p>The total order relation of keys, `up-to`, must suffice the following conditions for all X, Y, and Z in the domain of keys.</p>
+<p>• reflexive: X up-to X</p>
+<p>• transitive: if X up-to Y &amp;&amp; Y up-to Z then X up-to Z</p>
+<p>• antisymmetric: if X up-to Y &amp;&amp; Y up-to X then X equivalent-to Y</p>
+<p>• strongly connected: X up-to Y || Y up-to X</p>
+<p>The antisymmetry condition is the definition of `equivalent-to`, which is the equivalence relation of keys.</p>
+<p class="rubric">Methods</p>
+<p>`order_map` values have all the methods of `map`.</p>
+<p>Additionally, `order_map` values have the following methods.</p>
+<section id="map-order">
+<span id="api-559506b294a3917ca02b22179f799cbd"></span><h3><span class="section-number">6.33.1.1. </span>Map.order<a class="headerlink" href="#map-order" title="Link to this heading">¶</a></h3>
+<p>`order` returns the function of the total order relation of keys of `Map`.</p>
+<p>The result function, $up_to?, is a function which takes two args `X` and `Y`. `up_to?(X Y)` returns the bool value of `X up-to Y`, where `up-to` is the total-order relation of keys.</p>
+</section>
 <section id="map-key-iter-min-key">
-<span id="api-33c96f85ef8e3c608fccab2e06618c93"></span><h3><span class="section-number">6.33.1.1. </span>Map.key_iter(...[Min_key])<a class="headerlink" href="#map-key-iter-min-key" title="Link to this heading">¶</a></h3>
-<p>key_iterは、順序付けされたキーのiterを戻す。Min_keyが渡された場合、iterはMin_keyと同値かより大きいキーを含む。Min_keyが渡されない場合、iterはMapのすべてのキーを含む。</p>
-<p>ordered_mapのkey_iterメソッドは、map型のkey_iterの契約を拡張する。</p>
-<p class="rubric">事前条件</p>
-<p>Min_keyはキーの全順序の定義域に含まれなければならない。</p>
-<p class="rubric">例</p>
+<span id="api-f258d5c7d74371abb66d0870cbac6411"></span><h3><span class="section-number">6.33.1.2. </span>Map.key_iter(...[Min_key])<a class="headerlink" href="#map-key-iter-min-key" title="Link to this heading">¶</a></h3>
+<p>`key_iter` returns an `iter` of keys following the order. If `Min_key` is passed, the iter will have the keys which are bigger than or equivalent to `Min_key`. If `Min_key` is not passed, the iter will have all the keys of `Map`.</p>
+<p>`key_iter` method of `order_map` type extends the contract of `key_iter` of `map` type.</p>
+<p class="rubric">Precondition</p>
+<p>`Min_key` must be in the domain of the total order of keys.</p>
+<p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
 
 <span class="nv">:Map</span> &lt;- <span class="nv">TREE_MAP</span>.<span class="n">of</span>(
@@ -91,12 +107,12 @@
 </div>
 </section>
 <section id="map-pair-iter-min-key">
-<span id="api-59ee186c19f6fad7a99cdecb2d43e526"></span><h3><span class="section-number">6.33.1.2. </span>Map.pair_iter(...[Min_key])<a class="headerlink" href="#map-pair-iter-min-key" title="Link to this heading">¶</a></h3>
-<p>pair_iterは、キーで順序付けられた[Key Val]のペアのiterを戻す。Min_keyが渡された場合、iterは、Min_keyと同値かより大きいキーのペアを含む。Min_keyが渡されない場合、iterはMapのすべてのキー/値ペアを含む。</p>
-<p>ordered_mapのpair_iterメソッドは、map型のpair_iterの契約を拡張する。</p>
-<p class="rubric">事前条件</p>
-<p>Min_keyはキーの全順序の定義域に含まれなければならない。</p>
-<p class="rubric">例</p>
+<span id="api-cdbc43be38dd6a361389935aff94b562"></span><h3><span class="section-number">6.33.1.3. </span>Map.pair_iter(...[Min_key])<a class="headerlink" href="#map-pair-iter-min-key" title="Link to this heading">¶</a></h3>
+<p>`pair_iter` returns an `iter` of pairs [Key Val] following the order. If `Min_key` is passed, the iter will have pairs whose keys are bigger than or equivalent to `Min_key`. If `Min_key` is not passed, the iter will have all the key-value pairs of `Map`.</p>
+<p>`pair_iter` method of `order_map` type extends the constraints of `pair_iter` of `map` type.</p>
+<p class="rubric">Precondition</p>
+<p>`Min_key` must be in the domain of the total order of keys.</p>
+<p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
 
 <span class="nv">:Map</span> &lt;- <span class="nv">TREE_MAP</span>.<span class="n">of</span>(
@@ -128,11 +144,11 @@
 </div>
 </section>
 <section id="map-front-key">
-<span id="api-15fe37c1c336d43d6c98176fdfe790e4"></span><h3><span class="section-number">6.33.1.3. </span>Map.front_key<a class="headerlink" href="#map-front-key" title="Link to this heading">¶</a></h3>
-<p>front_keyは、順序で最初に来るキーを戻す。</p>
-<p class="rubric">事前条件</p>
-<p>Mapは空であってはならない。</p>
-<p class="rubric">例</p>
+<span id="api-d969587e7eb1552a57543e0f8e417167"></span><h3><span class="section-number">6.33.1.4. </span>Map.front_key<a class="headerlink" href="#map-front-key" title="Link to this heading">¶</a></h3>
+<p>`front_key` returns the key which comes first in the order.</p>
+<p class="rubric">Precondition</p>
+<p>`Map` must not be empty.</p>
+<p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
 
 <span class="nv">:Map</span> &lt;- <span class="nv">TREE_MAP</span>.<span class="n">of</span>(
@@ -147,11 +163,11 @@
 </div>
 </section>
 <section id="map-back-key">
-<span id="api-02971f1592885599120608f1c07b6b38"></span><h3><span class="section-number">6.33.1.4. </span>Map.back_key<a class="headerlink" href="#map-back-key" title="Link to this heading">¶</a></h3>
-<p>front_keyは、順序で最後に来るキーを戻す。</p>
-<p class="rubric">事前条件</p>
-<p>Mapは空であってはならない。</p>
-<p class="rubric">例</p>
+<span id="api-8efdd5840695bd9e2c8e884f0ce8b4a1"></span><h3><span class="section-number">6.33.1.5. </span>Map.back_key<a class="headerlink" href="#map-back-key" title="Link to this heading">¶</a></h3>
+<p>`back_key` returns the key which comes last in the order.</p>
+<p class="rubric">Precondition</p>
+<p>`Map` must not be empty.</p>
+<p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:TREE_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
 
 <span class="nv">:Map</span> &lt;- <span class="nv">TREE_MAP</span>.<span class="n">of</span>(
@@ -166,9 +182,19 @@
 </div>
 </section>
 </section>
-<section id="ordered-map-is-val">
-<span id="api-d001b044ab65a09cf27f8d71c776152a"></span><h2><span class="section-number">6.33.2. </span>ORDERED_MAP.is?(Val)<a class="headerlink" href="#ordered-map-is-val" title="Link to this heading">¶</a></h2>
-<p>is?はValがordered_mapであるかどうかを戻す。</p>
+<section id="order-map-is-val">
+<span id="api-94f5f25275ebf282ab09c6fdd81c3f8a"></span><h2><span class="section-number">6.33.2. </span>ORDER_MAP.is?(Val)<a class="headerlink" href="#order-map-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is an `order_map`.</p>
+</section>
+<section id="order-map-mixin">
+<span id="api-7a855273ef06776fa9d58a13221b8928"></span><h2><span class="section-number">6.33.3. </span>ORDER_MAP.mixin<a class="headerlink" href="#order-map-mixin" title="Link to this heading">¶</a></h2>
+<p>`mixin` returns a mixin trait which provides default implementations of the following `order_map` methods.</p>
+<p>• eq</p>
+<p>• get</p>
+<p>• have_key?</p>
+<p>• any?</p>
+<p>• key_iter</p>
+<p>• op_eq / `==` operator</p>
 </section>
 </section>
 
@@ -179,9 +205,9 @@
         <p>
         «&#160;&#160;<a href="kink-container-MAP.html"><span class="section-number">6.32. </span>kink/container/MAP</a>
         &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
+        <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-container-ORDERED_SET.html"><span class="section-number">6.34. </span>kink/container/ORDERED_SET</a>&#160;&#160;»
+        <a href="kink-container-ORDER_SET.html"><span class="section-number">6.34. </span>kink/container/ORDER_SET</a>&#160;&#160;»
         </p>
 
       </div>

@@ -5,30 +5,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.17. kink/NUM &#8212; Kink 0.9.5-beta</title>
+    <title>6.16. kink/NUM &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/documentation_options.js?v=6ce99075"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="6.18. kink/NUM_DIV" href="kink-NUM_DIV.html" />
-    <link rel="prev" title="6.16. kink/MOD" href="kink-MOD.html" /> 
+    <link rel="next" title="6.17. kink/NUM_DIV" href="kink-NUM_DIV.html" />
+    <link rel="prev" title="6.15. kink/MOD" href="kink-MOD.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
-        <h2 class="heading"><span>6.17. kink/NUM</span></h2>
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.16. kink/NUM</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-MOD.html"><span class="section-number">6.16. </span>kink/MOD</a>
+        «&#160;&#160;<a href="kink-MOD.html"><span class="section-number">6.15. </span>kink/MOD</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-NUM_DIV.html"><span class="section-number">6.18. </span>kink/NUM_DIV</a>&#160;&#160;»
+        <a href="kink-NUM_DIV.html"><span class="section-number">6.17. </span>kink/NUM_DIV</a>&#160;&#160;»
         </p>
 
       </div>
@@ -36,7 +36,7 @@
         
         
   <section id="kink-num">
-<h1><span class="section-number">6.17. </span>kink/NUM<a class="headerlink" href="#kink-num" title="Link to this heading">¶</a></h1>
+<h1><span class="section-number">6.16. </span>kink/NUM<a class="headerlink" href="#kink-num" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#type-num" id="id12">type num</a></p>
@@ -88,7 +88,7 @@
 </ul>
 </nav>
 <section id="type-num">
-<span id="api-94ecaace8aa3cab97d09f89a70b9228e"></span><h2><span class="section-number">6.17.1. </span>type num<a class="headerlink" href="#type-num" title="Link to this heading">¶</a></h2>
+<span id="api-94ecaace8aa3cab97d09f89a70b9228e"></span><h2><span class="section-number">6.16.1. </span>type num<a class="headerlink" href="#type-num" title="Link to this heading">¶</a></h2>
 <p>`num` is a floating point decimal number.</p>
 <p>A `num` value consists of (Mantissa, Scale). The number represented by the `num` value is Mantissa * (10 ** (-Scale)). Here, `Mantissa` and `Scale` are signed integer numbers.</p>
 <p>The runtime must at least support the range [-(2**95), (2**95) - 1] for `Mantissa`, and the range [-(2**7), (2**7) - 1] for `Scale`. Exceeding these limits may result in overflow or underflow.</p>
@@ -110,7 +110,7 @@
 </pre></div>
 </div>
 <section id="num-mantissa">
-<span id="api-4f2291b6fef27f68bc285a4cdfffd56e"></span><h3><span class="section-number">6.17.1.1. </span>Num.mantissa<a class="headerlink" href="#num-mantissa" title="Link to this heading">¶</a></h3>
+<span id="api-4f2291b6fef27f68bc285a4cdfffd56e"></span><h3><span class="section-number">6.16.1.1. </span>Num.mantissa<a class="headerlink" href="#num-mantissa" title="Link to this heading">¶</a></h3>
 <p>`mantissa` returns `Mantissa` of `Num`.</p>
 <p>The result is an int `num`.</p>
 <p class="rubric">Example</p>
@@ -119,7 +119,7 @@
 </div>
 </section>
 <section id="num-scale">
-<span id="api-019c0663170cced591f401cc65bcf76d"></span><h3><span class="section-number">6.17.1.2. </span>Num.scale<a class="headerlink" href="#num-scale" title="Link to this heading">¶</a></h3>
+<span id="api-019c0663170cced591f401cc65bcf76d"></span><h3><span class="section-number">6.16.1.2. </span>Num.scale<a class="headerlink" href="#num-scale" title="Link to this heading">¶</a></h3>
 <p>`scale` returns `Scale` of `Num`.</p>
 <p>The result is an int `num`.</p>
 <p class="rubric">Example</p>
@@ -128,7 +128,7 @@
 </div>
 </section>
 <section id="num-int">
-<span id="api-1ddd856bddd9dd7f00af7c30f72b73c5"></span><h3><span class="section-number">6.17.1.3. </span>Num.int?<a class="headerlink" href="#num-int" title="Link to this heading">¶</a></h3>
+<span id="api-1ddd856bddd9dd7f00af7c30f72b73c5"></span><h3><span class="section-number">6.16.1.3. </span>Num.int?<a class="headerlink" href="#num-int" title="Link to this heading">¶</a></h3>
 <p>`int?` returns whether `Num` is an integer.</p>
 <p>A `num` is an integer when `Scale` is zero.</p>
 <p class="rubric">Example</p>
@@ -139,7 +139,7 @@
 </div>
 </section>
 <section id="x-y">
-<span id="api-eeaedd434833de15b7c174516cc69425"></span><h3><span class="section-number">6.17.1.4. </span>X + Y<a class="headerlink" href="#x-y" title="Link to this heading">¶</a></h3>
+<span id="api-eeaedd434833de15b7c174516cc69425"></span><h3><span class="section-number">6.16.1.4. </span>X + Y<a class="headerlink" href="#x-y" title="Link to this heading">¶</a></h3>
 <p>`+` operator, or `op_add` method, returns the sum of `X` and `Y`.</p>
 <p>`Scale` of the result will be max(X.scale, Y.scale).</p>
 <p class="rubric">Precondition</p>
@@ -152,7 +152,7 @@
 </div>
 </section>
 <section id="api-f667eb318caba4a5d8a039983c22f0ed">
-<span id="id1"></span><h3><span class="section-number">6.17.1.5. </span>X - Y<a class="headerlink" href="#api-f667eb318caba4a5d8a039983c22f0ed" title="Link to this heading">¶</a></h3>
+<span id="id1"></span><h3><span class="section-number">6.16.1.5. </span>X - Y<a class="headerlink" href="#api-f667eb318caba4a5d8a039983c22f0ed" title="Link to this heading">¶</a></h3>
 <p>The binary `-` operator, or `op_sub` method, returns the difference of `X` and `Y`.</p>
 <p>`Scale` of the result will be max(X.scale, Y.scale).</p>
 <p class="rubric">Precondition</p>
@@ -165,7 +165,7 @@
 </div>
 </section>
 <section id="x">
-<span id="api-bd9d2fee7c2996acc458a8ddd79ccd88"></span><h3><span class="section-number">6.17.1.6. </span>- X<a class="headerlink" href="#x" title="Link to this heading">¶</a></h3>
+<span id="api-bd9d2fee7c2996acc458a8ddd79ccd88"></span><h3><span class="section-number">6.16.1.6. </span>- X<a class="headerlink" href="#x" title="Link to this heading">¶</a></h3>
 <p>The unary `-` operator, or `op_minus` method, flips the sign of `X`.</p>
 <p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">42</span>).<span class="n">repr</span>)     <span class="c1"># =&gt; (-42)</span>
@@ -175,7 +175,7 @@
 </div>
 </section>
 <section id="api-30d402ff3f8dab7b42383d10b1eeec6a">
-<span id="id2"></span><h3><span class="section-number">6.17.1.7. </span>X * Y<a class="headerlink" href="#api-30d402ff3f8dab7b42383d10b1eeec6a" title="Link to this heading">¶</a></h3>
+<span id="id2"></span><h3><span class="section-number">6.16.1.7. </span>X * Y<a class="headerlink" href="#api-30d402ff3f8dab7b42383d10b1eeec6a" title="Link to this heading">¶</a></h3>
 <p>`*` operator, or `op_mul` method, returns the production of `X` and `Y`.</p>
 <p>`Scale` of the result will be X.scale + Y.scale.</p>
 <p class="rubric">Precondition</p>
@@ -188,7 +188,7 @@
 </div>
 </section>
 <section id="api-c49b38f653c2f557b5467273cdecc802">
-<span id="id3"></span><h3><span class="section-number">6.17.1.8. </span>X / Y<a class="headerlink" href="#api-c49b38f653c2f557b5467273cdecc802" title="Link to this heading">¶</a></h3>
+<span id="id3"></span><h3><span class="section-number">6.16.1.8. </span>X / Y<a class="headerlink" href="#api-c49b38f653c2f557b5467273cdecc802" title="Link to this heading">¶</a></h3>
 <p>`/` operator, or `op_div` method, makes a `num_div` value of (Dividend=X, Divisor=Y).</p>
 <p>See kink/NUM_DIV for how to get a number from the `num_div` value.</p>
 <p class="rubric">Preconditions</p>
@@ -201,7 +201,7 @@
 </div>
 </section>
 <section id="api-780786ae17df2b32e5239328dd963d63">
-<span id="id4"></span><h3><span class="section-number">6.17.1.9. </span>X // Y<a class="headerlink" href="#api-780786ae17df2b32e5239328dd963d63" title="Link to this heading">¶</a></h3>
+<span id="id4"></span><h3><span class="section-number">6.16.1.9. </span>X // Y<a class="headerlink" href="#api-780786ae17df2b32e5239328dd963d63" title="Link to this heading">¶</a></h3>
 <p>`//` operator, or `op_intdiv` method, performs integral division, and returns the quotient.</p>
 <p>Q = X // Y and R = X % Y will suffice the following conditions.</p>
 <p>• Q * Y + R = X</p>
@@ -244,7 +244,7 @@
 </div>
 </section>
 <section id="api-0131f4bf3e7485b8b28131b0316c2617">
-<span id="id5"></span><h3><span class="section-number">6.17.1.10. </span>X % Y<a class="headerlink" href="#api-0131f4bf3e7485b8b28131b0316c2617" title="Link to this heading">¶</a></h3>
+<span id="id5"></span><h3><span class="section-number">6.16.1.10. </span>X % Y<a class="headerlink" href="#api-0131f4bf3e7485b8b28131b0316c2617" title="Link to this heading">¶</a></h3>
 <p>`%` operator, or `op_rem` method, performs integral division, and returns the remainder.</p>
 <p>See X // Y for details.</p>
 <p class="rubric">Precondition</p>
@@ -252,7 +252,7 @@
 <p>`Y` must not be equal to 0.</p>
 </section>
 <section id="api-cac6a7bcc8bdf1592de14001f749d29b">
-<span id="id6"></span><h3><span class="section-number">6.17.1.11. </span>X | Y<a class="headerlink" href="#api-cac6a7bcc8bdf1592de14001f749d29b" title="Link to this heading">¶</a></h3>
+<span id="id6"></span><h3><span class="section-number">6.16.1.11. </span>X | Y<a class="headerlink" href="#api-cac6a7bcc8bdf1592de14001f749d29b" title="Link to this heading">¶</a></h3>
 <p>`|` operator, or `op_or` method, performs bit OR operation for `X` and `Y`.</p>
 <p>The result will be an int `num`.</p>
 <p class="rubric">Preconditions</p>
@@ -260,7 +260,7 @@
 <p>`Y` must be an int `num`.</p>
 </section>
 <section id="api-b45386f45e99478863797b5a1d2d1972">
-<span id="id7"></span><h3><span class="section-number">6.17.1.12. </span>X ^ Y<a class="headerlink" href="#api-b45386f45e99478863797b5a1d2d1972" title="Link to this heading">¶</a></h3>
+<span id="id7"></span><h3><span class="section-number">6.16.1.12. </span>X ^ Y<a class="headerlink" href="#api-b45386f45e99478863797b5a1d2d1972" title="Link to this heading">¶</a></h3>
 <p>`^` operator, or `op_xor` method, performs bit XOR operation for `X` and `Y`.</p>
 <p>The result will be an int `num`.</p>
 <p class="rubric">Preconditions</p>
@@ -268,7 +268,7 @@
 <p>`Y` must be an int `num`.</p>
 </section>
 <section id="api-3d5d87cea0ec792f10058af8fc814e85">
-<span id="id8"></span><h3><span class="section-number">6.17.1.13. </span>X &amp; Y<a class="headerlink" href="#api-3d5d87cea0ec792f10058af8fc814e85" title="Link to this heading">¶</a></h3>
+<span id="id8"></span><h3><span class="section-number">6.16.1.13. </span>X &amp; Y<a class="headerlink" href="#api-3d5d87cea0ec792f10058af8fc814e85" title="Link to this heading">¶</a></h3>
 <p>`&amp;` operator, or `op_and` method, performs bit AND operation for `X` and `Y`.</p>
 <p>The result will be an int `num`.</p>
 <p class="rubric">Preconditions</p>
@@ -276,13 +276,13 @@
 <p>`Y` must be an int `num`.</p>
 </section>
 <section id="num">
-<span id="api-99d6664e9e0978702bf1b8ca418ccdb4"></span><h3><span class="section-number">6.17.1.14. </span>~ Num<a class="headerlink" href="#num" title="Link to this heading">¶</a></h3>
+<span id="api-99d6664e9e0978702bf1b8ca418ccdb4"></span><h3><span class="section-number">6.16.1.14. </span>~ Num<a class="headerlink" href="#num" title="Link to this heading">¶</a></h3>
 <p>`~` operator, or `op_not` method, performs bit NOT operation `Num`.</p>
 <p class="rubric">Preconditions</p>
 <p>`Num` must be an int `num`.</p>
 </section>
 <section id="num-bit-count">
-<span id="api-c1ec2af0dcccbaba39903d6fddcb91a4"></span><h3><span class="section-number">6.17.1.15. </span>Num &lt;&lt; Bit_count<a class="headerlink" href="#num-bit-count" title="Link to this heading">¶</a></h3>
+<span id="api-c1ec2af0dcccbaba39903d6fddcb91a4"></span><h3><span class="section-number">6.16.1.15. </span>Num &lt;&lt; Bit_count<a class="headerlink" href="#num-bit-count" title="Link to this heading">¶</a></h3>
 <p>`&lt;&lt;` operator, or `op_shl` method, performs bit SHIFT-LEFT operation for `Num`.</p>
 <p>If `Bit_count` is positive, `Num` is shifted `Bit_count` bits toward left.</p>
 <p>If `Bit_count` is negative, `Num` is shifted (-Bit_count) bits toward right. The least significant (-Bit_count) bits are discarded.</p>
@@ -293,7 +293,7 @@
 <p>`Bit_count` must be an int `num`.</p>
 </section>
 <section id="api-0cb9f66cdd32cf542f3764d784da24f0">
-<span id="id9"></span><h3><span class="section-number">6.17.1.16. </span>Num &gt;&gt; Bit_count<a class="headerlink" href="#api-0cb9f66cdd32cf542f3764d784da24f0" title="Link to this heading">¶</a></h3>
+<span id="id9"></span><h3><span class="section-number">6.16.1.16. </span>Num &gt;&gt; Bit_count<a class="headerlink" href="#api-0cb9f66cdd32cf542f3764d784da24f0" title="Link to this heading">¶</a></h3>
 <p>`&gt;&gt;` operator, or `op_shr` method, performs bit SHIFT-RIGHT operation for `Num`.</p>
 <p>If `Bit_count` is positive, `Num` is shifted `Bit_count` bits toward right. The least significant `Bit_count` bits are discarded.</p>
 <p>If `Bit_count` is negative, `Num` is shited (-Bit_count) bits toward left.</p>
@@ -304,7 +304,7 @@
 <p>`Bit_count` must be an int `num`.</p>
 </section>
 <section id="api-39c3e426ef7d48032623045f7e0086ae">
-<span id="id10"></span><h3><span class="section-number">6.17.1.17. </span>X == Y<a class="headerlink" href="#api-39c3e426ef7d48032623045f7e0086ae" title="Link to this heading">¶</a></h3>
+<span id="id10"></span><h3><span class="section-number">6.16.1.17. </span>X == Y<a class="headerlink" href="#api-39c3e426ef7d48032623045f7e0086ae" title="Link to this heading">¶</a></h3>
 <p>`==` operator, or `op_eq` method, returns whether the numbers are equal, irrespective of scales of them.</p>
 <p class="rubric">Precondition</p>
 <p>`Y` must be a `num` value.</p>
@@ -318,7 +318,7 @@
 </div>
 </section>
 <section id="api-c63f0bac28dc7889794056e0ed205a33">
-<span id="id11"></span><h3><span class="section-number">6.17.1.18. </span>X &lt;= Y<a class="headerlink" href="#api-c63f0bac28dc7889794056e0ed205a33" title="Link to this heading">¶</a></h3>
+<span id="id11"></span><h3><span class="section-number">6.16.1.18. </span>X &lt;= Y<a class="headerlink" href="#api-c63f0bac28dc7889794056e0ed205a33" title="Link to this heading">¶</a></h3>
 <p>`&lt;=` operator, or `op_le` method, returns whether `X` is numerically smaller than or equal to `Y`.</p>
 <p class="rubric">Precondition</p>
 <p>`Y` must be a `num` value.</p>
@@ -338,7 +338,7 @@
 </div>
 </section>
 <section id="num-round">
-<span id="api-38f57e8b60f5c9ad8c075cfea6170c4a"></span><h3><span class="section-number">6.17.1.19. </span>Num.round<a class="headerlink" href="#num-round" title="Link to this heading">¶</a></h3>
+<span id="api-38f57e8b60f5c9ad8c075cfea6170c4a"></span><h3><span class="section-number">6.16.1.19. </span>Num.round<a class="headerlink" href="#num-round" title="Link to this heading">¶</a></h3>
 <p>`round` returns a `num_div` value of (Dividend=Num, Divisor=1).</p>
 <p>See kink/NUM_DIV for how to get a number from the `num_div` value.</p>
 <p class="rubric">Example</p>
@@ -347,7 +347,7 @@
 </div>
 </section>
 <section id="num-abs">
-<span id="api-3e1fa3f1554a2bee797b4ac45ac150f6"></span><h3><span class="section-number">6.17.1.20. </span>Num.abs<a class="headerlink" href="#num-abs" title="Link to this heading">¶</a></h3>
+<span id="api-3e1fa3f1554a2bee797b4ac45ac150f6"></span><h3><span class="section-number">6.16.1.20. </span>Num.abs<a class="headerlink" href="#num-abs" title="Link to this heading">¶</a></h3>
 <p>`abs` returns the absolute value of `Num`</p>
 <p>If `Num` is nonnegative, `abs` returns `Num`. If `Num` is negative, `abs` returns (-Num).</p>
 <p class="rubric">Example</p>
@@ -357,7 +357,7 @@
 </div>
 </section>
 <section id="num-times">
-<span id="api-d987a4afd3b55ecf23fcab0f117756d7"></span><h3><span class="section-number">6.17.1.21. </span>Num.times<a class="headerlink" href="#num-times" title="Link to this heading">¶</a></h3>
+<span id="api-d987a4afd3b55ecf23fcab0f117756d7"></span><h3><span class="section-number">6.16.1.21. </span>Num.times<a class="headerlink" href="#num-times" title="Link to this heading">¶</a></h3>
 <p>`times` returns an `iter` from 0 (inclusive), to `Num` (exclusive), incrementing 1 for each element.</p>
 <p class="rubric">Preconditions</p>
 <p>`Num` must be an int `num`.</p>
@@ -376,7 +376,7 @@
 </div>
 </section>
 <section id="num-up">
-<span id="api-d02a57ed87d1e967f734982bfc2fd36d"></span><h3><span class="section-number">6.17.1.22. </span>Num.up<a class="headerlink" href="#num-up" title="Link to this heading">¶</a></h3>
+<span id="api-d02a57ed87d1e967f734982bfc2fd36d"></span><h3><span class="section-number">6.16.1.22. </span>Num.up<a class="headerlink" href="#num-up" title="Link to this heading">¶</a></h3>
 <p>`up` returns an infinite `iter` from `Num`, incrementing 1 for each element.</p>
 <p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">0.5</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
@@ -392,7 +392,7 @@
 </div>
 </section>
 <section id="num-down">
-<span id="api-f1ce33216444c929e3f46b7d905c3b2c"></span><h3><span class="section-number">6.17.1.23. </span>Num.down<a class="headerlink" href="#num-down" title="Link to this heading">¶</a></h3>
+<span id="api-f1ce33216444c929e3f46b7d905c3b2c"></span><h3><span class="section-number">6.16.1.23. </span>Num.down<a class="headerlink" href="#num-down" title="Link to this heading">¶</a></h3>
 <p>`down` returns an infinite `iter` from `Num`, decrementing 1 for each element.</p>
 <p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">9.5</span>.<span class="n">down</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
@@ -408,7 +408,7 @@
 </div>
 </section>
 <section id="num-show-show-config">
-<span id="api-74d910bad99c4bb9a039176ac1da3627"></span><h3><span class="section-number">6.17.1.24. </span>Num.show(...[$show_config={}])<a class="headerlink" href="#num-show-show-config" title="Link to this heading">¶</a></h3>
+<span id="api-74d910bad99c4bb9a039176ac1da3627"></span><h3><span class="section-number">6.16.1.24. </span>Num.show(...[$show_config={}])<a class="headerlink" href="#num-show-show-config" title="Link to this heading">¶</a></h3>
 <p>`show` returns a `str` representation of `Num`, which is intended to be used in UI messages.</p>
 <p>The optional parameter $show_config takes a function which takes a `num_show_config` value as an arg. `show` passes a `num_show_config` value to $show_config to configure the output.</p>
 <p>Example:</p>
@@ -427,16 +427,16 @@
 <p>For details of the output and the configuration, see type num_show_config.</p>
 </section>
 <section id="num-repr">
-<span id="api-afe9aba263647d33f4e34b1111148d61"></span><h3><span class="section-number">6.17.1.25. </span>Num.repr<a class="headerlink" href="#num-repr" title="Link to this heading">¶</a></h3>
+<span id="api-afe9aba263647d33f4e34b1111148d61"></span><h3><span class="section-number">6.16.1.25. </span>Num.repr<a class="headerlink" href="#num-repr" title="Link to this heading">¶</a></h3>
 <p>`repr` returns a `str` such as &quot;1.2500&quot;, &quot;(-42)&quot; or &quot;(num mantissa=1 scale=-10)&quot;.</p>
 </section>
 </section>
 <section id="num-is-val">
-<span id="api-1f0e555dd60542529475491a9ff4491c"></span><h2><span class="section-number">6.17.2. </span>NUM.is?(Val)<a class="headerlink" href="#num-is-val" title="Link to this heading">¶</a></h2>
+<span id="api-1f0e555dd60542529475491a9ff4491c"></span><h2><span class="section-number">6.16.2. </span>NUM.is?(Val)<a class="headerlink" href="#num-is-val" title="Link to this heading">¶</a></h2>
 <p>`is?` returns whether `Val` is a `num` value.</p>
 </section>
 <section id="num-new-mantissa-scale">
-<span id="api-982aee2d0e02427c1cd4f47fd5b5acc9"></span><h2><span class="section-number">6.17.3. </span>NUM.new(Mantissa Scale)<a class="headerlink" href="#num-new-mantissa-scale" title="Link to this heading">¶</a></h2>
+<span id="api-982aee2d0e02427c1cd4f47fd5b5acc9"></span><h2><span class="section-number">6.16.3. </span>NUM.new(Mantissa Scale)<a class="headerlink" href="#num-new-mantissa-scale" title="Link to this heading">¶</a></h2>
 <p>`new` makes a `num` value with given `Mantissa` and `Scale`.</p>
 <p class="rubric">Preconditions</p>
 <p>`Mantissa` must be an int `num`.</p>
@@ -450,7 +450,7 @@
 </div>
 </section>
 <section id="num-parse-int-str-config">
-<span id="api-8cd45d8a05be4d520333c05a5c5ad0df"></span><h2><span class="section-number">6.17.4. </span>NUM.parse_int(Str ...[$config={}])<a class="headerlink" href="#num-parse-int-str-config" title="Link to this heading">¶</a></h2>
+<span id="api-8cd45d8a05be4d520333c05a5c5ad0df"></span><h2><span class="section-number">6.16.4. </span>NUM.parse_int(Str ...[$config={}])<a class="headerlink" href="#num-parse-int-str-config" title="Link to this heading">¶</a></h2>
 <p>`parse_int` parses an int num from `Str`.</p>
 <p>Config methods:</p>
 <p>• C.radix(Radix): default = 10</p>
@@ -498,7 +498,7 @@
 </div>
 </section>
 <section id="num-parse-decimal-str-config">
-<span id="api-5f79a184c60f413c3f03d9064c1a8bbd"></span><h2><span class="section-number">6.17.5. </span>NUM.parse_decimal(Str ...[$config={}])<a class="headerlink" href="#num-parse-decimal-str-config" title="Link to this heading">¶</a></h2>
+<span id="api-5f79a184c60f413c3f03d9064c1a8bbd"></span><h2><span class="section-number">6.16.5. </span>NUM.parse_decimal(Str ...[$config={}])<a class="headerlink" href="#num-parse-decimal-str-config" title="Link to this heading">¶</a></h2>
 <p>`parse_decimal` parses a decimal number from `Str`.</p>
 <p>Config methods:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
@@ -537,7 +537,7 @@
 </div>
 </section>
 <section id="type-num-show-config">
-<span id="api-ea2ba48d5d3cf06399551e3861d4a445"></span><h2><span class="section-number">6.17.6. </span>type num_show_config<a class="headerlink" href="#type-num-show-config" title="Link to this heading">¶</a></h2>
+<span id="api-ea2ba48d5d3cf06399551e3861d4a445"></span><h2><span class="section-number">6.16.6. </span>type num_show_config<a class="headerlink" href="#type-num-show-config" title="Link to this heading">¶</a></h2>
 <p>`num_show_config` is a subtype of `show_config` (see kink/STR), which is used to configure the output of Num.show.</p>
 <p>Results of Num.show are categorized into two cases.</p>
 <p>1) When `Scale` of the `num` is less than or equal to 0</p>
@@ -557,7 +557,7 @@
 <p>The decimal digits of the fractional part of the `num`.</p>
 <p>The trailing zeros are not omitted, thus the length of the part is always equal to `Scale` of the `num`.</p>
 <section id="c-locale-locale">
-<span id="api-b48654ac34c7a1c44b9c57debf51365c"></span><h3><span class="section-number">6.17.6.1. </span>C.locale(Locale)<a class="headerlink" href="#c-locale-locale" title="Link to this heading">¶</a></h3>
+<span id="api-b48654ac34c7a1c44b9c57debf51365c"></span><h3><span class="section-number">6.16.6.1. </span>C.locale(Locale)<a class="headerlink" href="#c-locale-locale" title="Link to this heading">¶</a></h3>
 <p>`locale` imports configuration of the specified locale.</p>
 <p>`locale` configures `decimal_sep` and `group_sep`.</p>
 <p>If `locale` method is not called, Num.show does not use any locale information. So, even if you want to use the runtime default locale, you must call `locale` method explicitly.</p>
@@ -575,7 +575,7 @@
 </div>
 </section>
 <section id="c-spec-spec">
-<span id="api-887529ef3342bcecb6214e991126c49b"></span><h3><span class="section-number">6.17.6.2. </span>C.spec(Spec)<a class="headerlink" href="#c-spec-spec" title="Link to this heading">¶</a></h3>
+<span id="api-887529ef3342bcecb6214e991126c49b"></span><h3><span class="section-number">6.16.6.2. </span>C.spec(Spec)<a class="headerlink" href="#c-spec-spec" title="Link to this heading">¶</a></h3>
 <p>`spec` configures the output of Num.show method using `Spec` string.</p>
 <p class="rubric">Preconditions</p>
 <p>`Spec` must be a `str` value.</p>
@@ -617,7 +617,7 @@
 </div>
 </section>
 <section id="c-plus-sign-plus-sign">
-<span id="api-e4566256ec0799e6e86fac60251f424d"></span><h3><span class="section-number">6.17.6.3. </span>C.plus_sign(Plus_sign)<a class="headerlink" href="#c-plus-sign-plus-sign" title="Link to this heading">¶</a></h3>
+<span id="api-e4566256ec0799e6e86fac60251f424d"></span><h3><span class="section-number">6.16.6.3. </span>C.plus_sign(Plus_sign)<a class="headerlink" href="#c-plus-sign-plus-sign" title="Link to this heading">¶</a></h3>
 <p>`plus_sign` sets `Plus_sign` as the sign of non-negative numbers.</p>
 <p>The default value is an empty `str` &quot;&quot;.</p>
 <p class="rubric">Precondition</p>
@@ -641,7 +641,7 @@
 </div>
 </section>
 <section id="c-minus-sign-minus-sign">
-<span id="api-8839fb8f30ceb5353fa0ea2fc7d9e552"></span><h3><span class="section-number">6.17.6.4. </span>C.minus_sign(Minus_sign)<a class="headerlink" href="#c-minus-sign-minus-sign" title="Link to this heading">¶</a></h3>
+<span id="api-8839fb8f30ceb5353fa0ea2fc7d9e552"></span><h3><span class="section-number">6.16.6.4. </span>C.minus_sign(Minus_sign)<a class="headerlink" href="#c-minus-sign-minus-sign" title="Link to this heading">¶</a></h3>
 <p>`minus_sign` sets `Minus_sign` as the sign of negative numbers.</p>
 <p>The default value is &quot;-&quot;.</p>
 <p class="rubric">Precondition</p>
@@ -665,7 +665,7 @@
 </div>
 </section>
 <section id="c-group-sep-group-sep">
-<span id="api-330d0c519190d04f0c222ba72b3ac4e5"></span><h3><span class="section-number">6.17.6.5. </span>C.group_sep(Group_sep)<a class="headerlink" href="#c-group-sep-group-sep" title="Link to this heading">¶</a></h3>
+<span id="api-330d0c519190d04f0c222ba72b3ac4e5"></span><h3><span class="section-number">6.16.6.5. </span>C.group_sep(Group_sep)<a class="headerlink" href="#c-group-sep-group-sep" title="Link to this heading">¶</a></h3>
 <p>`group_sep` sets `Group_sep` as the digit grouping separator.</p>
 <p>The default value is &quot;,&quot;.</p>
 <p class="rubric">Precondition</p>
@@ -687,7 +687,7 @@
 </div>
 </section>
 <section id="c-group-len-group-len">
-<span id="api-74f4dd3f0914acb30dbe497c144c34a2"></span><h3><span class="section-number">6.17.6.6. </span>C.group_len(Group_len)<a class="headerlink" href="#c-group-len-group-len" title="Link to this heading">¶</a></h3>
+<span id="api-74f4dd3f0914acb30dbe497c144c34a2"></span><h3><span class="section-number">6.16.6.6. </span>C.group_len(Group_len)<a class="headerlink" href="#c-group-len-group-len" title="Link to this heading">¶</a></h3>
 <p>`group_len` sets `Group_len` as the length of digits groups.</p>
 <p>The default value is the plus infinity. Thus, by default, the grouping separator is not displayed.</p>
 <p class="rubric">Precondition</p>
@@ -701,7 +701,7 @@
 </div>
 </section>
 <section id="c-decimal-sep-decimal-sep">
-<span id="api-f89e62145eb2d1a954d6a985a90ea35d"></span><h3><span class="section-number">6.17.6.7. </span>C.decimal_sep(Decimal_sep)<a class="headerlink" href="#c-decimal-sep-decimal-sep" title="Link to this heading">¶</a></h3>
+<span id="api-f89e62145eb2d1a954d6a985a90ea35d"></span><h3><span class="section-number">6.16.6.7. </span>C.decimal_sep(Decimal_sep)<a class="headerlink" href="#c-decimal-sep-decimal-sep" title="Link to this heading">¶</a></h3>
 <p>`decimal_sep` sets `Decimal_sep` as the separator between the integral part and the fractional part.</p>
 <p class="rubric">Precondition</p>
 <p>Decimal_sep must be a str</p>
@@ -714,7 +714,7 @@
 </div>
 </section>
 <section id="c-pad-zero-min-int-digits">
-<span id="api-02a41977ccf6554facd720574b092b70"></span><h3><span class="section-number">6.17.6.8. </span>C.pad_zero(Min_int_digits)<a class="headerlink" href="#c-pad-zero-min-int-digits" title="Link to this heading">¶</a></h3>
+<span id="api-02a41977ccf6554facd720574b092b70"></span><h3><span class="section-number">6.16.6.8. </span>C.pad_zero(Min_int_digits)<a class="headerlink" href="#c-pad-zero-min-int-digits" title="Link to this heading">¶</a></h3>
 <p>`pad_zero` sets `Min_int_digits` as the minimum number of the integral part to be output.</p>
 <p>The default value is 1.</p>
 <p class="rubric">Precondition</p>
@@ -739,7 +739,7 @@
 </div>
 </section>
 <section id="c-radix-radix">
-<span id="api-bd0bf4cc8ffc34e9cecd2000f9d874dd"></span><h3><span class="section-number">6.17.6.9. </span>C.radix(Radix)<a class="headerlink" href="#c-radix-radix" title="Link to this heading">¶</a></h3>
+<span id="api-bd0bf4cc8ffc34e9cecd2000f9d874dd"></span><h3><span class="section-number">6.16.6.9. </span>C.radix(Radix)<a class="headerlink" href="#c-radix-radix" title="Link to this heading">¶</a></h3>
 <p>`radix` sets `Radix` as the radix of the result of `show` method.</p>
 <p>The default value is 10.</p>
 <p class="rubric">Preconditions</p>
@@ -771,11 +771,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-MOD.html"><span class="section-number">6.16. </span>kink/MOD</a>
+        «&#160;&#160;<a href="kink-MOD.html"><span class="section-number">6.15. </span>kink/MOD</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-NUM_DIV.html"><span class="section-number">6.18. </span>kink/NUM_DIV</a>&#160;&#160;»
+        <a href="kink-NUM_DIV.html"><span class="section-number">6.17. </span>kink/NUM_DIV</a>&#160;&#160;»
         </p>
 
       </div>

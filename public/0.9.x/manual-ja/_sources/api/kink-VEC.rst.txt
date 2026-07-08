@@ -435,6 +435,39 @@ The elements after the removed slice are copied to the front by \(To \- From\)\.
     stdout.print_line(Vec.repr)
     # => ["0" "1" "2" "5" "6"]
 
+.. _api-ed9d77caa26ac4ad6f494e3dc712cfd0:
+
+Dest\_vec\.move\(D\_from Src \.\.\.\[S\_from\=0 S\_to\=Src\.size\]\)
+--------------------------------------------------------------------
+
+\`move\` copies the elements of the slice \[S\_from\, S\_to\) of \`Src\` vector\, and pastes them to the slice \[D\_from\, D\_from \+ \(S\_to \- S\_from\)\) of \`Dest\_vec\` vector\.
+
+The name \`move\` comes from \`memmove\` function\, as \`Dest\_vec\` and \`Src\` can be the same vector\, and slices can overlap\.
+
+.. rubric:: Preconditions
+
+\`D\_from\` must be an integer \`num\` in the range \[0\, Dest\_vec\.size\]\.
+
+\`Src\` must be a \`vec\`\.
+
+\`S\_from\` and \`S\_to\` must be integer \`num\` values\.
+
+0 \<\= S\_from \<\= S\_to \<\= Src\.size
+
+D\_from \+ \(S\_to \- S\_from\) \<\= Dest\_vec\.size
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :V <- ['0' '1' '2' '3' '4']
+    V.move(1 ['a' 'b' 'c'])
+    stdout.print_line(V.repr)  # => ["0" "a" "b" "c" "4"]
+        
+    :W <- ['0' '1' '2' '3' '4']
+    W.move(2 W 0 3)
+    stdout.print_line(W.repr)  # => ["0" "1" "0" "1" "2"]
+
 .. _api-4f175b876e19fc10c267f6fce74d5315:
 
 Vec\.dup
@@ -737,9 +770,9 @@ If \`Vec\` is empty\, and \$empty\_fallback is not given\, \`reduce\` raises an 
 
 .. code:: kink
 
-    :COMPARE.require_from('kink/')
+    :ORDER.require_from('kink/')
         
-    stdout.print_line([31 41 59 26 53].reduce(COMPARE$max).repr) # => 59
+    stdout.print_line([31 41 59 26 53].reduce(ORDER$max).repr) # => 59
 
 .. rubric:: Example\: with fallback
 
@@ -927,34 +960,34 @@ Calling Vec\.have\_any\?\(Vals\) is equivalent to calling Vals\.any\?\{\(\:T\) V
     stdout.print_line(Vec.have_any?(FLAT_SET.of(6 7)).repr)   # => true
     stdout.print_line(Vec.have_any?(FLAT_SET.of(10 20)).repr) # => false
 
-.. _api-db860e884a84e1827982b48eee6be98f:
+.. _api-f92e8388682b3f3e5249380fc372352e:
 
-Vec\.sort\(\.\.\.\[\$in\_order\?\=\{\(\:X \:Y\) X \<\= Y \}\]\)
----------------------------------------------------------------
+Vec\.sort\(\.\.\.\[\$up\_to\?\=\{\(\:X \:Y\) X \<\= Y \}\]\)
+------------------------------------------------------------
 
-\`sort\` returns a \`vec\` whose elements are copied from \`Vec\` and sorted in the ascending order specified by \$in\_order\?\.
+\`sort\` returns a \`vec\` whose elements are copied from \`Vec\` and sorted in the ascending order specified by \$up\_to\?\.
 
 .. rubric:: Comparison
 
-Comparison of elements are done by \$in\_order\?\.
+Comparison of elements are done by \$up\_to\?\.
 
-\$in\_order\? must be a total order relation of the elements of \`Vec\`\. For all \`X\`\, \`Y\`\, and \`Z\` in the elements of \`Vec\`\, \$in\_order\? must satisfy the following\.
+\$up\_to\? must be a total order relation of the elements of \`Vec\`\. For all \`X\`\, \`Y\`\, and \`Z\` in the elements of \`Vec\`\, \$up\_to\? must satisfy the following\.
 
-\• reflexive\: in\_order\?\(X X\)
+\• reflexive\: up\_to\?\(X X\)
 
-\• transitive\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y Z\) then in\_order\?\(X Z\)
+\• transitive\: if up\_to\?\(X Y\) \&\& up\_to\?\(Y Z\) then up\_to\?\(X Z\)
 
-\• antisymmetric\: if in\_order\?\(X Y\) \&\& in\_order\?\(Y X\) then X is equivalent to Y
+\• antisymmetric\: if up\_to\?\(X Y\) \&\& up\_to\?\(Y X\) then X is equivalent to Y
 
-\• strongly connected\: in\_order\?\(X Y\) \|\| in\_order\?\(Y X\)
+\• strongly connected\: up\_to\?\(X Y\) \|\| up\_to\?\(Y X\)
 
 .. rubric:: Stable sort
 
-\`sort\` performs a stable sort\. If in\_order\?\(E1 E2\) \&\& in\_order\?\(E2 E1\)\, for \`E1\` and \`E2\` in \`Vec\`\, \`E1\` and \`E2\` appear in the result \`vec\` in the same order as in \`Vec\`\.
+\`sort\` performs a stable sort\. If up\_to\?\(E1 E2\) \&\& up\_to\?\(E2 E1\)\, for \`E1\` and \`E2\` in \`Vec\`\, \`E1\` and \`E2\` appear in the result \`vec\` in the same order as in \`Vec\`\.
 
 .. rubric:: Precondition
 
-\$in\_order\? must be a fun which takes two values and returns a \`bool\`\.
+\$up\_to\? must be a function which takes two values and returns a \`bool\`\.
 
 .. rubric:: Example
 
@@ -1109,9 +1142,9 @@ Vec1 \<\= Vec2
 
 \`Vec1\` is less than or equal to \`Vec2\` when\:
 
-1\)  There is a nonnegative integer k \(k \< min\(Vec1\.size Vec2\.size\)\)\,     such that for all i in \[0\, k\)     Vec1\.get\(i\) \<\= Vec2\.get\(i\) \&\& Vec2\.get\(i\) \<\= Vec1\.get\(i\)\,     and \! \(Vec2\.get\(k\) \<\= Vec1\.get\(k\)\)\; or
+1\)  There is a nonnegative integer k \(k \< min\(Vec1\.size Vec2\.size\)\)\, such that for all i in \[0\, k\) Vec1\.get\(i\) \<\= Vec2\.get\(i\) \&\& Vec2\.get\(i\) \<\= Vec1\.get\(i\)\, and \! \(Vec2\.get\(k\) \<\= Vec1\.get\(k\)\)\; or
 
-2\)  Vec1\.size \<\= Vec2\.size and for all i in \[0\, Vec1\.size\)\,     Vec1\.get\(i\) \<\= Vec2\.get\(i\) \&\& Vec2\.get\(i\) \<\= Vec1\.get\(i\)\.
+2\)  Vec1\.size \<\= Vec2\.size and for all i in \[0\, Vec1\.size\)\, Vec1\.get\(i\) \<\= Vec2\.get\(i\) \&\& Vec2\.get\(i\) \<\= Vec1\.get\(i\)\.
 
 Comparisons are done from the smallest index to the biggest index\. When the result is determined\, the subsequent comparisons are not performed\.
 

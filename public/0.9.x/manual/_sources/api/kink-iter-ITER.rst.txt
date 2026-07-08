@@ -454,6 +454,24 @@ If \`Iter\` is empty\, the result \`iter\` will be also empty\.
     }
     # Output: nothing
 
+.. _api-27791617dfd8508050891d03b05d7469:
+
+Iter\.vec
+---------
+
+\`vec\` returns a vector which contains all the elements of \`Iter\`\.
+
+.. rubric:: Precondition
+
+\`Iter\` must be finite\-length\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :Vec <- 3.times.vec
+    stdout.print_line(Vec.repr) # => [0 1 2]
+
 .. _api-3ab44720e374a52836fdd24ac39db2d1:
 
 Front \+ Back

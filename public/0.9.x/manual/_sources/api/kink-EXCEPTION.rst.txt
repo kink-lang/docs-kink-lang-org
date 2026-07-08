@@ -96,9 +96,9 @@ Exception\.op\_eq\(Arg\_exception\)
 
 They are equal in either of the following conditions\:
 
-\• Both exceptions don\'t have the next exception in the chain\,   the message strs are equal\,   and the vecs of traces are equal\.
+\• Both exceptions don\'t have the next exception in the chain\, the message strs are equal\, and the vecs of traces are equal\.
 
-\• Both exceptions have the next exception in the chain\,   the next exceptions are equal\,   the message strs are equal\,   and the vecs of traces are equal\.
+\• Both exceptions have the next exception in the chain\, the next exceptions are equal\, the message strs are equal\, and the vecs of traces are equal\.
 
 .. _api-e8325567ca9201ecedd3460476b31fa1:
 

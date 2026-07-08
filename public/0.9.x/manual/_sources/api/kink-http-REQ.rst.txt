@@ -1,0 +1,152 @@
+===============
+kink\/http\/REQ
+===============
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-57d641aaef00e8d4f113a3282887ab90:
+
+type req
+========
+
+\`req\` is an HTTP request\.
+
+.. _api-05e875c914b97e9057b25a3fa740f9eb:
+
+Req\.method
+-----------
+
+\`method\` returns a \`str\` of the method of the request\, like \'GET\' or \'POST\.
+
+.. _api-b7af607c8e946e89ced0d6b87827d50f:
+
+Req\.uri
+--------
+
+\`uri\` returns a \`str\` of the URI of the request\.
+
+.. _api-3449b5f550a3e794ae1d873e5c68ae07:
+
+Req\.headers
+------------
+
+\`headers\` returns a \`map\` from header names\, to vectors of the corresponding header values\.
+
+Keys of the map are \`str\` values\, which are case\-insensitive\.
+
+Values of the map are \`vec\` values which contain \`str\` values\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :REQ.require_from('kink/http/')
+        
+    :Req <- REQ.new('POST' 'https://example.kink-lang.org/form'){(:C)
+      C.header('Content-Type' 'text/plain')
+      C.header('Accept' 'application/octet-stream')
+      C.header('Accept' '*/*')
+    }
+    stdout.print_line(Req.headers.repr)
+    # Output:
+    #   (flat_map "accept"=>["application/octet-stream" "*/*"] "content-type"=>["text/plain"])
+
+.. _api-9dde2e91ee609baec1b1da68d1a3ef20:
+
+Req\.content
+------------
+
+\`content\` method returns the content of the request as a \`req\_content\` value\.
+
+.. _api-e38f3830c299cd2e7d2b8368004e5bc5:
+
+Req\.redirect\_count
+--------------------
+
+\`redirect\_count\` returns the number of redirects until \`Req\`\.
+
+If \`Req\` is made without the redirect source\, the result will be 0\.
+
+If \`Req\` is made with a redirect source\, the result will be Req\.redirect\_source\.redirect\_count \+ 1\.
+
+.. _api-67ce1da9b8e7ed83b927da26f3a1a5b6:
+
+Req\.redirect\_source
+---------------------
+
+\`redirect\_source\` returns the \`resp\` value of the HTTP response from which the request is redirected\.
+
+.. rubric:: Precondition
+
+Req\.redirect\_count must not be 0\.
+
+.. _api-a7117f11531fae9160f9f8310561c171:
+
+REQ\.new\(Method Uri \.\.\.\[\$config\=\{\}\]\)
+===============================================
+
+\`new\` returns a new \`req\`\, with \`Method\` as the request method\, and \`Uri\` as the URI of the resource\.
+
+.. rubric:: Preconditions
+
+\`Method\` must be a \`str\` of a \[RFC 9110\] “token”\.
+
+\`Method\` must not be \'CONNECT\'\.
+
+\`Uri\` must be a \`str\` of an http or https URI \[RFC 9110 \- 4\.2\.1\, 4\.2\.2\]\.
+
+\$config must take a \`request\_new\_config\` as a config value\.
+
+.. _api-26eb67bd9ecd000f3ea3a407af31b33a:
+
+type request\_new\_config
+=========================
+
+\`request\_new\_config\` is a config value of REQ\.new\.
+
+.. _api-d2c856ce3ca7877f41d7d4c0f8a268fd:
+
+C\.header\(Name Val\)
+---------------------
+
+\`header\` specifies an HTTP header\. This method can be called multiple times to specify multiple header entries\.
+
+.. rubric:: Preconditions
+
+\`Name\` must be a \`str\` of a “token” defined in \[RFC 9110\]\.
+
+\`Val\` must be a \`str\` which matches \/\|\[\\x21\-\\x7e\\x80\-\\xff\]\(\[\\t\\x20\-\\x7e\\x80\-\\xff\]\*\[\\x21\-\\x7e\\x80\-\\xff\]\)\?\/\. This assumes that a “field\-value” defined in \[RFC 9110\] is decoded by ISO\-8859\-1 charset\.
+
+.. _api-82d8cf6cbf9ca320adf316c91aea4b2d:
+
+C\.content\(Content\)
+---------------------
+
+\`content\` specifies that the HTTP request has \`Content\` as the request content\.
+
+If \`content\` is not called\, the request content will be empty\.
+
+.. rubric:: Precondition
+
+\`Content\` must be a \`req\_content\`\.
+
+.. _api-873b1b15e79f327db45edbf8f5e1937e:
+
+C\.redirect\_source\(Resp\)
+---------------------------
+
+\`redirect\_source\` specifies that the request is will be performed as a redirect from the previous HTTP response \`Resp\`\.
+
+.. rubric:: Precondition
+
+\`Resp\` must be a \`resp\`\.
+
+.. _api-7930b156fb9dda9d22150e7723879cb0:
+
+REQ\.is\?\(Val\)
+================
+
+\`is\?\` returns whether \`Val\` is a \`req\`\.
+

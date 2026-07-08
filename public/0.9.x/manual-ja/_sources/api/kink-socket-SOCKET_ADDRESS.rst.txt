@@ -29,9 +29,9 @@ Addr1 \=\= Addr2
 
 \`\=\=\` operator\, or \`op\_eq\` method\, returns true if and only if one of the following conditions is met\.
 
-\• \`Addr1\` and \`Addr2\` are both values of \`ip\_port\` type\,   and they have the same ip address and the port number\.
+\• \`Addr1\` and \`Addr2\` are both values of \`ip\_port\` type\, and they have the same ip address and the port number\.
 
-\• \`Addr1\` and \`Addr2\` are both values of \`unix\_domain\_socket\_path\` type\,   the paths of them are equal by \`\=\=\` operator of type \`str\`\.
+\• \`Addr1\` and \`Addr2\` are both values of \`unix\_domain\_socket\_path\` type\, the paths of them are equal by \`\=\=\` operator of type \`str\`\.
 
 .. rubric:: Precondition
 

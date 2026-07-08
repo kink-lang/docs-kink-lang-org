@@ -5,31 +5,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.54. kink/io/FILE &#8212; Kink 0.9.5-beta</title>
+    <title>6.60. kink/io/FILE &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/translations.js?v=4dbe4bdc"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="6.55. kink/io/INPUT" href="kink-io-INPUT.html" />
-    <link rel="prev" title="6.53. kink/io/BUFFER_OUTPUT" href="kink-io-BUFFER_OUTPUT.html" /> 
+    <link rel="next" title="6.61. kink/io/GENERATOR_INPUT" href="kink-io-GENERATOR_INPUT.html" />
+    <link rel="prev" title="6.59. kink/io/BUFFER_OUTPUT" href="kink-io-BUFFER_OUTPUT.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
-        <h2 class="heading"><span>6.54. kink/io/FILE</span></h2>
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.60. kink/io/FILE</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-io-BUFFER_OUTPUT.html"><span class="section-number">6.53. </span>kink/io/BUFFER_OUTPUT</a>
+        «&#160;&#160;<a href="kink-io-BUFFER_OUTPUT.html"><span class="section-number">6.59. </span>kink/io/BUFFER_OUTPUT</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">コンテンツ</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-io-INPUT.html"><span class="section-number">6.55. </span>kink/io/INPUT</a>&#160;&#160;»
+        <a href="kink-io-GENERATOR_INPUT.html"><span class="section-number">6.61. </span>kink/io/GENERATOR_INPUT</a>&#160;&#160;»
         </p>
 
       </div>
@@ -37,7 +37,7 @@
         
         
   <section id="kink-io-file">
-<h1><span class="section-number">6.54. </span>kink/io/FILE<a class="headerlink" href="#kink-io-file" title="Link to this heading">¶</a></h1>
+<h1><span class="section-number">6.60. </span>kink/io/FILE<a class="headerlink" href="#kink-io-file" title="Link to this heading">¶</a></h1>
 <p>ファイルシステム上のファイルを操作する。</p>
 <nav class="contents local" id="id1">
 <ul class="simple">
@@ -62,7 +62,7 @@
 </ul>
 </nav>
 <section id="file-open-to-read-path-config">
-<span id="api-fafe98441385cfb4b79326879ff4d65e"></span><h2><span class="section-number">6.54.1. </span>FILE.open_to_read(Path ...[$config={}])<a class="headerlink" href="#file-open-to-read-path-config" title="Link to this heading">¶</a></h2>
+<span id="api-fafe98441385cfb4b79326879ff4d65e"></span><h2><span class="section-number">6.60.1. </span>FILE.open_to_read(Path ...[$config={}])<a class="headerlink" href="#file-open-to-read-path-config" title="Link to this heading">¶</a></h2>
 <p>open_to_readはPathで指定されたファイルをバイト入力ストリームとして開く。結果はinput型をサポートする。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.no_buffer / C.buffer(Max_buf_size)</p>
@@ -101,7 +101,7 @@
 </div>
 </section>
 <section id="file-open-to-scan-path-charset-config">
-<span id="api-12d6507dc8d16fc03859fdd3220c7cd3"></span><h2><span class="section-number">6.54.2. </span>FILE.open_to_scan(Path Charset ...[$config={}])<a class="headerlink" href="#file-open-to-scan-path-charset-config" title="Link to this heading">¶</a></h2>
+<span id="api-12d6507dc8d16fc03859fdd3220c7cd3"></span><h2><span class="section-number">6.60.2. </span>FILE.open_to_scan(Path Charset ...[$config={}])<a class="headerlink" href="#file-open-to-scan-path-charset-config" title="Link to this heading">¶</a></h2>
 <p>open_to_scanはPathで指定されたファイルを文字入力ストリームとして開く。結果はscanner型とinput型をサポートする。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.no_buffer / C.buffer(Max_buf_size)</p>
@@ -126,7 +126,7 @@
 <p>$errorはexceptionを引数に取る関数でなければならない。</p>
 </section>
 <section id="file-open-to-write-path-config">
-<span id="api-fdfdfc98095e167314e45585ce156a49"></span><h2><span class="section-number">6.54.3. </span>FILE.open_to_write(Path ...[$config={}])<a class="headerlink" href="#file-open-to-write-path-config" title="Link to this heading">¶</a></h2>
+<span id="api-fdfdfc98095e167314e45585ce156a49"></span><h2><span class="section-number">6.60.3. </span>FILE.open_to_write(Path ...[$config={}])<a class="headerlink" href="#file-open-to-write-path-config" title="Link to this heading">¶</a></h2>
 <p>open_to_writeはPathで指定されたファイルをバイト出力ストリームとして開く。結果はoutput型をサポートする。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.append</p>
@@ -156,14 +156,14 @@
 <span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
   <span class="nv">:Out</span> = <span class="nv">FILE</span>.<span class="n">open_to_write</span>(<span class="s1">&#39;/dev/stdout&#39;</span>)
   <span class="n">finally</span>{ <span class="nv">Out</span>.<span class="n">close</span> }
-  <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">CHARSET</span>.<span class="n">ascii</span>.<span class="n">str_to_bin</span>(<span class="s2">&quot;hello</span><span class="se">\n</span><span class="s2">&quot;</span>))
+  <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">CHARSET</span>.<span class="n">us_ascii</span>.<span class="n">str_to_bin</span>(<span class="s2">&quot;hello</span><span class="se">\n</span><span class="s2">&quot;</span>))
 }
 <span class="c1"># =&gt; hello</span>
 </pre></div>
 </div>
 </section>
 <section id="file-open-to-print-path-charset-newline-config">
-<span id="api-d02fdfaa5d9aae6a7176b437e0e8befa"></span><h2><span class="section-number">6.54.4. </span>FILE.open_to_print(Path Charset Newline ...[$config={}])<a class="headerlink" href="#file-open-to-print-path-charset-newline-config" title="Link to this heading">¶</a></h2>
+<span id="api-d02fdfaa5d9aae6a7176b437e0e8befa"></span><h2><span class="section-number">6.60.4. </span>FILE.open_to_print(Path Charset Newline ...[$config={}])<a class="headerlink" href="#file-open-to-print-path-charset-newline-config" title="Link to this heading">¶</a></h2>
 <p>open_to_printはPathで指定されたファイルを文字出力ストリームとして開く。結果はprinter型とoutput型をサポートする。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.append</p>
@@ -200,7 +200,7 @@
 <p>$errorはexceptionを引数に取る関数でなければならない。</p>
 </section>
 <section id="file-mkdir-path-config">
-<span id="api-8be892a018ed31a7936442857b2b217a"></span><h2><span class="section-number">6.54.5. </span>FILE.mkdir(Path ...[$config={}])<a class="headerlink" href="#file-mkdir-path-config" title="Link to this heading">¶</a></h2>
+<span id="api-8be892a018ed31a7936442857b2b217a"></span><h2><span class="section-number">6.60.5. </span>FILE.mkdir(Path ...[$config={}])<a class="headerlink" href="#file-mkdir-path-config" title="Link to this heading">¶</a></h2>
 <p>mkdirはPathで指定されたディレクトリを作る。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.on_success($success): default = {}</p>
@@ -213,7 +213,7 @@
 <p>$errorはexceptionを引数に取る関数でなければならない。</p>
 </section>
 <section id="file-rm-path-config">
-<span id="api-43f040646fa640559c055d713955cf3e"></span><h2><span class="section-number">6.54.6. </span>FILE.rm(Path ...[$config={}])<a class="headerlink" href="#file-rm-path-config" title="Link to this heading">¶</a></h2>
+<span id="api-43f040646fa640559c055d713955cf3e"></span><h2><span class="section-number">6.60.6. </span>FILE.rm(Path ...[$config={}])<a class="headerlink" href="#file-rm-path-config" title="Link to this heading">¶</a></h2>
 <p>rmはPathで指定されたファイルシステムエントリを削除する。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.on_success($success): default = {}</p>
@@ -226,7 +226,7 @@
 <p>$errorはexceptionを引数に取る関数でなければならない。</p>
 </section>
 <section id="file-ls-dir-path-config">
-<span id="api-50cf9a438a1dc4954679784c603ad7ed"></span><h2><span class="section-number">6.54.7. </span>FILE.ls(Dir_path ...[$config={}])<a class="headerlink" href="#file-ls-dir-path-config" title="Link to this heading">¶</a></h2>
+<span id="api-50cf9a438a1dc4954679784c603ad7ed"></span><h2><span class="section-number">6.60.7. </span>FILE.ls(Dir_path ...[$config={}])<a class="headerlink" href="#file-ls-dir-path-config" title="Link to this heading">¶</a></h2>
 <p>lsはDir_pathで指定されたディレクトリ直下のエントリを取得する。エントリのパスはDir_pathのパス部品を先頭に持つ。lsはエントリのパスのvec値を戻す。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
@@ -246,7 +246,7 @@
 </div>
 </section>
 <section id="file-ln-s-target-path-link-path-config">
-<span id="api-f3b384b1b6a82bda811aca0cc1896233"></span><h2><span class="section-number">6.54.8. </span>FILE.ln_s(Target_path Link_path ...[$config={}])<a class="headerlink" href="#file-ln-s-target-path-link-path-config" title="Link to this heading">¶</a></h2>
+<span id="api-f3b384b1b6a82bda811aca0cc1896233"></span><h2><span class="section-number">6.60.8. </span>FILE.ln_s(Target_path Link_path ...[$config={}])<a class="headerlink" href="#file-ln-s-target-path-link-path-config" title="Link to this heading">¶</a></h2>
 <p>ln_sはTarget_pathを宛先とするシンボリックリンクをLink_pathに作る。</p>
 <p>この関数の名前はUNIXのコマンド “ln -s target link” に由来する。</p>
 <p>コンフィグメソッド:</p>
@@ -268,7 +268,7 @@
 </div>
 </section>
 <section id="file-readlink-link-path-config">
-<span id="api-3ba272fdc252dcbe228ad93bcfb4bc46"></span><h2><span class="section-number">6.54.9. </span>FILE.readlink(Link_path ...[$config={}])<a class="headerlink" href="#file-readlink-link-path-config" title="Link to this heading">¶</a></h2>
+<span id="api-3ba272fdc252dcbe228ad93bcfb4bc46"></span><h2><span class="section-number">6.60.9. </span>FILE.readlink(Link_path ...[$config={}])<a class="headerlink" href="#file-readlink-link-path-config" title="Link to this heading">¶</a></h2>
 <p>readlinkはLink_pathで指定されたシンボリックリンクの宛先のパスを取得する。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
@@ -288,7 +288,7 @@
 </div>
 </section>
 <section id="file-realpath-path-config">
-<span id="api-fc42f8751b290ee0543f933667b40316"></span><h2><span class="section-number">6.54.10. </span>FILE.realpath(Path ...[$config={}])<a class="headerlink" href="#file-realpath-path-config" title="Link to this heading">¶</a></h2>
+<span id="api-fc42f8751b290ee0543f933667b40316"></span><h2><span class="section-number">6.60.10. </span>FILE.realpath(Path ...[$config={}])<a class="headerlink" href="#file-realpath-path-config" title="Link to this heading">¶</a></h2>
 <p>realpathはPath中のシンボリックリンク、..などのハードリンク、重複したパス区切りなどを解決して、絶対パスを取得する。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
@@ -307,7 +307,7 @@
 </div>
 </section>
 <section id="file-basename-path">
-<span id="api-b7c09d5c4194843678b26f99672c0547"></span><h2><span class="section-number">6.54.11. </span>FILE.basename(Path)<a class="headerlink" href="#file-basename-path" title="Link to this heading">¶</a></h2>
+<span id="api-b7c09d5c4194843678b26f99672c0547"></span><h2><span class="section-number">6.60.11. </span>FILE.basename(Path)<a class="headerlink" href="#file-basename-path" title="Link to this heading">¶</a></h2>
 <p>basenameはPathの最後の部品にあたる、ファイルシステムエントリの名前を戻す。</p>
 <p>Pathがそのようなエントリを持っていない場合、basenameは空のstr値を戻す。</p>
 <p class="rubric">事前条件</p>
@@ -344,7 +344,7 @@
 </div>
 </section>
 <section id="file-dirname-path">
-<span id="api-bba9cfc8b3aa5485b3364f2cadef1e52"></span><h2><span class="section-number">6.54.12. </span>FILE.dirname(Path)<a class="headerlink" href="#file-dirname-path" title="Link to this heading">¶</a></h2>
+<span id="api-bba9cfc8b3aa5485b3364f2cadef1e52"></span><h2><span class="section-number">6.60.12. </span>FILE.dirname(Path)<a class="headerlink" href="#file-dirname-path" title="Link to this heading">¶</a></h2>
 <p>dirnameはPathから最後の部分にあたるファイルシステムエントリの名前を取り除いたパスを戻す。</p>
 <p>Pathがそのようなエントリを持っていない場合、dirnameはPathと意味的に同等なパスを戻す。</p>
 <p class="rubric">事前条件</p>
@@ -381,28 +381,28 @@
 </div>
 </section>
 <section id="file-pwd">
-<span id="api-456322b6d4ea1b8f3a7c7ed33789dabc"></span><h2><span class="section-number">6.54.13. </span>FILE.pwd<a class="headerlink" href="#file-pwd" title="Link to this heading">¶</a></h2>
+<span id="api-456322b6d4ea1b8f3a7c7ed33789dabc"></span><h2><span class="section-number">6.60.13. </span>FILE.pwd<a class="headerlink" href="#file-pwd" title="Link to this heading">¶</a></h2>
 <p>pwdはカレントディレクトリの絶対パスを戻す。</p>
 </section>
 <section id="file-separator">
-<span id="api-672d7852f77f95031369a6684836d39e"></span><h2><span class="section-number">6.54.14. </span>FILE.separator<a class="headerlink" href="#file-separator" title="Link to this heading">¶</a></h2>
+<span id="api-672d7852f77f95031369a6684836d39e"></span><h2><span class="section-number">6.60.14. </span>FILE.separator<a class="headerlink" href="#file-separator" title="Link to this heading">¶</a></h2>
 <p>separatorはホストシステムのパス区切りを戻す。</p>
 <p>結果は &quot;/&quot; か &quot;&quot; のどちらかである。</p>
 </section>
 <section id="file-file-path">
-<span id="api-3e8ddfb486d1e0cbcd9ae9018c759bcb"></span><h2><span class="section-number">6.54.15. </span>FILE.file?(Path)<a class="headerlink" href="#file-file-path" title="Link to this heading">¶</a></h2>
+<span id="api-3e8ddfb486d1e0cbcd9ae9018c759bcb"></span><h2><span class="section-number">6.60.15. </span>FILE.file?(Path)<a class="headerlink" href="#file-file-path" title="Link to this heading">¶</a></h2>
 <p>file?は、Pathで指定されたファイルシステムエントリが通常のファイルであると、現在のプロセスが判断できるかどうかを戻す。</p>
 </section>
 <section id="file-dir-path">
-<span id="api-9c2c304b066d350e512c7fc9558dd3ad"></span><h2><span class="section-number">6.54.16. </span>FILE.dir?(Path)<a class="headerlink" href="#file-dir-path" title="Link to this heading">¶</a></h2>
+<span id="api-9c2c304b066d350e512c7fc9558dd3ad"></span><h2><span class="section-number">6.60.16. </span>FILE.dir?(Path)<a class="headerlink" href="#file-dir-path" title="Link to this heading">¶</a></h2>
 <p>dir?は、Pathで指定されたファイルシステムエントリがディレクトリであると、現在のプロセスが判断できるかどうかを戻す。</p>
 </section>
 <section id="file-symlink-path">
-<span id="api-24dbf6720ad0007fd385abd4a4c2df43"></span><h2><span class="section-number">6.54.17. </span>FILE.symlink?(Path)<a class="headerlink" href="#file-symlink-path" title="Link to this heading">¶</a></h2>
+<span id="api-24dbf6720ad0007fd385abd4a4c2df43"></span><h2><span class="section-number">6.60.17. </span>FILE.symlink?(Path)<a class="headerlink" href="#file-symlink-path" title="Link to this heading">¶</a></h2>
 <p>symlink?は、Pathで指定されたファイルシステムエントリがシンボリックリンクであると、現在のプロセスが判断できるかどうかを戻す。</p>
 </section>
 <section id="file-present-path">
-<span id="api-d937d3f320d7a00c37c569a332072bde"></span><h2><span class="section-number">6.54.18. </span>FILE.present?(Path)<a class="headerlink" href="#file-present-path" title="Link to this heading">¶</a></h2>
+<span id="api-d937d3f320d7a00c37c569a332072bde"></span><h2><span class="section-number">6.60.18. </span>FILE.present?(Path)<a class="headerlink" href="#file-present-path" title="Link to this heading">¶</a></h2>
 <p>present?は、Pathで指定されたファイルシステムエントリが存在すると、現在のプロセスが判断できるかどうかを戻す。</p>
 </section>
 </section>
@@ -412,11 +412,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-io-BUFFER_OUTPUT.html"><span class="section-number">6.53. </span>kink/io/BUFFER_OUTPUT</a>
+        «&#160;&#160;<a href="kink-io-BUFFER_OUTPUT.html"><span class="section-number">6.59. </span>kink/io/BUFFER_OUTPUT</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">コンテンツ</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-io-INPUT.html"><span class="section-number">6.55. </span>kink/io/INPUT</a>&#160;&#160;»
+        <a href="kink-io-GENERATOR_INPUT.html"><span class="section-number">6.61. </span>kink/io/GENERATOR_INPUT</a>&#160;&#160;»
         </p>
 
       </div>

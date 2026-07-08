@@ -42,9 +42,9 @@ Example\:
 
 Concurrency\:
 
-\• If the count is not zero when \`count\_down\` is called\,   the invocation of \`count\_down\` happens\-before returning from \`wait\` on the same latch\.
+\• If the count is not zero when \`count\_down\` is called\, the invocation of \`count\_down\` happens\-before returning from \`wait\` on the same latch\.
 
-\• If the count is not zero when \`count\_down\` is called\,   the invocation of \`count\_down\` happens\-before   returning from \`count\` on the same latch the result of which is zero\.
+\• If the count is not zero when \`count\_down\` is called\, the invocation of \`count\_down\` happens\-before returning from \`count\` on the same latch the result of which is zero\.
 
 .. _api-b720bbeebbb8ee4ac121e39faa2fad36:
 

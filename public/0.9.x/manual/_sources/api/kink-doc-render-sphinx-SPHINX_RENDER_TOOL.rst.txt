@@ -2,15 +2,19 @@
 kink\/doc\/render\/sphinx\/SPHINX\_RENDER\_TOOL
 ===============================================
 
-Launcheable mod to render a kink doc to a set of reStructuredText files for Sphinx document generator\.
+Launcheable module to render a kinkdoc document into a set of reStructuredText files for Sphinx document generator\.
 
-Usage\: kink \[Kink\_options\]\.\.\. mod\:kink\/doc\/render\/sphinx\/SPHINX\_RENDER\_TOOL \[Mod\_options\] Dir \<Json
+.. rubric:: Usage
 
-The comman reads the kink doc JSON from the standard input\, converts it to a set of reStructuredText files for Sphinx\, and writes them to the directory specified as \`Dir\`\.
+.. code:: kink
+
+    kink [Kink_options]... mod:kink/doc/render/sphinx/SPHINX_RENDER_TOOL [Mod_options] Dir <Json
+
+The command reads the kinkdoc JSON data from the standard input\, converts it to a set of reStructuredText files for Sphinx\, and writes them under the directory \`Dir\`\.
 
 .. rubric:: Mod\_options
 
-\• \-\-anchor\-prefix \{Prefix\} \: Uses \`Prefix\` as the prefix of anchors   in generated reST files\.   By default \`kinkdoc\-\` is used\.
+\• \-\-anchor\-prefix \{Prefix\} \: Uses \`Prefix\` as the prefix of anchors in generated reST files\. By default \`kinkdoc\-\` is used\.
 
 \• \-\-help \: Prints out the help and exits\.
 
@@ -18,29 +22,29 @@ The comman reads the kink doc JSON from the standard input\, converts it to a se
 
 The command outputs following files in the destination directory\.
 
-\• index\.rst \: The content of the top level section of the document\,   and a \`toctree\` directive including pages\.
+\• index\.rst\: Blocks of the document level section\, and a \`toctree\` directive\.
 
-\• reST files for each module \: The contents below each second level section\,   which usually corresponds to a module\.
+\• Other \.rst files\: Contents of second level sections and their descendants\. Usually\, a single \.rst file corresponds to a single module\.
 
 Example\:
 
 \• index\.rst
 
-\• kink\-STR\.rst \: for kink\/STR mod
+\• kink\-STR\.rst \: for kink\/STR module
 
-\• kink\-NUM\.rst \: for kink\/NUM mod
+\• kink\-NUM\.rst \: for kink\/NUM module
 
-\• kink\-container\-FLAT\_SET\.rst \: for kink\/container\/FLAT\_SET mod
+\• kink\-container\-FLAT\_SET\.rst \: for kink\/container\/FLAT\_SET module
 
 \• \.\.\.
 
 .. rubric:: Anchors
 
-For the heading of each third and lesser level section\, an anchor is added for cross reference\. For example\:
+The tiles of sections of the third and deeper levels will have anchors for cross reference\. Example\:
 
 .. code:: kink
 
-    .. _kinkdoc-0123456789abcdef0123456789abcdef0123456788abcdef0123456789abcdef:
+    .. _kinkdoc-0123456789abcdef0123456789abcdef:
         
     type finger\_tree
     =================
@@ -48,23 +52,23 @@ For the heading of each third and lesser level section\, an anchor is added for 
     A finger tree is an immutable data structure for O\(log N\)
     concatenation and splitting\.
         
-    .. _kinkdoc-fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210:
+    .. _kinkdoc-fedcba9876543210fedcba9876543210:
         
     Ft\.size
     --------
         
     \`size\` returns the size of the finger tree\.
 
-reST files in the Sphinx document other than the generated files can refer to a section using \:ref\: role like\:
+reST files in the Sphinx document can refer to a section using \:ref\: role like\:
 
 .. code:: kink
 
-    You can call :ref:`Ft.size <kinkdoc-fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210>`
+    .. someotherpage.rst
+        
+    You can call :ref:`Ft.size <kinkdoc-fedcba9876543210fedcba9876543210>`
     to get the size of the finger tree.
 
-Note that generated anchors cannot be used in kink doc comments\, because kink doc itself does not have cross reference feature\.
-
-Anchors are generated from the title of the section and the titles of the parent sections\. If you change a section title\, anchors within the section will change\.
+Anchors are generated from the text of the title of the section\, and the titles of the anscestors\.
 
 .. rubric:: Usage example
 
@@ -73,8 +77,6 @@ Anchors are generated from the title of the section and the titles of the parent
     $ kink mod:kink/doc/DOC_PARSE_TOOL --title 'API reference' src >doc.json
     ...
     $ kink mod:kink/doc/render/sphinx/SPHINX_RENDER_TOOL src/sphinx/api  <doc.json
-
-Note that src\/sphinx\/api directory must exist before the command is executed\.
 
 .. contents::
     :local:
@@ -85,5 +87,5 @@ Note that src\/sphinx\/api directory must exist before the command is executed\.
 SPHINX\_RENDER\_TOOL\.main\(Argv\)
 ==================================
 
-Launcher of the mod\.
+\`main\` is the launcher of the module\.
 

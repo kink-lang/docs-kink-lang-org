@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.61. kink/io/GENERATOR_INPUT &#8212; Kink 0.9.6-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=6ce99075"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.62. kink/io/INPUT" href="kink-io-INPUT.html" />
+    <link rel="prev" title="6.60. kink/io/FILE" href="kink-io-FILE.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.61. kink/io/GENERATOR_INPUT</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-FILE.html"><span class="section-number">6.60. </span>kink/io/FILE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-INPUT.html"><span class="section-number">6.62. </span>kink/io/INPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-io-generator-input">
+<h1><span class="section-number">6.61. </span>kink/io/GENERATOR_INPUT<a class="headerlink" href="#kink-io-generator-input" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#generator-input-new-generator" id="id1">GENERATOR_INPUT.new($generator)</a></p></li>
+</ul>
+</nav>
+<section id="generator-input-new-generator">
+<span id="api-0c35ace4f04f0b81fe2e2e093b7a4823"></span><h2><span class="section-number">6.61.1. </span>GENERATOR_INPUT.new($generator)<a class="headerlink" href="#generator-input-new-generator" title="Link to this heading">¶</a></h2>
+<p>`new` returns an `input` whose bytes are written to an `output` within invocation of $generator.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:GENERATOR_INPUT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+
+<span class="nv">CONTROL</span>.<span class="n">with_finally</span>{(<span class="nv">:finally</span>)
+  <span class="nv">:In</span> = <span class="nv">GENERATOR_INPUT</span>.<span class="n">new</span>{(<span class="nv">:Out</span>)
+    <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>))
+    <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span>))
+    <span class="nv">Out</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">8</span> <span class="m">9</span> <span class="m">10</span> <span class="m">11</span> <span class="m">12</span>))
+  }
+  <span class="n">finally</span>{ <span class="nv">In</span>.<span class="n">close</span> }
+
+  <span class="nv">:loop</span> &lt;- {
+    <span class="nv">In</span>.<span class="n">read</span>(<span class="m">4</span>){(<span class="nv">:C</span>)
+      <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Bin</span>)
+        <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Bin</span>.<span class="n">repr</span>)
+        <span class="n">loop</span>
+      }
+      <span class="nv">C</span>.<span class="n">on_eof</span>{ <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;EOF&#39;</span>) }
+    }
+  }
+  <span class="n">loop</span>
+}
+<span class="c1"># Output:</span>
+<span class="c1">#   (bin 0x01 0x02 0x03)</span>
+<span class="c1">#   (bin 0x04 0x05 0x06 0x07)</span>
+<span class="c1">#   (bin 0x08 0x09 0x0a 0x0b)</span>
+<span class="c1">#   (bin 0x0c)</span>
+<span class="c1">#   EOF</span>
+</pre></div>
+</div>
+<p class="rubric">Pass bytes</p>
+<p>When `In.read` is called for the first time, $generator is called with an `output`.</p>
+<p>When `Out.write` is called within the invocation of $generator, the invocation of $generator is suspended, and the bytes are given to the `input`.</p>
+<p>When more bytes are required by the `input`, the invocation of $generator is resumed.</p>
+<p>When the invocation of $generator returns, the `input` reaches EOF.</p>
+<p class="rubric">Close the `input`</p>
+<p>The `input` made by `new` is recommended to be closed using CONTROL.with_finally, so that finalization is properly done in $generator.</p>
+<p>If the `input` is closed before `In.read`, or after reaching EOF, it marks the input as the closed status.</p>
+<p>If the `input` is closed when there is a suspended invocation of $generator, the invocation is resumed, then the current and subsequent invocations of `Out.write` will receive an IO error.</p>
+<p class="rubric">Exception raised from $generator</p>
+<p>If $generator raises an exception, the current and subsequent invocations of `In.read`, or the current invocation of `In.close` will receive an IO error.</p>
+<p class="rubric">Should not close `output`</p>
+<p>You should not close the `output` given to $generator. `Out.close` always receives an IO error.</p>
+<p class="rubric">Precondition</p>
+<p>$generator must be a function which takes an `output`.</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-io-FILE.html"><span class="section-number">6.60. </span>kink/io/FILE</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-io-INPUT.html"><span class="section-number">6.62. </span>kink/io/INPUT</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

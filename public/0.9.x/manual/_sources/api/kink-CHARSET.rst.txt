@@ -2,6 +2,12 @@
 kink\/CHARSET
 =============
 
+Provides type \`charset\` and the repository of charsets\.
+
+.. rubric:: Reference
+
+\[IANA\: Character Sets\] https\:\/\/www\.iana\.org\/assignments\/character\-sets\/character\-sets\.xhtml
+
 .. contents::
     :local:
     :backlinks: none
@@ -11,14 +17,14 @@ kink\/CHARSET
 type charset
 ============
 
-\`charset\` is a system for encoding strings into byte sequences\.
+\`charset\` is a method of conversion between a sequence of bytes and a sequence of Unicode code points\.
 
 .. _api-5d96dcbe5e2a88cb34f858fb97ddcfbf:
 
 Charset\.name
 -------------
 
-\`name\` returns the name of the charset as a \`str\`\.
+\`name\` returns the canonical name of the charset as a \`str\`\.
 
 The result might not be equal to the name specified for CHARSET\.for\.
 
@@ -85,7 +91,7 @@ If you want to specify how conversion errors are handled\, use kink\/io\/INPUT\_
 X \=\= Y
 --------
 
-\`\=\=\` operator\, or \`op\_eq\` method\, returns whether two charsets have the same name\.
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether the canonical names of the charsets are equal\.
 
 .. rubric:: Precondition
 
@@ -102,7 +108,7 @@ Config methods\:
 
 \• C\.on\_success\(\$success\)\: default \= VAL\.identity\.
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception\.
+\• C\.on\_error\(\$error\)\: default \= a function which raises an exception\.
 
 If the specified charset is found\, \`for\` tail\-calls \$success with the \`charset\`\.
 
@@ -112,9 +118,9 @@ If the specified charset is not found\, \`for\` tail\-calls \$error with no arg\
 
 \`Name\` must be a \`str\`\.
 
-\$success must be a fun which takes a \`charset\`\.
+\$success must be a function which takes a \`charset\`\.
 
-\$error must be a fun which takes no arg\.
+\$error must be a function which takes no arg\.
 
 .. _api-d7762f66611aeb2ef662007a9bf1fca2:
 
@@ -128,14 +134,14 @@ CHARSET\.is\?\(Val\)
 CHARSET\.utf8
 =============
 
-\`utf8\` returns UTF\-8 \`charset\`\.
+\`utf8\` returns UTF\-8 \`charset\`\, as referred in \[IANA\: Character Sets\]\.
 
-.. _api-daea6986ca846ed2f14e69501b670bb7:
+.. _api-8196704f06f080556c78e326e246b2b5:
 
-CHARSET\.ascii
-==============
+CHARSET\.us\_ascii
+==================
 
-\`ascii\` returns ASCII \`charset\`\.
+\`us\_ascii\` returns US\-ASCII \`charset\`\, as referred in \[IANA\: Character Sets\]\.
 
 .. _api-adbed7ac680ccb3cc4d32aa0c6e85aa0:
 

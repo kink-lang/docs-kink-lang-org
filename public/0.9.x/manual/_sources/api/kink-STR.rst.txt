@@ -353,6 +353,15 @@ Str\.ascii\_downcase
     stdout.print_line('+-*/%<>'.ascii_downcase.repr)  # => "+-*/%<>"
     stdout.print_line('Товарищ'.ascii_downcase.repr)  # => "Товарищ"
 
+.. _api-6ffcba40a665e0b1525311b2f8bc212b:
+
+Str\.well\_formed\?
+-------------------
+
+\`well\_formed\?\` returns whether all the code points of \`Str\` are unicode scalar values\.
+
+In other words\, \`well\_formed\?\` tests whether \`Str\` contains no unpaired surrogate code points\.
+
 .. _api-3900a257364db84894ed1071a3054068:
 
 Str\.format\(\.\.\. Args\) \/ Str\.format\(\$config\)

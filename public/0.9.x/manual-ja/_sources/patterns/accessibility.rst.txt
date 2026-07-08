@@ -23,6 +23,8 @@ Clients of the library can use public components.
 Private components are not parts of the published API of the library.
 Clients are not supposed to use private components.
 
+.. _module_accessibility:
+
 Modules
 =======
 

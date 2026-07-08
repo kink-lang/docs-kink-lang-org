@@ -1,0 +1,125 @@
+================
+kink\/http\/RESP
+================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-595369fa23a591e8f7753571863e223c:
+
+type resp
+=========
+
+\`resp\` is an HTTP response\.
+
+.. _api-02be042c13dbd0fe26d72d237a5a6d46:
+
+Resp\.req
+---------
+
+\`req\` method returns the \`req\` value which directly produced \`Resp\`\.
+
+If the response is a result of redirections\, this method returns the \`req\` value of the last request in the redirection chain\.
+
+.. _api-21db1d649b168588f7984b1dd0ac33fc:
+
+Resp\.status
+------------
+
+\`status\` returns the status code of the response as an integer \`num\`\.
+
+.. _api-5301e78777c468cbeff9fc7ce13f73da:
+
+Resp\.headers
+-------------
+
+\`headers\` returns a \`map\` of the header fields of the response\.
+
+The keys of the \`map\` is \`str\` values of the header field names\. The keys are case\-insensitive\, as specified in \[RFC 9110 \- 5\.1\]\.
+
+The values of the \`map\` are a \`vec\` of \`str\` values of the fields values corresponding to the field name\. Bytes in the range \[0x80\, 0xff\] \(obs\-text in \[RFC 9110\]\) in field values are mapped to U\+0080\-U\+00ff\.
+
+.. _api-ad0331e16102dd8ca28db6b12022349a:
+
+Resp\.content
+-------------
+
+\`content\` returns the \`resp\_content\` value\.
+
+.. rubric:: Media type
+
+If the response has multiple Content\-Type header fields\, which is an error according to \[RFC 9110\]\, \`media\_type\` property of the result \`resp\_content\` will be the last syntactically valid value\.
+
+If there is no Content\-Type field value which is syntactically valid\, \`media\_type\` property falls back to application\/octet\-stream\. This behavior is what \[RFC 9110 \- 8\.3\] specifies that recipients MAY do\.
+
+.. _api-50912f5a4d8c51a3f299a4e2f9a43cfd:
+
+Resp\.redirect\_count
+---------------------
+
+\`redirect\_count\` returns the number of redirects until \`Resp\`\.
+
+The result will be equal to Resp\.req\.redirect\_count\.
+
+.. _api-c2586ef8aceae1675c909a4427810040:
+
+Resp\.close\(\.\.\.\[\$config\=\{\}\]\)
+---------------------------------------
+
+\`close\` method closes the input stream of the response\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= \{\}
+
+\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+
+If \`Resp\` is created with C\.stream\_resp option\, you need to close the input stream by \`close\` method\.
+
+If C\.stream\_resp is not specified\, you still can call \`close\` method\, but it is not required\.
+
+.. rubric:: Result
+
+If the stream is successfully closed\, \`close\` tail\-calls \$success with no arg\.
+
+If an IO error occurs\, \`close\` tail\-calls \$error with an \`exception\`\.
+
+.. rubric:: Preconditions
+
+\$success must be a thunk\.
+
+\$error must be a function which takes an \`exception\`\.
+
+.. _api-8f3c6461a3092c63b85170d9f527ad64:
+
+RESP\.new\(Req Status Content \.\.\.\[\$config\=\{\}\]\)
+========================================================
+
+\`new\` returns a new \`resp\` value\.
+
+Config method\:
+
+\• C\.header\(Header\_name Header\_val\)\: can be called multiple times
+
+The pair \(Header\_name\, Header\_val\) is added as a header entry of the response\.
+
+.. rubric:: Preconditions
+
+\`Req\` must be a \`req\` value\.
+
+\`Status\` must be an integer \`num\` value in the range \[100\, 599\]\.
+
+\`Content\` must be a \`resp\_content\` value\.
+
+\`Header\_name\` must be a \`str\` of a “token” defined in \[RFC 9110\]\.
+
+\`Header\_val\` must be a \`str\` which matches \/\|\[\\x21\-\\x7e\\x80\-\\xff\]\(\[\\t\\x20\-\\x7e\\x80\-\\xff\]\*\[\\x21\-\\x7e\\x80\-\\xff\]\)\?\/\. This assumes that a “field\-value” defined in \[RFC 9110\] is decoded by ISO\-8859\-1 charset\.
+
+.. _api-e0f9d0d43dd6908e2590590e38451317:
+
+RESP\.is\?\(Val\)
+=================
+
+\`is\?\` returns whether \`Val\` is a \`resp\` value\.
+

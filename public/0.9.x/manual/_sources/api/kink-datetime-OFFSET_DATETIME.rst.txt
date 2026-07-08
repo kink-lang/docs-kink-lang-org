@@ -149,16 +149,16 @@ Postcondition
 
 \• The result is an instant\. See kink\/datetime\/INSTANT\.
 
-.. _api-be8d685f81f7ae4b54a799e38cf3a452:
+.. _api-adb816ab9f8d6dab031db93a3cf714f0:
 
-Odt\.show\(\.\.\.\[\$config\]\)
--------------------------------
+Odt\.show\(\.\.\.\[\$config\=\{\}\]\)
+-------------------------------------
 
 \`show\` returns a str representation of \`Odt\`\, which is intended to be used in UI messages\.
 
 Precondition\:
 
-\• \$config must be a fun which takes a \`show\_config\` value\.   See kink\/STR for \`show\_config\` type\.
+\• \$config must be a fun which takes a \`show\_config\` value\. See kink\/STR for \`show\_config\` type\.
 
 The spec must be
 
@@ -381,7 +381,7 @@ Preconditions\:
 
 \• \`Offset\` must be a \`offset\`
 
-\• The date and time of the resulting offset\_datetime must be in the range   \[0001\-00\-00T00\:00\:00\.000000000\, 9999\-12\-31T23\:59\:59\.999999999\]
+\• The date and time of the resulting offset\_datetime must be in the range \[0001\-00\-00T00\:00\:00\.000000000\, 9999\-12\-31T23\:59\:59\.999999999\]
 
 Example\:
 
@@ -408,7 +408,7 @@ Preconditions\:
 
 \• \`Tz\` must be a timezone
 
-\• The date and time of the resulting offset\_datetime must be in the range   \[0001\-00\-00T00\:00\:00\.000000000\, 9999\-12\-31T23\:59\:59\.999999999\]
+\• The date and time of the resulting offset\_datetime must be in the range \[0001\-00\-00T00\:00\:00\.000000000\, 9999\-12\-31T23\:59\:59\.999999999\]
 
 Example\:
 
@@ -463,11 +463,11 @@ Preconditions\:
 
 Result\:
 
-\• If there is only one \`offset\` valid at the datetime\,   the fun produces an \`offset\_datetime\` val with the offset\.
+\• If there is only one \`offset\` valid at the datetime\, the fun produces an \`offset\_datetime\` val with the offset\.
 
-\• If there are two \`offset\` vals valid at the datetime due to transition\,   the fun produces an \`offset\_datetime\` with the offset before the transition\.
+\• If there are two \`offset\` vals valid at the datetime due to transition\, the fun produces an \`offset\_datetime\` with the offset before the transition\.
 
-\• If there is no \`offset\` valid at the datetime due to transition\,   the fun first makes an \`offset\_datetime\` with the offset before the transition \(A\)\,   then produces an \`offset\_datetime\` which represents the instant of \(A\)   at the offset after the transition\.
+\• If there is no \`offset\` valid at the datetime due to transition\, the fun first makes an \`offset\_datetime\` with the offset before the transition \(A\)\, then produces an \`offset\_datetime\` which represents the instant of \(A\) at the offset after the transition\.
 
 Example\:
 
@@ -544,13 +544,13 @@ Syntax\: \`\{Year\}\-\{Month\}\-\{Day\}T\{Hour\}\:\{Minute\}\:\{Second\}Z\` \(of
 
 \• \`Minute\` is two decimal digits from \`00\` to \`59\`
 
-\• \`Second\` is two decimal digits from \`00\` to \`59\`\,   or \`\{Int\}\.\{Frac\}\` where \`Int\`is two decimal digits from \`00\` to \`59\`   and \`Frac\` is 1 to 9 decimal digits\.
+\• \`Second\` is two decimal digits from \`00\` to \`59\`\, or \`\{Int\}\.\{Frac\}\` where \`Int\`is two decimal digits from \`00\` to \`59\` and \`Frac\` is 1 to 9 decimal digits\.
 
 \• \`Offset\_sign\` is either \`\-\` or \`\+\`
 
 \• \`Offset\_hour\` is two decimal digits from \`00\` to \`18\`
 
-\• \`Offset\_minute\` is \`00\` if \`Offset\_hour\` is \`18\`\,   otherwise two decimal digits from \`00\` to \`59\`
+\• \`Offset\_minute\` is \`00\` if \`Offset\_hour\` is \`18\`\, otherwise two decimal digits from \`00\` to \`59\`
 
 Limiting conditions\:
 

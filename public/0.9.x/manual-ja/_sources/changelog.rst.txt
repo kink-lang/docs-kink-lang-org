@@ -12,6 +12,64 @@ Versioning of this project adheres to `Semantic Versioning <https://semver.org/s
   :depth: 1
   :backlinks: none
 
+.. _changes-0.9.6-beta:
+
+0.9.6-beta
+==========
+
+Added
+-----
+
+* :ref:`C.multi_args <api-2763ecca57f2fef071929e1ab9c7c730>` option of CONFIG_FUN_RUNNER.new.
+* :ref:`C.label <api-f984b4d9c4f2c1b7376ae3803f94f0b1>` option of Test.run.
+* :doc:`HTTP client </api/kink-http-HTTP>`.
+* :ref:`ORDER.by <api-fcc9fca6e3b37794a6881df72d3db7f5>`
+* :ref:`JAVA.runtime_exception <api-4105de46f68b0c0680892bb0adf45401>`
+* :doc:`/api/kink-io-GENERATOR_INPUT`
+* :ref:`Block_type.valid_text? <api-8f8037ccc5b263a5fd30560d1939f0b2>`
+* :ref:`SET.mixin <api-d7bd98ddc71645200b6fb8804071424d>`
+* :ref:`ORDER_SET.mixin <api-c0d413cfd3b8489668c7358ff8f26706>`
+* :ref:`MAP.mixin <api-e24ee26e9bba6185a46ec8edc751c4b4>`
+* :ref:`ORDER_MAP.mixin <api-7a855273ef06776fa9d58a13221b8928>`
+* :ref:`Set.eq <api-f420248378e51ba85fb8402790f24948>`
+* :ref:`Order_set.order <api-30e8a5344ac1bb01082234400526f40a>`
+* :ref:`Map.eq <api-a676739d14b0759fa76f3887cb74a6c7>`
+* :ref:`Order_map.order <api-559506b294a3917ca02b22179f799cbd>`
+* :ref:`Iter.vec <api-27791617dfd8508050891d03b05d7469>`
+* :ref:`Str.well_formed? <api-6ffcba40a665e0b1525311b2f8bc212b>`
+* C.allow_unpaired_surrogates option of :ref:`JSON.parse <api-0f95a6404e8aa3e0ba07f36f8bbbfe42>`.
+* :ref:`Vec.move <api-ed9d77caa26ac4ad6f494e3dc712cfd0>`
+
+Changed
+-------
+
+* Config options of :ref:`C.no_arg <api-6b1c821f119c15f9670068b33a6653af>` will set true or false
+  as the map value.
+* C.also_implement option of :ref:`JAVA_PROXY.new <api-e983bebce8034ca135e11da64358ffed>` now takes an interface,
+  rather than a vector of interfaces.
+* Rename CHARSET.ascii to :ref:`CHARSET.us_ascii <api-8196704f06f080556c78e326e246b2b5>`,
+  in accordance with `IANA: Character Sets <https://www.iana.org/assignments/character-sets/character-sets.xhtml>`_.
+* Rename kink/COMPARE to :doc:`kink/ORDER </api/kink-ORDER>`.
+* Read operations of inputs made by :ref:`BIN_INPUT.new <api-18b8ede1d533cb7e68eea03e112dc946>`
+  now cause an IO error after being closed.
+* Write operations of outputs made by :ref:`BIN_OUTPUT.new <api-465e4fe593d4e259bdb3e5433529b2d4>`
+  now cause an IO error after being closed.
+* :doc:`DOC_PARSE_TOOL <api/kink-doc-DOC_PARSE_TOOL>`
+  compacts whitespace characters to a single whitespace character.
+* Rename ORDERED_SET to :doc:`ORDER_SET <api/kink-container-ORDER_SET>`.
+* Rename ORDERED_MAP to :doc:`ORDER_MAP <api/kink-container-ORDER_MAP>`.
+* :ref:`JSON.stringify <api-39f69c0820a41596644a8568bbc574af>` now outputs a JSON in a single line by default.
+
+Removed
+-------
+
+* C.labels option of Test.run.
+* Remove the config function from :ref:`JAVA.class <api-475b77f7ab3ee5002b9a6068c89cf7c8>`.
+  If you need to handle ClassNotFoundException,
+  you can do that by directly calling ClassLoader.loadClass.
+* C.lenient_order of :ref:`ARGV_PARSER.parse <api-20d0e30dbbaaae728610db868b43648d>`,
+  as it is the default behavior.
+
 .. _changes-0.9.5-beta:
 
 0.9.5-beta
@@ -170,9 +228,9 @@ Added
 * :ref:`IFUN.join <api-174dad688c763676d10f2b6ffa216451>`
 * Optional ``From`` and ``To`` parameters
   to :ref:`Vec.iter <api-c31469da21f944429a8cf92a5403ec4f>`.
-* Optional ``Min`` parameter to :ref:`Ordered_set.iter <api-2fd2b7ab6519594389ea7aec9583603d>`.
-* Optional ``Min_key`` parameter to :ref:`Ordered_map.key_iter <api-33c96f85ef8e3c608fccab2e06618c93>`
-  and :ref:`Ordered_map.pair_iter <api-59ee186c19f6fad7a99cdecb2d43e526>`.
+* Optional ``Min`` parameter to :ref:`Ordered_set.iter <api-f6e64adf6d25b6ec89c304ecc0f2b031>`.
+* Optional ``Min_key`` parameter to :ref:`Ordered_map.key_iter <api-f258d5c7d74371abb66d0870cbac6411>`
+  and :ref:`Ordered_map.pair_iter <api-cdbc43be38dd6a361389935aff94b562>`.
 
 Changed
 -------
@@ -269,15 +327,15 @@ Added
 -----
 
 * JAVA.runtime_class_loader
-* Config fun arg to
-  :ref:`JAVA.class <api-c3c0d3752dd6273532d79005e7497eaa>`.
+* Config function args to
+  :ref:`JAVA.class <api-475b77f7ab3ee5002b9a6068c89cf7c8>`.
 * ``--output`` switch of :doc:`/api/kink-doc-DOC_PARSE_TOOL` mod.
 
 Changed
 -------
 
 * Widen access privilege of
-  :ref:`JAVA.class <api-c3c0d3752dd6273532d79005e7497eaa>`
+  :ref:`JAVA.class <api-475b77f7ab3ee5002b9a6068c89cf7c8>`
   from static access of org.kink_lang.kink module
   to reflection access of the unnamed module.
 * :ref:`Str.repr <api-37a73555aab4b7cde2ae69615d91f7e9>`,

@@ -5,31 +5,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.72. kink/javahost/METHOD_HANDLE &#8212; Kink 0.9.5-beta</title>
+    <title>6.79. kink/javahost/METHOD_HANDLE &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/translations.js?v=4dbe4bdc"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="6.73. kink/json/JSON" href="kink-json-JSON.html" />
-    <link rel="prev" title="6.71. kink/javahost/JAVA_THROW" href="kink-javahost-JAVA_THROW.html" /> 
+    <link rel="next" title="6.80. kink/json/JSON" href="kink-json-JSON.html" />
+    <link rel="prev" title="6.78. kink/javahost/JAVA_THROW" href="kink-javahost-JAVA_THROW.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
-        <h2 class="heading"><span>6.72. kink/javahost/METHOD_HANDLE</span></h2>
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.79. kink/javahost/METHOD_HANDLE</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-javahost-JAVA_THROW.html"><span class="section-number">6.71. </span>kink/javahost/JAVA_THROW</a>
+        «&#160;&#160;<a href="kink-javahost-JAVA_THROW.html"><span class="section-number">6.78. </span>kink/javahost/JAVA_THROW</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">コンテンツ</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-json-JSON.html"><span class="section-number">6.73. </span>kink/json/JSON</a>&#160;&#160;»
+        <a href="kink-json-JSON.html"><span class="section-number">6.80. </span>kink/json/JSON</a>&#160;&#160;»
         </p>
 
       </div>
@@ -37,7 +37,7 @@
         
         
   <section id="kink-javahost-method-handle">
-<h1><span class="section-number">6.72. </span>kink/javahost/METHOD_HANDLE<a class="headerlink" href="#kink-javahost-method-handle" title="Link to this heading">¶</a></h1>
+<h1><span class="section-number">6.79. </span>kink/javahost/METHOD_HANDLE<a class="headerlink" href="#kink-javahost-method-handle" title="Link to this heading">¶</a></h1>
 <p>java.lang.MethodHandleを操作するユーティリティ関数を提供する。</p>
 <nav class="contents local" id="id1">
 <ul class="simple">
@@ -49,7 +49,7 @@
 </ul>
 </nav>
 <section id="method-handle-invoke-mh-args-config">
-<span id="api-da049b659d2c72c5322320a8dd5f038b"></span><h2><span class="section-number">6.72.1. </span>METHOD_HANDLE.invoke(Mh Args ...[$config={}])<a class="headerlink" href="#method-handle-invoke-mh-args-config" title="Link to this heading">¶</a></h2>
+<span id="api-da049b659d2c72c5322320a8dd5f038b"></span><h2><span class="section-number">6.79.1. </span>METHOD_HANDLE.invoke(Mh Args ...[$config={}])<a class="headerlink" href="#method-handle-invoke-mh-args-config" title="Link to this heading">¶</a></h2>
 <p>invokeは、メソッドハンドルMhを、MethodHandle.invokeWithArgumentsで呼び出す。Argsが引数列として渡される。</p>
 <p>Java.call_method, .call_static, .newとは異なり、Argsの要素のtype属性は、パラメータ型を示す必要はない。たとえば、すべてjava.lang.Objectであっても構わない。これは、メソッドハンドル自体が型情報を持っているためである。</p>
 <p>$configにはjava_call_config値が渡される。java_call_config型については、kink/javahost/JAVAを見よう。</p>
@@ -65,7 +65,7 @@
 <p>$configは、java_call_configを取る関数でなければならない。</p>
 </section>
 <section id="method-handle-instance-method-owner-class-method-name-param-classes-ret-class-config">
-<span id="api-e03a5352f457fb0a7b58cb79fc751f2b"></span><h2><span class="section-number">6.72.2. </span>METHOD_HANDLE.instance_method(Owner_class Method_name Param_classes Ret_class ...[$config={}])<a class="headerlink" href="#method-handle-instance-method-owner-class-method-name-param-classes-ret-class-config" title="Link to this heading">¶</a></h2>
+<span id="api-e03a5352f457fb0a7b58cb79fc751f2b"></span><h2><span class="section-number">6.79.2. </span>METHOD_HANDLE.instance_method(Owner_class Method_name Param_classes Ret_class ...[$config={}])<a class="headerlink" href="#method-handle-instance-method-owner-class-method-name-param-classes-ret-class-config" title="Link to this heading">¶</a></h2>
 <p>instance_methodは、publicなインスタンスメソッドのメソッドハンドルを検索する。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
@@ -83,7 +83,7 @@
 <p>Ret_classは、java値(rc, *)でなければならない。ここでrcは、java.lang.Classのインスタンスでなければならない。</p>
 </section>
 <section id="method-handle-static-method-owner-class-method-name-param-classes-ret-class-config">
-<span id="api-8be8501d3a7591111e17b9be5062c871"></span><h2><span class="section-number">6.72.3. </span>METHOD_HANDLE.static_method(Owner_class Method_name Param_classes Ret_class ...[$config={}])<a class="headerlink" href="#method-handle-static-method-owner-class-method-name-param-classes-ret-class-config" title="Link to this heading">¶</a></h2>
+<span id="api-8be8501d3a7591111e17b9be5062c871"></span><h2><span class="section-number">6.79.3. </span>METHOD_HANDLE.static_method(Owner_class Method_name Param_classes Ret_class ...[$config={}])<a class="headerlink" href="#method-handle-static-method-owner-class-method-name-param-classes-ret-class-config" title="Link to this heading">¶</a></h2>
 <p>static_methodは、publicなstaticメソッドのメソッドハンドルを検索する。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
@@ -101,7 +101,7 @@
 <p>Ret_classは、java値(rc, *)でなければならない。ここでrcは、java.lang.Classのインスタンスでなければならない。</p>
 </section>
 <section id="method-handle-constructor-owner-class-param-classes-config">
-<span id="api-2ee05d9149217fe22727d6b276608eac"></span><h2><span class="section-number">6.72.4. </span>METHOD_HANDLE.constructor(Owner_class Param_classes ...[$config={}])<a class="headerlink" href="#method-handle-constructor-owner-class-param-classes-config" title="Link to this heading">¶</a></h2>
+<span id="api-2ee05d9149217fe22727d6b276608eac"></span><h2><span class="section-number">6.79.4. </span>METHOD_HANDLE.constructor(Owner_class Param_classes ...[$config={}])<a class="headerlink" href="#method-handle-constructor-owner-class-param-classes-config" title="Link to this heading">¶</a></h2>
 <p>constructorは、publicコンストラクタのメソッドハンドルを検索する。</p>
 <p>コンフィグメソッド:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
@@ -118,7 +118,7 @@
 <p>$success, $no_such_method, $illegal_accessは、java値を取る関数でなければならない。</p>
 </section>
 <section id="method-handle-proxy-param-classes-ret-class-handler">
-<span id="api-2d21ac41d5bf17b211c947ba5962eca4"></span><h2><span class="section-number">6.72.5. </span>METHOD_HANDLE.proxy(Param_classes Ret_class $handler)<a class="headerlink" href="#method-handle-proxy-param-classes-ret-class-handler" title="Link to this heading">¶</a></h2>
+<span id="api-2d21ac41d5bf17b211c947ba5962eca4"></span><h2><span class="section-number">6.79.5. </span>METHOD_HANDLE.proxy(Param_classes Ret_class $handler)<a class="headerlink" href="#method-handle-proxy-param-classes-ret-class-handler" title="Link to this heading">¶</a></h2>
 <p>proxyは、Kinkの関数$handlerに手続きを委譲するメソッドハンドルを戻す。</p>
 <p>結果はjava値(mh, MethodHandle)になる。ここでmhは、$handlerに手続きを委譲するメソッドハンドルである。メソッドハンドルのパラメータ型の列はParam_classesになり、戻り型はRet_classになる。</p>
 <p class="rubric">メソッドハンドルの呼び出し</p>
@@ -173,11 +173,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-javahost-JAVA_THROW.html"><span class="section-number">6.71. </span>kink/javahost/JAVA_THROW</a>
+        «&#160;&#160;<a href="kink-javahost-JAVA_THROW.html"><span class="section-number">6.78. </span>kink/javahost/JAVA_THROW</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">コンテンツ</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-json-JSON.html"><span class="section-number">6.73. </span>kink/json/JSON</a>&#160;&#160;»
+        <a href="kink-json-JSON.html"><span class="section-number">6.80. </span>kink/json/JSON</a>&#160;&#160;»
         </p>
 
       </div>

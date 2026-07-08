@@ -13,7 +13,7 @@ Companion mod for \`output\` vals\.
 type output
 ===========
 
-\`output\` is an output port of bytes to an underlying destination such as a file\.
+\`output\` is an abstract type of output port of bytes\. \`output\` values must implement the following methods\.
 
 An \`output\` provides sequential forward access to the underlying destination\.
 

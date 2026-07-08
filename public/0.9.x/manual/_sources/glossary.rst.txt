@@ -130,6 +130,9 @@ Builtin library
     A value of :ref:`type varref <api-43c405a672f1fcd864105835744e4c63>`.
     Can be abbreviated to “varref”.
 
+  binding
+    A value of :ref:`type binding <api-3a046d0b373eaacef45ecba66825bf5b>`.
+
   vector
     A value of :ref:`type vec <api-8f14b909c07234a50b4b4c739ce19bcd>`.
     Can be abbreviated to “vec”.
@@ -160,6 +163,11 @@ Patterns and conventions
   constructor
     A function which creates a new value.
     See :ref:`constructor`.
+
+  config function
+  config value
+  config method
+    See :ref:`config_fun`.
 
   trait
     A vec which stores methods and the symbols,

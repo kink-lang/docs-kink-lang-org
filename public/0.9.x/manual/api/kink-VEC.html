@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.27. kink/VEC &#8212; Kink 0.9.5-beta</title>
+    <title>6.27. kink/VEC &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/documentation_options.js?v=6ce99075"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -18,7 +18,7 @@
     <link rel="prev" title="6.26. kink/VARREF" href="kink-VARREF.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
+          <span>Kink 0.9.6-beta</span></a></h1>
         <h2 class="heading"><span>6.27. kink/VEC</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -61,38 +61,39 @@
 <li><p><a class="reference internal" href="#vec-pop-back" id="id21">Vec.pop_back</a></p></li>
 <li><p><a class="reference internal" href="#vec-pop-at-ind" id="id22">Vec.pop_at(Ind)</a></p></li>
 <li><p><a class="reference internal" href="#vec-clear-from-0-to-vec-size" id="id23">Vec.clear(...[From=0 To=Vec.size])</a></p></li>
-<li><p><a class="reference internal" href="#vec-dup" id="id24">Vec.dup</a></p></li>
-<li><p><a class="reference internal" href="#vec-reverse" id="id25">Vec.reverse</a></p></li>
-<li><p><a class="reference internal" href="#vec-concat" id="id26">Vec.concat</a></p></li>
-<li><p><a class="reference internal" href="#vec-unconcat-n" id="id27">Vec.unconcat(N)</a></p></li>
-<li><p><a class="reference internal" href="#vec-just-if-empty" id="id28">Vec.just(...[$if_empty])</a></p></li>
-<li><p><a class="reference internal" href="#vec-with-elems-with0-with1-with2" id="id29">Vec.with_elems(...[$with0 $with1 $with2 ,,,])</a></p></li>
-<li><p><a class="reference internal" href="#vec-each-consume" id="id30">Vec.each($consume)</a></p></li>
-<li><p><a class="reference internal" href="#vec-map-transform" id="id31">Vec.map($transform)</a></p></li>
-<li><p><a class="reference internal" href="#vec-concat-map-to-vec" id="id32">Vec.concat_map($to_vec)</a></p></li>
-<li><p><a class="reference internal" href="#vec-filter-include" id="id33">Vec.filter($include?)</a></p></li>
-<li><p><a class="reference internal" href="#vec-count-counted" id="id34">Vec.count($counted?)</a></p></li>
-<li><p><a class="reference internal" href="#vec-fold-init-combine" id="id35">Vec.fold(Init $combine)</a></p></li>
-<li><p><a class="reference internal" href="#vec-reduce-combine-empty-fallback" id="id36">Vec.reduce($combine ...[$empty_fallback])</a></p></li>
-<li><p><a class="reference internal" href="#vec-take-while-include" id="id37">Vec.take_while($include?)</a></p></li>
-<li><p><a class="reference internal" href="#vec-drop-while-exclude" id="id38">Vec.drop_while($exclude?)</a></p></li>
-<li><p><a class="reference internal" href="#vec-all-match" id="id39">Vec.all?($match?)</a></p></li>
-<li><p><a class="reference internal" href="#vec-any-match-true" id="id40">Vec.any?(...[$match?={ true }])</a></p></li>
-<li><p><a class="reference internal" href="#vec-have-target" id="id41">Vec.have?(Target)</a></p></li>
-<li><p><a class="reference internal" href="#vec-have-all-vals" id="id42">Vec.have_all?(Vals)</a></p></li>
-<li><p><a class="reference internal" href="#vec-have-any-vals" id="id43">Vec.have_any?(Vals)</a></p></li>
-<li><p><a class="reference internal" href="#vec-sort-in-order-x-y-x-y" id="id44">Vec.sort(...[$in_order?={(:X :Y) X &lt;= Y }])</a></p></li>
-<li><p><a class="reference internal" href="#vec-iter-from-0-to-vec-size" id="id45">Vec.iter(...[From=0 To=Vec.size])</a></p></li>
-<li><p><a class="reference internal" href="#vec1-vec2" id="id46">Vec1 + Vec2</a></p></li>
-<li><p><a class="reference internal" href="#vec-n" id="id47">Vec * N</a></p></li>
-<li><p><a class="reference internal" href="#api-7b111e394601a5a4a97ab44892979c20" id="id48">Vec1 == Vec2</a></p></li>
-<li><p><a class="reference internal" href="#api-841e77748f0925e98ec50203bb9e02cf" id="id49">Vec1 &lt;= Vec2</a></p></li>
-<li><p><a class="reference internal" href="#lhs-rhs" id="id50">Lhs &lt;- Rhs</a></p></li>
-<li><p><a class="reference internal" href="#vec-repr" id="id51">Vec.repr</a></p></li>
+<li><p><a class="reference internal" href="#dest-vec-move-d-from-src-s-from-0-s-to-src-size" id="id24">Dest_vec.move(D_from Src ...[S_from=0 S_to=Src.size])</a></p></li>
+<li><p><a class="reference internal" href="#vec-dup" id="id25">Vec.dup</a></p></li>
+<li><p><a class="reference internal" href="#vec-reverse" id="id26">Vec.reverse</a></p></li>
+<li><p><a class="reference internal" href="#vec-concat" id="id27">Vec.concat</a></p></li>
+<li><p><a class="reference internal" href="#vec-unconcat-n" id="id28">Vec.unconcat(N)</a></p></li>
+<li><p><a class="reference internal" href="#vec-just-if-empty" id="id29">Vec.just(...[$if_empty])</a></p></li>
+<li><p><a class="reference internal" href="#vec-with-elems-with0-with1-with2" id="id30">Vec.with_elems(...[$with0 $with1 $with2 ,,,])</a></p></li>
+<li><p><a class="reference internal" href="#vec-each-consume" id="id31">Vec.each($consume)</a></p></li>
+<li><p><a class="reference internal" href="#vec-map-transform" id="id32">Vec.map($transform)</a></p></li>
+<li><p><a class="reference internal" href="#vec-concat-map-to-vec" id="id33">Vec.concat_map($to_vec)</a></p></li>
+<li><p><a class="reference internal" href="#vec-filter-include" id="id34">Vec.filter($include?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-count-counted" id="id35">Vec.count($counted?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-fold-init-combine" id="id36">Vec.fold(Init $combine)</a></p></li>
+<li><p><a class="reference internal" href="#vec-reduce-combine-empty-fallback" id="id37">Vec.reduce($combine ...[$empty_fallback])</a></p></li>
+<li><p><a class="reference internal" href="#vec-take-while-include" id="id38">Vec.take_while($include?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-drop-while-exclude" id="id39">Vec.drop_while($exclude?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-all-match" id="id40">Vec.all?($match?)</a></p></li>
+<li><p><a class="reference internal" href="#vec-any-match-true" id="id41">Vec.any?(...[$match?={ true }])</a></p></li>
+<li><p><a class="reference internal" href="#vec-have-target" id="id42">Vec.have?(Target)</a></p></li>
+<li><p><a class="reference internal" href="#vec-have-all-vals" id="id43">Vec.have_all?(Vals)</a></p></li>
+<li><p><a class="reference internal" href="#vec-have-any-vals" id="id44">Vec.have_any?(Vals)</a></p></li>
+<li><p><a class="reference internal" href="#vec-sort-up-to-x-y-x-y" id="id45">Vec.sort(...[$up_to?={(:X :Y) X &lt;= Y }])</a></p></li>
+<li><p><a class="reference internal" href="#vec-iter-from-0-to-vec-size" id="id46">Vec.iter(...[From=0 To=Vec.size])</a></p></li>
+<li><p><a class="reference internal" href="#vec1-vec2" id="id47">Vec1 + Vec2</a></p></li>
+<li><p><a class="reference internal" href="#vec-n" id="id48">Vec * N</a></p></li>
+<li><p><a class="reference internal" href="#api-7b111e394601a5a4a97ab44892979c20" id="id49">Vec1 == Vec2</a></p></li>
+<li><p><a class="reference internal" href="#api-841e77748f0925e98ec50203bb9e02cf" id="id50">Vec1 &lt;= Vec2</a></p></li>
+<li><p><a class="reference internal" href="#lhs-rhs" id="id51">Lhs &lt;- Rhs</a></p></li>
+<li><p><a class="reference internal" href="#vec-repr" id="id52">Vec.repr</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#vec-is-val" id="id52">VEC.is?(Val)</a></p></li>
-<li><p><a class="reference internal" href="#vec-from-each-eacher" id="id53">VEC.from_each(Eacher)</a></p></li>
+<li><p><a class="reference internal" href="#vec-is-val" id="id53">VEC.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#vec-from-each-eacher" id="id54">VEC.from_each(Eacher)</a></p></li>
 </ul>
 </nav>
 <section id="type-vec">
@@ -363,8 +364,29 @@
 </pre></div>
 </div>
 </section>
+<section id="dest-vec-move-d-from-src-s-from-0-s-to-src-size">
+<span id="api-ed9d77caa26ac4ad6f494e3dc712cfd0"></span><h3><span class="section-number">6.27.1.21. </span>Dest_vec.move(D_from Src ...[S_from=0 S_to=Src.size])<a class="headerlink" href="#dest-vec-move-d-from-src-s-from-0-s-to-src-size" title="Link to this heading">¶</a></h3>
+<p>`move` copies the elements of the slice [S_from, S_to) of `Src` vector, and pastes them to the slice [D_from, D_from + (S_to - S_from)) of `Dest_vec` vector.</p>
+<p>The name `move` comes from `memmove` function, as `Dest_vec` and `Src` can be the same vector, and slices can overlap.</p>
+<p class="rubric">Preconditions</p>
+<p>`D_from` must be an integer `num` in the range [0, Dest_vec.size].</p>
+<p>`Src` must be a `vec`.</p>
+<p>`S_from` and `S_to` must be integer `num` values.</p>
+<p>0 &lt;= S_from &lt;= S_to &lt;= Src.size</p>
+<p>D_from + (S_to - S_from) &lt;= Dest_vec.size</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>]
+<span class="nv">V</span>.<span class="n">move</span>(<span class="m">1</span> [<span class="s1">&#39;a&#39;</span> <span class="s1">&#39;b&#39;</span> <span class="s1">&#39;c&#39;</span>])
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;0&quot; &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;4&quot;]</span>
+
+<span class="nv">:W</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>]
+<span class="nv">W</span>.<span class="n">move</span>(<span class="m">2</span> <span class="nv">W</span> <span class="m">0</span> <span class="m">3</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">W</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;0&quot; &quot;1&quot; &quot;2&quot;]</span>
+</pre></div>
+</div>
+</section>
 <section id="vec-dup">
-<span id="api-4f175b876e19fc10c267f6fce74d5315"></span><h3><span class="section-number">6.27.1.21. </span>Vec.dup<a class="headerlink" href="#vec-dup" title="Link to this heading">¶</a></h3>
+<span id="api-4f175b876e19fc10c267f6fce74d5315"></span><h3><span class="section-number">6.27.1.22. </span>Vec.dup<a class="headerlink" href="#vec-dup" title="Link to this heading">¶</a></h3>
 <p>`dup` makes a new `vec` containing the same sequence of elements as `Vec` has.</p>
 <p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Orig</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
@@ -377,7 +399,7 @@
 </div>
 </section>
 <section id="vec-reverse">
-<span id="api-935ab420e28fb248fb8aae6d385b54a0"></span><h3><span class="section-number">6.27.1.22. </span>Vec.reverse<a class="headerlink" href="#vec-reverse" title="Link to this heading">¶</a></h3>
+<span id="api-935ab420e28fb248fb8aae6d385b54a0"></span><h3><span class="section-number">6.27.1.23. </span>Vec.reverse<a class="headerlink" href="#vec-reverse" title="Link to this heading">¶</a></h3>
 <p>`reverse` makes a new `vec` containing the same elements as `Vec` has, in the reversed order.</p>
 <p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
@@ -386,7 +408,7 @@
 </div>
 </section>
 <section id="vec-concat">
-<span id="api-108bdfb6645391be0ad2571c52e1d70b"></span><h3><span class="section-number">6.27.1.23. </span>Vec.concat<a class="headerlink" href="#vec-concat" title="Link to this heading">¶</a></h3>
+<span id="api-108bdfb6645391be0ad2571c52e1d70b"></span><h3><span class="section-number">6.27.1.24. </span>Vec.concat<a class="headerlink" href="#vec-concat" title="Link to this heading">¶</a></h3>
 <p>`concat` concatenates `vec`s in `Vec`.</p>
 <p>`concat` assumes all the elements of `Vec` are `vec`s. `concat` returns a new `vec` which has all the elements of those `vec`s in the order of those `vec`s, and in the order of the elements of thsoe `vec`s.</p>
 <p class="rubric">Precondition</p>
@@ -398,7 +420,7 @@
 </div>
 </section>
 <section id="vec-unconcat-n">
-<span id="api-aa4ccd1dae957de037c5a4795fcc7df5"></span><h3><span class="section-number">6.27.1.24. </span>Vec.unconcat(N)<a class="headerlink" href="#vec-unconcat-n" title="Link to this heading">¶</a></h3>
+<span id="api-aa4ccd1dae957de037c5a4795fcc7df5"></span><h3><span class="section-number">6.27.1.25. </span>Vec.unconcat(N)<a class="headerlink" href="#vec-unconcat-n" title="Link to this heading">¶</a></h3>
 <p>`unconcat` splits `Vec` into groups of `N` elements, and returns a new `vec` of `vec`s which have those `N` elements.</p>
 <p>If `Vec` contains E(0), E(1) ,,, E(N-1), E(N), E(N+1) ,,, E(N+(N-1)) ,,, E(m*N), E(m*N+1) ,,, E(m*N+(N-1)), the result `vec` will contain `vec`s [E(0) E(1) ,,, E(N-1)], [E(N) E(N+1) ,,, E(N+(N-1))] ,,, [E(m*N) E(m*N+1) ,,, E(m*N+(N-1))].</p>
 <p class="rubric">Preconditions</p>
@@ -411,7 +433,7 @@
 </div>
 </section>
 <section id="vec-just-if-empty">
-<span id="api-6523915a7e48a2c692e24abff5a9a9f1"></span><h3><span class="section-number">6.27.1.25. </span>Vec.just(...[$if_empty])<a class="headerlink" href="#vec-just-if-empty" title="Link to this heading">¶</a></h3>
+<span id="api-6523915a7e48a2c692e24abff5a9a9f1"></span><h3><span class="section-number">6.27.1.26. </span>Vec.just(...[$if_empty])<a class="headerlink" href="#vec-just-if-empty" title="Link to this heading">¶</a></h3>
 <p>`just` assumes `Vec` has only one element, and returns the element.</p>
 <p>If `Vec` is empty, and $if_empty is passed, `just` tail-calls $if_empty.</p>
 <p>Otherwise, `just` raises an exception.</p>
@@ -431,7 +453,7 @@
 </div>
 </section>
 <section id="vec-with-elems-with0-with1-with2">
-<span id="api-9c1a3a7b764fa70187afe30654617332"></span><h3><span class="section-number">6.27.1.26. </span>Vec.with_elems(...[$with0 $with1 $with2 ,,,])<a class="headerlink" href="#vec-with-elems-with0-with1-with2" title="Link to this heading">¶</a></h3>
+<span id="api-9c1a3a7b764fa70187afe30654617332"></span><h3><span class="section-number">6.27.1.27. </span>Vec.with_elems(...[$with0 $with1 $with2 ,,,])<a class="headerlink" href="#vec-with-elems-with0-with1-with2" title="Link to this heading">¶</a></h3>
 <p>`with_elems` tail-calls a fun with the elements of `Vec` as args.</p>
 <p>`with_elems` takes an arbitrary number of funs. Let these be $with0, $with1, $with2, ,,, in that order. If the size of `Vec` is `N`, `with_elems` tail-calls $withN with the elements of `Vec` as args.</p>
 <p class="rubric">Preconditions</p>
@@ -459,7 +481,7 @@
 </div>
 </section>
 <section id="vec-each-consume">
-<span id="api-5522a3bd9e69a4a66469992a7f5e0386"></span><h3><span class="section-number">6.27.1.27. </span>Vec.each($consume)<a class="headerlink" href="#vec-each-consume" title="Link to this heading">¶</a></h3>
+<span id="api-5522a3bd9e69a4a66469992a7f5e0386"></span><h3><span class="section-number">6.27.1.28. </span>Vec.each($consume)<a class="headerlink" href="#vec-each-consume" title="Link to this heading">¶</a></h3>
 <p>`each` calls $consume with each element from the front to the back.</p>
 <p>If `Vec` is not empty, `each` tail-calls $consume for the last element.</p>
 <p class="rubric">Precondition</p>
@@ -477,7 +499,7 @@
 </div>
 </section>
 <section id="vec-map-transform">
-<span id="api-3448e5bbbf0c59ea44e4ff57a9c9a131"></span><h3><span class="section-number">6.27.1.28. </span>Vec.map($transform)<a class="headerlink" href="#vec-map-transform" title="Link to this heading">¶</a></h3>
+<span id="api-3448e5bbbf0c59ea44e4ff57a9c9a131"></span><h3><span class="section-number">6.27.1.29. </span>Vec.map($transform)<a class="headerlink" href="#vec-map-transform" title="Link to this heading">¶</a></h3>
 <p>`map` makes a `vec` whose elements are transformed from the elements of `Vec` by $transform.</p>
 <p>If `Vec` contains E(0), E(1) ,,, E(n-1), the result `vec` will contain transform(E(0)) transform(E(1)) ,,, transform(E(n-1)).</p>
 <p class="rubric">Precondition</p>
@@ -490,7 +512,7 @@
 </div>
 </section>
 <section id="vec-concat-map-to-vec">
-<span id="api-30daf5213e59651e3c34aed6a56eb4da"></span><h3><span class="section-number">6.27.1.29. </span>Vec.concat_map($to_vec)<a class="headerlink" href="#vec-concat-map-to-vec" title="Link to this heading">¶</a></h3>
+<span id="api-30daf5213e59651e3c34aed6a56eb4da"></span><h3><span class="section-number">6.27.1.30. </span>Vec.concat_map($to_vec)<a class="headerlink" href="#vec-concat-map-to-vec" title="Link to this heading">¶</a></h3>
 <p>`concat_map` returns a `vec` which concatenates `vec`s which are results of to_vec(element-of-Vec)</p>
 <p class="rubric">Precondition</p>
 <p>$to_vec must be a fun which takes a value and returns a `vec`.</p>
@@ -508,7 +530,7 @@
 </div>
 </section>
 <section id="vec-filter-include">
-<span id="api-2c58ef95f8a75a29db05a46de52c8967"></span><h3><span class="section-number">6.27.1.30. </span>Vec.filter($include?)<a class="headerlink" href="#vec-filter-include" title="Link to this heading">¶</a></h3>
+<span id="api-2c58ef95f8a75a29db05a46de52c8967"></span><h3><span class="section-number">6.27.1.31. </span>Vec.filter($include?)<a class="headerlink" href="#vec-filter-include" title="Link to this heading">¶</a></h3>
 <p>`filter` returns a `vec` containing all the elements that satisfy the predicate $include?.</p>
 <p class="rubric">Precondition</p>
 <p>$include? must be a predicate.</p>
@@ -522,7 +544,7 @@
 </div>
 </section>
 <section id="vec-count-counted">
-<span id="api-c7cf80a654694c883ad4d6be8135c023"></span><h3><span class="section-number">6.27.1.31. </span>Vec.count($counted?)<a class="headerlink" href="#vec-count-counted" title="Link to this heading">¶</a></h3>
+<span id="api-c7cf80a654694c883ad4d6be8135c023"></span><h3><span class="section-number">6.27.1.32. </span>Vec.count($counted?)<a class="headerlink" href="#vec-count-counted" title="Link to this heading">¶</a></h3>
 <p>`count` returns the number of elements which satisfy the predicate $counted?, as an integer `num`.</p>
 <p class="rubric">Precondition</p>
 <p>$counted? must be a predicate.</p>
@@ -536,7 +558,7 @@
 </div>
 </section>
 <section id="vec-fold-init-combine">
-<span id="api-f7a2d4cc94155596c0b63f9e7d2a847c"></span><h3><span class="section-number">6.27.1.32. </span>Vec.fold(Init $combine)<a class="headerlink" href="#vec-fold-init-combine" title="Link to this heading">¶</a></h3>
+<span id="api-f7a2d4cc94155596c0b63f9e7d2a847c"></span><h3><span class="section-number">6.27.1.33. </span>Vec.fold(Init $combine)<a class="headerlink" href="#vec-fold-init-combine" title="Link to this heading">¶</a></h3>
 <p>`fold` folds elements seeded by `Init`.</p>
 <p>If `Vec` contains elements E(0) E(1) ,,, E(n-1), the result will be combine(combine(,,, combine(combine(Init E(0)) E(1)) ,,,) E(n-1)).</p>
 <p class="rubric">Precondition</p>
@@ -553,7 +575,7 @@
 </div>
 </section>
 <section id="vec-reduce-combine-empty-fallback">
-<span id="api-2df32705c7bfd54f55ac6f4e6b827746"></span><h3><span class="section-number">6.27.1.33. </span>Vec.reduce($combine ...[$empty_fallback])<a class="headerlink" href="#vec-reduce-combine-empty-fallback" title="Link to this heading">¶</a></h3>
+<span id="api-2df32705c7bfd54f55ac6f4e6b827746"></span><h3><span class="section-number">6.27.1.34. </span>Vec.reduce($combine ...[$empty_fallback])<a class="headerlink" href="#vec-reduce-combine-empty-fallback" title="Link to this heading">¶</a></h3>
 <p>`reduce` accumulates elements of `Vec` mutually.</p>
 <p>If `Vec` has one or more elements, `reduce` tail-calls `Vec.drop_front(1).fold(Vec.front $combine)`.</p>
 <p>If `Vec` is empty, and $empty_fallback is given, `reduce` tail-calls $empty_fallback with no arg.</p>
@@ -562,9 +584,9 @@
 <p>$combine must be a fun which takes two values.</p>
 <p>$empty_fallback must be a thunk.</p>
 <p class="rubric">Example: without fallback</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:COMPARE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ORDER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
-<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">31</span> <span class="m">41</span> <span class="m">59</span> <span class="m">26</span> <span class="m">53</span>].<span class="n">reduce</span>(<span class="nv">COMPARE$max</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 59</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">31</span> <span class="m">41</span> <span class="m">59</span> <span class="m">26</span> <span class="m">53</span>].<span class="n">reduce</span>(<span class="nv">ORDER$max</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 59</span>
 </pre></div>
 </div>
 <p class="rubric">Example: with fallback</p>
@@ -584,7 +606,7 @@
 </div>
 </section>
 <section id="vec-take-while-include">
-<span id="api-1f796154aaac67db79b07366b975faec"></span><h3><span class="section-number">6.27.1.34. </span>Vec.take_while($include?)<a class="headerlink" href="#vec-take-while-include" title="Link to this heading">¶</a></h3>
+<span id="api-1f796154aaac67db79b07366b975faec"></span><h3><span class="section-number">6.27.1.35. </span>Vec.take_while($include?)<a class="headerlink" href="#vec-take-while-include" title="Link to this heading">¶</a></h3>
 <p>`take_while` returns a `vec` of the longest initial prefix whose elements satisfy the predicate $include?.</p>
 <p class="rubric">Precondition</p>
 <p>$include? must be a predicate.</p>
@@ -599,7 +621,7 @@
 </div>
 </section>
 <section id="vec-drop-while-exclude">
-<span id="api-d49548ba6040babf6593fdac6a64f369"></span><h3><span class="section-number">6.27.1.35. </span>Vec.drop_while($exclude?)<a class="headerlink" href="#vec-drop-while-exclude" title="Link to this heading">¶</a></h3>
+<span id="api-d49548ba6040babf6593fdac6a64f369"></span><h3><span class="section-number">6.27.1.36. </span>Vec.drop_while($exclude?)<a class="headerlink" href="#vec-drop-while-exclude" title="Link to this heading">¶</a></h3>
 <p>`drop_while` returns a `vec` of the elements after the longest initial prefix whose elements satisfy the predicate $exclude?.</p>
 <p class="rubric">Precondition</p>
 <p>$exclude? must be a predicate.</p>
@@ -614,7 +636,7 @@
 </div>
 </section>
 <section id="vec-all-match">
-<span id="api-3a663d57656e686d8ee0bfe5a9ea6c1e"></span><h3><span class="section-number">6.27.1.36. </span>Vec.all?($match?)<a class="headerlink" href="#vec-all-match" title="Link to this heading">¶</a></h3>
+<span id="api-3a663d57656e686d8ee0bfe5a9ea6c1e"></span><h3><span class="section-number">6.27.1.37. </span>Vec.all?($match?)<a class="headerlink" href="#vec-all-match" title="Link to this heading">¶</a></h3>
 <p>`all?` returns whether all the elements of `Vec` satisfy the predicate $match?.</p>
 <p class="rubric">Precondition</p>
 <p>$match? must be a predicate.</p>
@@ -631,7 +653,7 @@
 </div>
 </section>
 <section id="vec-any-match-true">
-<span id="api-11af723e0870efb38f34d5275664b3f9"></span><h3><span class="section-number">6.27.1.37. </span>Vec.any?(...[$match?={ true }])<a class="headerlink" href="#vec-any-match-true" title="Link to this heading">¶</a></h3>
+<span id="api-11af723e0870efb38f34d5275664b3f9"></span><h3><span class="section-number">6.27.1.38. </span>Vec.any?(...[$match?={ true }])<a class="headerlink" href="#vec-any-match-true" title="Link to this heading">¶</a></h3>
 <p>`any?` returns whether at least one of the elements of `Vec` satisfies the predicate $match?.</p>
 <p>$match? is an optional arg with a default value { true }, So, if $match? is not passed, `any?` returns whether `Vec` is nonempty.</p>
 <p class="rubric">Precondition</p>
@@ -655,7 +677,7 @@
 </div>
 </section>
 <section id="vec-have-target">
-<span id="api-0cf79cfaf2d21da7624ed9357e09d981"></span><h3><span class="section-number">6.27.1.38. </span>Vec.have?(Target)<a class="headerlink" href="#vec-have-target" title="Link to this heading">¶</a></h3>
+<span id="api-0cf79cfaf2d21da7624ed9357e09d981"></span><h3><span class="section-number">6.27.1.39. </span>Vec.have?(Target)<a class="headerlink" href="#vec-have-target" title="Link to this heading">¶</a></h3>
 <p>`have?` returns whether `Vec` has an element which is equal to `Target` by `==` operator, or `op_eq` method.</p>
 <p>Calling Vec.have?(Target) is equivalent to calling Vec.any?{(:E) Target == E }.</p>
 <p class="rubric">Example</p>
@@ -665,7 +687,7 @@
 </div>
 </section>
 <section id="vec-have-all-vals">
-<span id="api-82b1d65bfeb4515918b278ec71879256"></span><h3><span class="section-number">6.27.1.39. </span>Vec.have_all?(Vals)<a class="headerlink" href="#vec-have-all-vals" title="Link to this heading">¶</a></h3>
+<span id="api-82b1d65bfeb4515918b278ec71879256"></span><h3><span class="section-number">6.27.1.40. </span>Vec.have_all?(Vals)<a class="headerlink" href="#vec-have-all-vals" title="Link to this heading">¶</a></h3>
 <p>`have_all?` returns whether `Vec` has all the elements of `Vals`.</p>
 <p>Calling Vec.have_all?(Vals) is equivalent to calling Vals.all?{(:T) Vec.have?(T) }.</p>
 <p class="rubric">Preconditions</p>
@@ -681,7 +703,7 @@
 </div>
 </section>
 <section id="vec-have-any-vals">
-<span id="api-2f9fb22ebdbc1305055535e3563e3211"></span><h3><span class="section-number">6.27.1.40. </span>Vec.have_any?(Vals)<a class="headerlink" href="#vec-have-any-vals" title="Link to this heading">¶</a></h3>
+<span id="api-2f9fb22ebdbc1305055535e3563e3211"></span><h3><span class="section-number">6.27.1.41. </span>Vec.have_any?(Vals)<a class="headerlink" href="#vec-have-any-vals" title="Link to this heading">¶</a></h3>
 <p>`have_any?` returns whether `Vec` has any element of `Vals`.</p>
 <p>Calling Vec.have_any?(Vals) is equivalent to calling Vals.any?{(:T) Vec.have?(T) }.</p>
 <p class="rubric">Preconditions</p>
@@ -697,20 +719,20 @@
 </pre></div>
 </div>
 </section>
-<section id="vec-sort-in-order-x-y-x-y">
-<span id="api-db860e884a84e1827982b48eee6be98f"></span><h3><span class="section-number">6.27.1.41. </span>Vec.sort(...[$in_order?={(:X :Y) X &lt;= Y }])<a class="headerlink" href="#vec-sort-in-order-x-y-x-y" title="Link to this heading">¶</a></h3>
-<p>`sort` returns a `vec` whose elements are copied from `Vec` and sorted in the ascending order specified by $in_order?.</p>
+<section id="vec-sort-up-to-x-y-x-y">
+<span id="api-f92e8388682b3f3e5249380fc372352e"></span><h3><span class="section-number">6.27.1.42. </span>Vec.sort(...[$up_to?={(:X :Y) X &lt;= Y }])<a class="headerlink" href="#vec-sort-up-to-x-y-x-y" title="Link to this heading">¶</a></h3>
+<p>`sort` returns a `vec` whose elements are copied from `Vec` and sorted in the ascending order specified by $up_to?.</p>
 <p class="rubric">Comparison</p>
-<p>Comparison of elements are done by $in_order?.</p>
-<p>$in_order? must be a total order relation of the elements of `Vec`. For all `X`, `Y`, and `Z` in the elements of `Vec`, $in_order? must satisfy the following.</p>
-<p>• reflexive: in_order?(X X)</p>
-<p>• transitive: if in_order?(X Y) &amp;&amp; in_order?(Y Z) then in_order?(X Z)</p>
-<p>• antisymmetric: if in_order?(X Y) &amp;&amp; in_order?(Y X) then X is equivalent to Y</p>
-<p>• strongly connected: in_order?(X Y) || in_order?(Y X)</p>
+<p>Comparison of elements are done by $up_to?.</p>
+<p>$up_to? must be a total order relation of the elements of `Vec`. For all `X`, `Y`, and `Z` in the elements of `Vec`, $up_to? must satisfy the following.</p>
+<p>• reflexive: up_to?(X X)</p>
+<p>• transitive: if up_to?(X Y) &amp;&amp; up_to?(Y Z) then up_to?(X Z)</p>
+<p>• antisymmetric: if up_to?(X Y) &amp;&amp; up_to?(Y X) then X is equivalent to Y</p>
+<p>• strongly connected: up_to?(X Y) || up_to?(Y X)</p>
 <p class="rubric">Stable sort</p>
-<p>`sort` performs a stable sort. If in_order?(E1 E2) &amp;&amp; in_order?(E2 E1), for `E1` and `E2` in `Vec`, `E1` and `E2` appear in the result `vec` in the same order as in `Vec`.</p>
+<p>`sort` performs a stable sort. If up_to?(E1 E2) &amp;&amp; up_to?(E2 E1), for `E1` and `E2` in `Vec`, `E1` and `E2` appear in the result `vec` in the same order as in `Vec`.</p>
 <p class="rubric">Precondition</p>
-<p>$in_order? must be a fun which takes two values and returns a `bool`.</p>
+<p>$up_to? must be a function which takes two values and returns a `bool`.</p>
 <p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;FOO&#39;</span> <span class="s1">&#39;BAR&#39;</span> <span class="s1">&#39;BAZ&#39;</span>]
 
@@ -723,7 +745,7 @@
 </div>
 </section>
 <section id="vec-iter-from-0-to-vec-size">
-<span id="api-c31469da21f944429a8cf92a5403ec4f"></span><h3><span class="section-number">6.27.1.42. </span>Vec.iter(...[From=0 To=Vec.size])<a class="headerlink" href="#vec-iter-from-0-to-vec-size" title="Link to this heading">¶</a></h3>
+<span id="api-c31469da21f944429a8cf92a5403ec4f"></span><h3><span class="section-number">6.27.1.43. </span>Vec.iter(...[From=0 To=Vec.size])<a class="headerlink" href="#vec-iter-from-0-to-vec-size" title="Link to this heading">¶</a></h3>
 <p>`iter` method returns an `iter` containing the elements of the slice in the range [From, To).</p>
 <p class="rubric">Preconditions</p>
 <p>`From` and `To` must be integer `num` values.</p>
@@ -757,7 +779,7 @@
 </div>
 </section>
 <section id="vec1-vec2">
-<span id="api-d97345411758603e5d72d2026abceeea"></span><h3><span class="section-number">6.27.1.43. </span>Vec1 + Vec2<a class="headerlink" href="#vec1-vec2" title="Link to this heading">¶</a></h3>
+<span id="api-d97345411758603e5d72d2026abceeea"></span><h3><span class="section-number">6.27.1.44. </span>Vec1 + Vec2<a class="headerlink" href="#vec1-vec2" title="Link to this heading">¶</a></h3>
 <p>`+` operator, or `op_add` method, returns a `vec` containing all the elements of `Vec1` in the front, and all the elements of `Vec2` in the back.</p>
 <p class="rubric">Precondition</p>
 <p>`Vec2` must be a `vec`.</p>
@@ -767,7 +789,7 @@
 </div>
 </section>
 <section id="vec-n">
-<span id="api-61e61615143dade9dabbd34bcb5d4d16"></span><h3><span class="section-number">6.27.1.44. </span>Vec * N<a class="headerlink" href="#vec-n" title="Link to this heading">¶</a></h3>
+<span id="api-61e61615143dade9dabbd34bcb5d4d16"></span><h3><span class="section-number">6.27.1.45. </span>Vec * N<a class="headerlink" href="#vec-n" title="Link to this heading">¶</a></h3>
 <p>`*` operator, or `op_mul` method, returns a `vec` containing the elements of `Vec` repeated `N` times.</p>
 <p class="rubric">Preconditions</p>
 <p>`N` must be a nonnegative integer `num`.</p>
@@ -777,7 +799,7 @@
 </div>
 </section>
 <section id="api-7b111e394601a5a4a97ab44892979c20">
-<span id="id1"></span><h3><span class="section-number">6.27.1.45. </span>Vec1 == Vec2<a class="headerlink" href="#api-7b111e394601a5a4a97ab44892979c20" title="Link to this heading">¶</a></h3>
+<span id="id1"></span><h3><span class="section-number">6.27.1.46. </span>Vec1 == Vec2<a class="headerlink" href="#api-7b111e394601a5a4a97ab44892979c20" title="Link to this heading">¶</a></h3>
 <p>`==` operator, or `op_eq` method, returns whether `Vec1` and `Vec2` are equal, or they contain equal elements in the same order.</p>
 <p>The two vecs are equal if:</p>
 <p>1)  Vec1.size == Vec2.size</p>
@@ -822,11 +844,11 @@
 </div>
 </section>
 <section id="api-841e77748f0925e98ec50203bb9e02cf">
-<span id="id2"></span><h3><span class="section-number">6.27.1.46. </span>Vec1 &lt;= Vec2<a class="headerlink" href="#api-841e77748f0925e98ec50203bb9e02cf" title="Link to this heading">¶</a></h3>
+<span id="id2"></span><h3><span class="section-number">6.27.1.47. </span>Vec1 &lt;= Vec2<a class="headerlink" href="#api-841e77748f0925e98ec50203bb9e02cf" title="Link to this heading">¶</a></h3>
 <p>`&lt;=` operator, or `op_le` method, returns whether `Vec1` is less than or equal to `Vec2` by the order defined by `&lt;=` operator of the elements.</p>
 <p>`Vec1` is less than or equal to `Vec2` when:</p>
-<p>1)  There is a nonnegative integer k (k &lt; min(Vec1.size Vec2.size)),     such that for all i in [0, k)     Vec1.get(i) &lt;= Vec2.get(i) &amp;&amp; Vec2.get(i) &lt;= Vec1.get(i),     and ! (Vec2.get(k) &lt;= Vec1.get(k)); or</p>
-<p>2)  Vec1.size &lt;= Vec2.size and for all i in [0, Vec1.size),     Vec1.get(i) &lt;= Vec2.get(i) &amp;&amp; Vec2.get(i) &lt;= Vec1.get(i).</p>
+<p>1)  There is a nonnegative integer k (k &lt; min(Vec1.size Vec2.size)), such that for all i in [0, k) Vec1.get(i) &lt;= Vec2.get(i) &amp;&amp; Vec2.get(i) &lt;= Vec1.get(i), and ! (Vec2.get(k) &lt;= Vec1.get(k)); or</p>
+<p>2)  Vec1.size &lt;= Vec2.size and for all i in [0, Vec1.size), Vec1.get(i) &lt;= Vec2.get(i) &amp;&amp; Vec2.get(i) &lt;= Vec1.get(i).</p>
 <p>Comparisons are done from the smallest index to the biggest index. When the result is determined, the subsequent comparisons are not performed.</p>
 <p class="rubric">Precondition</p>
 <p>`Vec2` must be a `vec`.</p>
@@ -860,7 +882,7 @@
 </div>
 </section>
 <section id="lhs-rhs">
-<span id="api-6573895cd5761f6c138e0b1ce561a7e6"></span><h3><span class="section-number">6.27.1.47. </span>Lhs &lt;- Rhs<a class="headerlink" href="#lhs-rhs" title="Link to this heading">¶</a></h3>
+<span id="api-6573895cd5761f6c138e0b1ce561a7e6"></span><h3><span class="section-number">6.27.1.48. </span>Lhs &lt;- Rhs<a class="headerlink" href="#lhs-rhs" title="Link to this heading">¶</a></h3>
 <p>`&lt;-` operator, or `op_store` method, performs multiple assignment between a `vec` on the left hand side, `Lhs`, and the `vec` on the right hand side, `Rhs.</p>
 <p>Here, elements of `Lhs` are called params, and elements of `Rhs` are called args.</p>
 <p class="rubric">Params and args</p>
@@ -955,7 +977,7 @@
 </div>
 </section>
 <section id="vec-repr">
-<span id="api-97b5493e30b9b5d7d421ed0d4c007f3e"></span><h3><span class="section-number">6.27.1.48. </span>Vec.repr<a class="headerlink" href="#vec-repr" title="Link to this heading">¶</a></h3>
+<span id="api-97b5493e30b9b5d7d421ed0d4c007f3e"></span><h3><span class="section-number">6.27.1.49. </span>Vec.repr<a class="headerlink" href="#vec-repr" title="Link to this heading">¶</a></h3>
 <p>`repr` returns a `str` representation of `Vec`.</p>
 <p class="rubric">Example</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>].<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;foo&quot; 42]</span>

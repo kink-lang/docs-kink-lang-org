@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>7.2. 関数 &#8212; Kink 0.9.5-beta</title>
+    <title>7.2. 関数 &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/translations.js?v=4dbe4bdc"></script>
@@ -19,7 +19,7 @@
     <link rel="prev" title="7.1. Variables" href="variable.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
+          <span>Kink 0.9.6-beta</span></a></h1>
         <h2 class="heading"><span>7.2. 関数</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -50,10 +50,10 @@
 <li><p><a class="reference internal" href="#constants" id="id8">Constants</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#values-passed-from-the-caller" id="id9">Values passed from the caller</a></p>
+<li><p><a class="reference internal" href="#values-passed-from-the-caller" id="id9">呼び出し元から渡される値</a></p>
 <ul>
-<li><p><a class="reference internal" href="#optional-and-variadic-parameters" id="id10">Optional and variadic parameters</a></p></li>
-<li><p><a class="reference internal" href="#config-functions" id="id11">Config functions</a></p></li>
+<li><p><a class="reference internal" href="#optional-and-variadic-parameters" id="id10">オプショナルパラメータと任意長パラメータ列</a></p></li>
+<li><p><a class="reference internal" href="#config-functions" id="id11">コンフィグ関数</a></p></li>
 </ul>
 </li>
 <li><p><a class="reference internal" href="#function-result" id="id12">Function result</a></p>
@@ -201,7 +201,7 @@ is called based on the sign of <code class="docutils literal notranslate"><span 
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>{(<span class="nv">:N</span>) <span class="nv">N</span> % == <span class="m">2</span> }
 </pre></div>
 </div>
-<p>Predicates are used by methods like <a class="reference internal" href="../api/kink-VEC.html#api-2c58ef95f8a75a29db05a46de52c8967"><span class="std std-ref">Vec.filter</span></a>.</p>
+<p>述語は <a class="reference internal" href="../api/kink-VEC.html#api-2c58ef95f8a75a29db05a46de52c8967"><span class="std std-ref">Vec.filter</span></a> のようなメソッドに使われる。</p>
 </section>
 <section id="constants">
 <span id="constant"></span><h3><span class="section-number">7.2.1.5. </span>Constants<a class="headerlink" href="#constants" title="Link to this heading">¶</a></h3>
@@ -228,17 +228,14 @@ See <a class="reference internal" href="accessibility.html"><span class="doc">Ac
 </section>
 </section>
 <section id="values-passed-from-the-caller">
-<span id="values-passed-from-caller"></span><h2><span class="section-number">7.2.2. </span>Values passed from the caller<a class="headerlink" href="#values-passed-from-the-caller" title="Link to this heading">¶</a></h2>
-<p>About the basics of values passed from the caller of a function,
-see <a class="reference internal" href="variable.html#formal-receiver-formal-args"><span class="std std-ref">Formal receiver and formal arguments</span></a>.
-This section describes advanced handling of values passed from the caller.</p>
+<span id="values-passed-from-caller"></span><h2><span class="section-number">7.2.2. </span>呼び出し元から渡される値<a class="headerlink" href="#values-passed-from-the-caller" title="Link to this heading">¶</a></h2>
+<p>関数の呼び出し元から渡される値の基本については、<a class="reference internal" href="variable.html#formal-receiver-formal-args"><span class="std std-ref">Formal receiver and formal arguments</span></a>を見よう。この節では、呼び出し元から渡される値の高度な取り扱いについて述べる。</p>
 <section id="optional-and-variadic-parameters">
-<h3><span class="section-number">7.2.2.1. </span>Optional and variadic parameters<a class="headerlink" href="#optional-and-variadic-parameters" title="Link to this heading">¶</a></h3>
-<p>If you want to take optional arguments after mandatory ones,
-you can use <code class="docutils literal notranslate"><span class="pre">Varref.opt</span></code> as follows.</p>
+<h3><span class="section-number">7.2.2.1. </span>オプショナルパラメータと任意長パラメータ列<a class="headerlink" href="#optional-and-variadic-parameters" title="Link to this heading">¶</a></h3>
+<p>必須の引数のあとにオプショナルな引数を取りたい場合、次のように <a class="reference internal" href="../api/kink-VARREF.html#api-a6b43b4c86defa1c7e8594a542d1c2fa"><span class="std std-ref">Varref.opt</span></a> が使える。</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:posix_locale_tag</span> &lt;- {(<span class="nv">:Lang</span> <span class="nv">:Opt_territory</span>.<span class="n">opt</span> <span class="nv">:Opt_charset</span>.<span class="n">opt</span>)
-  <span class="nv">:Territory</span> = <span class="nv">Opt_territory</span>.<span class="n">just_or</span>{ <span class="s1">&#39;US&#39;</span> }
-  <span class="nv">:Charset</span> = <span class="nv">Opt_charset</span>.<span class="n">just_or</span>{ <span class="s1">&#39;UTF-8&#39;</span> }
+  <span class="nv">:Territory</span> = <span class="nv">Opt_territory</span>.<span class="n">just</span>{ <span class="s1">&#39;US&#39;</span> }
+  <span class="nv">:Charset</span> = <span class="nv">Opt_charset</span>.<span class="n">just</span>{ <span class="s1">&#39;UTF-8&#39;</span> }
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{}-{}.{}&#39;</span>.<span class="n">format</span>(<span class="nv">Lang</span> <span class="nv">Territory</span> <span class="nv">Charset</span>))
 }
 
@@ -247,17 +244,12 @@ you can use <code class="docutils literal notranslate"><span class="pre">Varref.
 <span class="n">posix_locale_tag</span>(<span class="s1">&#39;en&#39;</span>)      <span class="c1"># =&gt; en-US.UTF-8</span>
 </pre></div>
 </div>
-<p>As shown above, if an argument is given to the optional parameter,
-a single element vec containing the argument is passed to the variable.
-If no argument is given to the optional parameter,
-an empty vec is passed to the variable.</p>
-<p>See <a class="reference internal" href="../api/kink-param-OPT_PARAM.html"><span class="doc">kink/param/OPT_PARAM</span></a> for details.</p>
-<p>If you want to take variadic arguments at the end of the arguments list,
-you can use <code class="docutils literal notranslate"><span class="pre">Varref.rest</span></code> as follows.</p>
+<p>上記のように、オプショナルパラメータに対して引数が与えられた場合、その引数を含む一要素の<a class="reference internal" href="../glossary.html#term-vector"><span class="xref std std-term">ベクタ</span></a>が変数に格納される。オプショナルパラメータに対して引数が与えられない場合、空のベクタが変数に格納される。詳細は <a class="reference internal" href="../api/kink-param-OPT_PARAM.html"><span class="doc">OPT_PARAM</span></a> を見よう。</p>
+<p>引数列の末尾で任意の数の引数を取りたい場合、次のように <a class="reference internal" href="../api/kink-VARREF.html#api-58a0d84a3d4a63aee83546415f4bd5f5"><span class="std std-ref">Varref.rest</span></a> が使える。</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:commandline</span> &lt;- {(<span class="nv">:Command</span> <span class="nv">:Args</span>.<span class="n">rest</span>)
-  <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;command: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Command</span>))
-  <span class="nv">Args</span>.<span class="n">size</span>.<span class="n">times</span>{(<span class="nv">:I</span>)
-    <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;arg #{}: {}&#39;</span>.<span class="n">format</span>(<span class="nv">I</span> <span class="nv">Args</span>.<span class="n">get</span>(<span class="nv">I</span>)))
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;command: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Command</span>))
+  <span class="nv">Args</span>.<span class="n">size</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:I</span>)
+    <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;arg #{}: {}&#39;</span>.<span class="n">format</span>(<span class="nv">I</span> <span class="nv">Args</span>.<span class="n">get</span>(<span class="nv">I</span>)))
   }
 }
 
@@ -268,12 +260,12 @@ you can use <code class="docutils literal notranslate"><span class="pre">Varref.
 <span class="c1">#   arg #1: /etc</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="../api/kink-param-REST_PARAM.html"><span class="doc">kink/param/REST_PARAM</span></a> for details.</p>
-<p>You can take both optional and variadic arguments.</p>
+<p>詳細は <a class="reference internal" href="../api/kink-param-REST_PARAM.html"><span class="doc">REST_PARAM</span></a> を見よう。</p>
+<p>Varref.optとVarref.restは同時に使える。</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:take_opt_variadic</span> &lt;- {(<span class="nv">:Mandatory</span> <span class="nv">:Opt</span>.<span class="n">opt</span> <span class="nv">:Rest</span>.<span class="n">rest</span>)
-  <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;Mandatory {}&#39;</span>.<span class="n">format</span>(<span class="nv">Mandatory</span>.<span class="n">repr</span>))
-  <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;Opt {}&#39;</span>.<span class="n">format</span>(<span class="nv">Opt</span>.<span class="n">repr</span>))
-  <span class="n">stdout</span>.<span class="n">prine_line</span>(<span class="s1">&#39;Rest {}&#39;</span>.<span class="n">format</span>(<span class="nv">Rest</span>.<span class="n">repr</span>))
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Mandatory {}&#39;</span>.<span class="n">format</span>(<span class="nv">Mandatory</span>.<span class="n">repr</span>))
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Opt {}&#39;</span>.<span class="n">format</span>(<span class="nv">Opt</span>.<span class="n">repr</span>))
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Rest {}&#39;</span>.<span class="n">format</span>(<span class="nv">Rest</span>.<span class="n">repr</span>))
 }
 
 <span class="n">take_opt_variadic</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span>)
@@ -285,22 +277,10 @@ you can use <code class="docutils literal notranslate"><span class="pre">Varref.
 </div>
 </section>
 <section id="config-functions">
-<h3><span class="section-number">7.2.2.2. </span>Config functions<a class="headerlink" href="#config-functions" title="Link to this heading">¶</a></h3>
-<p>When positional optional parameters are not flexible enough,
-a config function can be used.</p>
-<p>For example,
-<a class="reference internal" href="../api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">Program.compile</span></a> can take
-a binding, a locale, and other optional values,
-and each can be omitted independently.
-For that case, optional parameters are not appropriate.
-Assuming that the parameter list is
-<code class="docutils literal notranslate"><span class="pre">(Text,</span> <span class="pre">opt</span> <span class="pre">Binding,</span> <span class="pre">opt</span> <span class="pre">Locale)</span></code>,
-you cannot omit only <code class="docutils literal notranslate"><span class="pre">Binding</span></code> while specifying <code class="docutils literal notranslate"><span class="pre">Locale</span></code>.</p>
-<p>So, Program.compile takes an optional config function
-at the end of the parameter list.
-The client of Program.compile can specify a binding, a locale,
-and a program name,
-by calling methods of a config val, which is passed to the config function.</p>
+<span id="config-fun"></span><h3><span class="section-number">7.2.2.2. </span>コンフィグ関数<a class="headerlink" href="#config-functions" title="Link to this heading">¶</a></h3>
+<p>オプショナルパラメータよりも柔軟な方法として、<em class="dfn">コンフィグ関数</em>が使える。</p>
+<p>たとえば、 <a class="reference internal" href="../api/kink-program-PROGRAM.html#api-eb38c6c06f06250d57f7c828992a2147"><span class="std std-ref">Program.compile</span></a> は、<a class="reference internal" href="../glossary.html#term-binding"><span class="xref std std-term">束縛</span></a>、<a class="reference internal" href="../api/kink-LOCALE.html#api-668468443c02606ede61892045a1c7de"><span class="std std-ref">ロケール</span></a>、その他オプショナルな値を取る。これらの値は、それぞれ独立に省略できる。</p>
+<p>これを実現するため、Program.compileは引数列の末尾で、オプショナルなコンフィグ関数を取る。Program.compileの呼び出し元は、束縛、ロケール、その他のオプショナルな値を、コンフィグ関数に渡される<em class="dfn">コンフィグ値</em>のメソッドを呼ぶことで指定する。コンフィグ値のメソッドは<em class="dfn">コンフィグメソッド</em>と呼ばれる。</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:BINDING</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
@@ -314,18 +294,11 @@ by calling methods of a config val, which is passed to the config function.</p>
 <span class="n">print_num</span> <span class="c1"># =&gt; 42</span>
 </pre></div>
 </div>
-<p>Here, the parameter of Program.compile is a config function.
-The parameter <code class="docutils literal notranslate"><span class="pre">C</span></code> of the config function is a config value.</p>
-<p>If you provide a function which takes a config function,
-and the config value is simple enough,
-you can use <a class="reference internal" href="../api/kink-CONFIG_FUN_RUNNER.html"><span class="doc">kink/CONFIG_FUN_RUNNER</span></a>.</p>
+<p>ここで、Program.compileの引数はコンフィグ関数である。コンフィグ関数のパラメータ <code class="docutils literal notranslate"><span class="pre">C</span></code> はコンフィグ値である。</p>
+<p>典型的なコンフィグ値を取るコンフィグ関数を走らせるには、 <a class="reference internal" href="../api/kink-CONFIG_FUN_RUNNER.html#api-b4d17f2da72d9c23d4f740ff5423c00f"><span class="std std-ref">CONFIG_FUN_RUNNER.new</span></a> が使える。</p>
 <div class="admonition note">
 <p class="admonition-title">注釈</p>
-<p>Config functions can be seen as an alternative aproach to named parameters
-of other languages.
-The most notable advantage of config functions is that they don't need
-a dedicated syntax.
-A config function is just the last argument passed to the configured function.</p>
+<p>コンフィグ関数は、他の言語における名前付きパラメータと同じように機能する。</p>
 </div>
 </section>
 </section>

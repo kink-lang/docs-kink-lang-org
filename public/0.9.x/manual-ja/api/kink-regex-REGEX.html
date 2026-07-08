@@ -5,31 +5,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.86. kink/regex/REGEX &#8212; Kink 0.9.5-beta</title>
+    <title>6.93. kink/regex/REGEX &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=8f459034"></script>
+    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/translations.js?v=4dbe4bdc"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="6.87. kink/repl/REPL" href="kink-repl-REPL.html" />
-    <link rel="prev" title="6.85. kink/regex/MATCH" href="kink-regex-MATCH.html" /> 
+    <link rel="next" title="6.94. kink/repl/REPL" href="kink-repl-REPL.html" />
+    <link rel="prev" title="6.92. kink/regex/MATCH" href="kink-regex-MATCH.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
-        <h2 class="heading"><span>6.86. kink/regex/REGEX</span></h2>
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.93. kink/regex/REGEX</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-regex-MATCH.html"><span class="section-number">6.85. </span>kink/regex/MATCH</a>
+        «&#160;&#160;<a href="kink-regex-MATCH.html"><span class="section-number">6.92. </span>kink/regex/MATCH</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">コンテンツ</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-repl-REPL.html"><span class="section-number">6.87. </span>kink/repl/REPL</a>&#160;&#160;»
+        <a href="kink-repl-REPL.html"><span class="section-number">6.94. </span>kink/repl/REPL</a>&#160;&#160;»
         </p>
 
       </div>
@@ -37,14 +37,14 @@
         
         
   <section id="kink-regex-regex">
-<h1><span class="section-number">6.86. </span>kink/regex/REGEX<a class="headerlink" href="#kink-regex-regex" title="Link to this heading">¶</a></h1>
+<h1><span class="section-number">6.93. </span>kink/regex/REGEX<a class="headerlink" href="#kink-regex-regex" title="Link to this heading">¶</a></h1>
 <p>The mod provides a regular expression engine backed by java.util.regex package.</p>
 <p>The syntax of regex patterns is same as one of Java. See:</p>
 <p>https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html</p>
 <p>There are three basic types.</p>
-<p>• regex:   A regular expression pattern.   A regex val provides features such as matching, searching,   replacing and splitting.</p>
-<p>• match:   A result of a successful matching. A regex_match contains groups.   See kink/regex/MATCH for details.</p>
-<p>• group:   A slice in the matched text,   which can be the entire slice of the regex_match,   or a slice of a named capturing group.   See kink/regex/GROUP for details.</p>
+<p>• regex: A regular expression pattern. A regex val provides features such as matching, searching, replacing and splitting.</p>
+<p>• match: A result of a successful matching. A regex_match contains groups. See kink/regex/MATCH for details.</p>
+<p>• group: A slice in the matched text, which can be the entire slice of the regex_match, or a slice of a named capturing group. See kink/regex/GROUP for details.</p>
 <p>`match` type is a subtype of `group`, which represents the entire slice of the matched area.</p>
 <p>Regexes handle indices of code points, in contrast to java.util.regex which handles indices of UTF-16 code units.</p>
 <p class="rubric">Example</p>
@@ -81,11 +81,11 @@
 </ul>
 </nav>
 <section id="type-regex">
-<span id="api-e32b8c16bd0e859f4e3f682680e9ae73"></span><h2><span class="section-number">6.86.1. </span>type regex<a class="headerlink" href="#type-regex" title="Link to this heading">¶</a></h2>
+<span id="api-e32b8c16bd0e859f4e3f682680e9ae73"></span><h2><span class="section-number">6.93.1. </span>type regex<a class="headerlink" href="#type-regex" title="Link to this heading">¶</a></h2>
 <p>`regex` is a type of immutable regular expression pattern.</p>
 <p>`regex` provides features such as matching, searching, replacing and splitting.</p>
 <section id="regex-pattern">
-<span id="api-b3b9e570d28891e2e479697327ccc5b7"></span><h3><span class="section-number">6.86.1.1. </span>Regex.pattern<a class="headerlink" href="#regex-pattern" title="Link to this heading">¶</a></h3>
+<span id="api-b3b9e570d28891e2e479697327ccc5b7"></span><h3><span class="section-number">6.93.1.1. </span>Regex.pattern<a class="headerlink" href="#regex-pattern" title="Link to this heading">¶</a></h3>
 <p>`pattern` returns the pattern str from which the regex is made.</p>
 <p>== Example =a=</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:REGEX</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/regex/&#39;</span>)
@@ -95,7 +95,7 @@
 </div>
 </section>
 <section id="regex-accept-text">
-<span id="api-badea547f1a1a1f2a26b3ea16e61716d"></span><h3><span class="section-number">6.86.1.2. </span>Regex.accept?(Text)<a class="headerlink" href="#regex-accept-text" title="Link to this heading">¶</a></h3>
+<span id="api-badea547f1a1a1f2a26b3ea16e61716d"></span><h3><span class="section-number">6.93.1.2. </span>Regex.accept?(Text)<a class="headerlink" href="#regex-accept-text" title="Link to this heading">¶</a></h3>
 <p>`accept?` returns whether the entire `Text` str matches the pattern of the regex</p>
 <p>Precondition:</p>
 <p>• `Text` must be a str.</p>
@@ -108,7 +108,7 @@
 </div>
 </section>
 <section id="regex-match-text-config">
-<span id="api-2d4798ecb84f6b0444dc3418bb4960f4"></span><h3><span class="section-number">6.86.1.3. </span>Regex.match(Text ...[$config={}])<a class="headerlink" href="#regex-match-text-config" title="Link to this heading">¶</a></h3>
+<span id="api-2d4798ecb84f6b0444dc3418bb4960f4"></span><h3><span class="section-number">6.93.1.3. </span>Regex.match(Text ...[$config={}])<a class="headerlink" href="#regex-match-text-config" title="Link to this heading">¶</a></h3>
 <p>`match` tries to match the regex to the entire `Text` str.</p>
 <p>Config methods:</p>
 <p>• C.on_success($success): default = VAL.identity.</p>
@@ -149,7 +149,7 @@
 </div>
 </section>
 <section id="regex-search-text-start-pos-config">
-<span id="api-2c5cd9d4f21d040cbf6462c97c5f4897"></span><h3><span class="section-number">6.86.1.4. </span>Regex.search(Text Start_pos ...[$config={}])<a class="headerlink" href="#regex-search-text-start-pos-config" title="Link to this heading">¶</a></h3>
+<span id="api-2c5cd9d4f21d040cbf6462c97c5f4897"></span><h3><span class="section-number">6.93.1.4. </span>Regex.search(Text Start_pos ...[$config={}])<a class="headerlink" href="#regex-search-text-start-pos-config" title="Link to this heading">¶</a></h3>
 <p>`search` searches for the first slice of the `Text` which the regex matches. The search starts from `Start_pos`.</p>
 <p>Config methods:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
@@ -188,7 +188,7 @@
 </div>
 </section>
 <section id="regex-search-all-text">
-<span id="api-9ef5776bd51fc7e310ddc75679f41736"></span><h3><span class="section-number">6.86.1.5. </span>Regex.search_all(Text)<a class="headerlink" href="#regex-search-all-text" title="Link to this heading">¶</a></h3>
+<span id="api-9ef5776bd51fc7e310ddc75679f41736"></span><h3><span class="section-number">6.93.1.5. </span>Regex.search_all(Text)<a class="headerlink" href="#regex-search-all-text" title="Link to this heading">¶</a></h3>
 <p>`search_all` searches for all the slices of the `Text` which the regex matches, and returns an iter of `match` vals for the found slices.</p>
 <p>The first search is attempted from the beginning of the Text.</p>
 <p>If a search from `Ind` results in a `match` for an empty slice, the next search is attempted from (Ind + 1). Otherwise, the next search is attempted from `Match.to` of the current `match`.</p>
@@ -210,7 +210,7 @@
 </div>
 </section>
 <section id="regex-replace-all-text-match-to-str">
-<span id="api-c5fb7eb660309b86c9e5de338c404808"></span><h3><span class="section-number">6.86.1.6. </span>Regex.replace_all(Text $match_to_str)<a class="headerlink" href="#regex-replace-all-text-match-to-str" title="Link to this heading">¶</a></h3>
+<span id="api-c5fb7eb660309b86c9e5de338c404808"></span><h3><span class="section-number">6.93.1.6. </span>Regex.replace_all(Text $match_to_str)<a class="headerlink" href="#regex-replace-all-text-match-to-str" title="Link to this heading">¶</a></h3>
 <p>`replace_all` replaces all the slices of the `Text` which the regex matches.</p>
 <p>Searching is done in the way same as `search_all`.</p>
 <p>Matched slices are replaced by $match_to_str. $match_to_str must take a `match`, and return a str.</p>
@@ -234,7 +234,7 @@
 </div>
 </section>
 <section id="regex-split-text-max-field-count">
-<span id="api-7b06c7750e5600354c9e72621ad71df0"></span><h3><span class="section-number">6.86.1.7. </span>Regex.split(Text ...[Max_field_count])<a class="headerlink" href="#regex-split-text-max-field-count" title="Link to this heading">¶</a></h3>
+<span id="api-7b06c7750e5600354c9e72621ad71df0"></span><h3><span class="section-number">6.93.1.7. </span>Regex.split(Text ...[Max_field_count])<a class="headerlink" href="#regex-split-text-max-field-count" title="Link to this heading">¶</a></h3>
 <p>`split` splits `Text` into a vec of str vals, using the regex as the pattern of delimiters.</p>
 <p>If `Max_field_count` is specified, spliting is performed at most `Max_field_count - 1` times. Thus, the number of fields is no more than `Max_field_count`.</p>
 <p>If `Max_field_count` is not specified, splitting is performed on all the matches.</p>
@@ -258,7 +258,7 @@
 </section>
 </section>
 <section id="regex-compile-pattern-config">
-<span id="api-345987b2f55607253e0d7ea3e8c19fb8"></span><h2><span class="section-number">6.86.2. </span>REGEX.compile(Pattern ...[$config])<a class="headerlink" href="#regex-compile-pattern-config" title="Link to this heading">¶</a></h2>
+<span id="api-345987b2f55607253e0d7ea3e8c19fb8"></span><h2><span class="section-number">6.93.2. </span>REGEX.compile(Pattern ...[$config])<a class="headerlink" href="#regex-compile-pattern-config" title="Link to this heading">¶</a></h2>
 <p>`compile` makes a regex from `Pattern`.</p>
 <p>Config methods:</p>
 <p>• C.on_success($success): default = VAL.identity.</p>
@@ -307,11 +307,11 @@
 </div>
 </section>
 <section id="regex-is-val">
-<span id="api-330c7e83624136455520351a2cb0220d"></span><h2><span class="section-number">6.86.3. </span>REGEX.is?(Val)<a class="headerlink" href="#regex-is-val" title="Link to this heading">¶</a></h2>
+<span id="api-330c7e83624136455520351a2cb0220d"></span><h2><span class="section-number">6.93.3. </span>REGEX.is?(Val)<a class="headerlink" href="#regex-is-val" title="Link to this heading">¶</a></h2>
 <p>`is?` returns whether the `Val` is a regex val.</p>
 </section>
 <section id="regex-escape-str">
-<span id="api-bb37a3a3a301a44096d21d94adcde895"></span><h2><span class="section-number">6.86.4. </span>REGEX.escape(Str)<a class="headerlink" href="#regex-escape-str" title="Link to this heading">¶</a></h2>
+<span id="api-bb37a3a3a301a44096d21d94adcde895"></span><h2><span class="section-number">6.93.4. </span>REGEX.escape(Str)<a class="headerlink" href="#regex-escape-str" title="Link to this heading">¶</a></h2>
 <p>`escape` escapes regex special characters in `Str`. The result can be used as an arg of REGEX.compile, or can be embedded in a regex pattern.</p>
 <p>Precondition:</p>
 <p>• `Str` must be a str.</p>
@@ -331,11 +331,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-regex-MATCH.html"><span class="section-number">6.85. </span>kink/regex/MATCH</a>
+        «&#160;&#160;<a href="kink-regex-MATCH.html"><span class="section-number">6.92. </span>kink/regex/MATCH</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">コンテンツ</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-repl-REPL.html"><span class="section-number">6.87. </span>kink/repl/REPL</a>&#160;&#160;»
+        <a href="kink-repl-REPL.html"><span class="section-number">6.94. </span>kink/repl/REPL</a>&#160;&#160;»
         </p>
 
       </div>

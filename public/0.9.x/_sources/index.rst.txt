@@ -22,7 +22,7 @@ Kink |release|
 .. rubric:: External Links
 
 * `Project Hosting <https://sourceforge.net/projects/kink-lang/>`_
-* `Documentation <https://doc.kink-lang.org/>`_
+* `Documentation <https://docs.kink-lang.org/>`_
 * `Maven Central <https://mvnrepository.com/artifact/org.kink-lang/kink>`_
 
 .. vim: et sw=2 sts=2

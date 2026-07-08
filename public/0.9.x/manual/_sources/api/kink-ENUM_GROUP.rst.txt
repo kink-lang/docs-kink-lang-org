@@ -41,9 +41,9 @@ Enum\_group\.new\_member\(Name\)
 
 The result enum value provides the following methods\:
 
-\• M\.op\_eq\(Arg\)\: returns whether \`M\` and \`Arg\` are the same enum value\.   \`Arg\` must be a member of the same enum group as one of \`M\`\.
+\• M\.op\_eq\(Arg\)\: returns whether \`M\` and \`Arg\` are the same enum value\. \`Arg\` must be a member of the same enum group as one of \`M\`\.
 
-\• M\.repr\: returns a str like in the format of \'\{group name\}\.\{enum name\}\'\,   like \'PROTOCOL\_FAMILY\.ipv6\'\.
+\• M\.repr\: returns a str like in the format of \'\{group name\}\.\{enum name\}\'\, like \'PROTOCOL\_FAMILY\.ipv6\'\.
 
 .. rubric:: Precondition
 

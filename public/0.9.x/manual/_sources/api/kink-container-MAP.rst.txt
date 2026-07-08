@@ -11,9 +11,28 @@ kink\/container\/MAP
 type map
 ========
 
-\`map\` is an abstract type of key\-value containers\. Keys must be unique in a \`map\`\, in the equivalence relation defined by the implementation\.
+\`map\` is an abstract type of key\-value containers\.
 
-\`ordered\_map\` is a subtype of \`map\` which supports total ordering of keys\. See kink\/container\/ORDERED\_MAP\.
+Keys must be unique in a \`map\`\, in an equivalence relation among keys\.
+
+.. rubric:: Equivalence relation of keys
+
+The equivalence relation of keys\, \`equivalent\-to\`\, must suffice the following conditions for all X\, Y\, and Z in the domain of keys\.
+
+\• reflexive\: X equivalent\-to X
+
+\• symmetric\: \(if X equivalent\-to Y then Y equivalent\-to X\) and \(if not \(X equivalent\-to Y\) then not \(Y equivalent\-to X\)\)
+
+\• transitive\: if X equivalent\-to Y and Y equivalent\-to Z then X equivalent\-to Z
+
+.. _api-a676739d14b0759fa76f3887cb74a6c7:
+
+Map\.eq
+-------
+
+\`eq\` returns the function of the equivalence relation of keys of \`Map\`\.
+
+The result function\, \$equivalent\_to\?\, is a function which takes two args \`X\` and \`Y\`\. \`equivalent\_to\?\(X Y\)\` returns the bool value of \`X equivalent\-to Y\`\, where \`equivalent\-to\` is the equivalence relation of keys of \`Map\`\.
 
 .. _api-e5ea465da899b1f60c757a0130e60bef:
 
@@ -243,4 +262,21 @@ MAP\.is\?\(Val\)
 ================
 
 \`is\?\` returns whether \`Val\` is a \`map\`\.
+
+.. _api-e24ee26e9bba6185a46ec8edc751c4b4:
+
+MAP\.mixin
+==========
+
+\`mixin\` returns a mixin trait which provides default implementations of the following \`map\` methods\.
+
+\• get
+
+\• have\_key\?
+
+\• any\?
+
+\• key\_iter
+
+\• op\_eq \/ \`\=\=\` operator
 

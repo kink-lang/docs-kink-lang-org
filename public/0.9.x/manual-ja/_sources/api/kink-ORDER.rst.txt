@@ -1,0 +1,94 @@
+===========
+kink\/ORDER
+===========
+
+Features of total order relations backed by \`\<\=\` operator\, or \`op\_le\` methods\.
+
+.. rubric:: \<\= operator
+
+Implementations of \`\<\=\` operator should be a total order which satisfies the following for all X\, Y\, and Z in the domain of the operands\.
+
+\• reflexive\: X \<\= X
+
+\• transitive\: if X \<\= Y \&\& Y \<\= Z then X \<\= Z
+
+\• antisymmetric\: if X \<\= Y \&\& Y \<\= X then X \=\= Y
+
+\• strongly connected\: X \<\= Y \|\| Y \<\= X
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-fcc9fca6e3b37794a6881df72d3db7f5:
+
+ORDER\.by\(\$extract\_key\)
+===========================
+
+\`by\` returns a function which orders two args by the extracted keys\, that is \`\{\(\:X \:Y\) extract\_key\(X\) \<\= extract\_key\(Y\) \}\`\.
+
+.. rubric:: Precondition
+
+\$extract\_key must be a function which takes one arg\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ORDER.require_from('kink/')
+    :TREE_SET.require_from('kink/container/')
+        
+    :Set <- TREE_SET.new{(:C)
+      C.order(ORDER.by{(:Str) Str.ascii_downcase })
+    }
+    Set.push('foo')
+    Set.push('bar')
+        
+    stdout.print_line(Set.have?('foo').repr)  # => true
+    stdout.print_line(Set.have?('FOO').repr)  # => true
+    stdout.print_line(Set.have?('hoge').repr) # => false
+
+.. _api-7dffa4680594fc3d7228a0d21e96d2e3:
+
+ORDER\.min\(X Y\)
+=================
+
+\`min\` returns X if X \<\= Y\, otherwise Y\.
+
+.. rubric:: Precondition
+
+\`\<\=\` operator must be defined for \`X\` and \`Y\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ORDER.require_from('kink/')
+        
+    stdout.print_line(ORDER.min(10 20).repr)  # => 10
+        
+    :Min <- [31 41 59 26 53].reduce(ORDER$min)
+    stdout.print_line(Min.repr) # => 26
+
+.. _api-a54bcf33df35cfd3da10f913ed55573b:
+
+ORDER\.max\(X Y\)
+=================
+
+\`max\` returns X if X \>\= Y\, otherwise Y\.
+
+.. rubric:: Precondition
+
+\`\<\=\` operator must be defined for \`X\` and \`Y\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :ORDER.require_from('kink/')
+        
+    stdout.print_line(ORDER.max(10 20).repr)  # => 20
+        
+    :Max <- [31 41 59 26 53].reduce(ORDER$max)
+    stdout.print_line(Max.repr) # => 59
+

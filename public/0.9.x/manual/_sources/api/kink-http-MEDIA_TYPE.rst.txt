@@ -1,0 +1,196 @@
+=======================
+kink\/http\/MEDIA\_TYPE
+=======================
+
+.. contents::
+    :local:
+    :backlinks: none
+
+.. _api-2ff9cad3aa4a71dfd3a9e63a5df6f6f1:
+
+type media\_type
+================
+
+\`media\_type\` is a media type of data\.
+
+\`media\_type\` can represent the following metadata\.
+
+\• \`media\-type\` value of Content\-Type header field of an HTTP request\/response \[RFC 9110 \- 8\.3\.1\]\.
+
+\• \`media\-range\` value of Accept header field of an HTTP request\, including \`q\` parameter \[RFC 9110 \- 12\.5\.1\]\.
+
+\• Content\-Type header field value of a part of a multipart entity \[RFC 2046 \- 5\.1\]\.
+
+.. _api-d9e8f43857a5329eb4275b5034f37e60:
+
+Mt\.type
+--------
+
+\`type\` method returns the \`type\` part of the media type as a \`str\`\.
+
+The result \`str\` is a “token” defined in \[RFC 9110 \- 5\.6\.2\]\.
+
+.. _api-93f604b7907dc0103bafcaea9c2acb25:
+
+Mt\.subtype
+-----------
+
+\`subtype\` method returns the \`subtype\` part of the media type as a \`str\`\.
+
+The result \`str\` is a “token” defined in \[RFC 9110 \- 5\.6\.2\]\.
+
+.. _api-c42d27f2ca7347125029e3e8356f7665:
+
+Mt\.params
+----------
+
+\`params\` returns a \`map\` from the parameter names to the corresponding parameter values\.
+
+The keys of the \`map\` are case\-insensitive\, as defined in \[RFC 9110 \- 5\.6\.6\]\.
+
+.. _api-0f14159309e34d70f02a05c8852445e5:
+
+Mt\.charset
+-----------
+
+\`charset\` method returns the \`charset\` of the media type\.
+
+If the \`Mt\` has “charset” parameter\, and the value is valid as a charset name\, \`charset\` method returns the \`charset\` value for the name\.
+
+If \`Mt\` does not have “charset” parameter\, or the value is not valid as a charset name\, \`charset\` method returns UTF\-8\.
+
+.. rubric:: The default charset
+
+Falling back to UTF\-8 is not a standardized way\. If it is not what you want\, write custom code\.
+
+\• \[RFC 2046 \- 4\.1\.2\] \(MIME part 2\) specifies the default charset is US\-ASCII\, which is a subset of UTF\-8\.
+
+\• \[RFC 9110 \- 8\.3\.2\] \(HTTP Semantics\) does not specify any default charset\.
+
+\• \[RFC 7231 \- Appendix B\] \(obsoleted\; HTTP 1\.1\) says the default charset is “whatever the media type definition says”\.
+
+.. _api-c703ba3ca327183bb6a7c60def8128a4:
+
+Mt1 \=\= Mt2
+------------
+
+\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`Mt1\` and \`Mt2\` have the equal type\, the equal subtype\, and the equal parameters\.
+
+.. rubric:: Precondition
+
+\`Mt2\` must be a \`media\_type\`\.
+
+.. _api-801bd3aee7b2f6a085a8231f8c660c74:
+
+Mt\.show\(\.\.\.\[\$config\=\{\}\]\)
+------------------------------------
+
+\`show\` returns the \`str\` representation of the media type which can be embedded in header fields\.
+
+\$config is ignored\, since the format of the result is fixed\.
+
+For the generic contract of \.show methods\, see \`\*\.show\(\.\.\.\[\$config\]\)\` in kink\/STR\.
+
+.. rubric:: Media type parameters
+
+Parameter names are output in lower case\, like \`charset\` or \`q\`\.
+
+If the media type has parameter \`q\`\, it always appears last in the result\, in accordance with Accept\/Accept\-\* headers \[RFC 9110 \- 12\.5\]\.
+
+Parameter values are quoted only when they contain backslash \`\\\` or double quotation \`\"\`\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :MEDIA_TYPE.require_from('kink/http/')
+        
+    :Mt1 <- MEDIA_TYPE.new('application' 'octet-stream').show
+    stdout.print_line(Mt1.show)
+    # => application/octet-stream
+        
+    :Mt2 <- MEDIA_TYPE.new('text' 'plain'){(:C)
+      C.param('CHARSET' 'UTF-8')
+      C.param('x_newline' 'crlf')
+      C.param('q' '0.4')
+    }
+    stdout.print_line(Mt2.show)
+    # => text/plain; charset=UTF-8; x_newline=crlf; q=0.4
+        
+    :Mt3 <- MEDIA_TYPE.new('multipart' 'form-data'){(:C)
+      C.param('boundary' 'abcd--\--wxyz')
+    }
+    stdout.print_line(Mt3.show)
+    # => multipart/form-data; boundary="abcd--\\--wxyz"
+
+.. _api-58538846a48dd11e285fa40721fbcbbb:
+
+MEDIA\_TYPE\.new\(Type Subtype \.\.\.\[\$config\=\{\}\]\)
+=========================================================
+
+\`new\` returns a new \`media\_type\`\.
+
+Config method\:
+
+\• C\.param\(Name Val\)\: can be called multiple times\.
+
+\`Type\` will be the \`type\` part\, and \`Subtype\` will be the \`subtype\` part of the media type\.
+
+\`Name\` and \`Val\` will be the name and the value of each media type parameter\.
+
+.. rubric:: Preconditions
+
+\`Type\` must be a \`str\` of a “token” defined in \[RFC 9110 \- 5\.6\.2\]\.
+
+\`Subtype\` must be a \`str\` of a “token” defined in \[RFC 9110 \- 5\.6\.2\]\.
+
+\`Name\` must be a \`str\` of a “token” defined in \[RFC 9110 \- 5\.6\.2\]\.
+
+\`Val\` must be a \`str\` of code points U\+0009 and U\+0020\-U\+00ff\. This assumes the content of a “quoted\-string” of \[RFC 9110 \- 5\.6\.4\] is decoded by ISO\-8859\-1 charset\.
+
+.. _api-ea144b6b2747d6747474f590da14a8e5:
+
+MEDIA\_TYPE\.parse\(Str \.\.\.\[\$config\=\{\}\]\)
+==================================================
+
+\`parse\` parses \`Str\` as a \`media\_type\` based on the syntax of “media\-type” defined in \[RFC 9110 \- 8\.3\.1\]\.
+
+Config methods\:
+
+\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+
+\• C\.on\_error\(\$error\)\: default \= a function which raises an exception
+
+If \`Str\` is successfully parsed\, \`parse\` tail\-calls \$success with a \`media\_type\`\.
+
+If \`Str\` cannot be parsed\, \`parse\` tail\-calls \$error with no arg\.
+
+.. rubric:: Handling of “obs\-text”
+
+Code points U\+0080\-U\+00ff are permitted as parameter values when double\-quoted\. It assumes that “obs\-text” bytes defined in \[RFC 9110 \- 5\.5\] are decoded by ISO\-8859\-1 charset\.
+
+.. rubric:: Preconditions
+
+\`Str\` must be a \`str\`\.
+
+\$success must be a function which takes a \`media\_type\`\.
+
+\$error must be a thunk\.
+
+.. rubric:: Example
+
+.. code:: kink
+
+    :MEDIA_TYPE.require_from('kink/http/')
+        
+    :Mt <- MEDIA_TYPE.parse('text/html; charset=UTF-8')
+    stdout.print_line(Mt.repr)
+    # => (media_type type="text" subtype="html" params=(flat_map "charset"=>"UTF-8"))
+
+.. _api-eb3952f59650cc0efb265612087598de:
+
+MEDIA\_TYPE\.is\?\(Val\)
+========================
+
+\`is\?\` returns whether \`Val\` is a \`media\_type\`\.
+

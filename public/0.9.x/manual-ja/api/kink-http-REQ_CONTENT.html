@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6.53. kink/http/REQ_CONTENT &#8212; Kink 0.9.6-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="6.54. kink/http/RESP" href="kink-http-RESP.html" />
+    <link rel="prev" title="6.52. kink/http/REQ" href="kink-http-REQ.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.53. kink/http/REQ_CONTENT</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-http-REQ.html"><span class="section-number">6.52. </span>kink/http/REQ</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-http-RESP.html"><span class="section-number">6.54. </span>kink/http/RESP</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="kink-http-req-content">
+<h1><span class="section-number">6.53. </span>kink/http/REQ_CONTENT<a class="headerlink" href="#kink-http-req-content" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#type-req-content" id="id2">req_content型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#content-input" id="id3">Content.input</a></p></li>
+<li><p><a class="reference internal" href="#content-have-media-type" id="id4">Content.have_media_type?</a></p></li>
+<li><p><a class="reference internal" href="#content-media-type" id="id5">Content.media_type</a></p></li>
+<li><p><a class="reference internal" href="#content-have-bin" id="id6">Content.have_bin?</a></p></li>
+<li><p><a class="reference internal" href="#content-bin" id="id7">Content.bin</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#req-content-from-bin-bin-config" id="id8">REQ_CONTENT.from_bin(Bin ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#req-content-from-input-make-input-config" id="id9">REQ_CONTENT.from_input($make_input ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#req-content-from-output-generator-config" id="id10">REQ_CONTENT.from_output($generator ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#req-content-is-val" id="id11">REQ_CONTENT.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#req-content-empty" id="id12">REQ_CONTENT.empty</a></p></li>
+</ul>
+</nav>
+<section id="type-req-content">
+<span id="api-2a8fdfa9548077b2718a09dfb1b1fbfd"></span><h2><span class="section-number">6.53.1. </span>req_content型<a class="headerlink" href="#type-req-content" title="Link to this heading">¶</a></h2>
+<p>req_contentは、HTTPリクエスト本体の抽象型である。</p>
+<p>ある値は、次のメソッドを実装しているとき、またそのときに限って、req_content値である。</p>
+<section id="content-input">
+<span id="api-9a44b3b09cc51a4798f5dfabb8c20014"></span><h3><span class="section-number">6.53.1.1. </span>Content.input<a class="headerlink" href="#content-input" title="Link to this heading">¶</a></h3>
+<p>inputメソッドは、HTTPリクエスト本体のバイト列を生成する新しいinput値を戻す。</p>
+<p>inputは、リクエストがリトライされるごとに、またリダイレクトされるごとに呼び出される。</p>
+</section>
+<section id="content-have-media-type">
+<span id="api-a57a760e6a11e26a24a02399adf683bc"></span><h3><span class="section-number">6.53.1.2. </span>Content.have_media_type?<a class="headerlink" href="#content-have-media-type" title="Link to this heading">¶</a></h3>
+<p>have_media_type?は、Contentがmedia_type値を持つかどうかを戻す。</p>
+</section>
+<section id="content-media-type">
+<span id="api-28a7bfd8aaed0143817ca1bd3845f249"></span><h3><span class="section-number">6.53.1.3. </span>Content.media_type<a class="headerlink" href="#content-media-type" title="Link to this heading">¶</a></h3>
+<p>media_typeは、Contentのmedia_type値を戻す。Contentがmedia_type値を持っていない場合、結果は未定義である。</p>
+<p>media_type値は、リクエストのContent-Typeヘッダの値が明示的に指定されていない場合、ヘッダの値として使われる。</p>
+<p class="rubric">事前条件</p>
+<p>`Content.have_media_type?` はtrueでなければならない。</p>
+</section>
+<section id="content-have-bin">
+<span id="api-36226f7eae91ccd0dab02d05233cd8d6"></span><h3><span class="section-number">6.53.1.4. </span>Content.have_bin?<a class="headerlink" href="#content-have-bin" title="Link to this heading">¶</a></h3>
+<p>have_bin?は、Contentが固定されたbin値を持つかどうかを戻す。</p>
+</section>
+<section id="content-bin">
+<span id="api-fcdb0a69fd45aa14c97b8b4ece4633f0"></span><h3><span class="section-number">6.53.1.5. </span>Content.bin<a class="headerlink" href="#content-bin" title="Link to this heading">¶</a></h3>
+<p>binは、Contentの固定されたbin値を戻す。Contentが固定されたbin値を持っていない場合、結果は未定義である。</p>
+<p class="rubric">事前条件</p>
+<p>`Content.have_bin?` はtrueでなければならない。</p>
+</section>
+</section>
+<section id="req-content-from-bin-bin-config">
+<span id="api-ca23085b042b4dfa356fa7460e32b3ad"></span><h2><span class="section-number">6.53.2. </span>REQ_CONTENT.from_bin(Bin ...[$config={}])<a class="headerlink" href="#req-content-from-bin-bin-config" title="Link to this heading">¶</a></h2>
+<p>from_binは、固定されたBinのreq_contentを作る。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.media_type(Media_type)</p>
+<p>C.media_typeが呼ばれた場合、結果のreq_contentのtypeとしてMedia_typeが使われる。</p>
+<p class="rubric">事前条件</p>
+<p>Binはbin値でなければならない。</p>
+<p>Media_typeはmedia_type値でなければならない。</p>
+</section>
+<section id="req-content-from-input-make-input-config">
+<span id="api-54b2ccd216844828df53265725165ac5"></span><h2><span class="section-number">6.53.3. </span>REQ_CONTENT.from_input($make_input ...[$config={}])<a class="headerlink" href="#req-content-from-input-make-input-config" title="Link to this heading">¶</a></h2>
+<p>from_inputは、$make_inputで作られたinputを生成するreq_contentを戻す。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.media_type(Media_type)</p>
+<p>C.media_typeが呼ばれた場合、結果のreq_contentのtypeとしてMedia_typeが使われる。</p>
+<p class="rubric">事前条件</p>
+<p>$make_inputは、inputを戻すサンクでなければならない。</p>
+<p>Media_typeはmedia_type値でなければならない。</p>
+</section>
+<section id="req-content-from-output-generator-config">
+<span id="api-5c5b35b398e14562d0caeabe59493093"></span><h2><span class="section-number">6.53.4. </span>REQ_CONTENT.from_output($generator ...[$config={}])<a class="headerlink" href="#req-content-from-output-generator-config" title="Link to this heading">¶</a></h2>
+<p>from_outputは、バイト列が、$generatorの呼び出し中で、outputに書き込まれることで与えられるようなinputを提供するreq_contentを戻す。</p>
+<p>コンフィグメソッド:</p>
+<p>• C.media_type(Media_type)</p>
+<p>C.media_typeが呼ばれた場合、結果のreq_contentのtypeとしてMedia_typeが使われる。</p>
+<p>inputは、GENERATOR_INPUT.newで作られる。</p>
+<p class="rubric">事前条件</p>
+<p>$generatorは、outputを取る関数でなければならない。</p>
+</section>
+<section id="req-content-is-val">
+<span id="api-aa5c0213bad04498c48ec088c8548a22"></span><h2><span class="section-number">6.53.5. </span>REQ_CONTENT.is?(Val)<a class="headerlink" href="#req-content-is-val" title="Link to this heading">¶</a></h2>
+<p>is?は、Valがreq_contentであるかどうかを戻す。</p>
+</section>
+<section id="req-content-empty">
+<span id="api-414ac07b91e0c1509516ab6741c2bfad"></span><h2><span class="section-number">6.53.6. </span>REQ_CONTENT.empty<a class="headerlink" href="#req-content-empty" title="Link to this heading">¶</a></h2>
+<p>emptyは、空のbinを持って、media_typeを持たないreq_contentを戻す。</p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="kink-http-REQ.html"><span class="section-number">6.52. </span>kink/http/REQ</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">コンテンツ</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="kink-http-RESP.html"><span class="section-number">6.54. </span>kink/http/RESP</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

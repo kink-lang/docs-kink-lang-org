@@ -2,21 +2,31 @@
 kink\/doc\/DOC\_PARSE\_TOOL
 ===========================
 
-Launcheable mod to parse kink doc and generate JSON\.
+Launcheable module to parse a kindoc document from program files\, and generate JSON data\.
 
-Usage\: kink \[Kink\_options\]\.\.\. mod\:kink\/doc\/DOC\_PARSE\_TOOL \[Mod\_options\]\.\.\. Src\_dir\_path\.\.\.
+.. rubric:: Usage
 
-The command finds Kink source files of exposed mods from Src\_dir\_paths\. It parses kink doc from the source files\, then outputs JSON of the kink doc to the standard output\, or the output file if \`\-\-output\` is specified\.
+.. code:: kink
 
-Mod\_options\:
+    kink [Kink_options]... mod:kink/doc/DOC_PARSE_TOOL [Mod_options]... Module_base_paths...
 
-\• \-\-title \{Title\} \: gives the title of the kink doc\. If not given\, the default title is used\.
+The command finds Kink program files of public modules under Module\_base\_paths\, and it parses a kinkdoc document from the program files\. Then it outputs JSON data of the kinkdoc document\.
 
-\• \-\-overview \{Overview\_file\_path\} \: gives the file path of the overview file\,   which contains text blocks of the top level of the kink doc\.   If not given\, no blocks are placed in the top level of the kink doc\.
+By default\, the command writes the JSON data to the standard output\. If \`\-\-output\` option is specified\, the command writes the JSON data to the specified file\.
 
-\• \-\-output \{Output\_file\_path\} \: gives the file path of the output\.
+For detailed usage and information of the toolchain\, refer to “Kinkdoc\: API Documentation system” chapter of the manual\.
 
-If the command generates JSON successfully\, it exits with 0 as the exit status\.
+.. rubric:: Mod\_options
+
+\• \-\-title \{Title\} \: gives the title of the kinkdoc document\.
+
+\• \-\-overview \{Overview\_file\_path\} \: gives the file path of a program file which contains kinkdoc comment chunks of the overview text\.
+
+\• \-\-output \{Output\_file\_path\} \: gives the file path of the output JSON data\.
+
+.. rubric:: Exit statuses
+
+If the command succeeds\, it exits with 0 as the exit status\.
 
 If the command fails\, it exits with non\-zero exit status\.
 
@@ -29,5 +39,5 @@ If the command fails\, it exits with non\-zero exit status\.
 DOC\_PARSE\_TOOL\.main\(Argv\)
 ==============================
 
-main is the launcher fun of the mod\.
+\`main\` is the launcher function of the module\.
 

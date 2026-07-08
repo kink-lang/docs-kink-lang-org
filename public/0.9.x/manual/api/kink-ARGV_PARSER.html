@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.1. kink/ARGV_PARSER &#8212; Kink 0.9.5-beta</title>
+    <title>6.1. kink/ARGV_PARSER &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/documentation_options.js?v=6ce99075"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -18,7 +18,7 @@
     <link rel="prev" title="6. Builtin library API" href="index.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
+          <span>Kink 0.9.6-beta</span></a></h1>
         <h2 class="heading"><span>6.1. kink/ARGV_PARSER</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -37,130 +37,179 @@
         
   <section id="kink-argv-parser">
 <h1><span class="section-number">6.1. </span>kink/ARGV_PARSER<a class="headerlink" href="#kink-argv-parser" title="Link to this heading">¶</a></h1>
-<p>Parses command line arguments.</p>
-<p class="rubric">Usage example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># voxxx.kn</span>
+<p>Parses command line arguments, org argv, into option switches, option arguments, and non-option elements. Parsing is done in the style of glibc getopt_long.</p>
+<p class="rubric">Example</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># filename: voxxx.kn</span>
 
 <span class="nv">:ARGV_PARSER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:PROCESS</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">:parse_argv</span> &lt;- {(<span class="nv">:Argv</span>)
-  <span class="nv">:Opt</span> = <span class="n">new_val</span>(<span class="s1">&#39;Loglevel&#39;</span> <span class="s1">&#39;ERROR&#39;</span>)
+  <span class="nv">:Depot</span> = <span class="n">new_val</span>(<span class="s1">&#39;Loglevel&#39;</span> <span class="s1">&#39;ERROR&#39;</span>)
   <span class="nv">:Non_opts</span> = <span class="nv">ARGV_PARSER</span>.<span class="n">parse</span>(<span class="nv">Argv</span>){(<span class="nv">:P</span>)
     <span class="nv">P</span>.<span class="n">no_arg</span>([<span class="s1">&#39;-h&#39;</span> <span class="s1">&#39;--help&#39;</span>]){
       <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;USAGE: kink voxxx.kn [Options...] [--] [Args...]&#39;</span>)
       <span class="nv">PROCESS</span>.<span class="n">exit</span>(<span class="m">0</span>)
     }
     <span class="nv">P</span>.<span class="n">req_arg</span>([<span class="s1">&#39;-L&#39;</span> <span class="s1">&#39;--loglevel&#39;</span>]){(<span class="nv">:Arg</span>)
-      <span class="nv">Opt:Loglevel</span> &lt;- <span class="nv">Arg</span>
+      <span class="nv">Depot:Loglevel</span> &lt;- <span class="nv">Arg</span>
     }
     <span class="nv">P</span>.<span class="n">on_error</span>{(<span class="nv">:Msg</span>)
       <span class="n">stderr</span>.<span class="n">print_line</span>(<span class="s1">&#39;voxxx: {}&#39;</span>.<span class="n">format</span>(<span class="nv">Msg</span>))
-      <span class="nv">PROCESS</span>.<span class="n">exit</span>(<span class="m">1</span>)
+      <span class="nv">PROCESS</span>.<span class="n">exit</span>(<span class="m">64</span>)
     }
   }
-  [<span class="nv">Opt</span>.<span class="nv">Loglevel</span> <span class="nv">Non_opts</span>]
+  [<span class="nv">Depot</span>.<span class="nv">Loglevel</span> <span class="nv">Non_opts</span>]
 }
 
 <span class="nv">:main</span> &lt;- {(<span class="nv">:Argv</span>)
   [<span class="nv">:Loglevel</span> <span class="nv">:Non_opts</span>] = <span class="n">parse_argv</span>(<span class="nv">Argv</span>)
-  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;loglevel={} non-opts={}&#39;</span>.<span class="n">format</span>(<span class="nv">Loglevel</span> <span class="nv">Non_opts</span>.<span class="n">repr</span>))
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;loglevel={} non-option-elements={}&#39;</span>.<span class="n">format</span>(<span class="nv">Loglevel</span> <span class="nv">Non_opts</span>.<span class="n">repr</span>))
 }
 
 <span class="c1"># $ kink voxxx.kn --log INFO foo bar</span>
-<span class="c1"># loglevel=INFO non-opts=[&quot;foo&quot; &quot;bar&quot;]</span>
+<span class="c1"># loglevel=INFO non-option-elements=[&quot;foo&quot; &quot;bar&quot;]</span>
 <span class="c1">#</span>
 <span class="c1"># $ kink voxxx.kn --LDEBUG foo bar</span>
-<span class="c1"># loglevel=DEBUG non-opts=[&quot;foo&quot; &quot;bar&quot;]</span>
+<span class="c1"># loglevel=DEBUG non-option-elements=[&quot;foo&quot; &quot;bar&quot;]</span>
 <span class="c1">#</span>
 <span class="c1"># $ kink voxxx.kn foo bar</span>
-<span class="c1"># loglevel=ERROR non-opts=[&quot;foo&quot; &quot;bar&quot;]</span>
+<span class="c1"># loglevel=ERROR non-option-elements=[&quot;foo&quot; &quot;bar&quot;]</span>
 <span class="c1">#</span>
 <span class="c1"># $ kink voxxx.kn --help</span>
 <span class="c1"># USAGE: kink voxxx.kn [Options...] [--] [Args...]</span>
 </pre></div>
 </div>
-<p>Parsing of the options stops when all the words are read, or the special delimiter word &quot;--&quot; is read, or a non-option word is read (only in the strict_order mode).</p>
-<p>Words which are not option switches and option arguments are passed to the success handler as a vec, the default implementation of which returns the vec itself.</p>
-<p>There are two different shapes of option switches, short and long, and two different arity of option switches, req_arg, opt_arg, and no_arg. Therefore, there are 2x3 = 6 types of option switches.</p>
-<p class="rubric">Short and long option switches</p>
-<p>A short option switch consist of a leading character &quot;-&quot; and a following “switch character”. The switch character cannot be “-”. Example short option switches: &quot;-v&quot; and &quot;-?&quot;.</p>
-<p>A long option switch consist of a leading &quot;--&quot; and one or more characters. Example long option switches: &quot;--version&quot; and &quot;--no-timestamp&quot;. A long option switch can be abbreviated to its prefix if not ambiguous. For example, “--version” can be abbreviated to “--ver” if “--verbose” is not defined.</p>
-<p class="rubric">Arity</p>
-<p>A req_arg switch takes one argument.</p>
-<p>In the short shape, the argument for a req_arg switch can be passed as following characters in the word, or the next distinct word. For example, if “-m” is defined as a req_arg switch, both “-mITER” and “-m ITER” mean an option switch “-m” and its argument “ITER”.</p>
-<p>In the long shape, the argument for a req_arg switch can be passed after “=” in the word, or the next distinct word. For example, if “--module” is defined as a req_arg switch, both “--module=ITER” and “--module ITER” means an option switch “--module” and its argument “ITER”.</p>
-<p>An opt_arg switch takes zero or one argument.</p>
-<p>In the short shape, the argument for a opt_arg switch can be passed as following characters in the word,. For example, if “-L” is defined as an opt_arg switch, “-LDEBUG” means an option switch “-L” and its argument “DEBUG”.</p>
-<p>In the long shape, the argument for an opt_arg switch can be passed after “=” in the word. For example, if “--loglevel” is defined as a req_arg switch, “--loglevel=DEBUG” means an option switch “--loglevel” and its argument “DEBUG”.</p>
-<p>A no_arg switch does not take an argument.</p>
-<p>In the short shape, when there is one or more characters after the switch character in the word, the next character is taken as another option switch character. For example, if no_arg option switches &quot;-x&quot; and &quot;-z&quot;, and a req_arg switch “f” are defined, and a word &quot;-xzfarchive.tar.gz&quot; is passed as a word, it is equivalent to distinct words &quot;-x&quot;, &quot;-z&quot;, “-f” and “archive.tar.gz”.</p>
-<p class="rubric">Compatibility</p>
-<p>ARGV_PARSER supports almost equivalent functionality to glibc getopt_long function, with the following differences.</p>
-<p>1. getopt_long assumes argv[0] is the name of the program,    but ARGV_PARSER handles the elements after the program name.</p>
-<p>2. ARGV_PARSER does not support an option to equate &quot;-W foo&quot; to &quot;--foo&quot;.</p>
+<p class="rubric">Option switches</p>
+<p>There are two types of option switches:</p>
+<p>• short switch: consists of leading `-` and one other code point, excluding `--`. Ex. `-h`</p>
+<p>• long switch: consists of leading `--` and one or more code points. The switch must not include `=`. Ex. `--help`</p>
+<p>Each option switch can be grouped to three categories depending on how it takes an argument.</p>
+<p>• req_arg: takes one option argument</p>
+<p>• opt_arg: takes zero or one option argument</p>
+<p>• no_arg: takes no option argument</p>
+<p>An argv element consisting of two hyphens `--` is not an option switch, but can be used as a separator between options and non-option elements.</p>
+<p class="rubric">Short req_arg option switch</p>
+<p>Assume a short req_arg switch `-p` is defined. This option switch can be used in the following ways.</p>
+<p>• -pkink/ → option argument = `kink/`</p>
+<p>• -p kink/ → option argument = `kink/`</p>
+<p class="rubric">Long req_arg option switch</p>
+<p>Assuem a long req_arg switch `--prefix` is defined. This option switch can be used in the following ways.</p>
+<p>• --prefix=kink/ → option argument = `kink/`</p>
+<p>• --prefix kink/ → option argument = `kink/`</p>
+<p>The option switch can be abbreviated like `--pat`, `--pa`, or `--p`, if it is not ambiguous. See the later section for details.</p>
+<p class="rubric">Short opt_arg option switch</p>
+<p>Assume a short opt_arg switch `-b` is defined. This option switch can be used in the following ways.</p>
+<p>• -b4096 → option argument = `4096`</p>
+<p>• -b → option argument = an empty string ``</p>
+<p class="rubric">Long opt_arg option switch</p>
+<p>Assume a long opt_arg switch `--buffer` is defined. This option switch can be used in the following ways.</p>
+<p>• --buffer=4096 → option argument = `4096`</p>
+<p>• --buffer → option argument = an empty string ``</p>
+<p class="rubric">Short no_arg option switch</p>
+<p>Assume a short no_arg switch `-h` is defined. This option switch can be used in the following way.</p>
+<p>• -h</p>
+<p>When there is one or more code points after the option switch, the following code points are handled as separate options. For example, if no_arg option switches `-x` and `-z` are defined, and a req_arg switch `-f` is defined, argv `-xzf./archive.tgz` is parsed as follows:</p>
+<p>• -x with no option argument</p>
+<p>• -z with no option argument</p>
+<p>• -f with option argument `./archive.tgz`</p>
+<p class="rubric">Long no_arg option switch</p>
+<p>Assume a long no_arg switch `--help` is defined. This option switch can be used in the following way.</p>
+<p>• --help</p>
+<p class="rubric">Abbreviation of long option switches</p>
+<p>A long option switch can be abbreviated to its prefix when it is not ambiguous. For example, if long options switches `--verbose` and `--version` are defined, they can be abbreviated as follows:</p>
+<p>• --verbose: --verbos, --verbo, --verb</p>
+<p>• --version: --versio, --versi, --vers</p>
+<p>The exact match always takes precedence over abbreviation. For example, if long option switches `--time` and `--time-style` are defined, argv `--time` is parsed as the option switch `--time`, rather than abbreviation of `--time-style`.</p>
+<p class="rubric">Non-option elements</p>
+<p>Argv elements which are neither option switches, option arguments, nor separator `--` are non-option elements.</p>
+<p>Two hyphens `--` can be used to separate between options and non-option elements. For example, if no_arg switches `-x`, `-y`, and `-z` are defined, argv `-x -y -- -z a b c` is parsed as follows:</p>
+<p>• options: -x, -y</p>
+<p>• non-option elements: -z, a, b, c</p>
+<p>If strict_order mode is not specified, options can appear after non-option elements. For example, if no_arg switches `-x`, `-y`, and `-z` are defined, argv `-x a b c -y -z` is parsed as follows:</p>
+<p>• options: -x, -y, -z</p>
+<p>• non-option elements: a b c</p>
+<p>If strict_order mode is turned on, all the elements after the first non-option element are parsed as non-option elements. This corresponds to the behavior of getopt_long when POSIXLY_CORRECT is set. For example, if no_arg switches `-x`, `-y`, and `-z` are defined, argv `-x a b c -y -z` is parsed as follows:</p>
+<p>• option: -x</p>
+<p>• non-option elements: a, b, c, -y, -z</p>
+<p class="rubric">Difference from getopt_long</p>
+<p>1. getopt_long assumes argv[0] is the name of the program, while ARGV_PARSER handles the arguments after the program name.</p>
+<p>2. getopt_long has a feature to handle `-W foo` as `--foo`, while ARGV_PARSER has no such feature.</p>
 <nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#argv-parser-parse-words-config" id="id1">ARGV_PARSER.parse(Words ...[$config = {}])</a></p></li>
+<li><p><a class="reference internal" href="#argv-parser-parse-argv-config" id="id1">ARGV_PARSER.parse(Argv ...[$config={}])</a></p></li>
 <li><p><a class="reference internal" href="#type-argv-parser-config" id="id2">type argv_parser_config</a></p>
 <ul>
-<li><p><a class="reference internal" href="#c-on-success-handle-success" id="id3">C.on_success($_handle_success)</a></p></li>
-<li><p><a class="reference internal" href="#c-on-error-handle-error" id="id4">C.on_error($_handle_error)</a></p></li>
-<li><p><a class="reference internal" href="#c-strict-order" id="id5">C.strict_order</a></p></li>
-<li><p><a class="reference internal" href="#c-lenient-order" id="id6">C.lenient_order</a></p></li>
-<li><p><a class="reference internal" href="#c-no-arg-switches-action" id="id7">C.no_arg(Switches $action)</a></p></li>
-<li><p><a class="reference internal" href="#c-opt-arg-switches-action" id="id8">C.opt_arg(Switches $action)</a></p></li>
-<li><p><a class="reference internal" href="#c-req-arg-switches-action" id="id9">C.req_arg(Switches $action)</a></p></li>
+<li><p><a class="reference internal" href="#c-req-arg-switches-action" id="id3">C.req_arg(Switches $action)</a></p></li>
+<li><p><a class="reference internal" href="#c-opt-arg-switches-action" id="id4">C.opt_arg(Switches $action)</a></p></li>
+<li><p><a class="reference internal" href="#c-no-arg-switches-action" id="id5">C.no_arg(Switches $action)</a></p></li>
+<li><p><a class="reference internal" href="#c-strict-order" id="id6">C.strict_order</a></p></li>
+<li><p><a class="reference internal" href="#c-on-success-success" id="id7">C.on_success($success)</a></p></li>
+<li><p><a class="reference internal" href="#c-on-error-error" id="id8">C.on_error($error)</a></p></li>
 </ul>
 </li>
 </ul>
 </nav>
-<section id="argv-parser-parse-words-config">
-<span id="api-9475f82258282894b3f8a10189ee78c8"></span><h2><span class="section-number">6.1.1. </span>ARGV_PARSER.parse(Words ...[$config = {}])<a class="headerlink" href="#argv-parser-parse-words-config" title="Link to this heading">¶</a></h2>
-<p>Parses the Words, with configuration specified by $config.</p>
-<p>If the parsing completes without an error, the invocation of ARGV_PARSER.parse tail-calls the success handler with the non-opt words. The default action of the success handler is to simply return the non-opt words.</p>
-<p>If the parsing results in an error, the invocation of ARGV_PARSER.parse tail-calls the error handler with the error message. The default error handler is `raise`.</p>
-<p>$config must take a argv_parser_config as an argument, and configure it.</p>
+<section id="argv-parser-parse-argv-config">
+<span id="api-20d0e30dbbaaae728610db868b43648d"></span><h2><span class="section-number">6.1.1. </span>ARGV_PARSER.parse(Argv ...[$config={}])<a class="headerlink" href="#argv-parser-parse-argv-config" title="Link to this heading">¶</a></h2>
+<p>`parse` method parses `Argv` into options and non-option elements, as configured by $config.</p>
+<p>If the parsing completes without an error, `parse` tail-calls the success continuation (see C.on_success) with a `vec` of `str` values of non-option elements.</p>
+<p>If the parsing results in an error, `parse` tail-calls the error continuation (see C.on_error) with a `str` value of the error message.</p>
+<p class="rubric">Precondition</p>
+<p>`Argv` must be a `vec` of `str` values.</p>
+<p>$config must be a function which takes a `argv_parser_config`.</p>
 </section>
 <section id="type-argv-parser-config">
 <span id="api-2cae8c47c6649b93b070149bd6c0cf8d"></span><h2><span class="section-number">6.1.2. </span>type argv_parser_config<a class="headerlink" href="#type-argv-parser-config" title="Link to this heading">¶</a></h2>
-<p>Config val for ARGV_PARSER.parse.</p>
-<section id="c-on-success-handle-success">
-<span id="api-176d85aa8e744143f5f8b9e640b1a01d"></span><h3><span class="section-number">6.1.2.1. </span>C.on_success($_handle_success)<a class="headerlink" href="#c-on-success-handle-success" title="Link to this heading">¶</a></h3>
-<p>Sets $_handle_success as a success handler, which is a fun tal-called when the parsing succeeds.</p>
-<p>$_handle_success takes a vec of non-opt words. If .on_success is not called, VAL.identity is used as default.</p>
-</section>
-<section id="c-on-error-handle-error">
-<span id="api-d33b26ed22c4633033097ffa2d5ff7f1"></span><h3><span class="section-number">6.1.2.2. </span>C.on_error($_handle_error)<a class="headerlink" href="#c-on-error-handle-error" title="Link to this heading">¶</a></h3>
-<p>Sets $_handle_error as a error handler, which is a fun tail-called when the parsing causes an error.</p>
-<p>$_handle_error takes a message as an arg. If .on_error is not called, `raise` is used as default.</p>
-</section>
-<section id="c-strict-order">
-<span id="api-e39164e62f7378d5b585a97fef1e9857"></span><h3><span class="section-number">6.1.2.3. </span>C.strict_order<a class="headerlink" href="#c-strict-order" title="Link to this heading">¶</a></h3>
-<p>Uses strict_order/POSIX mode.</p>
-<p>In this mode, option switches cannot be placed after non-opt args.</p>
-</section>
-<section id="c-lenient-order">
-<span id="api-e7d6fa3d2cdfa1cd715921c8ad28e797"></span><h3><span class="section-number">6.1.2.4. </span>C.lenient_order<a class="headerlink" href="#c-lenient-order" title="Link to this heading">¶</a></h3>
-<p>Uses lenient_order/GNU mode.</p>
-<p>In this mode, option switches can be placed after non-opt args, unless the special argument “--” is used.</p>
-<p>This is the default mode, thus you don't have to call this method explicitly.</p>
-</section>
-<section id="c-no-arg-switches-action">
-<span id="api-43ae6ee9196db0ced6256f52466eaddd"></span><h3><span class="section-number">6.1.2.5. </span>C.no_arg(Switches $action)<a class="headerlink" href="#c-no-arg-switches-action" title="Link to this heading">¶</a></h3>
-<p>Adds an option which takes no argument, with the Switches.</p>
-<p>$action is called with no arg when one of the option Switches is specified.</p>
+<p>`argv_parser_config` is a config value of ARGV_PARSER.parse.</p>
+<section id="c-req-arg-switches-action">
+<span id="api-227bf9a432eef45f2333d28d16867dc0"></span><h3><span class="section-number">6.1.2.1. </span>C.req_arg(Switches $action)<a class="headerlink" href="#c-req-arg-switches-action" title="Link to this heading">¶</a></h3>
+<p>`req_arg` method defines req_arg option switches in `Switches`.</p>
+<p>When an option switch in `Switches` is parsed, $action is called with a `str` value of the corresponding option argument.</p>
+<p class="rubric">Preconditions</p>
+<p>`Switches` must be a `vec` of `str` values which are long or short option switches.</p>
+<p>`Switches` must not be empty.</p>
+<p>Option switches must be unique within an invocation of ARGV_PARSER.parse.</p>
+<p>$action must be a function which takes a `str`.</p>
 </section>
 <section id="c-opt-arg-switches-action">
-<span id="api-836c06a611d1b1376f669c40248501bc"></span><h3><span class="section-number">6.1.2.6. </span>C.opt_arg(Switches $action)<a class="headerlink" href="#c-opt-arg-switches-action" title="Link to this heading">¶</a></h3>
-<p>Adds an option which takes optional argument, with the Switches.</p>
-<p>$action is called with an empty vec [] when one of the option Switches is specified with no argument.</p>
-<p>$action is called with a singleton vec containing an argument, when one of the option Switches is specified with the argument.</p>
+<span id="api-836c06a611d1b1376f669c40248501bc"></span><h3><span class="section-number">6.1.2.2. </span>C.opt_arg(Switches $action)<a class="headerlink" href="#c-opt-arg-switches-action" title="Link to this heading">¶</a></h3>
+<p>`opt_arg` method defines opt_arg option switches in `Switches`.</p>
+<p>When an option switch in `Switches` is parsed, $action is called with a `str` value of the corresponding option argument. If the option argument is omitted, an empty `str` is passed to $action.</p>
+<p class="rubric">Preconditions</p>
+<p>`Switches` must be a `vec` of `str` values which are long or short option switches.</p>
+<p>`Switches` must not be empty.</p>
+<p>Option switches must be unique within an invocation of ARGV_PARSER.parse.</p>
+<p>$action must be a function which takes a `str`.</p>
 </section>
-<section id="c-req-arg-switches-action">
-<span id="api-227bf9a432eef45f2333d28d16867dc0"></span><h3><span class="section-number">6.1.2.7. </span>C.req_arg(Switches $action)<a class="headerlink" href="#c-req-arg-switches-action" title="Link to this heading">¶</a></h3>
-<p>Adds an option which requires an argument, with the Switches.</p>
-<p>$action is called with an argument when one of the option Switches is specified with the argument.</p>
+<section id="c-no-arg-switches-action">
+<span id="api-43ae6ee9196db0ced6256f52466eaddd"></span><h3><span class="section-number">6.1.2.3. </span>C.no_arg(Switches $action)<a class="headerlink" href="#c-no-arg-switches-action" title="Link to this heading">¶</a></h3>
+<p>`no_arg` method defines no_arg option switches in `Switches`.</p>
+<p>When an option switch in `Switches` is parsed, $action is called with no arg.</p>
+<p class="rubric">Preconditions</p>
+<p>`Switches` must be a `vec` of `str` values which are long or short option switches.</p>
+<p>`Switches` must not be empty.</p>
+<p>Option switches must be unique within an invocation of ARGV_PARSER.parse.</p>
+<p>$action must be a thunk.</p>
+</section>
+<section id="c-strict-order">
+<span id="api-e39164e62f7378d5b585a97fef1e9857"></span><h3><span class="section-number">6.1.2.4. </span>C.strict_order<a class="headerlink" href="#c-strict-order" title="Link to this heading">¶</a></h3>
+<p>`strict_order` method specifies that parsing is done in strict_order mode.</p>
+<p>This corresponds to setting POSIXLY_CORRECT to getopt_long.</p>
+</section>
+<section id="c-on-success-success">
+<span id="api-b0cbfcb6ef3684da17be394777e92ed5"></span><h3><span class="section-number">6.1.2.5. </span>C.on_success($success)<a class="headerlink" href="#c-on-success-success" title="Link to this heading">¶</a></h3>
+<p>`on_success` specifies that $success be used as the success continuation of ARGV_PARSER.parse.</p>
+<p>If `on_success` is not called, VAL.identity is used as the default.</p>
+<p class="rubric">Precondition</p>
+<p>$success must be a function which takes a `vec` of `str` values, which are non-option elements of argv.</p>
+</section>
+<section id="c-on-error-error">
+<span id="api-ce6e55d012d2d3ab8944d1cacf50e1c0"></span><h3><span class="section-number">6.1.2.6. </span>C.on_error($error)<a class="headerlink" href="#c-on-error-error" title="Link to this heading">¶</a></h3>
+<p>`on_error` specifies that $error be used as the error continuation of ARGV_PARSER.parse.</p>
+<p>If `on_error` is not called, `raise` is used as the default.</p>
+<p class="rubric">Precondition</p>
+<p>$error must be a function which takes a `str` value, which is an error message.</p>
 </section>
 </section>
 </section>

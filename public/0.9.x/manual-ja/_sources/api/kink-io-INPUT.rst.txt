@@ -13,7 +13,7 @@ Companion mod for input vals\.
 type input
 ==========
 
-\`input\` is an input port of bytes from the underlying source such as files\.
+\`input\` is an abstract type of input port of bytes\. \`input\` values must implement the following methods\.
 
 An \`input\` provides sequential forward access to the underlying source\. It does not provide random access operations such as seek\.
 

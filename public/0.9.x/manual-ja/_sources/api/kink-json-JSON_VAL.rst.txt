@@ -2,7 +2,37 @@
 kink\/json\/JSON\_VAL
 =====================
 
-Converts a JSON str to Kink data\, and vice versa\.
+JSON values are values which can be converted from or to a JSON string by kink\/json\/JSON module\.
+
+JSON values are as follows\.
+
+.. rubric:: JSON null
+
+JSON\_VAL\.null\.
+
+.. rubric:: JSON true\, false
+
+\`true\` and \`false\`\.
+
+.. rubric:: JSON numbers
+
+\`num\` values\.
+
+.. rubric:: JSON strings
+
+\`str\` values\.
+
+Use of unpaired surrogate code points are allowed\, but discouraged\.
+
+.. rubric:: JSON arrays
+
+\`vec\` values where the elements are JSON values\.
+
+.. rubric:: JSON objects
+
+\`map\` values\, where the keys are \`str\` values with the equivalence relation by \`\=\=\` operator\, and values are JSON values\.
+
+Use of unpaired surrogate code points in keys are allowed\, but discouraged\.
 
 .. contents::
     :local:
@@ -13,32 +43,52 @@ Converts a JSON str to Kink data\, and vice versa\.
 JSON\_VAL\.null
 ===============
 
-JSON\_VAL\.null returns null\, which corresponds to “null” JSON literal\.
+\`null\` returns JSON null\.
 
 .. _api-d0628f4cc08af2a926c1977e71192d94:
 
 JSON\_VAL\.null\?\(Val\)
 ========================
 
-JSON\_VAL\.null\? returns whether Val is a json\_null\.
+\`null\?\` returns whether \`Val\` is a JSON null\.
+
+.. rubric:: Precondition
+
+\`Val\` must be a JSON value\.
 
 .. _api-94d2d10d087069257a8d583addb15627:
 
 JSON\_VAL\.is\?\(Val\)
 ======================
 
-JSON\_VAL\.is\? returns whether Val is a JSON value\.
+\`is\?\` returns whether \`Val\` is a JSON value\.
 
 .. _api-dfa3aceb380f08c00c1b31e12dd5b98e:
 
 JSON\_VAL\.eq\?\(X Y\)
 ======================
 
-JSON\_VAL\.eq\? returns whether X and Y are equal json\_vals\.
+\`eq\?\` returns whether \`X\` and \`Y\` are equivalent JSON values\.
 
-Preconditions\:
+.. rubric:: Equivalence
 
-\• X must be a json\_val\.
+\`eq\?\` is an equivalence relation which satisfies reflexivity\, symmetry\, and transitivity\.
 
-\• Y must be a json\_val\.
+\• JSON\.null is equivalent to JSON\.null\.
+
+\• \`true\` is equivalent to \`true\`\.
+
+\• \`false\` is equivalent to \`false\`\.
+
+\• Two \`num\` values are equivalent when \`\=\=\` operator returns \`true\`\.
+
+\• Two \`num\` values are equivalent when \`\=\=\` operator returns \`true\`\.
+
+\• Two \`vec\` values are equivalent when they have the same number of elements\, and the elements of \`vec\` values at the same indexes are equivalent\.
+
+\• Two \`map\` values are equivalent when they have the equal set of keys under \`\=\=\` operator of \`str\`\, and the values of \`map\` values at the equal keys are equivalent\.
+
+.. rubric:: Preconditions
+
+\`X\` and \`Y\` must be JSON values\.
 

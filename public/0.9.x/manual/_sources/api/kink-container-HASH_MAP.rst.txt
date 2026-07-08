@@ -19,29 +19,23 @@ HASH\_MAP\.new\(\$hash \.\.\.\[\$config\=\{\}\]\)
 
 Config method\:
 
-\• C\.eq\(\$eq\?\)\: default \= \{\(\:X \:Y\) X \=\= Y \}
+\• C\.eq\(\$equivalent\_to\?\)\: default \= \{\(\:X \:Y\) X \=\= Y \}
 
-.. rubric:: Equivalence of keys
+.. rubric:: Equivalence relation of keys
 
-\$eq\? is used to compare keys\. \$eq\? must be an equivalence relation which satisfies the following for all X\, Y\, and Z in the domain of keys\.
-
-\• reflexive\: eq\?\(X X\)
-
-\• symmetric\: \(if eq\?\(X Y\) then eq\?\(Y X\)\) and \(if not eq\?\(X Y\) then not eq\?\(Y X\)\)
-
-\• transitive\: if eq\?\(X Y\) and eq\?\(Y Z\) then eq\?\(X Z\)
+\$equivalent\_to\? must be a function which takes two args X and Y\. \`equivalent\_to\?\(X Y\)\` must return the bool value of \`X equivalent\-to Y\`\, where \`equivalent\-to\` is the equivalence relation of keys\.
 
 .. rubric:: Hash
 
 \$hash must satisfy the following for all X and Y in the domain of keys\.
 
-\• if eq\?\(X Y\) then hash\(X\) \=\= hash\(Y\)
+\• if equivalent\_to\?\(X Y\) then hash\(X\) \=\= hash\(Y\)
 
 .. rubric:: Preconditions
 
 \$hash must be a fun which takes a key\, and returns an integer \`num\`\.
 
-\$eq\? must be a fun which takes two keys\, and returns a \`bool\`\.
+\$equivalent\_to\? must be a fun which takes two keys\, and returns a \`bool\`\.
 
 .. rubric:: Example
 

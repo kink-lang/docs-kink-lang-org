@@ -2,178 +2,279 @@
 kink\/ARGV\_PARSER
 ==================
 
-Parses command line arguments\.
+Parses command line arguments\, org argv\, into option switches\, option arguments\, and non\-option elements\. Parsing is done in the style of glibc getopt\_long\.
 
-.. rubric:: Usage example
+.. rubric:: Example
 
 .. code:: kink
 
-    # voxxx.kn
+    # filename: voxxx.kn
         
     :ARGV_PARSER.require_from('kink/')
     :PROCESS.require_from('kink/')
         
     :parse_argv <- {(:Argv)
-      :Opt = new_val('Loglevel' 'ERROR')
+      :Depot = new_val('Loglevel' 'ERROR')
       :Non_opts = ARGV_PARSER.parse(Argv){(:P)
         P.no_arg(['-h' '--help']){
           stdout.print_line('USAGE: kink voxxx.kn [Options...] [--] [Args...]')
           PROCESS.exit(0)
         }
         P.req_arg(['-L' '--loglevel']){(:Arg)
-          Opt:Loglevel <- Arg
+          Depot:Loglevel <- Arg
         }
         P.on_error{(:Msg)
           stderr.print_line('voxxx: {}'.format(Msg))
-          PROCESS.exit(1)
+          PROCESS.exit(64)
         }
       }
-      [Opt.Loglevel Non_opts]
+      [Depot.Loglevel Non_opts]
     }
         
     :main <- {(:Argv)
       [:Loglevel :Non_opts] = parse_argv(Argv)
-      stdout.print_line('loglevel={} non-opts={}'.format(Loglevel Non_opts.repr))
+      stdout.print_line('loglevel={} non-option-elements={}'.format(Loglevel Non_opts.repr))
     }
         
     # $ kink voxxx.kn --log INFO foo bar
-    # loglevel=INFO non-opts=["foo" "bar"]
+    # loglevel=INFO non-option-elements=["foo" "bar"]
     #
     # $ kink voxxx.kn --LDEBUG foo bar
-    # loglevel=DEBUG non-opts=["foo" "bar"]
+    # loglevel=DEBUG non-option-elements=["foo" "bar"]
     #
     # $ kink voxxx.kn foo bar
-    # loglevel=ERROR non-opts=["foo" "bar"]
+    # loglevel=ERROR non-option-elements=["foo" "bar"]
     #
     # $ kink voxxx.kn --help
     # USAGE: kink voxxx.kn [Options...] [--] [Args...]
 
-Parsing of the options stops when all the words are read\, or the special delimiter word \"\-\-\" is read\, or a non\-option word is read \(only in the strict\_order mode\)\.
+.. rubric:: Option switches
 
-Words which are not option switches and option arguments are passed to the success handler as a vec\, the default implementation of which returns the vec itself\.
+There are two types of option switches\:
 
-There are two different shapes of option switches\, short and long\, and two different arity of option switches\, req\_arg\, opt\_arg\, and no\_arg\. Therefore\, there are 2x3 \= 6 types of option switches\.
+\• short switch\: consists of leading \`\-\` and one other code point\, excluding \`\-\-\`\. Ex\. \`\-h\`
 
-.. rubric:: Short and long option switches
+\• long switch\: consists of leading \`\-\-\` and one or more code points\. The switch must not include \`\=\`\. Ex\. \`\-\-help\`
 
-A short option switch consist of a leading character \"\-\" and a following “switch character”\. The switch character cannot be “\-”\. Example short option switches\: \"\-v\" and \"\-\?\"\.
+Each option switch can be grouped to three categories depending on how it takes an argument\.
 
-A long option switch consist of a leading \"\-\-\" and one or more characters\. Example long option switches\: \"\-\-version\" and \"\-\-no\-timestamp\"\. A long option switch can be abbreviated to its prefix if not ambiguous\. For example\, “\-\-version” can be abbreviated to “\-\-ver” if “\-\-verbose” is not defined\.
+\• req\_arg\: takes one option argument
 
-.. rubric:: Arity
+\• opt\_arg\: takes zero or one option argument
 
-A req\_arg switch takes one argument\.
+\• no\_arg\: takes no option argument
 
-In the short shape\, the argument for a req\_arg switch can be passed as following characters in the word\, or the next distinct word\. For example\, if “\-m” is defined as a req\_arg switch\, both “\-mITER” and “\-m ITER” mean an option switch “\-m” and its argument “ITER”\.
+An argv element consisting of two hyphens \`\-\-\` is not an option switch\, but can be used as a separator between options and non\-option elements\.
 
-In the long shape\, the argument for a req\_arg switch can be passed after “\=” in the word\, or the next distinct word\. For example\, if “\-\-module” is defined as a req\_arg switch\, both “\-\-module\=ITER” and “\-\-module ITER” means an option switch “\-\-module” and its argument “ITER”\.
+.. rubric:: Short req\_arg option switch
 
-An opt\_arg switch takes zero or one argument\.
+Assume a short req\_arg switch \`\-p\` is defined\. This option switch can be used in the following ways\.
 
-In the short shape\, the argument for a opt\_arg switch can be passed as following characters in the word\,\. For example\, if “\-L” is defined as an opt\_arg switch\, “\-LDEBUG” means an option switch “\-L” and its argument “DEBUG”\.
+\• \-pkink\/ → option argument \= \`kink\/\`
 
-In the long shape\, the argument for an opt\_arg switch can be passed after “\=” in the word\. For example\, if “\-\-loglevel” is defined as a req\_arg switch\, “\-\-loglevel\=DEBUG” means an option switch “\-\-loglevel” and its argument “DEBUG”\.
+\• \-p kink\/ → option argument \= \`kink\/\`
 
-A no\_arg switch does not take an argument\.
+.. rubric:: Long req\_arg option switch
 
-In the short shape\, when there is one or more characters after the switch character in the word\, the next character is taken as another option switch character\. For example\, if no\_arg option switches \"\-x\" and \"\-z\"\, and a req\_arg switch “f” are defined\, and a word \"\-xzfarchive\.tar\.gz\" is passed as a word\, it is equivalent to distinct words \"\-x\"\, \"\-z\"\, “\-f” and “archive\.tar\.gz”\.
+Assuem a long req\_arg switch \`\-\-prefix\` is defined\. This option switch can be used in the following ways\.
 
-.. rubric:: Compatibility
+\• \-\-prefix\=kink\/ → option argument \= \`kink\/\`
 
-ARGV\_PARSER supports almost equivalent functionality to glibc getopt\_long function\, with the following differences\.
+\• \-\-prefix kink\/ → option argument \= \`kink\/\`
 
-1\. getopt\_long assumes argv\[0\] is the name of the program\,    but ARGV\_PARSER handles the elements after the program name\.
+The option switch can be abbreviated like \`\-\-pat\`\, \`\-\-pa\`\, or \`\-\-p\`\, if it is not ambiguous\. See the later section for details\.
 
-2\. ARGV\_PARSER does not support an option to equate \"\-W foo\" to \"\-\-foo\"\.
+.. rubric:: Short opt\_arg option switch
+
+Assume a short opt\_arg switch \`\-b\` is defined\. This option switch can be used in the following ways\.
+
+\• \-b4096 → option argument \= \`4096\`
+
+\• \-b → option argument \= an empty string \`\`
+
+.. rubric:: Long opt\_arg option switch
+
+Assume a long opt\_arg switch \`\-\-buffer\` is defined\. This option switch can be used in the following ways\.
+
+\• \-\-buffer\=4096 → option argument \= \`4096\`
+
+\• \-\-buffer → option argument \= an empty string \`\`
+
+.. rubric:: Short no\_arg option switch
+
+Assume a short no\_arg switch \`\-h\` is defined\. This option switch can be used in the following way\.
+
+\• \-h
+
+When there is one or more code points after the option switch\, the following code points are handled as separate options\. For example\, if no\_arg option switches \`\-x\` and \`\-z\` are defined\, and a req\_arg switch \`\-f\` is defined\, argv \`\-xzf\.\/archive\.tgz\` is parsed as follows\:
+
+\• \-x with no option argument
+
+\• \-z with no option argument
+
+\• \-f with option argument \`\.\/archive\.tgz\`
+
+.. rubric:: Long no\_arg option switch
+
+Assume a long no\_arg switch \`\-\-help\` is defined\. This option switch can be used in the following way\.
+
+\• \-\-help
+
+.. rubric:: Abbreviation of long option switches
+
+A long option switch can be abbreviated to its prefix when it is not ambiguous\. For example\, if long options switches \`\-\-verbose\` and \`\-\-version\` are defined\, they can be abbreviated as follows\:
+
+\• \-\-verbose\: \-\-verbos\, \-\-verbo\, \-\-verb
+
+\• \-\-version\: \-\-versio\, \-\-versi\, \-\-vers
+
+The exact match always takes precedence over abbreviation\. For example\, if long option switches \`\-\-time\` and \`\-\-time\-style\` are defined\, argv \`\-\-time\` is parsed as the option switch \`\-\-time\`\, rather than abbreviation of \`\-\-time\-style\`\.
+
+.. rubric:: Non\-option elements
+
+Argv elements which are neither option switches\, option arguments\, nor separator \`\-\-\` are non\-option elements\.
+
+Two hyphens \`\-\-\` can be used to separate between options and non\-option elements\. For example\, if no\_arg switches \`\-x\`\, \`\-y\`\, and \`\-z\` are defined\, argv \`\-x \-y \-\- \-z a b c\` is parsed as follows\:
+
+\• options\: \-x\, \-y
+
+\• non\-option elements\: \-z\, a\, b\, c
+
+If strict\_order mode is not specified\, options can appear after non\-option elements\. For example\, if no\_arg switches \`\-x\`\, \`\-y\`\, and \`\-z\` are defined\, argv \`\-x a b c \-y \-z\` is parsed as follows\:
+
+\• options\: \-x\, \-y\, \-z
+
+\• non\-option elements\: a b c
+
+If strict\_order mode is turned on\, all the elements after the first non\-option element are parsed as non\-option elements\. This corresponds to the behavior of getopt\_long when POSIXLY\_CORRECT is set\. For example\, if no\_arg switches \`\-x\`\, \`\-y\`\, and \`\-z\` are defined\, argv \`\-x a b c \-y \-z\` is parsed as follows\:
+
+\• option\: \-x
+
+\• non\-option elements\: a\, b\, c\, \-y\, \-z
+
+.. rubric:: Difference from getopt\_long
+
+1\. getopt\_long assumes argv\[0\] is the name of the program\, while ARGV\_PARSER handles the arguments after the program name\.
+
+2\. getopt\_long has a feature to handle \`\-W foo\` as \`\-\-foo\`\, while ARGV\_PARSER has no such feature\.
 
 .. contents::
     :local:
     :backlinks: none
 
-.. _api-9475f82258282894b3f8a10189ee78c8:
+.. _api-20d0e30dbbaaae728610db868b43648d:
 
-ARGV\_PARSER\.parse\(Words \.\.\.\[\$config \= \{\}\]\)
-=======================================================
+ARGV\_PARSER\.parse\(Argv \.\.\.\[\$config\=\{\}\]\)
+====================================================
 
-Parses the Words\, with configuration specified by \$config\.
+\`parse\` method parses \`Argv\` into options and non\-option elements\, as configured by \$config\.
 
-If the parsing completes without an error\, the invocation of ARGV\_PARSER\.parse tail\-calls the success handler with the non\-opt words\. The default action of the success handler is to simply return the non\-opt words\.
+If the parsing completes without an error\, \`parse\` tail\-calls the success continuation \(see C\.on\_success\) with a \`vec\` of \`str\` values of non\-option elements\.
 
-If the parsing results in an error\, the invocation of ARGV\_PARSER\.parse tail\-calls the error handler with the error message\. The default error handler is \`raise\`\.
+If the parsing results in an error\, \`parse\` tail\-calls the error continuation \(see C\.on\_error\) with a \`str\` value of the error message\.
 
-\$config must take a argv\_parser\_config as an argument\, and configure it\.
+.. rubric:: Precondition
+
+\`Argv\` must be a \`vec\` of \`str\` values\.
+
+\$config must be a function which takes a \`argv\_parser\_config\`\.
 
 .. _api-2cae8c47c6649b93b070149bd6c0cf8d:
 
 type argv\_parser\_config
 =========================
 
-Config val for ARGV\_PARSER\.parse\.
-
-.. _api-176d85aa8e744143f5f8b9e640b1a01d:
-
-C\.on\_success\(\$\_handle\_success\)
--------------------------------------
-
-Sets \$\_handle\_success as a success handler\, which is a fun tal\-called when the parsing succeeds\.
-
-\$\_handle\_success takes a vec of non\-opt words\. If \.on\_success is not called\, VAL\.identity is used as default\.
-
-.. _api-d33b26ed22c4633033097ffa2d5ff7f1:
-
-C\.on\_error\(\$\_handle\_error\)
----------------------------------
-
-Sets \$\_handle\_error as a error handler\, which is a fun tail\-called when the parsing causes an error\.
-
-\$\_handle\_error takes a message as an arg\. If \.on\_error is not called\, \`raise\` is used as default\.
-
-.. _api-e39164e62f7378d5b585a97fef1e9857:
-
-C\.strict\_order
-----------------
-
-Uses strict\_order\/POSIX mode\.
-
-In this mode\, option switches cannot be placed after non\-opt args\.
-
-.. _api-e7d6fa3d2cdfa1cd715921c8ad28e797:
-
-C\.lenient\_order
------------------
-
-Uses lenient\_order\/GNU mode\.
-
-In this mode\, option switches can be placed after non\-opt args\, unless the special argument “\-\-” is used\.
-
-This is the default mode\, thus you don\'t have to call this method explicitly\.
-
-.. _api-43ae6ee9196db0ced6256f52466eaddd:
-
-C\.no\_arg\(Switches \$action\)
--------------------------------
-
-Adds an option which takes no argument\, with the Switches\.
-
-\$action is called with no arg when one of the option Switches is specified\.
-
-.. _api-836c06a611d1b1376f669c40248501bc:
-
-C\.opt\_arg\(Switches \$action\)
---------------------------------
-
-Adds an option which takes optional argument\, with the Switches\.
-
-\$action is called with an empty vec \[\] when one of the option Switches is specified with no argument\.
-
-\$action is called with a singleton vec containing an argument\, when one of the option Switches is specified with the argument\.
+\`argv\_parser\_config\` is a config value of ARGV\_PARSER\.parse\.
 
 .. _api-227bf9a432eef45f2333d28d16867dc0:
 
 C\.req\_arg\(Switches \$action\)
 --------------------------------
 
-Adds an option which requires an argument\, with the Switches\.
+\`req\_arg\` method defines req\_arg option switches in \`Switches\`\.
 
-\$action is called with an argument when one of the option Switches is specified with the argument\.
+When an option switch in \`Switches\` is parsed\, \$action is called with a \`str\` value of the corresponding option argument\.
+
+.. rubric:: Preconditions
+
+\`Switches\` must be a \`vec\` of \`str\` values which are long or short option switches\.
+
+\`Switches\` must not be empty\.
+
+Option switches must be unique within an invocation of ARGV\_PARSER\.parse\.
+
+\$action must be a function which takes a \`str\`\.
+
+.. _api-836c06a611d1b1376f669c40248501bc:
+
+C\.opt\_arg\(Switches \$action\)
+--------------------------------
+
+\`opt\_arg\` method defines opt\_arg option switches in \`Switches\`\.
+
+When an option switch in \`Switches\` is parsed\, \$action is called with a \`str\` value of the corresponding option argument\. If the option argument is omitted\, an empty \`str\` is passed to \$action\.
+
+.. rubric:: Preconditions
+
+\`Switches\` must be a \`vec\` of \`str\` values which are long or short option switches\.
+
+\`Switches\` must not be empty\.
+
+Option switches must be unique within an invocation of ARGV\_PARSER\.parse\.
+
+\$action must be a function which takes a \`str\`\.
+
+.. _api-43ae6ee9196db0ced6256f52466eaddd:
+
+C\.no\_arg\(Switches \$action\)
+-------------------------------
+
+\`no\_arg\` method defines no\_arg option switches in \`Switches\`\.
+
+When an option switch in \`Switches\` is parsed\, \$action is called with no arg\.
+
+.. rubric:: Preconditions
+
+\`Switches\` must be a \`vec\` of \`str\` values which are long or short option switches\.
+
+\`Switches\` must not be empty\.
+
+Option switches must be unique within an invocation of ARGV\_PARSER\.parse\.
+
+\$action must be a thunk\.
+
+.. _api-e39164e62f7378d5b585a97fef1e9857:
+
+C\.strict\_order
+----------------
+
+\`strict\_order\` method specifies that parsing is done in strict\_order mode\.
+
+This corresponds to setting POSIXLY\_CORRECT to getopt\_long\.
+
+.. _api-b0cbfcb6ef3684da17be394777e92ed5:
+
+C\.on\_success\(\$success\)
+---------------------------
+
+\`on\_success\` specifies that \$success be used as the success continuation of ARGV\_PARSER\.parse\.
+
+If \`on\_success\` is not called\, VAL\.identity is used as the default\.
+
+.. rubric:: Precondition
+
+\$success must be a function which takes a \`vec\` of \`str\` values\, which are non\-option elements of argv\.
+
+.. _api-ce6e55d012d2d3ab8944d1cacf50e1c0:
+
+C\.on\_error\(\$error\)
+-----------------------
+
+\`on\_error\` specifies that \$error be used as the error continuation of ARGV\_PARSER\.parse\.
+
+If \`on\_error\` is not called\, \`raise\` is used as the default\.
+
+.. rubric:: Precondition
+
+\$error must be a function which takes a \`str\` value\, which is an error message\.
 

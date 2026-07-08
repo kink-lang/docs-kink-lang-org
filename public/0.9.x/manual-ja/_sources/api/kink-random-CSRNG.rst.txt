@@ -26,10 +26,9 @@ Example\:
 .. code:: kink
 
     :CSRNG.require_from('kink/random/')
-    :VEC.require_from('kink/')
         
     :Rng <- CSRNG.new
-    :Nums <- VEC.from_each(10.times.map{ Rng.gen_int(100) })
+    :Nums <- 10.times.map{ Rng.gen_int(100) }.vec
     stdout.print_line(Nums.repr)
     # Output varies for each execution:
     #   [67 47 21 39 98 26 45 37 7 95]

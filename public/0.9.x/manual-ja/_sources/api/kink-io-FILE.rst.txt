@@ -174,7 +174,7 @@ To disable userspace buffering\, call C\.no\_buffer\.
     CONTROL.with_finally{(:finally)
       :Out = FILE.open_to_write('/dev/stdout')
       finally{ Out.close }
-      Out.write(CHARSET.ascii.str_to_bin("hello\n"))
+      Out.write(CHARSET.us_ascii.str_to_bin("hello\n"))
     }
     # => hello
 

@@ -5,30 +5,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.65. kink/javahost/JAVA &#8212; Kink 0.9.5-beta</title>
+    <title>6.72. kink/javahost/JAVA &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/documentation_options.js?v=6ce99075"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="6.66. kink/javahost/JAVA_CHANNEL_INPUT" href="kink-javahost-JAVA_CHANNEL_INPUT.html" />
-    <link rel="prev" title="6.64. kink/iter/ITER" href="kink-iter-ITER.html" /> 
+    <link rel="next" title="6.73. kink/javahost/JAVA_CHANNEL_INPUT" href="kink-javahost-JAVA_CHANNEL_INPUT.html" />
+    <link rel="prev" title="6.71. kink/iter/ITER" href="kink-iter-ITER.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
-        <h2 class="heading"><span>6.65. kink/javahost/JAVA</span></h2>
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.72. kink/javahost/JAVA</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-iter-ITER.html"><span class="section-number">6.64. </span>kink/iter/ITER</a>
+        «&#160;&#160;<a href="kink-iter-ITER.html"><span class="section-number">6.71. </span>kink/iter/ITER</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-javahost-JAVA_CHANNEL_INPUT.html"><span class="section-number">6.66. </span>kink/javahost/JAVA_CHANNEL_INPUT</a>&#160;&#160;»
+        <a href="kink-javahost-JAVA_CHANNEL_INPUT.html"><span class="section-number">6.73. </span>kink/javahost/JAVA_CHANNEL_INPUT</a>&#160;&#160;»
         </p>
 
       </div>
@@ -36,22 +36,22 @@
         
         
   <section id="kink-javahost-java">
-<h1><span class="section-number">6.65. </span>kink/javahost/JAVA<a class="headerlink" href="#kink-javahost-java" title="Link to this heading">¶</a></h1>
+<h1><span class="section-number">6.72. </span>kink/javahost/JAVA<a class="headerlink" href="#kink-javahost-java" title="Link to this heading">¶</a></h1>
 <p>Provides a way to operate on Java objects, values, classes and methods.</p>
 <p>Host system integration provided by JAVA module is meant to be seamfull. There is a clear boundary between Kink world and Java world. For example, a Java method cannot be called directly as a Kink function like JRuby or Groovy. Instead, you have to use .call_method:</p>
 <div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">Java_obj</span>.<span class="n">call_method</span>(<span class="s1">&#39;toString&#39;</span>)
 </pre></div>
 </div>
 <p>There are several reasons behind the design.</p>
-<p>1)  Kink is fundamentally different from Java,     both in the object system and the execution semantics.     Thus, seamless integration is hard to achieve.</p>
-<p>2)  Generally, larger applications can be designed more simply     when there is a boundary between separate systems.</p>
+<p>1)  Kink is fundamentally different from Java, both in the object system and the execution semantics. Thus, seamless integration is hard to achieve.</p>
+<p>2)  Generally, larger applications can be designed more simply when there is a boundary between separate systems.</p>
 <p>3)  With a clear boundary, Kink can evolve independent of Java.</p>
 <p class="rubric">Typable-as</p>
 <p>Here we define a binary relation, typable-as, between a Java object reference and a Java class object.</p>
 <p>When an object reference `R` is typable-as a class object `T`, one of the following conditions is met:</p>
 <p>• `T` is a class object of a reference type, and `R` is an instance of the reference type.</p>
 <p>• `T` is a class object of a reference type, and `R` is null.</p>
-<p>• `R` is an instance of Boolean, Character, Byte, Short,   Integer, Long, Float, or Double,   and `T` is a class object of the corresponding primitive type.</p>
+<p>• `R` is an instance of Boolean, Character, Byte, Short, Integer, Long, Float, or Double, and `T` is a class object of the corresponding primitive type.</p>
 <p>Hereinafter, we refer to a class object and the type which the class object represents interchangeably.</p>
 <nav class="contents local" id="contents">
 <ul class="simple">
@@ -93,41 +93,42 @@
 <li><p><a class="reference internal" href="#java-string-str" id="id30">JAVA.string(Str)</a></p></li>
 <li><p><a class="reference internal" href="#java-bytes-bin-from-0-to-bin-size" id="id31">JAVA.bytes(Bin ...[From=0 To=Bin.size])</a></p></li>
 <li><p><a class="reference internal" href="#java-byte-buffer-bin" id="id32">JAVA.byte_buffer(Bin)</a></p></li>
-<li><p><a class="reference internal" href="#java-boolean-bool" id="id33">JAVA.boolean(Bool)</a></p></li>
-<li><p><a class="reference internal" href="#java-char-num" id="id34">JAVA.char(Num)</a></p></li>
-<li><p><a class="reference internal" href="#java-byte-num" id="id35">JAVA.byte(Num)</a></p></li>
-<li><p><a class="reference internal" href="#java-short-num" id="id36">JAVA.short(Num)</a></p></li>
-<li><p><a class="reference internal" href="#java-int-num" id="id37">JAVA.int(Num)</a></p></li>
-<li><p><a class="reference internal" href="#java-long-num" id="id38">JAVA.long(Num)</a></p></li>
-<li><p><a class="reference internal" href="#java-float-num" id="id39">JAVA.float(Num)</a></p></li>
-<li><p><a class="reference internal" href="#java-double-num" id="id40">JAVA.double(Num)</a></p></li>
-<li><p><a class="reference internal" href="#java-big-integer-num" id="id41">JAVA.big_integer(Num)</a></p></li>
-<li><p><a class="reference internal" href="#java-big-decimal-num" id="id42">JAVA.big_decimal(Num)</a></p></li>
-<li><p><a class="reference internal" href="#java-wrap-wrapped" id="id43">JAVA.wrap(Wrapped)</a></p></li>
-<li><p><a class="reference internal" href="#java-true" id="id44">JAVA.true</a></p></li>
-<li><p><a class="reference internal" href="#java-false" id="id45">JAVA.false</a></p></li>
-<li><p><a class="reference internal" href="#java-null" id="id46">JAVA.null</a></p></li>
-<li><p><a class="reference internal" href="#java-runtime" id="id47">JAVA.runtime</a></p></li>
-<li><p><a class="reference internal" href="#java-boolean-class" id="id48">JAVA.boolean_class</a></p></li>
-<li><p><a class="reference internal" href="#java-char-class" id="id49">JAVA.char_class</a></p></li>
-<li><p><a class="reference internal" href="#java-byte-class" id="id50">JAVA.byte_class</a></p></li>
-<li><p><a class="reference internal" href="#java-short-class" id="id51">JAVA.short_class</a></p></li>
-<li><p><a class="reference internal" href="#java-int-class" id="id52">JAVA.int_class</a></p></li>
-<li><p><a class="reference internal" href="#java-long-class" id="id53">JAVA.long_class</a></p></li>
-<li><p><a class="reference internal" href="#java-float-class" id="id54">JAVA.float_class</a></p></li>
-<li><p><a class="reference internal" href="#java-double-class" id="id55">JAVA.double_class</a></p></li>
-<li><p><a class="reference internal" href="#java-void-class" id="id56">JAVA.void_class</a></p></li>
-<li><p><a class="reference internal" href="#java-class-class-name-config" id="id57">JAVA.class(Class_name ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#java-runtime-exception-exc" id="id33">JAVA.runtime_exception(Exc)</a></p></li>
+<li><p><a class="reference internal" href="#java-boolean-bool" id="id34">JAVA.boolean(Bool)</a></p></li>
+<li><p><a class="reference internal" href="#java-char-num" id="id35">JAVA.char(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-byte-num" id="id36">JAVA.byte(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-short-num" id="id37">JAVA.short(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-int-num" id="id38">JAVA.int(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-long-num" id="id39">JAVA.long(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-float-num" id="id40">JAVA.float(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-double-num" id="id41">JAVA.double(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-big-integer-num" id="id42">JAVA.big_integer(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-big-decimal-num" id="id43">JAVA.big_decimal(Num)</a></p></li>
+<li><p><a class="reference internal" href="#java-wrap-wrapped" id="id44">JAVA.wrap(Wrapped)</a></p></li>
+<li><p><a class="reference internal" href="#java-true" id="id45">JAVA.true</a></p></li>
+<li><p><a class="reference internal" href="#java-false" id="id46">JAVA.false</a></p></li>
+<li><p><a class="reference internal" href="#java-null" id="id47">JAVA.null</a></p></li>
+<li><p><a class="reference internal" href="#java-runtime" id="id48">JAVA.runtime</a></p></li>
+<li><p><a class="reference internal" href="#java-boolean-class" id="id49">JAVA.boolean_class</a></p></li>
+<li><p><a class="reference internal" href="#java-char-class" id="id50">JAVA.char_class</a></p></li>
+<li><p><a class="reference internal" href="#java-byte-class" id="id51">JAVA.byte_class</a></p></li>
+<li><p><a class="reference internal" href="#java-short-class" id="id52">JAVA.short_class</a></p></li>
+<li><p><a class="reference internal" href="#java-int-class" id="id53">JAVA.int_class</a></p></li>
+<li><p><a class="reference internal" href="#java-long-class" id="id54">JAVA.long_class</a></p></li>
+<li><p><a class="reference internal" href="#java-float-class" id="id55">JAVA.float_class</a></p></li>
+<li><p><a class="reference internal" href="#java-double-class" id="id56">JAVA.double_class</a></p></li>
+<li><p><a class="reference internal" href="#java-void-class" id="id57">JAVA.void_class</a></p></li>
+<li><p><a class="reference internal" href="#java-class-class-name" id="id58">JAVA.class(Class_name)</a></p></li>
 </ul>
 </nav>
 <section id="type-java">
-<span id="api-bdcf8aa519e365f452da2436eacd19e7"></span><h2><span class="section-number">6.65.1. </span>type java<a class="headerlink" href="#type-java" title="Link to this heading">¶</a></h2>
+<span id="api-bdcf8aa519e365f452da2436eacd19e7"></span><h2><span class="section-number">6.72.1. </span>type java<a class="headerlink" href="#type-java" title="Link to this heading">¶</a></h2>
 <p>A `java` value is a pair of (objectReference, type), where `objectReference` is a Java object reference, and `type` is a class object.</p>
 <p>`type` is used to look up Java instance methods and instance fields.</p>
 <p class="rubric">Invariant</p>
 <p>`objectReference` must be typable-as `type`.</p>
 <section id="j-type">
-<span id="api-deb3eecb723aef46d1abb40358fe6b6e"></span><h3><span class="section-number">6.65.1.1. </span>J.type<a class="headerlink" href="#j-type" title="Link to this heading">¶</a></h3>
+<span id="api-deb3eecb723aef46d1abb40358fe6b6e"></span><h3><span class="section-number">6.72.1.1. </span>J.type<a class="headerlink" href="#j-type" title="Link to this heading">¶</a></h3>
 <p>`type` method returns the `type` attribute of `J`.</p>
 <p>The result of `type` method is a `java` value (t, java.lang.Class), where `t` is `type` attribute of `J`.</p>
 <p class="rubric">Example</p>
@@ -140,7 +141,7 @@
 </div>
 </section>
 <section id="j-as-new-type">
-<span id="api-9fea7a59909457f8d4eec2ebda67a83b"></span><h3><span class="section-number">6.65.1.2. </span>J.as(New_type)<a class="headerlink" href="#j-as-new-type" title="Link to this heading">¶</a></h3>
+<span id="api-9fea7a59909457f8d4eec2ebda67a83b"></span><h3><span class="section-number">6.72.1.2. </span>J.as(New_type)<a class="headerlink" href="#j-as-new-type" title="Link to this heading">¶</a></h3>
 <p>`as` changes `type` to `New_type`.</p>
 <p>The result of `as` is a `java` value (ref, nt), where `ref` is `objectReference` of `J`, and `nt` is `objectReference` of `New_type`.</p>
 <p class="rubric">Preconditions</p>
@@ -156,7 +157,7 @@
 </div>
 </section>
 <section id="j-instance-of-klass">
-<span id="api-8085cbddb5f1d7cdeaa5f59d3dd704a8"></span><h3><span class="section-number">6.65.1.3. </span>J.instance_of?(Klass)<a class="headerlink" href="#j-instance-of-klass" title="Link to this heading">¶</a></h3>
+<span id="api-8085cbddb5f1d7cdeaa5f59d3dd704a8"></span><h3><span class="section-number">6.72.1.3. </span>J.instance_of?(Klass)<a class="headerlink" href="#j-instance-of-klass" title="Link to this heading">¶</a></h3>
 <p>`instance_of?` returns whether `objectReference` of `J` is an instance of `Klass`. The check is equivalent to instanceof operator of Java language.</p>
 <p class="rubric">Precondition</p>
 <p>`Klass` must be a `java` value (klass, *), where `klass` is an instance of java.lang.Class.</p>
@@ -177,7 +178,7 @@
 </div>
 </section>
 <section id="j-eq-eq-another">
-<span id="api-6fe23ab75cf9d4904597bab2866784db"></span><h3><span class="section-number">6.65.1.4. </span>J.eq_eq?(Another)<a class="headerlink" href="#j-eq-eq-another" title="Link to this heading">¶</a></h3>
+<span id="api-6fe23ab75cf9d4904597bab2866784db"></span><h3><span class="section-number">6.72.1.4. </span>J.eq_eq?(Another)<a class="headerlink" href="#j-eq-eq-another" title="Link to this heading">¶</a></h3>
 <p>`eq_eq?` returns whether `objectReference` attributes of `J` and `Another` are identical in the meaning of `==` operator of Java language.</p>
 <p class="rubric">Precondition</p>
 <p>`Another` must be a `java` value.</p>
@@ -202,11 +203,11 @@
 </div>
 </section>
 <section id="j-null">
-<span id="api-7df137b3d7bea8013ea10354edda1eee"></span><h3><span class="section-number">6.65.1.5. </span>J.null?<a class="headerlink" href="#j-null" title="Link to this heading">¶</a></h3>
+<span id="api-7df137b3d7bea8013ea10354edda1eee"></span><h3><span class="section-number">6.72.1.5. </span>J.null?<a class="headerlink" href="#j-null" title="Link to this heading">¶</a></h3>
 <p>`null?` returns whehter `objectReference` attribute of `J` is null.</p>
 </section>
 <section id="j-to-kink-str">
-<span id="api-a83080dd5930eac4ff25a8e518102cd9"></span><h3><span class="section-number">6.65.1.6. </span>J.to_kink_str<a class="headerlink" href="#j-to-kink-str" title="Link to this heading">¶</a></h3>
+<span id="api-a83080dd5930eac4ff25a8e518102cd9"></span><h3><span class="section-number">6.72.1.6. </span>J.to_kink_str<a class="headerlink" href="#j-to-kink-str" title="Link to this heading">¶</a></h3>
 <p>`to_kink_str` returns a `str` value from a Java string.</p>
 <p class="rubric">Precondition</p>
 <p>`objectReference` of `J` must be an instance of java.lang.String.</p>
@@ -220,7 +221,7 @@
 </div>
 </section>
 <section id="j-to-kink-bool">
-<span id="api-a0a53bf876b1d8e99a06d54243a5982f"></span><h3><span class="section-number">6.65.1.7. </span>J.to_kink_bool<a class="headerlink" href="#j-to-kink-bool" title="Link to this heading">¶</a></h3>
+<span id="api-a0a53bf876b1d8e99a06d54243a5982f"></span><h3><span class="section-number">6.72.1.7. </span>J.to_kink_bool<a class="headerlink" href="#j-to-kink-bool" title="Link to this heading">¶</a></h3>
 <p>`to_kink_bool` returns a `bool` value from a Java boolean.</p>
 <p class="rubric">Precondition</p>
 <p>`objectReference` of `J` must be an instance of java.lang.Boolean.</p>
@@ -235,7 +236,7 @@
 </div>
 </section>
 <section id="j-to-kink-num">
-<span id="api-24c55d5665df90acc6503d2a9479ddd6"></span><h3><span class="section-number">6.65.1.8. </span>J.to_kink_num<a class="headerlink" href="#j-to-kink-num" title="Link to this heading">¶</a></h3>
+<span id="api-24c55d5665df90acc6503d2a9479ddd6"></span><h3><span class="section-number">6.72.1.8. </span>J.to_kink_num<a class="headerlink" href="#j-to-kink-num" title="Link to this heading">¶</a></h3>
 <p>`to_kink_num` returns a `num` value from a Java number.</p>
 <p class="rubric">Conversion from Character, Byte, Short, Integer, Long, or BigInteger</p>
 <p>If `objectReference` of `J` is a Character, Byte, Short, Integer, Long or BigInteger, `Scale` of the result `num` will be 0, and `Mantissa` of the result `num` will be equal to the integer.</p>
@@ -265,7 +266,7 @@
 </div>
 </section>
 <section id="j-to-kink-bin-from-to">
-<span id="api-55761176379e983faa180bb9f5c6ccf1"></span><h3><span class="section-number">6.65.1.9. </span>J.to_kink_bin(...[From To])<a class="headerlink" href="#j-to-kink-bin-from-to" title="Link to this heading">¶</a></h3>
+<span id="api-55761176379e983faa180bb9f5c6ccf1"></span><h3><span class="section-number">6.72.1.9. </span>J.to_kink_bin(...[From To])<a class="headerlink" href="#j-to-kink-bin-from-to" title="Link to this heading">¶</a></h3>
 <p>`to_kink_bin` returns a `bin` value from a Java byte array.</p>
 <p>The default value of `From` is 0. The default value of `To` is the length of the byte array.</p>
 <p>The size of the result `bin` will be `To - From`. The `bin` will contain a slice of bytes of `J` in the range [From, To).</p>
@@ -287,7 +288,7 @@
 </div>
 </section>
 <section id="j-to-kink-exception">
-<span id="api-19473767f080757f7c71139694d97b84"></span><h3><span class="section-number">6.65.1.10. </span>J.to_kink_exception<a class="headerlink" href="#j-to-kink-exception" title="Link to this heading">¶</a></h3>
+<span id="api-19473767f080757f7c71139694d97b84"></span><h3><span class="section-number">6.72.1.10. </span>J.to_kink_exception<a class="headerlink" href="#j-to-kink-exception" title="Link to this heading">¶</a></h3>
 <p>`to_kink_exception` returns an `exception` value from a Java Throwable.</p>
 <p>`to_kink_exception` encodes Throwable.toString into `Message`, Throwable.getStackTrace into `Traces`, Throwable.getCause and getSuppressed into `Next` of the result `exception`.</p>
 <p>Other attributes of the throwable, like SQLException.getErrorCode, are not preserved.</p>
@@ -316,7 +317,7 @@
 </div>
 </section>
 <section id="j-unwrap">
-<span id="api-c25b08a4c49c79bb41fe6844b5835ae8"></span><h3><span class="section-number">6.65.1.11. </span>J.unwrap<a class="headerlink" href="#j-unwrap" title="Link to this heading">¶</a></h3>
+<span id="api-c25b08a4c49c79bb41fe6844b5835ae8"></span><h3><span class="section-number">6.72.1.11. </span>J.unwrap<a class="headerlink" href="#j-unwrap" title="Link to this heading">¶</a></h3>
 <p>`unwrap` extracts a Kink value wrapped by JAVA.wrap.</p>
 <p>When `J` is a `java` value (Wrapped, ? super org.kink_lang.kink.Val), `unwrap` returns `Wrapped`.</p>
 <p class="rubric">Preconditions</p>
@@ -336,7 +337,7 @@
 </div>
 </section>
 <section id="j-array-class">
-<span id="api-20b25eef6973f24f70edfdc23b7b54d7"></span><h3><span class="section-number">6.65.1.12. </span>J.array_class<a class="headerlink" href="#j-array-class" title="Link to this heading">¶</a></h3>
+<span id="api-20b25eef6973f24f70edfdc23b7b54d7"></span><h3><span class="section-number">6.72.1.12. </span>J.array_class<a class="headerlink" href="#j-array-class" title="Link to this heading">¶</a></h3>
 <p>`array_class` returns the class object of the array class of the given component type.</p>
 <p>If `objectReference` of `J` is a class object `C`, `array_class` returns a `java` value (C[], java.lang.Class).</p>
 <p class="rubric">Preconditions</p>
@@ -352,7 +353,7 @@
 </div>
 </section>
 <section id="j-array-new-size">
-<span id="api-04851e8fc772947f8b966398b8a8be35"></span><h3><span class="section-number">6.65.1.13. </span>J.array_new(Size)<a class="headerlink" href="#j-array-new-size" title="Link to this heading">¶</a></h3>
+<span id="api-04851e8fc772947f8b966398b8a8be35"></span><h3><span class="section-number">6.72.1.13. </span>J.array_new(Size)<a class="headerlink" href="#j-array-new-size" title="Link to this heading">¶</a></h3>
 <p>`array_new` returns an array of the given component type and the size.</p>
 <p>If `objectReference` of `J` is a class object `C`, `array_new` returns a `java` value of (Array, C[]), where `Array` is an array with `Size` as the length.</p>
 <p>The elements `Array` is initialized by the zero value of `C`.</p>
@@ -371,7 +372,7 @@
 </div>
 </section>
 <section id="j-array-of-e0-e1">
-<span id="api-769448fbe4a33788552d0427d9664b14"></span><h3><span class="section-number">6.65.1.14. </span>J.array_of(...[E0 E1 ,,,])<a class="headerlink" href="#j-array-of-e0-e1" title="Link to this heading">¶</a></h3>
+<span id="api-769448fbe4a33788552d0427d9664b14"></span><h3><span class="section-number">6.72.1.14. </span>J.array_of(...[E0 E1 ,,,])<a class="headerlink" href="#j-array-of-e0-e1" title="Link to this heading">¶</a></h3>
 <p>`array_of` returns an array containing the given elements.</p>
 <p>If `objectReference` of `J` is a class object `C`, `array_of` returns a `java` value of (Array, C[]), where `Array` is an array containing `E0`, `E1`, ,,, as its elements.</p>
 <p class="rubric">Preconditions</p>
@@ -391,13 +392,13 @@
 </div>
 </section>
 <section id="j-array-length">
-<span id="api-c049f691d199541f42fece1688810b8d"></span><h3><span class="section-number">6.65.1.15. </span>J.array_length<a class="headerlink" href="#j-array-length" title="Link to this heading">¶</a></h3>
+<span id="api-c049f691d199541f42fece1688810b8d"></span><h3><span class="section-number">6.72.1.15. </span>J.array_length<a class="headerlink" href="#j-array-length" title="Link to this heading">¶</a></h3>
 <p>`array_length` returns the length of array as an integer `num` value.</p>
 <p class="rubric">Precondition</p>
 <p>`J` must be a `java` value (array, *), where `array` is an array.</p>
 </section>
 <section id="j-array-get-ind">
-<span id="api-6707f6ec517186fb30c5f783ac70e012"></span><h3><span class="section-number">6.65.1.16. </span>J.array_get(Ind)<a class="headerlink" href="#j-array-get-ind" title="Link to this heading">¶</a></h3>
+<span id="api-6707f6ec517186fb30c5f783ac70e012"></span><h3><span class="section-number">6.72.1.16. </span>J.array_get(Ind)<a class="headerlink" href="#j-array-get-ind" title="Link to this heading">¶</a></h3>
 <p>`array_get` returns the element of the array `J` at the index `Ind`.</p>
 <p>If the component type of the array is a reference type `rt`, `array_get` returns a `java` value (element, rt), where `element` is the element of the array.</p>
 <p>If the component type of the array is a primitive type `pt`, `array_get` returns a `java` value (box, pt), where `box` is a instance of the corresponding wrapper type which contains the element of the array.</p>
@@ -406,7 +407,7 @@
 <p>`Ind` must be an integer `num` value in the range [0, length), where `length` is the length of the array.</p>
 </section>
 <section id="j-array-set-ind-elem">
-<span id="api-a0987ed8cb63182c4067407a3c5e026d"></span><h3><span class="section-number">6.65.1.17. </span>J.array_set(Ind Elem)<a class="headerlink" href="#j-array-set-ind-elem" title="Link to this heading">¶</a></h3>
+<span id="api-a0987ed8cb63182c4067407a3c5e026d"></span><h3><span class="section-number">6.72.1.17. </span>J.array_set(Ind Elem)<a class="headerlink" href="#j-array-set-ind-elem" title="Link to this heading">¶</a></h3>
 <p>`array_set` sets the value `Elem` to the array `J` at the index `Ind`.</p>
 <p class="rubric">Preconditions</p>
 <p>`J` must be a `java` value (array, *), where `array` is an array.</p>
@@ -414,7 +415,7 @@
 <p>`Elem` must be a `java` value (elem, *), where `elem` is typable-as the component type of the array.</p>
 </section>
 <section id="j-get-field-field-name">
-<span id="api-4d770acd5c9652a775a07b8989b8f602"></span><h3><span class="section-number">6.65.1.18. </span>J.get_field(Field_name)<a class="headerlink" href="#j-get-field-field-name" title="Link to this heading">¶</a></h3>
+<span id="api-4d770acd5c9652a775a07b8989b8f602"></span><h3><span class="section-number">6.72.1.18. </span>J.get_field(Field_name)<a class="headerlink" href="#j-get-field-field-name" title="Link to this heading">¶</a></h3>
 <p>`get_field` returns the content of the public instance field.</p>
 <p>The field is looked up from `type` of `J`, using Class.getField(String).</p>
 <p>If the declared type of the field is a reference type `rt`, the result will be a `java` value (contentObj, rt), where `contentObj` is the content of the field.</p>
@@ -432,7 +433,7 @@
 </div>
 </section>
 <section id="j-set-field-field-name-content">
-<span id="api-ebb499209518eb119dd6c6b6ef367c40"></span><h3><span class="section-number">6.65.1.19. </span>J.set_field(Field_name Content)<a class="headerlink" href="#j-set-field-field-name-content" title="Link to this heading">¶</a></h3>
+<span id="api-ebb499209518eb119dd6c6b6ef367c40"></span><h3><span class="section-number">6.72.1.19. </span>J.set_field(Field_name Content)<a class="headerlink" href="#j-set-field-field-name-content" title="Link to this heading">¶</a></h3>
 <p>`set_field` sets `Content` to the public instance field.</p>
 <p>The field is looked up from `type` of `J`, using Class.getField(String).</p>
 <p class="rubric">Preconditions</p>
@@ -443,7 +444,7 @@
 <p>`Content` must be a `java` value (contentObj, *), where `contentObj` must be typable-as the declared type of the field.</p>
 </section>
 <section id="j-get-static-field-name">
-<span id="api-5cb44d97a98cb538ebbd1875ae977959"></span><h3><span class="section-number">6.65.1.20. </span>J.get_static(Field_name)<a class="headerlink" href="#j-get-static-field-name" title="Link to this heading">¶</a></h3>
+<span id="api-5cb44d97a98cb538ebbd1875ae977959"></span><h3><span class="section-number">6.72.1.20. </span>J.get_static(Field_name)<a class="headerlink" href="#j-get-static-field-name" title="Link to this heading">¶</a></h3>
 <p>`get_static` returns the content of the public static field of the class `J`.</p>
 <p>When `objectReference` of `J` is a class object `ownerClass`, the field is looked up from `ownerClass` using Class.getField(String).</p>
 <p>If the declared type of the field is a reference type `rt`, the result will be a `java` value (contentObj, rt), where `contentObj` is the content of the field.</p>
@@ -462,7 +463,7 @@
 </div>
 </section>
 <section id="j-set-static-field-name-content">
-<span id="api-19da60ec93f3279a1f7f8ffe305fda90"></span><h3><span class="section-number">6.65.1.21. </span>J.set_static(Field_name Content)<a class="headerlink" href="#j-set-static-field-name-content" title="Link to this heading">¶</a></h3>
+<span id="api-19da60ec93f3279a1f7f8ffe305fda90"></span><h3><span class="section-number">6.72.1.21. </span>J.set_static(Field_name Content)<a class="headerlink" href="#j-set-static-field-name-content" title="Link to this heading">¶</a></h3>
 <p>`set_static` sets `Content` to the public static field of the class `J`.</p>
 <p>When `objectReference` of `J` is a class object `ownerClass`, the field is looked up from `ownerClass` using Class.getField(String).</p>
 <p class="rubric">Preconditions</p>
@@ -473,16 +474,16 @@
 <p>`Content` must be a `java` value (contentObj, *), where `contentObj` must be typable-as the declared type of the field.</p>
 </section>
 <section id="j-call-method-method-name-a0-a1-config">
-<span id="api-a88a85d17e6737f382eaec6f6cf284de"></span><h3><span class="section-number">6.65.1.22. </span>J.call_method(Method_name ...[A0 A1 ,,,] ...[$config={}])<a class="headerlink" href="#j-call-method-method-name-a0-a1-config" title="Link to this heading">¶</a></h3>
+<span id="api-a88a85d17e6737f382eaec6f6cf284de"></span><h3><span class="section-number">6.72.1.22. </span>J.call_method(Method_name ...[A0 A1 ,,,] ...[$config={}])<a class="headerlink" href="#j-call-method-method-name-a0-a1-config" title="Link to this heading">¶</a></h3>
 <p>`call_method` calls a public instance method of the object `J`.</p>
 <p class="rubric">Look up</p>
 <p>The instance method is looked up by `J.type.getMethod(Method_name, A0.type, A1.type, ,,,)`.</p>
 <p class="rubric">Result</p>
-<p>1)  If the declared return type of the method is a reference type `rt`,     and the method terminates without throwing an exception,     `call_method` tail-calls the success continuation with a `java` value (resultObj, rt),     where `resultObj` is the returned value of the method.</p>
-<p>2)  If the declared return type `pt` of the method is     char, boolean, byte, short, int, long, float or double,     and the method terminates without throwing an exception,     `call_method` tail-calls the success continuation with a `java` value (resultObj, pt),     where `resultObj` is a wrapper instance of the returned value.</p>
-<p>3)  If the declared return type the method is void,     and the method terminates without throwing an exception,     `call_method` tail-calls the success continuation with no arg.</p>
-<p>4)  If the method terminates throwing a Java exception `exceptionObj`,     and the exception is an instance of one or more exception types specified     by invocations of C.catch,     `call_method` tail-calls the error continuation corresponding     to the most specific exception type `et` with a `java` value (exceptionObj, et).</p>
-<p>5)  If the method terminates throwing a Java exception,     and no exception type passed to C.catch matches the thrown exception,     `call_method` raises a Kink exception.</p>
+<p>1)  If the declared return type of the method is a reference type `rt`, and the method terminates without throwing an exception, `call_method` tail-calls the success continuation with a `java` value (resultObj, rt), where `resultObj` is the returned value of the method.</p>
+<p>2)  If the declared return type `pt` of the method is char, boolean, byte, short, int, long, float or double, and the method terminates without throwing an exception, `call_method` tail-calls the success continuation with a `java` value (resultObj, pt), where `resultObj` is a wrapper instance of the returned value.</p>
+<p>3)  If the declared return type the method is void, and the method terminates without throwing an exception, `call_method` tail-calls the success continuation with no arg.</p>
+<p>4)  If the method terminates throwing a Java exception `exceptionObj`, and the exception is an instance of one or more exception types specified by invocations of C.catch, `call_method` tail-calls the error continuation corresponding to the most specific exception type `et` with a `java` value (exceptionObj, et).</p>
+<p>5)  If the method terminates throwing a Java exception, and no exception type passed to C.catch matches the thrown exception, `call_method` raises a Kink exception.</p>
 <p>If C.on_success is not called for the config value, and the declared return type of the method is void, { nada } is used as the default success continuation.</p>
 <p>If C.on_success is not called for the config value, and the declared return type of the method is not void, VAL.identity is used as the default success continuation.</p>
 <p class="rubric">Preconditions</p>
@@ -572,7 +573,7 @@
 </div>
 </section>
 <section id="j-call-static-method-name-a0-a1-config">
-<span id="api-c29cebd9582aa314d0da77584f52883c"></span><h3><span class="section-number">6.65.1.23. </span>J.call_static(Method_name ...[A0 A1 ,,,] ...[$config={}])<a class="headerlink" href="#j-call-static-method-name-a0-a1-config" title="Link to this heading">¶</a></h3>
+<span id="api-c29cebd9582aa314d0da77584f52883c"></span><h3><span class="section-number">6.72.1.23. </span>J.call_static(Method_name ...[A0 A1 ,,,] ...[$config={}])<a class="headerlink" href="#j-call-static-method-name-a0-a1-config" title="Link to this heading">¶</a></h3>
 <p>`call_static` calls a public static method of the class `J`.</p>
 <p class="rubric">Look up</p>
 <p>When `objectReference` of `J` is a class object `ownerClass`, the static method is looked up by `ownerClass.getMethod(Method_name, A0.type, A1.type, ,,,)`.</p>
@@ -596,14 +597,14 @@
 </div>
 </section>
 <section id="j-new-a0-a1-config">
-<span id="api-cb58bf3938ed2a294fe6d9cdadd912a2"></span><h3><span class="section-number">6.65.1.24. </span>J.new(...[A0 A1 ,,,] ...[$config={}])<a class="headerlink" href="#j-new-a0-a1-config" title="Link to this heading">¶</a></h3>
+<span id="api-cb58bf3938ed2a294fe6d9cdadd912a2"></span><h3><span class="section-number">6.72.1.24. </span>J.new(...[A0 A1 ,,,] ...[$config={}])<a class="headerlink" href="#j-new-a0-a1-config" title="Link to this heading">¶</a></h3>
 <p>`new` calls a public constructor of the class `J`, and returns the new instance.</p>
 <p class="rubric">Look up</p>
 <p>When `objectReference` of `J` is a class object `ownerClass`, the public constructor is looked up by `ownerClass.getConstructor(A0.type, A1.type, ,,,)`.</p>
 <p class="rubric">Result</p>
-<p>1)  If a new instance `resultObj` is created,     `new` tail-calls the success continuation with a `java` value     (resultObj, ownerClass).</p>
-<p>2)  If the constructor terminates throwing a Java exception `exceptionObj`,     and the exception is an instance of one or more exception types specified     by invocations of C.catch,     `new` tail-calls the error continuation corresponding     to the most specific exception type `et` with a `java` value (exceptionObj, et).</p>
-<p>3)  If the constructor terminates throwing a Java exception,     and no exception type passed to C.catch matches the thrown exception,     `new` raises a Kink exception.</p>
+<p>1)  If a new instance `resultObj` is created, `new` tail-calls the success continuation with a `java` value (resultObj, ownerClass).</p>
+<p>2)  If the constructor terminates throwing a Java exception `exceptionObj`, and the exception is an instance of one or more exception types specified by invocations of C.catch, `new` tail-calls the error continuation corresponding to the most specific exception type `et` with a `java` value (exceptionObj, et).</p>
+<p>3)  If the constructor terminates throwing a Java exception, and no exception type passed to C.catch matches the thrown exception, `new` raises a Kink exception.</p>
 <p>If C.on_success is not called for the config value, VAL.identity is used as the default success continuation.</p>
 <p class="rubric">Preconditions</p>
 <p>`J` must be a `java` value (ownerClass, *), where `ownerClass` is a class object.</p>
@@ -634,14 +635,14 @@
 </section>
 </section>
 <section id="type-java-call-config">
-<span id="api-1a06ea9468b89c20d92b26d8c3e7ac25"></span><h2><span class="section-number">6.65.2. </span>type java_call_config<a class="headerlink" href="#type-java-call-config" title="Link to this heading">¶</a></h2>
+<span id="api-1a06ea9468b89c20d92b26d8c3e7ac25"></span><h2><span class="section-number">6.72.2. </span>type java_call_config<a class="headerlink" href="#type-java-call-config" title="Link to this heading">¶</a></h2>
 <p>`java_call_config` is a config value of J.call_method, J.call_static, and J.new.</p>
 <section id="c-on-success-success">
-<span id="api-4c9620a4e105b451cad76eb0b32bb671"></span><h3><span class="section-number">6.65.2.1. </span>C.on_success($success)<a class="headerlink" href="#c-on-success-success" title="Link to this heading">¶</a></h3>
+<span id="api-4c9620a4e105b451cad76eb0b32bb671"></span><h3><span class="section-number">6.72.2.1. </span>C.on_success($success)<a class="headerlink" href="#c-on-success-success" title="Link to this heading">¶</a></h3>
 <p>`on_success` specifies $success as the success continuation.</p>
 </section>
 <section id="c-catch-exception-class-error">
-<span id="api-ad8c769ad8e7396b95aa92590571fb68"></span><h3><span class="section-number">6.65.2.2. </span>C.catch(Exception_class $error)<a class="headerlink" href="#c-catch-exception-class-error" title="Link to this heading">¶</a></h3>
+<span id="api-ad8c769ad8e7396b95aa92590571fb68"></span><h3><span class="section-number">6.72.2.2. </span>C.catch(Exception_class $error)<a class="headerlink" href="#c-catch-exception-class-error" title="Link to this heading">¶</a></h3>
 <p>`catch` specifies $error as the error continuation corresponding to the exception type `Exception_class`.</p>
 <p>`catch` can be called multiple times to specify error continuations for different exception types.</p>
 <p class="rubric">Preconditions</p>
@@ -651,18 +652,18 @@
 </section>
 </section>
 <section id="java-is-val">
-<span id="api-01b2e16345130933f93fe63167e15c32"></span><h2><span class="section-number">6.65.3. </span>JAVA.is?(Val)<a class="headerlink" href="#java-is-val" title="Link to this heading">¶</a></h2>
+<span id="api-01b2e16345130933f93fe63167e15c32"></span><h2><span class="section-number">6.72.3. </span>JAVA.is?(Val)<a class="headerlink" href="#java-is-val" title="Link to this heading">¶</a></h2>
 <p>`is?` returns whether `Val` is a `java` value.</p>
 </section>
 <section id="java-string-str">
-<span id="api-a17414dab3a705ea1673aefb4572a9cc"></span><h2><span class="section-number">6.65.4. </span>JAVA.string(Str)<a class="headerlink" href="#java-string-str" title="Link to this heading">¶</a></h2>
+<span id="api-a17414dab3a705ea1673aefb4572a9cc"></span><h2><span class="section-number">6.72.4. </span>JAVA.string(Str)<a class="headerlink" href="#java-string-str" title="Link to this heading">¶</a></h2>
 <p>`string` returns a Java string which has the same string as `Str`.</p>
 <p>The result will be a `java` value  (string, java.lang.String), where `string` is an instance of String which has the same string as `Str`.</p>
 <p class="rubric">Precondition</p>
 <p>`Str` must be a `str` value.</p>
 </section>
 <section id="java-bytes-bin-from-0-to-bin-size">
-<span id="api-38409f4b7fe4b8cdb7e3145c4934dcd8"></span><h2><span class="section-number">6.65.5. </span>JAVA.bytes(Bin ...[From=0 To=Bin.size])<a class="headerlink" href="#java-bytes-bin-from-0-to-bin-size" title="Link to this heading">¶</a></h2>
+<span id="api-38409f4b7fe4b8cdb7e3145c4934dcd8"></span><h2><span class="section-number">6.72.5. </span>JAVA.bytes(Bin ...[From=0 To=Bin.size])<a class="headerlink" href="#java-bytes-bin-from-0-to-bin-size" title="Link to this heading">¶</a></h2>
 <p>`bytes` returns a Java byte array from the slice of `Bin` in the range [From, To).</p>
 <p>The result will be a `java` value (byteArray, byte[]), where `byteArray` is an array of bytes whose elements are copied from the slice of `Bin` in the range [From, To).</p>
 <p class="rubric">Preconditions</p>
@@ -671,7 +672,7 @@
 <p>0 &lt;= From &lt;= To &lt;= Bin.size</p>
 </section>
 <section id="java-byte-buffer-bin">
-<span id="api-94d74e84a15500dacc000e8516b4c999"></span><h2><span class="section-number">6.65.6. </span>JAVA.byte_buffer(Bin)<a class="headerlink" href="#java-byte-buffer-bin" title="Link to this heading">¶</a></h2>
+<span id="api-94d74e84a15500dacc000e8516b4c999"></span><h2><span class="section-number">6.72.6. </span>JAVA.byte_buffer(Bin)<a class="headerlink" href="#java-byte-buffer-bin" title="Link to this heading">¶</a></h2>
 <p>`byte_buffer` returns a read only ByteBuffer containing the bytes of `Bin`.</p>
 <p>The result will be a `java` value (byteBuffer, java.nio.ByteBuffer). `byteBuffer` will have attributes as follows:</p>
 <p>• The capacity and the initial limit are Bin.size.</p>
@@ -679,8 +680,15 @@
 <p class="rubric">Precondition</p>
 <p>`Bin` must be a `bin`.</p>
 </section>
+<section id="java-runtime-exception-exc">
+<span id="api-4105de46f68b0c0680892bb0adf45401"></span><h2><span class="section-number">6.72.7. </span>JAVA.runtime_exception(Exc)<a class="headerlink" href="#java-runtime-exception-exc" title="Link to this heading">¶</a></h2>
+<p>`runtime_exception` returns a Java RuntimeException converted from the Kink exception.</p>
+<p>The result will be a `java` value (rte, java.lang.RuntimeException), where `rte` is a RuntimeException instance.</p>
+<p class="rubric">Precondition</p>
+<p>`Exc` must be an `exception`.</p>
+</section>
 <section id="java-boolean-bool">
-<span id="api-573e951a5ce4533f3e960a19340cc367"></span><h2><span class="section-number">6.65.7. </span>JAVA.boolean(Bool)<a class="headerlink" href="#java-boolean-bool" title="Link to this heading">¶</a></h2>
+<span id="api-573e951a5ce4533f3e960a19340cc367"></span><h2><span class="section-number">6.72.8. </span>JAVA.boolean(Bool)<a class="headerlink" href="#java-boolean-bool" title="Link to this heading">¶</a></h2>
 <p>`boolean` returns a Java boolean corresponding to `Bool`.</p>
 <p>If `Bool` is true, `boolean` returns a `java` value (Boolean.TRUE, boolean).</p>
 <p>If `Bool` is false, `boolean` returns a `java` value (Boolean.FALSE, boolean).</p>
@@ -688,70 +696,70 @@
 <p>`Bool` must be a `bool`.</p>
 </section>
 <section id="java-char-num">
-<span id="api-03ee2ace909fd91eacc651a9ad79897a"></span><h2><span class="section-number">6.65.8. </span>JAVA.char(Num)<a class="headerlink" href="#java-char-num" title="Link to this heading">¶</a></h2>
+<span id="api-03ee2ace909fd91eacc651a9ad79897a"></span><h2><span class="section-number">6.72.9. </span>JAVA.char(Num)<a class="headerlink" href="#java-char-num" title="Link to this heading">¶</a></h2>
 <p>`char` returns a Java char corresponding to `Num`.</p>
 <p>The result will be a `java` value (objectReference=ch, type=char), where `ch` is an instance of java.lang.Character.</p>
 <p class="rubric">Precondition</p>
 <p>`Num` must be an integer `num` in the range [0, 0xffff].</p>
 </section>
 <section id="java-byte-num">
-<span id="api-d1e5a7af107a5cb61b33feacd980c2d5"></span><h2><span class="section-number">6.65.9. </span>JAVA.byte(Num)<a class="headerlink" href="#java-byte-num" title="Link to this heading">¶</a></h2>
+<span id="api-d1e5a7af107a5cb61b33feacd980c2d5"></span><h2><span class="section-number">6.72.10. </span>JAVA.byte(Num)<a class="headerlink" href="#java-byte-num" title="Link to this heading">¶</a></h2>
 <p>`byte` returns a Java byte corresponding to `Num`.</p>
 <p>The result will be a `java` value (objectReference=bt, type=byte), where `bt` is an instance of java.lang.Byte.</p>
 <p class="rubric">Precondition</p>
 <p>`Num` must be an integer `num` in the range [-128, 127].</p>
 </section>
 <section id="java-short-num">
-<span id="api-2fc6b56fcac8415c42d9c704f024fafb"></span><h2><span class="section-number">6.65.10. </span>JAVA.short(Num)<a class="headerlink" href="#java-short-num" title="Link to this heading">¶</a></h2>
+<span id="api-2fc6b56fcac8415c42d9c704f024fafb"></span><h2><span class="section-number">6.72.11. </span>JAVA.short(Num)<a class="headerlink" href="#java-short-num" title="Link to this heading">¶</a></h2>
 <p>`short` returns a Java short corresponding to `Num`.</p>
 <p>The result will be a `java` value (objectReference=sh, type=short), where `sh` is an instance of java.lang.Short.</p>
 <p class="rubric">Precondition</p>
 <p>`Num` must be an integer `num` in the range [- 2**15, 2**15 - 1].</p>
 </section>
 <section id="java-int-num">
-<span id="api-000436967a852ce467bbb9e721efef6f"></span><h2><span class="section-number">6.65.11. </span>JAVA.int(Num)<a class="headerlink" href="#java-int-num" title="Link to this heading">¶</a></h2>
+<span id="api-000436967a852ce467bbb9e721efef6f"></span><h2><span class="section-number">6.72.12. </span>JAVA.int(Num)<a class="headerlink" href="#java-int-num" title="Link to this heading">¶</a></h2>
 <p>`int` returns a Java int corresponding to `Num`.</p>
 <p>The result will be a `java` value (objectReference=n, type=int), where `n` is an instance of java.lang.Integer.</p>
 <p class="rubric">Precondition</p>
 <p>`Num` must be an integer `num` in the range [- 2**31, 2**31 - 1].</p>
 </section>
 <section id="java-long-num">
-<span id="api-6b26b2272eabd07991c052c23df12077"></span><h2><span class="section-number">6.65.12. </span>JAVA.long(Num)<a class="headerlink" href="#java-long-num" title="Link to this heading">¶</a></h2>
+<span id="api-6b26b2272eabd07991c052c23df12077"></span><h2><span class="section-number">6.72.13. </span>JAVA.long(Num)<a class="headerlink" href="#java-long-num" title="Link to this heading">¶</a></h2>
 <p>`long` returns a Java long corresponding to `Num`.</p>
 <p>The result will be a `java` value (objectReference=ln, type=long), where `ln` is an instance of java.lang.Long.</p>
 <p class="rubric">Precondition</p>
 <p>`Num` must be an integer `num` in the range [- 2**63, 2**63 - 1].</p>
 </section>
 <section id="java-float-num">
-<span id="api-3cf2d6ff9aea6e6d0158ab93daf53a07"></span><h2><span class="section-number">6.65.13. </span>JAVA.float(Num)<a class="headerlink" href="#java-float-num" title="Link to this heading">¶</a></h2>
+<span id="api-3cf2d6ff9aea6e6d0158ab93daf53a07"></span><h2><span class="section-number">6.72.14. </span>JAVA.float(Num)<a class="headerlink" href="#java-float-num" title="Link to this heading">¶</a></h2>
 <p>`float` returns a Java float value numerically close to `Num`.</p>
 <p>The result will be a `java` value (fl, float), where `fl` is an instance of java.lang.Float, which is converted from `Num` by BigDecimal.floatValue().</p>
 <p class="rubric">Precondition</p>
 <p>`Num` must be a `num` value.</p>
 </section>
 <section id="java-double-num">
-<span id="api-a7c3d175a289f3b0543a44c5ea82cfe8"></span><h2><span class="section-number">6.65.14. </span>JAVA.double(Num)<a class="headerlink" href="#java-double-num" title="Link to this heading">¶</a></h2>
+<span id="api-a7c3d175a289f3b0543a44c5ea82cfe8"></span><h2><span class="section-number">6.72.15. </span>JAVA.double(Num)<a class="headerlink" href="#java-double-num" title="Link to this heading">¶</a></h2>
 <p>`double` returns a Java double value numerically close to `Num`.</p>
 <p>The result will be a `java` value (dbl, double), where `dbl` is an instance of java.lang.Double, which is converted from `Num` by BigDecimal.doubleValue().</p>
 <p class="rubric">Precondition</p>
 <p>`Num` must be a `num` value.</p>
 </section>
 <section id="java-big-integer-num">
-<span id="api-c5e20eff0b1332393ceec0a0ece9e7c9"></span><h2><span class="section-number">6.65.15. </span>JAVA.big_integer(Num)<a class="headerlink" href="#java-big-integer-num" title="Link to this heading">¶</a></h2>
+<span id="api-c5e20eff0b1332393ceec0a0ece9e7c9"></span><h2><span class="section-number">6.72.16. </span>JAVA.big_integer(Num)<a class="headerlink" href="#java-big-integer-num" title="Link to this heading">¶</a></h2>
 <p>`big_integer` returns a Java BigInteger corresponding to `Num`.</p>
 <p>The result will be a `java` value (objectReference=bi, type=java.math.BigInteger), where `bi` is an instance of java.math.BigInteger, and the value is equal to `Num`.</p>
 <p class="rubric">Precondition</p>
 <p>`Num` must be an integer `num`.</p>
 </section>
 <section id="java-big-decimal-num">
-<span id="api-627c8673b34bce4f65fdad173d7fc24f"></span><h2><span class="section-number">6.65.16. </span>JAVA.big_decimal(Num)<a class="headerlink" href="#java-big-decimal-num" title="Link to this heading">¶</a></h2>
+<span id="api-627c8673b34bce4f65fdad173d7fc24f"></span><h2><span class="section-number">6.72.17. </span>JAVA.big_decimal(Num)<a class="headerlink" href="#java-big-decimal-num" title="Link to this heading">¶</a></h2>
 <p>`big_decimal` returns a Java BigDecimal corresponding to `Num`.</p>
 <p>The result will be a `java` value (bd, java.math.BigDecimal), where `bd` is an instance of java.math.BigDecimal, whose scale is equal to `Scale` of `Num`, and the unscaledValue is equal to `Mantissa` of `Num`.</p>
 <p class="rubric">Precondition</p>
 <p>`Num` must be a `num` value.</p>
 </section>
 <section id="java-wrap-wrapped">
-<span id="api-5a5979141c7581d88c50fcf1c0dfa864"></span><h2><span class="section-number">6.65.17. </span>JAVA.wrap(Wrapped)<a class="headerlink" href="#java-wrap-wrapped" title="Link to this heading">¶</a></h2>
+<span id="api-5a5979141c7581d88c50fcf1c0dfa864"></span><h2><span class="section-number">6.72.18. </span>JAVA.wrap(Wrapped)<a class="headerlink" href="#java-wrap-wrapped" title="Link to this heading">¶</a></h2>
 <p>`wrap` returns a `java` value which wraps a Kink value.</p>
 <p>`Wrapped` can be a value of any type. `wrap` returns a `java` value (Wrapped, org.kink_lang.kink.Val).</p>
 <p>`Wrapped` can be extracted from the result `java` value using `unwrap` method.</p>
@@ -766,71 +774,65 @@
 </div>
 </section>
 <section id="java-true">
-<span id="api-668a1a6bcf8e031fbcc5e57fef6846f4"></span><h2><span class="section-number">6.65.18. </span>JAVA.true<a class="headerlink" href="#java-true" title="Link to this heading">¶</a></h2>
+<span id="api-668a1a6bcf8e031fbcc5e57fef6846f4"></span><h2><span class="section-number">6.72.19. </span>JAVA.true<a class="headerlink" href="#java-true" title="Link to this heading">¶</a></h2>
 <p>`true` returns a `java` value (Boolean.TRUE, boolean).</p>
 </section>
 <section id="java-false">
-<span id="api-53bf40a4b1c53f68d26a93509239da0e"></span><h2><span class="section-number">6.65.19. </span>JAVA.false<a class="headerlink" href="#java-false" title="Link to this heading">¶</a></h2>
+<span id="api-53bf40a4b1c53f68d26a93509239da0e"></span><h2><span class="section-number">6.72.20. </span>JAVA.false<a class="headerlink" href="#java-false" title="Link to this heading">¶</a></h2>
 <p>`false` returns a `java` value (Boolean.FALSE, boolean).</p>
 </section>
 <section id="java-null">
-<span id="api-957c8217fb6034302756d828be9029a2"></span><h2><span class="section-number">6.65.20. </span>JAVA.null<a class="headerlink" href="#java-null" title="Link to this heading">¶</a></h2>
+<span id="api-957c8217fb6034302756d828be9029a2"></span><h2><span class="section-number">6.72.21. </span>JAVA.null<a class="headerlink" href="#java-null" title="Link to this heading">¶</a></h2>
 <p>`null` returns a `java` value (null, java.lang.Object).</p>
 </section>
 <section id="java-runtime">
-<span id="api-b1e32ad9d629e1428f9e2519196b83a2"></span><h2><span class="section-number">6.65.21. </span>JAVA.runtime<a class="headerlink" href="#java-runtime" title="Link to this heading">¶</a></h2>
+<span id="api-b1e32ad9d629e1428f9e2519196b83a2"></span><h2><span class="section-number">6.72.22. </span>JAVA.runtime<a class="headerlink" href="#java-runtime" title="Link to this heading">¶</a></h2>
 <p>`runtime` returns the current runtime.</p>
 <p>The result is a `java` value (vm, org.kink_lang.kink.Vm), where `vm` is the current runtime.</p>
 </section>
 <section id="java-boolean-class">
-<span id="api-d8227633c2aa5e02ffed7e4a5881a4fa"></span><h2><span class="section-number">6.65.22. </span>JAVA.boolean_class<a class="headerlink" href="#java-boolean-class" title="Link to this heading">¶</a></h2>
+<span id="api-d8227633c2aa5e02ffed7e4a5881a4fa"></span><h2><span class="section-number">6.72.23. </span>JAVA.boolean_class<a class="headerlink" href="#java-boolean-class" title="Link to this heading">¶</a></h2>
 <p>`boolean_class` returns a `java` value (boolean.class, java.lang.Class).</p>
 </section>
 <section id="java-char-class">
-<span id="api-70b803d4f29ba5608523a0724ba37e46"></span><h2><span class="section-number">6.65.23. </span>JAVA.char_class<a class="headerlink" href="#java-char-class" title="Link to this heading">¶</a></h2>
+<span id="api-70b803d4f29ba5608523a0724ba37e46"></span><h2><span class="section-number">6.72.24. </span>JAVA.char_class<a class="headerlink" href="#java-char-class" title="Link to this heading">¶</a></h2>
 <p>`char_class` returns a `java` value (char.class, java.lang.Class).</p>
 </section>
 <section id="java-byte-class">
-<span id="api-d94bffd9f1207087666acd768694c073"></span><h2><span class="section-number">6.65.24. </span>JAVA.byte_class<a class="headerlink" href="#java-byte-class" title="Link to this heading">¶</a></h2>
+<span id="api-d94bffd9f1207087666acd768694c073"></span><h2><span class="section-number">6.72.25. </span>JAVA.byte_class<a class="headerlink" href="#java-byte-class" title="Link to this heading">¶</a></h2>
 <p>`byte_class` returns a `java` value (byte.class, java.lang.Class).</p>
 </section>
 <section id="java-short-class">
-<span id="api-4d1ed496b29b42fabe4d1705ad13869e"></span><h2><span class="section-number">6.65.25. </span>JAVA.short_class<a class="headerlink" href="#java-short-class" title="Link to this heading">¶</a></h2>
+<span id="api-4d1ed496b29b42fabe4d1705ad13869e"></span><h2><span class="section-number">6.72.26. </span>JAVA.short_class<a class="headerlink" href="#java-short-class" title="Link to this heading">¶</a></h2>
 <p>`short_class` returns a `java` value (short.class, java.lang.Class).</p>
 </section>
 <section id="java-int-class">
-<span id="api-5e9e7d1a2a20b93d99c8a2cbf391b0f1"></span><h2><span class="section-number">6.65.26. </span>JAVA.int_class<a class="headerlink" href="#java-int-class" title="Link to this heading">¶</a></h2>
+<span id="api-5e9e7d1a2a20b93d99c8a2cbf391b0f1"></span><h2><span class="section-number">6.72.27. </span>JAVA.int_class<a class="headerlink" href="#java-int-class" title="Link to this heading">¶</a></h2>
 <p>`int_class` returns a `java` value (int.class, java.lang.Class).</p>
 </section>
 <section id="java-long-class">
-<span id="api-ff84613832422dbbe7fc0adba188436e"></span><h2><span class="section-number">6.65.27. </span>JAVA.long_class<a class="headerlink" href="#java-long-class" title="Link to this heading">¶</a></h2>
+<span id="api-ff84613832422dbbe7fc0adba188436e"></span><h2><span class="section-number">6.72.28. </span>JAVA.long_class<a class="headerlink" href="#java-long-class" title="Link to this heading">¶</a></h2>
 <p>`long_class` returns a `java` value (long.class, java.lang.Class).</p>
 </section>
 <section id="java-float-class">
-<span id="api-af66f24d45df371674b11633d8b8b5d1"></span><h2><span class="section-number">6.65.28. </span>JAVA.float_class<a class="headerlink" href="#java-float-class" title="Link to this heading">¶</a></h2>
+<span id="api-af66f24d45df371674b11633d8b8b5d1"></span><h2><span class="section-number">6.72.29. </span>JAVA.float_class<a class="headerlink" href="#java-float-class" title="Link to this heading">¶</a></h2>
 <p>`float_class` returns a `java` value (float.class, java.lang.Class).</p>
 </section>
 <section id="java-double-class">
-<span id="api-e597da2d15b51babc3cc52b409fcc606"></span><h2><span class="section-number">6.65.29. </span>JAVA.double_class<a class="headerlink" href="#java-double-class" title="Link to this heading">¶</a></h2>
+<span id="api-e597da2d15b51babc3cc52b409fcc606"></span><h2><span class="section-number">6.72.30. </span>JAVA.double_class<a class="headerlink" href="#java-double-class" title="Link to this heading">¶</a></h2>
 <p>`double_class` returns a `java` value (double.class, java.lang.Class).</p>
 </section>
 <section id="java-void-class">
-<span id="api-475b77f7ab3ee5002b9a6068c89cf7c8"></span><h2><span class="section-number">6.65.30. </span>JAVA.void_class<a class="headerlink" href="#java-void-class" title="Link to this heading">¶</a></h2>
+<span id="api-475b77f7ab3ee5002b9a6068c89cf7c8"></span><h2><span class="section-number">6.72.31. </span>JAVA.void_class<a class="headerlink" href="#java-void-class" title="Link to this heading">¶</a></h2>
 <p>`void_class` returns a `java` value (void.class, java.lang.Class).</p>
 </section>
-<section id="java-class-class-name-config">
-<span id="api-c3c0d3752dd6273532d79005e7497eaa"></span><h2><span class="section-number">6.65.31. </span>JAVA.class(Class_name ...[$config={}])<a class="headerlink" href="#java-class-class-name-config" title="Link to this heading">¶</a></h2>
+<section id="java-class-class-name">
+<span id="api-a12b423b2635f4afc13ad91df4411c9b"></span><h2><span class="section-number">6.72.32. </span>JAVA.class(Class_name)<a class="headerlink" href="#java-class-class-name" title="Link to this heading">¶</a></h2>
 <p>`class` looks up a class by the binary name `Class_name`.</p>
-<p>Config methods:</p>
-<p>• C.on_success($success): default = VAL.identity</p>
-<p>• C.on_error($error): default = a function which raises an exception</p>
-<p>`class` function loads the specified class, using the reflection access of the unnamed module of the class loader from which org.kink_lang.kink.Vm class of the current runtime is loaded.</p>
-<p>If the class `klass` is found, `class` tail-calls $success with a `java` value (klass, java.lang.Class).</p>
-<p>If the class is not found, `class` tail-calls $error with no arg.</p>
+<p>`class` function loads the specified class, using the reflection access of the unnamed module of the class loader from which org.kink_lang.kink.Vm class of the current runtime is loaded. If the class `klass` is found, `class` returns a `java` value (klass, java.lang.Class).</p>
 <p class="rubric">Preconditions</p>
 <p>`Class_name` must be a `str` value.</p>
-<p>$success must be a function which takes a `java` value.</p>
-<p>$error must be a thunk.</p>
+<p>The class specified by `Class_name` must be available from the class loader which loaded the runtime. The class must be public.</p>
 </section>
 </section>
 
@@ -839,11 +841,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-iter-ITER.html"><span class="section-number">6.64. </span>kink/iter/ITER</a>
+        «&#160;&#160;<a href="kink-iter-ITER.html"><span class="section-number">6.71. </span>kink/iter/ITER</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="kink-javahost-JAVA_CHANNEL_INPUT.html"><span class="section-number">6.66. </span>kink/javahost/JAVA_CHANNEL_INPUT</a>&#160;&#160;»
+        <a href="kink-javahost-JAVA_CHANNEL_INPUT.html"><span class="section-number">6.73. </span>kink/javahost/JAVA_CHANNEL_INPUT</a>&#160;&#160;»
         </p>
 
       </div>

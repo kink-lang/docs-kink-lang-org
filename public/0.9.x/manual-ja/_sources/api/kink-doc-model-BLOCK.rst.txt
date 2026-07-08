@@ -2,10 +2,6 @@
 kink\/doc\/model\/BLOCK
 =======================
 
-Provides blocks in sections of docs\.
-
-A block is either a paragraph block or a preformatted code block\.
-
 .. contents::
     :local:
     :backlinks: none
@@ -15,87 +11,80 @@ A block is either a paragraph block or a preformatted code block\.
 type block
 ==========
 
-A block is a text block in a section of a doc page\.
+\`block\` is a block in a kinkdoc document\.
 
-.. _api-373399257a68d0434305ac53476b4654:
+A \`block\` has following properties\:
 
-Block\.text
------------
+\• Type\: a \`block\_type\` which corresponds to \"type\" property in JSON data
 
-Block\.text returns the text of the block\.
+\• Text\: a \`str\` which corresponds to \"text\" property in JSON data
 
 .. _api-51283f777897decab1f7eeabd642f013:
 
 Block\.type
 -----------
 
-\`type\` method returns the type of \`Block\` in block\_type enum type\.
+\`type\` method returns \`Type\` property of \`Block\`\.
+
+.. _api-373399257a68d0434305ac53476b4654:
+
+Block\.text
+-----------
+
+\`text\` returns \`Text\` property of \`Block\`\.
 
 .. _api-a2685142858e5e776e66e15ee1d0072c:
 
 Block\.to\_json\_val
 --------------------
 
-Block\.to\_json\_val converts the block to a JSON val\.
+\`to\_json\_val\` converts \`Block\` to a JSON value\.
 
-Example\:
+.. rubric:: Example
 
 .. code:: kink
 
     :BLOCK.require_from('kink/doc/model/')
+    :BLOCK_TYPE.require_from('kink/doc/model/')
         
-    :Para <- BLOCK.new_paragraph('hey!')
+    :Para <- BLOCK.new(BLOCK_TYPE.paragraph 'hey!')
     stdout.print_line(Para.to_json_val.repr)
     # => Flat_map("text" "hey!"; "type" "paragraph")
         
-    :Code <- BLOCK.new_code("1 + 2\n")
+    :Code <- BLOCK.new(BLOCK_TYPE.code "1 + 2\n")
     stdout.print_line(Code.to_json_val.repr)
     # => Flat_map("text" "1 + 2\n"; "type" "code")
 
-.. _api-77b270d10e356fbe85428df97c388216:
+.. _api-6684b832a43d26078d9d3dce1accfe56:
 
-Block\.op\_eq\(Another\_block\)
--------------------------------
+X \=\= Y
+--------
 
-Two blocks are equal when they are of the same variant \(paragraph or code\)\, and have the same text\.
+Two \`block\` values are equal when they have equal \`Type\` properties and \`Text\` properties\.
 
-.. _api-0275ac0a2bdaf70c13adaf6377960399:
+.. rubric:: Precondition
 
-BLOCK\.new\_paragraph\(Text\)
-=============================
+\`Y\` must be a \`block\`\.
 
-\`new\_paragraph\` makes a block whose type is \"paragraph\"\.
+.. _api-b218008aa5d51547dacb4daf4e4e0a36:
 
-Precondition\:
+BLOCK\.new\(Type Text\)
+=======================
 
-\• Text must be a str matching the pattern “\[\^\\u0000\-\\u0020\\u007f\]\(\[\^\\u0000\-\\u001f\\u007f\]\*\[\^\\u0000\-\\u0020\\u007f\]\)\?”
+\`new\` returns a new \`block\` value with properties \`Type\` and \`Text\`\.
 
-.. _api-659c6bb5d1f25bc54db1c9489b951744:
+.. rubric:: Preconditions
 
-BLOCK\.new\_code\(Text\)
-========================
+\`Type\` must be a \`block\_type\`\.
 
-\`new\_code\` makes a block whose type is \"code\"\.
+\`Text\` must be a \`str\`\.
 
-Precondition\:
-
-\• \`Text\` must be a str matching the pattern “\(\[\^\\u0000\-\\u001f\\u007f\]\*\\n\)\+”
-
-.. _api-f0d7cdc6977af398aeafbb0166a10cab:
-
-BLOCK\.new\_heading\(Text\)
-===========================
-
-\`new\_heading\` makes a block whose type is \"heading\"\.
-
-Precondition\:
-
-\• Text must be a str matching the pattern “\[\^\\u0000\-\\u0020\\u007f\]\(\[\^\\u0000\-\\u001f\\u007f\]\*\[\^\\u0000\-\\u0020\\u007f\]\)\?”
+\`Type\.valid\_text\?\(Text\)\` must be true\.
 
 .. _api-97d330a2e5b386b1db3899fb2d5af37a:
 
 BLOCK\.is\?\(Val\)
 ==================
 
-BLOCK\.is\? returns whether Val is a block\.
+\`is\?\` returns whether \`Val\` is a \`block\`\.
 

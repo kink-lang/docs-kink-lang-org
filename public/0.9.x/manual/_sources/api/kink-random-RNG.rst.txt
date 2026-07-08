@@ -35,10 +35,9 @@ Example\:
 .. code:: kink
 
     :PRNG.require_from('kink/random/')
-    :VEC.require_from('kink/')
         
     :Rng <- PRNG.from_seed(42)
-    :Nums <- VEC.from_each(10.times.map{ Rng.gen_int(3) })
+    :Nums <- 10.times.map{ Rng.gen_int(3) }.vec
     stdout.print_line(Nums.repr)
     # => [2 0 2 2 1 0 2 1 2 2]
 
@@ -79,10 +78,9 @@ Example\:
 .. code:: kink
 
     :PRNG.require_from('kink/random/')
-    :VEC.require_from('kink/')
         
     :Rng <- PRNG.from_seed(42)
-    :Bools <- VEC.from_each(10.times.map{ Rng.gen_bool })
+    :Bools <- 10.times.map{ Rng.gen_bool }.vec
     stdout.print_line(Bools.repr)
     # => [false true true false true true false false false true]
 

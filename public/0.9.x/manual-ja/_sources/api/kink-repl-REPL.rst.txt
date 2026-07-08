@@ -17,9 +17,9 @@ REPL\.run\(\.\.\.\[\$config \= \{\}\]\)
 
 \$config must take \`Config\` val\. \`Config\` val has the following configuration methods\.
 
-\• Config\.printer\(Printer\)\: configures \`Printer\`   as the printer by which the REPL tool prints out prompts\, messages\, and results\.   If \`printer\` is not called\, the REPL tool uses stdout\.
+\• Config\.printer\(Printer\)\: configures \`Printer\` as the printer by which the REPL tool prints out prompts\, messages\, and results\. If \`printer\` is not called\, the REPL tool uses stdout\.
 
-\• Config\.scanner\(Scanner\)\: configures \`Scanner\`   as the scanner from which the REPL tool scans programs\.   If \`scanner\` is not called\, the REPL tool uses stdin\.
+\• Config\.scanner\(Scanner\)\: configures \`Scanner\` as the scanner from which the REPL tool scans programs\. If \`scanner\` is not called\, the REPL tool uses stdin\.
 
-\• Config\.binding\(Binding\)\: sets \`Binding\`   as the binding with which programs are run\.   If \`binding\` is not called\, the REPL tool makes a new empty binding\.
+\• Config\.binding\(Binding\)\: sets \`Binding\` as the binding with which programs are run\. If \`binding\` is not called\, the REPL tool makes a new empty binding\.
 

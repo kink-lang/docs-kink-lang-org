@@ -15,7 +15,13 @@ BIN\_OUTPUT\.new
 
 The result \`output\` also provides \`bin\` method\. It returns a \`bin\` val which joins bytes passed to \`write\` method\.
 
-\.flush and \.close methods of the result \`output\` do nothing\.
+.. rubric:: flush
+
+\`flush\` method does nothing\. It just tail\-calls \$success\, if the \`output\` is not closed\.
+
+.. rubric:: close
+
+If the \`output\` is closed\, \`write\` and \`flush\` methods cause an IO error\, like other \`output\` implementations based on system resources\.
 
 .. rubric:: Example
 
@@ -23,12 +29,16 @@ The result \`output\` also provides \`bin\` method\. It returns a \`bin\` val wh
 
     :BIN_OUTPUT.require_from('kink/io/')
     :BIN.require_from('kink/')
+    :CONTROL.require_from('kink/')
         
     :make_bin <- {
-      :Out = BIN_OUTPUT.new
-      Out.write(BIN.of(1 2 3))
-      Out.write(BIN.of(4))
-      Out.bin
+      CONTROL.with_finally{(:finally)
+        :Out = BIN_OUTPUT.new
+        finally{ Out.close }
+        Out.write(BIN.of(1 2 3))
+        Out.write(BIN.of(4))
+        Out.bin
+      }
     }
     stdout.print_line(make_bin.repr) # => (bin 0x01 0x02 0x03 0x04)
 

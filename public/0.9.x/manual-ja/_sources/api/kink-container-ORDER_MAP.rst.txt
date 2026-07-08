@@ -1,26 +1,55 @@
-=============================
-kink\/container\/ORDERED\_MAP
-=============================
+===========================
+kink\/container\/ORDER\_MAP
+===========================
 
 .. contents::
     :local:
     :backlinks: none
 
-.. _api-c739611a6f4828963065637a4ef9f43e:
+.. _api-0cbf7955b1e3c250b6742cf3a51d866d:
 
-type ordered\_map
-=================
+type order\_map
+===============
 
-\`ordered\_map\` is a subtype of \`map\` type which supports total ordering of keys\. Equivalence relation of keys is derived from the toal order\.
+\`order\_map\` is a subtype of \`map\` type which supports total ordering of keys\. Equivalence relation of keys is derived from the toal order\.
 
-.. _api-33c96f85ef8e3c608fccab2e06618c93:
+.. rubric:: Total order relation of keys
+
+The total order relation of keys\, \`up\-to\`\, must suffice the following conditions for all X\, Y\, and Z in the domain of keys\.
+
+\• reflexive\: X up\-to X
+
+\• transitive\: if X up\-to Y \&\& Y up\-to Z then X up\-to Z
+
+\• antisymmetric\: if X up\-to Y \&\& Y up\-to X then X equivalent\-to Y
+
+\• strongly connected\: X up\-to Y \|\| Y up\-to X
+
+The antisymmetry condition is the definition of \`equivalent\-to\`\, which is the equivalence relation of keys\.
+
+.. rubric:: Methods
+
+\`order\_map\` values have all the methods of \`map\`\.
+
+Additionally\, \`order\_map\` values have the following methods\.
+
+.. _api-559506b294a3917ca02b22179f799cbd:
+
+Map\.order
+----------
+
+\`order\` returns the function of the total order relation of keys of \`Map\`\.
+
+The result function\, \$up\_to\?\, is a function which takes two args \`X\` and \`Y\`\. \`up\_to\?\(X Y\)\` returns the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total\-order relation of keys\.
+
+.. _api-f258d5c7d74371abb66d0870cbac6411:
 
 Map\.key\_iter\(\.\.\.\[Min\_key\]\)
 ------------------------------------
 
 \`key\_iter\` returns an \`iter\` of keys following the order\. If \`Min\_key\` is passed\, the iter will have the keys which are bigger than or equivalent to \`Min\_key\`\. If \`Min\_key\` is not passed\, the iter will have all the keys of \`Map\`\.
 
-\`key\_iter\` method of \`ordered\_map\` type extends the contract of \`key\_iter\` of \`map\` type\.
+\`key\_iter\` method of \`order\_map\` type extends the contract of \`key\_iter\` of \`map\` type\.
 
 .. rubric:: Precondition
 
@@ -57,14 +86,14 @@ Map\.key\_iter\(\.\.\.\[Min\_key\]\)
     #   "grault"
     #   "qux"
 
-.. _api-59ee186c19f6fad7a99cdecb2d43e526:
+.. _api-cdbc43be38dd6a361389935aff94b562:
 
 Map\.pair\_iter\(\.\.\.\[Min\_key\]\)
 -------------------------------------
 
 \`pair\_iter\` returns an \`iter\` of pairs \[Key Val\] following the order\. If \`Min\_key\` is passed\, the iter will have pairs whose keys are bigger than or equivalent to \`Min\_key\`\. If \`Min\_key\` is not passed\, the iter will have all the key\-value pairs of \`Map\`\.
 
-\`pair\_iter\` method of \`ordered\_map\` type extends the constraints of \`pair\_iter\` of \`map\` type\.
+\`pair\_iter\` method of \`order\_map\` type extends the constraints of \`pair\_iter\` of \`map\` type\.
 
 .. rubric:: Precondition
 
@@ -102,7 +131,7 @@ Map\.pair\_iter\(\.\.\.\[Min\_key\]\)
     #   ["grault" "GRAULT"]
     #   ["qux" "QUX"]
 
-.. _api-15fe37c1c336d43d6c98176fdfe790e4:
+.. _api-d969587e7eb1552a57543e0f8e417167:
 
 Map\.front\_key
 ---------------
@@ -128,7 +157,7 @@ Map\.front\_key
     )
     stdout.print_line(Map.front_key.repr) # => "bar"
 
-.. _api-02971f1592885599120608f1c07b6b38:
+.. _api-8efdd5840695bd9e2c8e884f0ce8b4a1:
 
 Map\.back\_key
 --------------
@@ -154,10 +183,29 @@ Map\.back\_key
     )
     stdout.print_line(Map.back_key.repr) # => "qux"
 
-.. _api-d001b044ab65a09cf27f8d71c776152a:
+.. _api-94f5f25275ebf282ab09c6fdd81c3f8a:
 
-ORDERED\_MAP\.is\?\(Val\)
-=========================
+ORDER\_MAP\.is\?\(Val\)
+=======================
 
-\`is\?\` returns whether \`Val\` is an \`ordered\_map\`\.
+\`is\?\` returns whether \`Val\` is an \`order\_map\`\.
+
+.. _api-7a855273ef06776fa9d58a13221b8928:
+
+ORDER\_MAP\.mixin
+=================
+
+\`mixin\` returns a mixin trait which provides default implementations of the following \`order\_map\` methods\.
+
+\• eq
+
+\• get
+
+\• have\_key\?
+
+\• any\?
+
+\• key\_iter
+
+\• op\_eq \/ \`\=\=\` operator
 

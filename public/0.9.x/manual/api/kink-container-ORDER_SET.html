@@ -5,26 +5,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.34. kink/container/ORDERED_SET &#8212; Kink 0.9.5-beta</title>
+    <title>6.34. kink/container/ORDER_SET &#8212; Kink 0.9.6-beta</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
     <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=165f2b9a"></script>
+    <script src="../_static/documentation_options.js?v=6ce99075"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="6.35. kink/container/SET" href="kink-container-SET.html" />
-    <link rel="prev" title="6.33. kink/container/ORDERED_MAP" href="kink-container-ORDERED_MAP.html" /> 
+    <link rel="prev" title="6.33. kink/container/ORDER_MAP" href="kink-container-ORDER_MAP.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.5-beta</span></a></h1>
-        <h2 class="heading"><span>6.34. kink/container/ORDERED_SET</span></h2>
+          <span>Kink 0.9.6-beta</span></a></h1>
+        <h2 class="heading"><span>6.34. kink/container/ORDER_SET</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-container-ORDERED_MAP.html"><span class="section-number">6.33. </span>kink/container/ORDERED_MAP</a>
+        «&#160;&#160;<a href="kink-container-ORDER_MAP.html"><span class="section-number">6.33. </span>kink/container/ORDER_MAP</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -35,26 +35,36 @@
       <div class="content" role="main">
         
         
-  <section id="kink-container-ordered-set">
-<h1><span class="section-number">6.34. </span>kink/container/ORDERED_SET<a class="headerlink" href="#kink-container-ordered-set" title="Link to this heading">¶</a></h1>
+  <section id="kink-container-order-set">
+<h1><span class="section-number">6.34. </span>kink/container/ORDER_SET<a class="headerlink" href="#kink-container-order-set" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#type-ordered-set" id="id1">type ordered_set</a></p>
+<li><p><a class="reference internal" href="#type-order-set" id="id1">type order_set</a></p>
 <ul>
-<li><p><a class="reference internal" href="#set-iter-min" id="id2">Set.iter(...[Min])</a></p></li>
-<li><p><a class="reference internal" href="#set-front" id="id3">Set.front</a></p></li>
-<li><p><a class="reference internal" href="#set-back" id="id4">Set.back</a></p></li>
-<li><p><a class="reference internal" href="#set-pop-front" id="id5">Set.pop_front</a></p></li>
-<li><p><a class="reference internal" href="#set-pop-back" id="id6">Set.pop_back</a></p></li>
+<li><p><a class="reference internal" href="#set-order" id="id2">Set.order</a></p></li>
+<li><p><a class="reference internal" href="#set-iter-min" id="id3">Set.iter(...[Min])</a></p></li>
+<li><p><a class="reference internal" href="#set-front" id="id4">Set.front</a></p></li>
+<li><p><a class="reference internal" href="#set-back" id="id5">Set.back</a></p></li>
+<li><p><a class="reference internal" href="#set-pop-front" id="id6">Set.pop_front</a></p></li>
+<li><p><a class="reference internal" href="#set-pop-back" id="id7">Set.pop_back</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#ordered-set-is-val" id="id7">ORDERED_SET.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#order-set-is-val" id="id8">ORDER_SET.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#order-set-mixin" id="id9">ORDER_SET.mixin</a></p></li>
 </ul>
 </nav>
-<section id="type-ordered-set">
-<span id="api-668819c2b69c05fb5654d4939a1105e7"></span><h2><span class="section-number">6.34.1. </span>type ordered_set<a class="headerlink" href="#type-ordered-set" title="Link to this heading">¶</a></h2>
-<p>`ordered_set` is a subtype of `set` type in which the elements are ordered in the toal order. The equivalence relation of elements is derived from the total order relation.</p>
-<p>The following methods inherited from `set` guarantee that elements appear as they are ordered.</p>
+<section id="type-order-set">
+<span id="api-9b02521c954a1a109d86a300b5473a39"></span><h2><span class="section-number">6.34.1. </span>type order_set<a class="headerlink" href="#type-order-set" title="Link to this heading">¶</a></h2>
+<p>`order_set` is a subtype of `set` type in which the elements are ordered in the toal order. The equivalence relation of elements is derived from the total order relation.</p>
+<p class="rubric">Total order relation of elements</p>
+<p>The total order relation of elements, `up-to`, must suffice the following conditions for all X, Y, and Z in the domain of elements.</p>
+<p>• reflexive: X up-to X</p>
+<p>• transitive: if X up-to Y &amp;&amp; Y up-to Z then X up-to Z</p>
+<p>• antisymmetric: if X up-to Y &amp;&amp; Y up-to X then X equivalent-to Y</p>
+<p>• strongly connected: X up-to Y || Y up-to X</p>
+<p>The antisymmetry condition is the definition of `equivalent-to`, which is the equivalence relation of elements.</p>
+<p class="rubric">Methods</p>
+<p>`order_set` values have all the methods of `set`. The following methods inherited from `set` guarantee that elements appear as they are ordered by `up-to`.</p>
 <p>• each</p>
 <p>• all?</p>
 <p>• any?</p>
@@ -63,8 +73,14 @@
 <p>• reduce</p>
 <p>• have_all?</p>
 <p>• have_any?</p>
+<p>Additionally, `order_set` values have the following methods.</p>
+<section id="set-order">
+<span id="api-30e8a5344ac1bb01082234400526f40a"></span><h3><span class="section-number">6.34.1.1. </span>Set.order<a class="headerlink" href="#set-order" title="Link to this heading">¶</a></h3>
+<p>`order` returns the function of the total order relation of elements of `Set`.</p>
+<p>The result function, $up_to?, is a function which takes two args `X` and `Y`. `up_to?(X Y)` returns the bool value of `X up-to Y`, where `up-to` is the total order relation of elements.</p>
+</section>
 <section id="set-iter-min">
-<span id="api-2fd2b7ab6519594389ea7aec9583603d"></span><h3><span class="section-number">6.34.1.1. </span>Set.iter(...[Min])<a class="headerlink" href="#set-iter-min" title="Link to this heading">¶</a></h3>
+<span id="api-f6e64adf6d25b6ec89c304ecc0f2b031"></span><h3><span class="section-number">6.34.1.2. </span>Set.iter(...[Min])<a class="headerlink" href="#set-iter-min" title="Link to this heading">¶</a></h3>
 <p>`iter` method returns an `iter` of elements of `Set` in the order of `Set`.</p>
 <p>If `Min` is given, the result `iter` will have elements bigger than or equivalent to `Min`. If `Min` is not given, the result `iter` will have all the elements of `Set`.</p>
 <p>This method is an extension of `iter` method of type `set`.</p>
@@ -105,7 +121,7 @@
 </div>
 </section>
 <section id="set-front">
-<span id="api-eb09b63f8335ade2deaf65705154c4c0"></span><h3><span class="section-number">6.34.1.2. </span>Set.front<a class="headerlink" href="#set-front" title="Link to this heading">¶</a></h3>
+<span id="api-d67794470bd884b28a4e189350e49956"></span><h3><span class="section-number">6.34.1.3. </span>Set.front<a class="headerlink" href="#set-front" title="Link to this heading">¶</a></h3>
 <p>`front` returns the element which comes first in the order of `Set`.</p>
 <p class="rubric">Precondition</p>
 <p>`Set` must not be empty.</p>
@@ -118,7 +134,7 @@
 </div>
 </section>
 <section id="set-back">
-<span id="api-a0bd6260be86c5f4dd202d5e5c78fb31"></span><h3><span class="section-number">6.34.1.3. </span>Set.back<a class="headerlink" href="#set-back" title="Link to this heading">¶</a></h3>
+<span id="api-3248a87e5de396c5cc8414255e6e4544"></span><h3><span class="section-number">6.34.1.4. </span>Set.back<a class="headerlink" href="#set-back" title="Link to this heading">¶</a></h3>
 <p>`back` returns the element which comes last in the order of `Set`.</p>
 <p class="rubric">Precondition</p>
 <p>`Set` must not be empty.</p>
@@ -131,7 +147,7 @@
 </div>
 </section>
 <section id="set-pop-front">
-<span id="api-d45f2c04b1f98e8df43a9513775ce11e"></span><h3><span class="section-number">6.34.1.4. </span>Set.pop_front<a class="headerlink" href="#set-pop-front" title="Link to this heading">¶</a></h3>
+<span id="api-826228605169c7cd9e40d102ea040af1"></span><h3><span class="section-number">6.34.1.5. </span>Set.pop_front<a class="headerlink" href="#set-pop-front" title="Link to this heading">¶</a></h3>
 <p>`pop_front` pops the element which comes first in the order of `Set`.</p>
 <p class="rubric">Precondition</p>
 <p>`Set` must not be empty.</p>
@@ -146,7 +162,7 @@
 </div>
 </section>
 <section id="set-pop-back">
-<span id="api-b74c028adff7674a0e9a934e49884c31"></span><h3><span class="section-number">6.34.1.5. </span>Set.pop_back<a class="headerlink" href="#set-pop-back" title="Link to this heading">¶</a></h3>
+<span id="api-9a7c42c7d37d01f06368aad258f54bbe"></span><h3><span class="section-number">6.34.1.6. </span>Set.pop_back<a class="headerlink" href="#set-pop-back" title="Link to this heading">¶</a></h3>
 <p>`pop_back` pops the element which comes last in the order of `Set`.</p>
 <p class="rubric">Precondition</p>
 <p>`Set` must not be empty.</p>
@@ -161,9 +177,24 @@
 </div>
 </section>
 </section>
-<section id="ordered-set-is-val">
-<span id="api-1aff98ca1aad95dc9325f81b624eb1fc"></span><h2><span class="section-number">6.34.2. </span>ORDERED_SET.is?(Val)<a class="headerlink" href="#ordered-set-is-val" title="Link to this heading">¶</a></h2>
-<p>`is?` returns whether `Val` is an `ordered_set`.</p>
+<section id="order-set-is-val">
+<span id="api-4740b8f85bdf977bcf7f48506e553ac8"></span><h2><span class="section-number">6.34.2. </span>ORDER_SET.is?(Val)<a class="headerlink" href="#order-set-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is an `order_set`.</p>
+</section>
+<section id="order-set-mixin">
+<span id="api-c0d413cfd3b8489668c7358ff8f26706"></span><h2><span class="section-number">6.34.3. </span>ORDER_SET.mixin<a class="headerlink" href="#order-set-mixin" title="Link to this heading">¶</a></h2>
+<p>`mixin` returns a mixin trait which provides default implementations of the following `order_set` methods.</p>
+<p>• eq</p>
+<p>• each</p>
+<p>• all?</p>
+<p>• any?</p>
+<p>• count</p>
+<p>• fold</p>
+<p>• reduce</p>
+<p>• have_all?</p>
+<p>• have_any?</p>
+<p>• append</p>
+<p>• op_eq / `==` operator</p>
 </section>
 </section>
 
@@ -172,7 +203,7 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="kink-container-ORDERED_MAP.html"><span class="section-number">6.33. </span>kink/container/ORDERED_MAP</a>
+        «&#160;&#160;<a href="kink-container-ORDER_MAP.html"><span class="section-number">6.33. </span>kink/container/ORDER_MAP</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
