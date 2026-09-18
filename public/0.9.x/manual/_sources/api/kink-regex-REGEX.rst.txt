@@ -2,27 +2,28 @@
 kink\/regex\/REGEX
 ==================
 
-The mod provides a regular expression engine backed by java\.util\.regex package\.
+The mod provides a regular expression engine backed by java.util.regex package.
 
-The syntax of regex patterns is same as one of Java\. See\:
+The syntax of regex patterns is same as one of Java. See\:
 
-https\:\/\/docs\.oracle\.com\/en\/java\/javase\/21\/docs\/api\/java\.base\/java\/util\/regex\/Pattern\.html
+https\:\/\/docs.oracle.com\/en\/java\/javase\/21\/docs\/api\/java.base\/java\/util\/regex\/Pattern.html
 
-There are three basic types\.
+There are three basic types.
 
-\• regex\: A regular expression pattern\. A regex val provides features such as matching\, searching\, replacing and splitting\.
+\• regex\: A regular expression pattern. A regex val provides features such as matching, searching, replacing and splitting.
 
-\• match\: A result of a successful matching\. A regex\_match contains groups\. See kink\/regex\/MATCH for details\.
+\• match\: A result of a successful matching. A regex_match contains groups. See kink\/regex\/MATCH for details.
 
-\• group\: A slice in the matched text\, which can be the entire slice of the regex\_match\, or a slice of a named capturing group\. See kink\/regex\/GROUP for details\.
+\• group\: A slice in the matched text, which can be the entire slice of the regex_match, or a slice of a named capturing group. See kink\/regex\/GROUP for details.
 
-\`match\` type is a subtype of \`group\`\, which represents the entire slice of the matched area\.
+\`match\` type is a subtype of \`group\`\, which represents the entire slice of the matched area.
 
-Regexes handle indices of code points\, in contrast to java\.util\.regex which handles indices of UTF\-16 code units\.
+Regexes handle indices of code points, in contrast to java.util.regex which handles indices of UTF\-16 code units.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Num_regex <- REGEX.compile('0x(?<Hex>[0-9a-f]+)|(?<Dec>[0-9]+)')
@@ -46,20 +47,21 @@ Regexes handle indices of code points\, in contrast to java\.util\.regex which h
 type regex
 ==========
 
-\`regex\` is a type of immutable regular expression pattern\.
+\`regex\` is a type of immutable regular expression pattern.
 
-\`regex\` provides features such as matching\, searching\, replacing and splitting\.
+\`regex\` provides features such as matching, searching, replacing and splitting.
 
 .. _api-b3b9e570d28891e2e479697327ccc5b7:
 
-Regex\.pattern
---------------
+Regex.pattern
+-------------
 
-\`pattern\` returns the pattern str from which the regex is made\.
+\`pattern\` returns the pattern str from which the regex is made.
 
 \=\= Example \=a\=
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Regex <- REGEX.compile('.*')
@@ -67,18 +69,19 @@ Regex\.pattern
 
 .. _api-badea547f1a1a1f2a26b3ea16e61716d:
 
-Regex\.accept\?\(Text\)
------------------------
+Regex.accept?\(Text\)
+---------------------
 
-\`accept\?\` returns whether the entire \`Text\` str matches the pattern of the regex
+\`accept?\` returns whether the entire \`Text\` str matches the pattern of the regex
 
 Precondition\:
 
-\• \`Text\` must be a str\.
+\• \`Text\` must be a str.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Verb_regex <- REGEX.compile('[a-z_][a-z0-9_?]*')
@@ -87,32 +90,33 @@ Precondition\:
 
 .. _api-2d4798ecb84f6b0444dc3418bb4960f4:
 
-Regex\.match\(Text \.\.\.\[\$config\=\{\}\]\)
----------------------------------------------
+Regex.match\(Text \.\.\.\[$config\=\{\}\]\)
+-------------------------------------------
 
-\`match\` tries to match the regex to the entire \`Text\` str\.
+\`match\` tries to match the regex to the entire \`Text\` str.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity\.
+\• C.on_success\($success\)\: default \= VAL.identity.
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception\.
+\• C.on_error\($error\)\: default \= a fun which raises an exception.
 
-If matched\, \`match\` tail\-calls \$success with a val of \`match\` type\.
+If matched, \`match\` tail\-calls $success with a val of \`match\` type.
 
-If not matched\, \`match\` tail\-calls \$error with no arg\.
+If not matched, \`match\` tail\-calls $error with no arg.
 
 .. rubric:: Preconditions
 
-\• \`Text\` must be a str\.
+\• \`Text\` must be a str.
 
-\• \$success must be a fun which takes a \`match\` val\.
+\• $success must be a fun which takes a \`match\` val.
 
-\• \$error must be a fun which takes no arg\.
+\• $error must be a fun which takes no arg.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
         
@@ -125,6 +129,7 @@ If not matched\, \`match\` tail\-calls \$error with no arg\.
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
         
@@ -144,34 +149,35 @@ If not matched\, \`match\` tail\-calls \$error with no arg\.
 
 .. _api-2c5cd9d4f21d040cbf6462c97c5f4897:
 
-Regex\.search\(Text Start\_pos \.\.\.\[\$config\=\{\}\]\)
----------------------------------------------------------
+Regex.search\(Text Start_pos \.\.\.\[$config\=\{\}\]\)
+------------------------------------------------------
 
-\`search\` searches for the first slice of the \`Text\` which the regex matches\. The search starts from \`Start\_pos\`\.
+\`search\` searches for the first slice of the \`Text\` which the regex matches. The search starts from \`Start_pos\`\.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+\• C.on_error\($error\)\: default \= a fun which raises an exception
 
-If the search succeeds\, \`search\` tail\-calls \$success with a \`match\` val\.
+If the search succeeds, \`search\` tail\-calls $success with a \`match\` val.
 
-If the search fails\, \`search\` tail\-calls \$error with no arg\.
+If the search fails, \`search\` tail\-calls $error with no arg.
 
 .. rubric:: Preconditions
 
 \• \`Text\` must be a str
 
-\• \`Start\_pos\` must be an int num in the range \[0\, Text\.size\]
+\• \`Start_pos\` must be an int num in the range \[0, Text.size\]
 
-\• \$success must be a fun which takes a \`match\` val
+\• $success must be a fun which takes a \`match\` val
 
-\• \$error must be a fun which takes no arg
+\• $error must be a fun which takes no arg
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
         
@@ -182,6 +188,7 @@ If the search fails\, \`search\` tail\-calls \$error with no arg\.
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
         
@@ -200,22 +207,23 @@ If the search fails\, \`search\` tail\-calls \$error with no arg\.
 
 .. _api-9ef5776bd51fc7e310ddc75679f41736:
 
-Regex\.search\_all\(Text\)
---------------------------
+Regex.search_all\(Text\)
+------------------------
 
-\`search\_all\` searches for all the slices of the \`Text\` which the regex matches\, and returns an iter of \`match\` vals for the found slices\.
+\`search_all\` searches for all the slices of the \`Text\` which the regex matches, and returns an iter of \`match\` vals for the found slices.
 
-The first search is attempted from the beginning of the Text\.
+The first search is attempted from the beginning of the Text.
 
-If a search from \`Ind\` results in a \`match\` for an empty slice\, the next search is attempted from \(Ind \+ 1\)\. Otherwise\, the next search is attempted from \`Match\.to\` of the current \`match\`\.
+If a search from \`Ind\` results in a \`match\` for an empty slice, the next search is attempted from \(Ind \+ 1\)\. Otherwise, the next search is attempted from \`Match.to\` of the current \`match\`\.
 
 .. rubric:: Precondition
 
-\• \`Text\` must be a str\.
+\• \`Text\` must be a str.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Hex_regex <- REGEX.compile('0x[0-9a-f]+')
@@ -231,24 +239,25 @@ If a search from \`Ind\` results in a \`match\` for an empty slice\, the next se
 
 .. _api-c5fb7eb660309b86c9e5de338c404808:
 
-Regex\.replace\_all\(Text \$match\_to\_str\)
---------------------------------------------
+Regex.replace_all\(Text $match_to_str\)
+---------------------------------------
 
-\`replace\_all\` replaces all the slices of the \`Text\` which the regex matches\.
+\`replace_all\` replaces all the slices of the \`Text\` which the regex matches.
 
-Searching is done in the way same as \`search\_all\`\.
+Searching is done in the way same as \`search_all\`\.
 
-Matched slices are replaced by \$match\_to\_str\. \$match\_to\_str must take a \`match\`\, and return a str\.
+Matched slices are replaced by $match_to_str. $match_to_str must take a \`match\`\, and return a str.
 
 .. rubric:: Precondition
 
-\• \`Text\` must be a str\.
+\• \`Text\` must be a str.
 
 .. rubric:: Example
 
 Convert hex literals to decimal\:
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :NUM.require_from('kink/')
@@ -265,22 +274,23 @@ Convert hex literals to decimal\:
 
 .. _api-7b06c7750e5600354c9e72621ad71df0:
 
-Regex\.split\(Text \.\.\.\[Max\_field\_count\]\)
-------------------------------------------------
+Regex.split\(Text \.\.\.\[Max_field_count\]\)
+---------------------------------------------
 
-\`split\` splits \`Text\` into a vec of str vals\, using the regex as the pattern of delimiters\.
+\`split\` splits \`Text\` into a vec of str vals, using the regex as the pattern of delimiters.
 
-If \`Max\_field\_count\` is specified\, spliting is performed at most \`Max\_field\_count \- 1\` times\. Thus\, the number of fields is no more than \`Max\_field\_count\`\.
+If \`Max_field_count\` is specified, spliting is performed at most \`Max_field_count \- 1\` times. Thus, the number of fields is no more than \`Max_field_count\`\.
 
-If \`Max\_field\_count\` is not specified\, splitting is performed on all the matches\.
+If \`Max_field_count\` is not specified, splitting is performed on all the matches.
 
 .. rubric:: Precondition
 
-\• \`Max\_field\_count\` must be an int num greater than or equal to 1
+\• \`Max_field_count\` must be an int num greater than or equal to 1
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Sep_regex <- REGEX.compile(' *, *')
@@ -297,34 +307,35 @@ If \`Max\_field\_count\` is not specified\, splitting is performed on all the ma
 
 .. _api-345987b2f55607253e0d7ea3e8c19fb8:
 
-REGEX\.compile\(Pattern \.\.\.\[\$config\]\)
-============================================
+REGEX.compile\(Pattern \.\.\.\[$config\]\)
+==========================================
 
 \`compile\` makes a regex from \`Pattern\`\.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity\.
+\• C.on_success\($success\)\: default \= VAL.identity.
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception\.
+\• C.on_error\($error\)\: default \= a fun which raises an exception.
 
-If \`Pattern\` can be compiled as a regex\, \`compile\` tail\-calls \$success with the created regex val\.
+If \`Pattern\` can be compiled as a regex, \`compile\` tail\-calls $success with the created regex val.
 
-If compilation hits a syntax error\, \`compile\` tail\-calls \$error with \(Error\_msg\, Ind\)\, where \`Error\_msg\` is a str of the error message str\, and \`Ind\` is an int num of the index of the error place in \`Pattern\`\.
+If compilation hits a syntax error, \`compile\` tail\-calls $error with \(Error_msg, Ind\)\, where \`Error_msg\` is a str of the error message str, and \`Ind\` is an int num of the index of the error place in \`Pattern\`\.
 
 .. rubric:: Preconditions
 
-\• Pattern must be a str\.
+\• Pattern must be a str.
 
-\• \$config must be a fun which takes a conf val\.
+\• $config must be a fun which takes a conf val.
 
-\• \$success must be a fun which takes a \`regex\` val\.
+\• $success must be a fun which takes a \`regex\` val.
 
-\• \$error must be a fun which takes \(str\, int num\)\.
+\• $error must be a fun which takes \(str, int num\)\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
         
@@ -341,6 +352,7 @@ If compilation hits a syntax error\, \`compile\` tail\-calls \$error with \(Erro
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
         
@@ -363,25 +375,26 @@ If compilation hits a syntax error\, \`compile\` tail\-calls \$error with \(Erro
 
 .. _api-330c7e83624136455520351a2cb0220d:
 
-REGEX\.is\?\(Val\)
-==================
+REGEX.is?\(Val\)
+================
 
-\`is\?\` returns whether the \`Val\` is a regex val\.
+\`is?\` returns whether the \`Val\` is a regex val.
 
 .. _api-bb37a3a3a301a44096d21d94adcde895:
 
-REGEX\.escape\(Str\)
-====================
+REGEX.escape\(Str\)
+===================
 
-\`escape\` escapes regex special characters in \`Str\`\. The result can be used as an arg of REGEX\.compile\, or can be embedded in a regex pattern\.
+\`escape\` escapes regex special characters in \`Str\`\. The result can be used as an arg of REGEX.compile, or can be embedded in a regex pattern.
 
 Precondition\:
 
-\• \`Str\` must be a str\.
+\• \`Str\` must be a str.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
         

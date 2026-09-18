@@ -5,36 +5,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>8. Kinkdoc: API Documentation system &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
-    <script src="_static/documentation_options.js?v=6ce99075"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <title>8. Kinkdoc: API Documentation system &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <script src="_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="9. Testing" href="testing.html" />
     <link rel="prev" title="7.8. Code style" href="patterns/style.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>8. Kinkdoc: API Documentation system</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="patterns/style.html"><span class="section-number">7.8. </span>Code style</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="testing.html"><span class="section-number">9. </span>Testing</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="index.html">Kink 0.9.7-beta</a></li><li><a class="current" href="#" aria-current="page">8. Kinkdoc: API Documentation system</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kinkdoc-api-documentation-system">
 <h1><span class="section-number">8. </span>Kinkdoc: API Documentation system<a class="headerlink" href="#kinkdoc-api-documentation-system" title="Link to this heading">¶</a></h1>
 <p><em class="dfn">Kinkdoc</em> is an API documentation system for Kink programs.
@@ -49,7 +38,7 @@ are written in program comments.</p>
 <li><p><a class="reference internal" href="#modules" id="id4">Modules</a></p></li>
 <li><p><a class="reference internal" href="#kinkdoc-toolchain" id="id5">Kinkdoc toolchain</a></p></li>
 <li><p><a class="reference internal" href="#document-title-and-the-overview" id="id6">Document title and the overview</a></p></li>
-<li><p><a class="reference internal" href="#vim-folding-support" id="id7">Vim folding support</a></p></li>
+<li><p><a class="reference internal" href="#folding-support" id="id7">Folding support</a></p></li>
 </ul>
 </li>
 <li><p><a class="reference internal" href="#data-model" id="id8">Data model</a></p>
@@ -357,7 +346,7 @@ and <a class="reference internal" href="api/kink-doc-render-sphinx-SPHINX_RENDER
 generates Sphinx source files.</p></li>
 </ul>
 <p>Dataflow of the toolchain:</p>
-<div class="graphviz"><img src="_images/graphviz-1d14ed8438b4f41abbe379f2505af9ad3fdf880e.png" alt="digraph kinkdocflow {
+<div class="graphviz"><img src="_images/graphviz-e64d784372975260f860085654edef9e9232bdf5.png" alt="digraph kinkdocflow {
   node [fontname = &quot;Noto Sans&quot;];
 
   program [label = &quot;program files&quot;, shape = box];
@@ -466,8 +455,8 @@ and lower level sections.</p>
 </pre></div>
 </div>
 </section>
-<section id="vim-folding-support">
-<h3><span class="section-number">8.1.6. </span>Vim folding support<a class="headerlink" href="#vim-folding-support" title="Link to this heading">¶</a></h3>
+<section id="folding-support">
+<span id="kinkdocfolding"></span><h3><span class="section-number">8.1.6. </span>Folding support<a class="headerlink" href="#folding-support" title="Link to this heading">¶</a></h3>
 <p>If the title line contains <code class="docutils literal notranslate"><span class="pre">{{{</span></code>,
 which is the default start marker of folding in vim,
 the marker and the text after that are ignored.</p>
@@ -495,6 +484,35 @@ the marker and the text after that are ignored.</p>
 ] <span class="c1"># }}}</span>
 
 <span class="c1"># vim: fdm=marker</span>
+</pre></div>
+</div>
+<p>Some IDEs treat <code class="docutils literal notranslate"><span class="pre">#region</span></code> and <code class="docutils literal notranslate"><span class="pre">#endregion</span></code> as folding markers.
+To comply that, the title line can start with <code class="docutils literal notranslate"><span class="pre">##region</span></code> and a whitespace.
+vim can handle this as well with <code class="docutils literal notranslate"><span class="pre">foldmarker</span></code> option.</p>
+<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1">##region type rat</span>
+<span class="c1">#</span>
+<span class="c1"># `rat` is a type of rational numbers.</span>
+<span class="nv">:Rat_trait</span> &lt;- [
+
+  <span class="c1">##region R.numer</span>
+  <span class="c1">#</span>
+  <span class="c1"># `numer` returns the numerator of the rational number `R`.</span>
+  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Numer</span>
+  } <span class="c1">#endregion</span>
+
+  <span class="c1">##region R.denom</span>
+  <span class="c1">#</span>
+  <span class="c1"># `denom` returns the denominator of the rational number `R`.</span>
+  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>]
+    <span class="nv">R</span>.<span class="nv">Denom</span>
+  } <span class="c1">#endregion</span>
+
+  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>] <span class="s1">&#39;(rat {} {})&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>) }
+
+] <span class="c1">#endregion</span>
+
+<span class="c1"># vim: fdm=marker foldmarker=#region,#endregion</span>
 </pre></div>
 </div>
 </section>
@@ -592,11 +610,10 @@ to the position just before the next line break sequence.</p></li>
 </ul>
 </li>
 </ul>
-<p class="rubric">Number sign</p>
-<p>The <em class="dfn">number sign</em> is the codepoint <code class="docutils literal notranslate"><span class="pre">#</span></code> (U+0023).</p>
 <p class="rubric">Comment delimiter</p>
-<p>The <em class="dfn">comment delimiter</em> of a comment is the longest sequence
-of number signs inclusively from the number sign which starts the comment.</p>
+<p>The <em class="dfn">comment delimiter</em> of a comment is <code class="docutils literal notranslate"><span class="pre">#</span></code>, <code class="docutils literal notranslate"><span class="pre">##</span></code>, or <code class="docutils literal notranslate"><span class="pre">##region</span></code>
+at the beginning of the comment.
+The longest match is used.</p>
 <p class="rubric">Comment only line</p>
 <p>A <em class="dfn">comment only line</em> is a line which meets the following conditions:</p>
 <ul class="simple">
@@ -625,8 +642,8 @@ it is called a <em class="dfn">kinkdoc comment chunk</em>.</p>
 <ul class="simple">
 <li><p>The number of whitespace characters at the beginning of each line
 is the same for all the lines.</p></li>
-<li><p>The comment delimiter of the first line is exactly two number signs <code class="docutils literal notranslate"><span class="pre">##</span></code>.</p></li>
-<li><p>The comment delimiter of the second and onwards is exactly one number sign <code class="docutils literal notranslate"><span class="pre">#</span></code>.</p></li>
+<li><p>The comment delimiter of the first line is <code class="docutils literal notranslate"><span class="pre">##</span></code> or <code class="docutils literal notranslate"><span class="pre">##region</span></code>.</p></li>
+<li><p>The comment delimiter of the second and onwards is <code class="docutils literal notranslate"><span class="pre">#</span></code>.</p></li>
 <li><p>If the comment text of a line is not empty,
 the first codepoint of the comment text is a whitespace character.</p></li>
 </ul>
@@ -764,18 +781,8 @@ for page in mod_pages {
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="patterns/style.html"><span class="section-number">7.8. </span>Code style</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="testing.html"><span class="section-number">9. </span>Testing</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

@@ -122,6 +122,9 @@ Builtin library
 
 .. glossary::
 
+  nada
+    A meaningless value returned by :ref:`nada function <api-5e050a798b5cefd652b23e1f244598e8>`.
+
   function
     A value of :ref:`type fun <api-26c971da584c97df3028fa31cf051166>`.
     Can be abbreviated to “fun”.
@@ -171,7 +174,7 @@ Patterns and conventions
 
   trait
     A vec which stores methods and the symbols,
-    which are spreaded as arguments of :ref:`new_val <api-fbc90c7785322a766a80191e6e1ea8de>`.
+    which are spreaded as arguments of :ref:`new_val <api-57f5294cce02f93d87d637f6417c656f>`.
     See :ref:`constructor`.
 
   thunk

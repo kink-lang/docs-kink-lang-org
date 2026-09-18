@@ -1,6 +1,6 @@
-===========================
-kink\/container\/ORDER\_MAP
-===========================
+==========================
+kink\/container\/ORDER_MAP
+==========================
 
 .. contents::
     :local:
@@ -8,14 +8,14 @@ kink\/container\/ORDER\_MAP
 
 .. _api-0cbf7955b1e3c250b6742cf3a51d866d:
 
-type order\_map
-===============
+type order_map
+==============
 
-\`order\_map\` is a subtype of \`map\` type which supports total ordering of keys\. Equivalence relation of keys is derived from the toal order\.
+\`order_map\` is a subtype of \`map\` type which supports total ordering of keys. Equivalence relation of keys is derived from the toal order.
 
 .. rubric:: Total order relation of keys
 
-The total order relation of keys\, \`up\-to\`\, must suffice the following conditions for all X\, Y\, and Z in the domain of keys\.
+The total order relation of keys, \`up\-to\`\, must suffice the following conditions for all X, Y, and Z in the domain of keys.
 
 \• reflexive\: X up\-to X
 
@@ -25,39 +25,40 @@ The total order relation of keys\, \`up\-to\`\, must suffice the following condi
 
 \• strongly connected\: X up\-to Y \|\| Y up\-to X
 
-The antisymmetry condition is the definition of \`equivalent\-to\`\, which is the equivalence relation of keys\.
+The antisymmetry condition is the definition of \`equivalent\-to\`\, which is the equivalence relation of keys.
 
 .. rubric:: Methods
 
-\`order\_map\` values have all the methods of \`map\`\.
+\`order_map\` values have all the methods of \`map\`\.
 
-Additionally\, \`order\_map\` values have the following methods\.
+Additionally, \`order_map\` values have the following methods.
 
 .. _api-559506b294a3917ca02b22179f799cbd:
 
-Map\.order
-----------
+Map.order
+---------
 
 \`order\` returns the function of the total order relation of keys of \`Map\`\.
 
-The result function\, \$up\_to\?\, is a function which takes two args \`X\` and \`Y\`\. \`up\_to\?\(X Y\)\` returns the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total\-order relation of keys\.
+The result function, $up_to?\, is a function which takes two args \`X\` and \`Y\`\. \`up_to?\(X Y\)\` returns the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total\-order relation of keys.
 
 .. _api-f258d5c7d74371abb66d0870cbac6411:
 
-Map\.key\_iter\(\.\.\.\[Min\_key\]\)
-------------------------------------
+Map.key_iter\(\.\.\.\[Min_key\]\)
+---------------------------------
 
-\`key\_iter\` returns an \`iter\` of keys following the order\. If \`Min\_key\` is passed\, the iter will have the keys which are bigger than or equivalent to \`Min\_key\`\. If \`Min\_key\` is not passed\, the iter will have all the keys of \`Map\`\.
+\`key_iter\` returns an \`iter\` of keys following the order. If \`Min_key\` is passed, the iter will have the keys which are bigger than or equivalent to \`Min_key\`\. If \`Min_key\` is not passed, the iter will have all the keys of \`Map\`\.
 
-\`key\_iter\` method of \`order\_map\` type extends the contract of \`key\_iter\` of \`map\` type\.
+\`key_iter\` method of \`order_map\` type extends the contract of \`key_iter\` of \`map\` type.
 
 .. rubric:: Precondition
 
-\`Min\_key\` must be in the domain of the total order of keys\.
+\`Min_key\` must be in the domain of the total order of keys.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_MAP.require_from('kink/container/')
         
@@ -88,20 +89,21 @@ Map\.key\_iter\(\.\.\.\[Min\_key\]\)
 
 .. _api-cdbc43be38dd6a361389935aff94b562:
 
-Map\.pair\_iter\(\.\.\.\[Min\_key\]\)
--------------------------------------
+Map.pair_iter\(\.\.\.\[Min_key\]\)
+----------------------------------
 
-\`pair\_iter\` returns an \`iter\` of pairs \[Key Val\] following the order\. If \`Min\_key\` is passed\, the iter will have pairs whose keys are bigger than or equivalent to \`Min\_key\`\. If \`Min\_key\` is not passed\, the iter will have all the key\-value pairs of \`Map\`\.
+\`pair_iter\` returns an \`iter\` of pairs \[Key Val\] following the order. If \`Min_key\` is passed, the iter will have pairs whose keys are bigger than or equivalent to \`Min_key\`\. If \`Min_key\` is not passed, the iter will have all the key\-value pairs of \`Map\`\.
 
-\`pair\_iter\` method of \`order\_map\` type extends the constraints of \`pair\_iter\` of \`map\` type\.
+\`pair_iter\` method of \`order_map\` type extends the constraints of \`pair_iter\` of \`map\` type.
 
 .. rubric:: Precondition
 
-\`Min\_key\` must be in the domain of the total order of keys\.
+\`Min_key\` must be in the domain of the total order of keys.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_MAP.require_from('kink/container/')
         
@@ -133,18 +135,19 @@ Map\.pair\_iter\(\.\.\.\[Min\_key\]\)
 
 .. _api-d969587e7eb1552a57543e0f8e417167:
 
-Map\.front\_key
----------------
+Map.front_key
+-------------
 
-\`front\_key\` returns the key which comes first in the order\.
+\`front_key\` returns the key which comes first in the order.
 
 .. rubric:: Precondition
 
-\`Map\` must not be empty\.
+\`Map\` must not be empty.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_MAP.require_from('kink/container/')
         
@@ -159,18 +162,19 @@ Map\.front\_key
 
 .. _api-8efdd5840695bd9e2c8e884f0ce8b4a1:
 
-Map\.back\_key
---------------
+Map.back_key
+------------
 
-\`back\_key\` returns the key which comes last in the order\.
+\`back_key\` returns the key which comes last in the order.
 
 .. rubric:: Precondition
 
-\`Map\` must not be empty\.
+\`Map\` must not be empty.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_MAP.require_from('kink/container/')
         
@@ -185,27 +189,27 @@ Map\.back\_key
 
 .. _api-94f5f25275ebf282ab09c6fdd81c3f8a:
 
-ORDER\_MAP\.is\?\(Val\)
-=======================
+ORDER_MAP.is?\(Val\)
+====================
 
-\`is\?\` returns whether \`Val\` is an \`order\_map\`\.
+\`is?\` returns whether \`Val\` is an \`order_map\`\.
 
 .. _api-7a855273ef06776fa9d58a13221b8928:
 
-ORDER\_MAP\.mixin
-=================
+ORDER_MAP.mixin
+===============
 
-\`mixin\` returns a mixin trait which provides default implementations of the following \`order\_map\` methods\.
+\`mixin\` returns a mixin trait which provides default implementations of the following \`order_map\` methods.
 
 \• eq
 
 \• get
 
-\• have\_key\?
+\• have_key?
 
-\• any\?
+\• any?
 
-\• key\_iter
+\• key_iter
 
-\• op\_eq \/ \`\=\=\` operator
+\• op_eq \/ \`\=\=\` operator
 

@@ -2,7 +2,7 @@
 kink\/io\/INPUT
 ===============
 
-Companion mod for input vals\.
+Companion mod for input vals.
 
 .. contents::
     :local:
@@ -13,44 +13,45 @@ Companion mod for input vals\.
 type input
 ==========
 
-\`input\` is an abstract type of input port of bytes\. \`input\` values must implement the following methods\.
+\`input\` is an abstract type of input port of bytes. \`input\` values must implement the following methods.
 
-An \`input\` provides sequential forward access to the underlying source\. It does not provide random access operations such as seek\.
+An \`input\` provides sequential forward access to the underlying source. It does not provide random access operations such as seek.
 
 .. _api-e8341e8b849b1926919895693dc3c07e:
 
-Input\.read\(Max\_size \.\.\.\[\$config\=\{\}\]\)
--------------------------------------------------
+Input.read\(Max_size \.\.\.\[$config\=\{\}\]\)
+----------------------------------------------
 
-\`read\` reads bytes from the stream\. \`read\` blocks until one or more bytes are read\, the end\-of\-file is detected\, or an IO error occurs\.
+\`read\` reads bytes from the stream. \`read\` blocks until one or more bytes are read, the end\-of\-file is detected, or an IO error occurs.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_eof\(\$eof\)\: default \= fun which raises an exception
+\• C.on_eof\($eof\)\: default \= fun which raises an exception
 
-\• C\.on\_error\(\$error\)\: default \= fun which raises an exception
+\• C.on_error\($error\)\: default \= fun which raises an exception
 
-If one or more bytes are read\, \`read\` tail\-calls \$success with a \`bin\` val of the bytes\. The size of the \`bin\` val does not exceed \`Max\_size\`\.
+If one or more bytes are read, \`read\` tail\-calls $success with a \`bin\` val of the bytes. The size of the \`bin\` val does not exceed \`Max_size\`\.
 
-If the end\-of\-file is detected\, \`read\` tail\-calls \$eof with no arg\.
+If the end\-of\-file is detected, \`read\` tail\-calls $eof with no arg.
 
-If an IO error occurs\, \`read\` tail\-calls \$error with an \`exception\`\.
+If an IO error occurs, \`read\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Preconditions
 
-\`Max\_size\` must be an int \`num\` which is bigger than or equal to 1\.
+\`Max_size\` must be an int \`num\` which is bigger than or equal to 1.
 
-\$success must be a fun which takes a \`bin\`\.
+$success must be a fun which takes a \`bin\`\.
 
-\$eof must be a fun which takes no arg\.
+$eof must be a fun which takes no arg.
 
-\$error must be a fun which takes an \`exception\`\.
+$error must be a fun which takes an \`exception\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :BIN.require_from('kink/')
     :BIN_INPUT.require_from('kink/io/')
@@ -68,6 +69,7 @@ If an IO error occurs\, \`read\` tail\-calls \$error with an \`exception\`\.
 .. rubric:: Example\: IO error
 
 .. code:: kink
+    :class: no-search
 
     :FILE.require_from('kink/io/')
     :CONTROL.require_from('kink/')
@@ -92,32 +94,33 @@ If an IO error occurs\, \`read\` tail\-calls \$error with an \`exception\`\.
 
 .. _api-552f89408e13a7762490240f149a03c9:
 
-Input\.read\_all\(\.\.\.\[\$config\=\{\}\]\)
---------------------------------------------
+Input.read_all\(\.\.\.\[$config\=\{\}\]\)
+-----------------------------------------
 
-\`read\_all\` reads bytes until it reaches the end\-of\-file\, or an IO error occurs\.
+\`read_all\` reads bytes until it reaches the end\-of\-file, or an IO error occurs.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+\• C.on_error\($error\)\: default \= \{\(\:Exc\) Exc.raise \}
 
-If one or more bytes are read with no IO error\, \`read\_all\` tail\-calls \$success with a \`bin\` of the bytes\.
+If one or more bytes are read with no IO error, \`read_all\` tail\-calls $success with a \`bin\` of the bytes.
 
-If no byte is read\, \`read\_all\` tail\-calls \$success with an empty \`bin\`\.
+If no byte is read, \`read_all\` tail\-calls $success with an empty \`bin\`\.
 
-If an IO error occurs\, \`read\_all\` tail\-calls \$error with an \`exception\`\.
+If an IO error occurs, \`read_all\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Precondition
 
-\$success must be a fun which takes a \`bin\`
+$success must be a fun which takes a \`bin\`
 
-\$error must be a fun which takes an \`exception\`
+$error must be a fun which takes an \`exception\`
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :BIN.require_from('kink/')
     :BIN_INPUT.require_from('kink/io/')
@@ -130,48 +133,49 @@ If an IO error occurs\, \`read\_all\` tail\-calls \$error with an \`exception\`\
 
 .. rubric:: See also
 
-INPUT\.mixin\: it provides a generic implementation of \`read\_all\`\.
+INPUT.mixin\: it provides a generic implementation of \`read_all\`\.
 
 .. _api-f850ccaacee17b4202dd82bada9bca0c:
 
-Input\.close\(\.\.\.\[\$config\=\{\}\]\)
-----------------------------------------
+Input.close\(\.\.\.\[$config\=\{\}\]\)
+--------------------------------------
 
-\`close\` closes the resource of the underlying source of bytes\.
+\`close\` closes the resource of the underlying source of bytes.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= \{\}
+\• C.on_success\($success\)\: default \= \{\}
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+\• C.on_error\($error\)\: default \= a fun which raises an exception
 
-If the resource is closed with no error\, \`close\` tail\-calls \$success with no arg\.
+If the resource is closed with no error, \`close\` tail\-calls $success with no arg.
 
-If an IO error occurs\, \`close\` tail\-calls \$error with an \`exception\`\.
+If an IO error occurs, \`close\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Preconditions
 
-\$success must be a fun which takes no arg
+$success must be a fun which takes no arg
 
-\$error must be a fun which takes an \`exception\`
+$error must be a fun which takes an \`exception\`
 
 .. _api-161c98da8425416c2a48d966f1993a38:
 
-INPUT\.is\?\(Val\)
-==================
+INPUT.is?\(Val\)
+================
 
-\`is\?\` returns whether \`Val\` is an \`input\`\.
+\`is?\` returns whether \`Val\` is an \`input\`\.
 
 .. _api-701d0017014c8634ab5f96fdf34d53f1:
 
-INPUT\.mixin
-============
+INPUT.mixin
+===========
 
-\`\`mixin\`\` returns a mixin trait which provides an implementation of Input\.read\_all\. \`read\_all\` will be implemented using \`read\` method\.
+\`\`mixin\`\` returns a mixin trait which provides an implementation of Input.read_all. \`read_all\` will be implemented using \`read\` method.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :CONTROL.require_from('kink/')
     :INPUT.require_from('kink/io/')

@@ -28,9 +28,10 @@ Whitespace and comments
 -----------------------
 
 .. csv-table::
-    :header: Regular expression, Morpheme category
+    :header-rows: 1
     :delim: /
 
+    Regular expression / Morpheme category
     :regexp:`\\u0020|\\u000a|\\u000d\\u000a` / Whitespace
     :regexp:`#[^\\u000d\\u000a]*`            / Comment
 
@@ -75,9 +76,10 @@ Symbol tokens
 -------------
 
 .. csv-table::
-    :header: Regular expression, Morpheme category
+    :header-rows: 1
     :delim: |
 
+    Regular expression | Morpheme category
     :regexp:`[a-z_][a-z0-9_?]*` | Fun symbol token
     :regexp:`([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*`  | Data symbol token
 
@@ -108,29 +110,42 @@ The following are examples of data symbols.
 
 .. _num_token:
 
-Num tokens
-----------
+Number tokens
+-------------
 
 .. csv-table::
-    :header: Regular expression, Morpheme category
+    :header-rows: 1
     :delim: |
 
-    :regexp:`[0-9][0-9_]*(\\.[0-9][0-9_]*)?(?![a-zA-Z0-9_?])`  | Num token (base10)
-    :regexp:`0b_*[01][01_]*(?![a-zA-Z0-9_?])`                  | Num token (base2)
-    :regexp:`0x_*[0-9a-f][0-9a-f_]*(?![a-zA-Z0-9_?])`          | Num token (base16)
+    Regular expression | Morpheme category
+    :regexp:`[0-9][0-9_]*(\\.[0-9][0-9_]*)?(?![a-zA-Z0-9_?])`  | Number token (base10)
+    :regexp:`0b_*[01][01_]*(?![a-zA-Z0-9_?])`                  | Number token (base2)
+    :regexp:`0x_*[0-9a-f][0-9a-f_]*(?![a-zA-Z0-9_?])`          | Number token (base16)
 
-There are three types of :dfn:`num tokens`: base10, base16 and base2.
-A base10 num token represents a num in decimal,
+There are three types of :dfn:`number tokens`: base10, base16 and base2.
+A base10 number token represents a number in decimal,
 base16 in hexadecimal,
 and base2 in binary.
 
-The fractional part can be represented only by base10 num tokens.
-Digits before the period ``.`` (U+002e) represents the integer portion,
-and digits after the period represents the fractional portion.
+The fractional part can be represented only by base10 number tokens.
+Digits before the period ``.`` (U+002e) represents the integer part,
+and digits after the period represents the fractional part.
+A base10 number token represents a number Mantissa*10\ :sup:`-Scale`,
+where Mantissa is an integer obtained by removing the decimal point,
+and Scale is the number of digits of the fractional part.
+
+base2 and base16 number tokens represent integer numbers with Scale=0.
+
+Mantissa and Scale must be within the following ranges,
+which are also the ranges of :ref:`num values <api-94ecaace8aa3cab97d09f89a70b9228e>`.
+Exceeding those limits causes a syntax error.
+
+- -(2\ :sup:`8192`-1) ≦ Mantissa ≦ 2\ :sup:`8192`-1
+- 0 ≦ Scale ≦ 32767
 
 Underscore characters ``_`` (U+005f) can be placed for spacing.
 
-These are examples of num tokens, each of which represents 42.
+These are examples of number tokens, each of which represents 42.
 
 - ``42``
 - ``42__``
@@ -138,13 +153,13 @@ These are examples of num tokens, each of which represents 42.
 - ``0x2a``
 - ``0b_10_1010``
 
-These are examples of num tokens with the fractional portion.
+These are examples of number tokens with the fractional part.
 
 - ``0.0``
 - ``0.001``
 - ``3.141_592_653``
 
-All base10, base2 and base16 num tokens cannot be directly followed
+All base10, base2 and base16 number tokens cannot be directly followed
 by a character which can form a symbol.
 This limitation is represented as :regexp:`(?![a-zA-Z0-9_?])`.
 Thus, for example, a code fragment ``24h`` causes a syntax error.
@@ -154,19 +169,17 @@ Thus, for example, a code fragment ``24h`` causes a syntax error.
   Without this rule, for example, ``0b123`` is parsed as ``0b1`` and ``23``.
   It is certainly error prone.
 
-Each num token represents a number the scale of which is the count of digits of the fractional portion,
-and the mantissa of which is the integer made of the digits.
-
 .. _str_token:
 
 String tokens
 -------------
 
 .. csv-table::
-    :header: Regular expression, Morpheme category
+    :header-rows: 1
     :delim: /
 
-    :regexp:`'(''\|[^'\\u000d\\000a])*'` / String token (simple)
+    Regular expression / Morpheme category
+    :regexp:`'(''|[^'\\u000d\\000a])*'` / String token (simple)
     :regexp:`"([^"\\u000d\\u000a\\\\]|\\\\[0abtnvfre"\\\\]|\\\\x\\{[0-9a-f]{1,6}\\})*"` / String token (rich)
 
 There are two types of :dfn:`string tokens`: simple and rich.
@@ -256,9 +269,10 @@ Binding token
 -------------
 
 .. csv-table::
-    :header: Regular expression, Morpheme category
+    :header-rows: 1
     :delim: /
 
+    Regular expression / Morpheme category
     :regexp:`\\binding(?![a-zA-Z0-9_?])` / Binding token
 
 A :dfn:`binding token` is literally ``\binding``.
@@ -286,9 +300,10 @@ Those tokens are represented literally like ``==``.
 The list of punctuation marks and operators:
 
 .. csv-table::
-    :header: Token, Note
+    :header-rows: 1
     :delim: ;
 
+    Token ; Note
     ``!``     ; ``op_lognot`` operator
     ``~``     ; ``op_not`` operator
     ``<-``    ; ``op_store`` operator
@@ -322,7 +337,7 @@ The list of punctuation marks and operators:
     ``ws[``   ; Vectors
     ``]``     ; Closing
     ``nows{`` ; Function expressions or function arguments
-    ``ws{``   ; Function expressions 
+    ``ws{``   ; Function expressions
     ``}``     ; Closing
     ``nows(`` ; Parentheses expressions, formal arguments, or actual arguments
     ``ws(``   ; Parentheses expressions
@@ -403,14 +418,12 @@ There are several shift/reduce conflicts in the rules, and the parser always cho
                 : 'ws:' DATA_SYM
                 : 'nows:' FUN_SYM
                 : 'ws:' FUN_SYM
-    local_call: FUN_SYM `recv` `args`
+    local_call: FUN_SYM `args`
     member_load: `primary` '.' DATA_SYM
              : `primary` 'nows$' FUN_SYM
     member_varref: `primary` 'nows:' DATA_SYM
                : `primary` 'nows:' FUN_SYM
-    member_call: `primary` '.' FUN_SYM `recv` `args`
-    recv: `empty`
-        : 'nows[' `expression` ']'
+    member_call: `primary` '.' FUN_SYM `args`
     args: `paren_args` `fun_args`
     paren_args: `empty`
               : 'nows(' `vec_body` ')'
@@ -443,7 +456,7 @@ The following identifiers represent token types.
     * - DATA_SYM
       - :ref:`Data symbol token <symbol_token>` such as ``Count``
     * - NUM
-      - :ref:`Num token <num_token>` such as ``42`` or ``3.14159``
+      - :ref:`Number token <num_token>` such as ``42`` or ``3.14159``
     * - STRING
       - :ref:`String token <str_token>` such as ``'Peng!'``
     * - BINDING

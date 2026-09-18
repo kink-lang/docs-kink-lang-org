@@ -2,35 +2,36 @@
 kink\/javahost\/JAVA
 ====================
 
-Provides a way to operate on Java objects\, values\, classes and methods\.
+Provides a way to operate on Java objects, values, classes and methods.
 
-Host system integration provided by JAVA module is meant to be seamfull\. There is a clear boundary between Kink world and Java world\. For example\, a Java method cannot be called directly as a Kink function like JRuby or Groovy\. Instead\, you have to use \.call\_method\:
+Host system integration provided by the JAVA module is meant to be seamful. There is a clear boundary between Kink world and Java world. For example, a Java method cannot be called directly as a Kink function like JRuby or Groovy. Instead, you have to use \.call_method\:
 
 .. code:: kink
+    :class: no-search
 
     Java_obj.call_method('toString')
 
-There are several reasons behind the design\.
+There are several reasons behind the design.
 
-1\)  Kink is fundamentally different from Java\, both in the object system and the execution semantics\. Thus\, seamless integration is hard to achieve\.
+1\)  Kink is fundamentally different from Java, both in the object system and the execution semantics. Thus, seamless integration is hard to achieve.
 
-2\)  Generally\, larger applications can be designed more simply when there is a boundary between separate systems\.
+2\)  Generally, larger applications can be designed more simply when there is a boundary between separate systems.
 
-3\)  With a clear boundary\, Kink can evolve independent of Java\.
+3\)  With a clear boundary, Kink can evolve independent of Java.
 
 .. rubric:: Typable\-as
 
-Here we define a binary relation\, typable\-as\, between a Java object reference and a Java class object\.
+Here we define a binary relation, typable\-as, between a Java object reference and a Java class object.
 
 When an object reference \`R\` is typable\-as a class object \`T\`\, one of the following conditions is met\:
 
-\• \`T\` is a class object of a reference type\, and \`R\` is an instance of the reference type\.
+\• \`T\` is a class object of a reference type, and \`R\` is an instance of the reference type.
 
-\• \`T\` is a class object of a reference type\, and \`R\` is null\.
+\• \`T\` is a class object of a reference type, and \`R\` is null.
 
-\• \`R\` is an instance of Boolean\, Character\, Byte\, Short\, Integer\, Long\, Float\, or Double\, and \`T\` is a class object of the corresponding primitive type\.
+\• \`R\` is an instance of Boolean, Character, Byte, Short, Integer, Long, Float, or Double, and \`T\` is a class object of the corresponding primitive type.
 
-Hereinafter\, we refer to a class object and the type which the class object represents interchangeably\.
+Hereinafter, we refer to a class object and the type which the class object represents interchangeably.
 
 .. contents::
     :local:
@@ -41,9 +42,9 @@ Hereinafter\, we refer to a class object and the type which the class object rep
 type java
 =========
 
-A \`java\` value is a pair of \(objectReference\, type\)\, where \`objectReference\` is a Java object reference\, and \`type\` is a class object\.
+A \`java\` value is a pair of \(objectReference, type\)\, where \`objectReference\` is a Java object reference, and \`type\` is a class object.
 
-\`type\` is used to look up Java instance methods and instance fields\.
+\`type\` is used to look up Java instance methods and instance fields.
 
 .. rubric:: Invariant
 
@@ -51,16 +52,17 @@ A \`java\` value is a pair of \(objectReference\, type\)\, where \`objectReferen
 
 .. _api-deb3eecb723aef46d1abb40358fe6b6e:
 
-J\.type
--------
+J.type
+------
 
 \`type\` method returns the \`type\` attribute of \`J\`\.
 
-The result of \`type\` method is a \`java\` value \(t\, java\.lang\.Class\)\, where \`t\` is \`type\` attribute of \`J\`\.
+The result of \`type\` method is a \`java\` value \(t, java.lang.Class\)\, where \`t\` is \`type\` attribute of \`J\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -70,20 +72,21 @@ The result of \`type\` method is a \`java\` value \(t\, java\.lang\.Class\)\, wh
 
 .. _api-9fea7a59909457f8d4eec2ebda67a83b:
 
-J\.as\(New\_type\)
-------------------
+J.as\(New_type\)
+----------------
 
-\`as\` changes \`type\` to \`New\_type\`\.
+\`as\` changes \`type\` to \`New_type\`\.
 
-The result of \`as\` is a \`java\` value \(ref\, nt\)\, where \`ref\` is \`objectReference\` of \`J\`\, and \`nt\` is \`objectReference\` of \`New\_type\`\.
+The result of \`as\` is a \`java\` value \(ref, nt\)\, where \`ref\` is \`objectReference\` of \`J\`\, and \`nt\` is \`objectReference\` of \`New_type\`\.
 
 .. rubric:: Preconditions
 
-\`New\_type\` must be a \`java\` value \(nt\, \*\)\, where \`nt\` is a class object\, and \`objectReference\` of \`J\` is typeable\-as \`nt\`\.
+\`New_type\` must be a \`java\` value \(nt, \*\)\, where \`nt\` is a class object, and \`objectReference\` of \`J\` is typable\-as \`nt\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
     :Integer_class <- JAVA.class('java.lang.Integer')
@@ -94,18 +97,19 @@ The result of \`as\` is a \`java\` value \(ref\, nt\)\, where \`ref\` is \`objec
 
 .. _api-8085cbddb5f1d7cdeaa5f59d3dd704a8:
 
-J\.instance\_of\?\(Klass\)
---------------------------
+J.instance_of?\(Klass\)
+-----------------------
 
-\`instance\_of\?\` returns whether \`objectReference\` of \`J\` is an instance of \`Klass\`\. The check is equivalent to instanceof operator of Java language\.
+\`instance_of?\` returns whether \`objectReference\` of \`J\` is an instance of \`Klass\`\. The check is equivalent to Java\'s \`instanceof\` operator.
 
 .. rubric:: Precondition
 
-\`Klass\` must be a \`java\` value \(klass\, \*\)\, where \`klass\` is an instance of java\.lang\.Class\.
+\`Klass\` must be a \`java\` value \(klass, \*\)\, where \`klass\` is an instance of java.lang.Class.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
     :Integer_class <- JAVA.class('java.lang.Integer')
@@ -122,18 +126,19 @@ J\.instance\_of\?\(Klass\)
 
 .. _api-6fe23ab75cf9d4904597bab2866784db:
 
-J\.eq\_eq\?\(Another\)
-----------------------
+J.eq_eq?\(Another\)
+-------------------
 
-\`eq\_eq\?\` returns whether \`objectReference\` attributes of \`J\` and \`Another\` are identical in the meaning of \`\=\=\` operator of Java language\.
+\`eq_eq?\` returns whether \`objectReference\` attributes of \`J\` and \`Another\` are identical in the sense of Java\'s \`\=\=\` operator.
 
 .. rubric:: Precondition
 
-\`Another\` must be a \`java\` value\.
+\`Another\` must be a \`java\` value.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -154,25 +159,26 @@ J\.eq\_eq\?\(Another\)
 
 .. _api-7df137b3d7bea8013ea10354edda1eee:
 
-J\.null\?
----------
+J.null?
+-------
 
-\`null\?\` returns whehter \`objectReference\` attribute of \`J\` is null\.
+\`null?\` returns whether \`objectReference\` attribute of \`J\` is null.
 
 .. _api-a83080dd5930eac4ff25a8e518102cd9:
 
-J\.to\_kink\_str
-----------------
+J.to_kink_str
+-------------
 
-\`to\_kink\_str\` returns a \`str\` value from a Java string\.
+\`to_kink_str\` returns a \`str\` value from a Java string.
 
 .. rubric:: Precondition
 
-\`objectReference\` of \`J\` must be an instance of java\.lang\.String\.
+\`objectReference\` of \`J\` must be an instance of java.lang.String.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -182,18 +188,19 @@ J\.to\_kink\_str
 
 .. _api-a0a53bf876b1d8e99a06d54243a5982f:
 
-J\.to\_kink\_bool
------------------
+J.to_kink_bool
+--------------
 
-\`to\_kink\_bool\` returns a \`bool\` value from a Java boolean\.
+\`to_kink_bool\` returns a \`bool\` value from a Java boolean.
 
 .. rubric:: Precondition
 
-\`objectReference\` of \`J\` must be an instance of java\.lang\.Boolean\.
+\`objectReference\` of \`J\` must be an instance of java.lang.Boolean.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -204,38 +211,39 @@ J\.to\_kink\_bool
 
 .. _api-24c55d5665df90acc6503d2a9479ddd6:
 
-J\.to\_kink\_num
-----------------
+J.to_kink_num
+-------------
 
-\`to\_kink\_num\` returns a \`num\` value from a Java number\.
+\`to_kink_num\` returns a \`num\` value from a Java number.
 
-.. rubric:: Conversion from Character\, Byte\, Short\, Integer\, Long\, or BigInteger
+.. rubric:: Conversion from Character, Byte, Short, Integer, Long, or BigInteger
 
-If \`objectReference\` of \`J\` is a Character\, Byte\, Short\, Integer\, Long or BigInteger\, \`Scale\` of the result \`num\` will be 0\, and \`Mantissa\` of the result \`num\` will be equal to the integer\.
+If \`objectReference\` of \`J\` is a Character, Byte, Short, Integer, Long or BigInteger, \`Scale\` of the result \`num\` will be 0, and \`Mantissa\` of the result \`num\` will be equal to the integer.
 
 .. rubric:: Conversion from Float or Double
 
-If \`objectReference\` of \`J\` is a Float or Double\, \`Scale\` of the result \`num\` will be the minimum non\-negative integer on which the number can be exactly expressed\, and \`Mantissa\` of the result \`num\` will be \`J \* \(10 \^ Scale\)\`\.
+If \`objectReference\` of \`J\` is a Float or Double, \`Scale\` of the result \`num\` will be the minimum non\-negative integer on which the number can be exactly expressed, and \`Mantissa\` of the result \`num\` will be \`J \* \(10 \^ Scale\)\`\.
 
-The sign of 0 is not preserved in the result\.
+The sign of 0 is not preserved in the result.
 
 .. rubric:: Conversion from BigDecimal
 
-If \`objectReference\` of \`J\` is a BigDecimal\, \`Scale\` of the result \`num\` will be equal to the result of BigDecimal\.scale\(\)\, and \`Mantissa\` will be equal to the result of BigDecimal\.unscaledValue\(\)\.
+If \`objectReference\` of \`J\` is a BigDecimal, \`Scale\` of the result \`num\` will be equal to the result of BigDecimal.scale\(\)\, and \`Mantissa\` will be equal to the result of BigDecimal.unscaledValue\(\)\.
 
 .. rubric:: Preconditions
 
-\`objectReference\` of \`J\` must be an instance of Character\, Byte\, Short\, Integer\, Long\, Float\, Double\, BigInteger or BigDecimal\.
+\`objectReference\` of \`J\` must be an instance of Character, Byte, Short, Integer, Long, Float, Double, BigInteger or BigDecimal.
 
-If the reference is a Float or Double\, it must not be NaN or plus\/minus infinite numbers\.
+If the reference is a Float or Double, it must not be NaN or plus\/minus infinite numbers.
 
-If the reference is a BigInteger\, it must be in the supported range of \`Mantissa\` of \`num\` values\.
+If the reference is a BigInteger\: NUM.min_mantissa ≦ bigInteger ≦ NUM.max_mantissa
 
-If the reference is a BigDecimal\, its scale must be in the range of supported \`Scale\` of \`num\` values\, and its unscaled value must be in the range of supported \`Mantissa\` of \`num\` values\.
+If the reference is a BigDecimal\: 0 ≦ bigDecimal.scale\(\) ≦ NUM.max_scale \&\& NUM.min_mantissa ≦ bigDecimal.unscaledValue\(\) ≦ NUM.max_mantissa
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -251,26 +259,27 @@ If the reference is a BigDecimal\, its scale must be in the range of supported \
 
 .. _api-55761176379e983faa180bb9f5c6ccf1:
 
-J\.to\_kink\_bin\(\.\.\.\[From To\]\)
--------------------------------------
+J.to_kink_bin\(\.\.\.\[From To\]\)
+----------------------------------
 
-\`to\_kink\_bin\` returns a \`bin\` value from a Java byte array\.
+\`to_kink_bin\` returns a \`bin\` value from a Java byte array.
 
-The default value of \`From\` is 0\. The default value of \`To\` is the length of the byte array\.
+The default value of \`From\` is 0. The default value of \`To\` is the length of the byte array.
 
-The size of the result \`bin\` will be \`To \- From\`\. The \`bin\` will contain a slice of bytes of \`J\` in the range \[From\, To\)\.
+The size of the result \`bin\` will be \`To \- From\`\. The \`bin\` will contain a slice of bytes of \`J\` in the range \[From, To\)\.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(bytes\, \*\) where \`bytes\` is an instance of byte\[\]\.
+\`J\` must be a \`java\` value \(bytes, \*\) where \`bytes\` is an instance of byte\[\]\.
 
-\`From\` and \`To\` must be integer \`num\` values\.
+\`From\` and \`To\` must be integer \`num\` values.
 
-0 \<\= From \<\= To \<\= bytes\.length
+0 \<\= From \<\= To \<\= bytes.length
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -284,22 +293,23 @@ The size of the result \`bin\` will be \`To \- From\`\. The \`bin\` will contain
 
 .. _api-19473767f080757f7c71139694d97b84:
 
-J\.to\_kink\_exception
-----------------------
+J.to_kink_exception
+-------------------
 
-\`to\_kink\_exception\` returns an \`exception\` value from a Java Throwable\.
+\`to_kink_exception\` returns an \`exception\` value from a Java Throwable.
 
-\`to\_kink\_exception\` encodes Throwable\.toString into \`Message\`\, Throwable\.getStackTrace into \`Traces\`\, Throwable\.getCause and getSuppressed into \`Next\` of the result \`exception\`\.
+\`to_kink_exception\` encodes Throwable.toString into \`Message\`\, Throwable.getStackTrace into \`Traces\`\, Throwable.getCause and getSuppressed into \`Next\` of the result \`exception\`\.
 
-Other attributes of the throwable\, like SQLException\.getErrorCode\, are not preserved\.
+Other attributes of the throwable, like SQLException.getErrorCode, are not preserved.
 
 .. rubric:: Preconditions
 
-\`objectReference\` of \`J\` must be an instance of java\.lang\.Throwable\.
+\`objectReference\` of \`J\` must be an instance of java.lang.Throwable.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -322,20 +332,21 @@ Other attributes of the throwable\, like SQLException\.getErrorCode\, are not pr
 
 .. _api-c25b08a4c49c79bb41fe6844b5835ae8:
 
-J\.unwrap
----------
+J.unwrap
+--------
 
-\`unwrap\` extracts a Kink value wrapped by JAVA\.wrap\.
+\`unwrap\` extracts a Kink value wrapped by JAVA.wrap.
 
-When \`J\` is a \`java\` value \(Wrapped\, \? super org\.kink\_lang\.kink\.Val\)\, \`unwrap\` returns \`Wrapped\`\.
+When \`J\` is a \`java\` value \(Wrapped, \? super org.kink_lang.kink.Val\)\, \`unwrap\` returns \`Wrapped\`\.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(Wrapped\, \*\)\, where \`Wrapped\` is an instance of org\.kink\_lang\.kink\.Val\, and the runtime of \`Wrapped\` is same as the current runtime\.
+\`J\` must be a \`java\` value \(Wrapped, \*\)\, where \`Wrapped\` is an instance of org.kink_lang.kink.Val, and the runtime of \`Wrapped\` is same as the current runtime.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
     :VAL.require_from('kink/')
@@ -350,24 +361,25 @@ When \`J\` is a \`java\` value \(Wrapped\, \? super org\.kink\_lang\.kink\.Val\)
 
 .. _api-20b25eef6973f24f70edfdc23b7b54d7:
 
-J\.array\_class
----------------
+J.array_class
+-------------
 
-\`array\_class\` returns the class object of the array class of the given component type\.
+\`array_class\` returns the class object of the array class of the given component type.
 
-If \`objectReference\` of \`J\` is a class object \`C\`\, \`array\_class\` returns a \`java\` value \(C\[\]\, java\.lang\.Class\)\.
+If \`objectReference\` of \`J\` is a class object \`C\`\, \`array_class\` returns a \`java\` value \(C\[\]\, java.lang.Class\)\.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(C\, \*\)\, where \`C\` is a class object\.
+\`J\` must be a \`java\` value \(C, \*\)\, where \`C\` is a class object.
 
-\`C\` must not be void class\.
+\`C\` must not be void class.
 
-If \`C\` is an array class\, its dimension must not exceed 254\.
+If \`C\` is an array class, its dimension must not exceed 254.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -376,28 +388,29 @@ If \`C\` is an array class\, its dimension must not exceed 254\.
 
 .. _api-04851e8fc772947f8b966398b8a8be35:
 
-J\.array\_new\(Size\)
----------------------
+J.array_new\(Size\)
+-------------------
 
-\`array\_new\` returns an array of the given component type and the size\.
+\`array_new\` returns an array of the given component type and the size.
 
-If \`objectReference\` of \`J\` is a class object \`C\`\, \`array\_new\` returns a \`java\` value of \(Array\, C\[\]\)\, where \`Array\` is an array with \`Size\` as the length\.
+If \`objectReference\` of \`J\` is a class object \`C\`\, \`array_new\` returns a \`java\` value of \(Array, C\[\]\)\, where \`Array\` is an array with \`Size\` as the length.
 
-The elements \`Array\` is initialized by the zero value of \`C\`\.
+The elements of \`Array\` are initialized by the zero value of \`C\`\.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(C\, \*\)\, where \`C\` is a class object\.
+\`J\` must be a \`java\` value \(C, \*\)\, where \`C\` is a class object.
 
-\`C\` must not be void class\.
+\`C\` must not be void class.
 
-If \`C\` is an array class\, its dimension must not exceed 254\.
+If \`C\` is an array class, its dimension must not exceed 254.
 
 \`Size\` must be a non\-negative integer \`num\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -407,26 +420,27 @@ If \`C\` is an array class\, its dimension must not exceed 254\.
 
 .. _api-769448fbe4a33788552d0427d9664b14:
 
-J\.array\_of\(\.\.\.\[E0 E1 \,\,\,\]\)
---------------------------------------
+J.array_of\(\.\.\.\[E0 E1 \,\,\,\]\)
+------------------------------------
 
-\`array\_of\` returns an array containing the given elements\.
+\`array_of\` returns an array containing the given elements.
 
-If \`objectReference\` of \`J\` is a class object \`C\`\, \`array\_of\` returns a \`java\` value of \(Array\, C\[\]\)\, where \`Array\` is an array containing \`E0\`\, \`E1\`\, \,\,\, as its elements\.
+If \`objectReference\` of \`J\` is a class object \`C\`\, \`array_of\` returns a \`java\` value of \(Array, C\[\]\)\, where \`Array\` is an array containing \`E0\`\, \`E1\`\, \,\,\, as its elements.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(C\, \*\)\, where \`C\` is a class object\.
+\`J\` must be a \`java\` value \(C, \*\)\, where \`C\` is a class object.
 
-\`C\` must not be void class\.
+\`C\` must not be void class.
 
-If \`C\` is an array class\, its dimension must not exceed 254\.
+If \`C\` is an array class, its dimension must not exceed 254.
 
 \`E0\`\, \`E1\`\, \,\,\, must be \`java\` values whose \`objectReference\` attributes are typable\-as \`objectReference\` of \`J\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -438,71 +452,74 @@ If \`C\` is an array class\, its dimension must not exceed 254\.
 
 .. _api-c049f691d199541f42fece1688810b8d:
 
-J\.array\_length
-----------------
+J.array_length
+--------------
 
-\`array\_length\` returns the length of array as an integer \`num\` value\.
+\`array_length\` returns the length of array as an integer \`num\` value.
 
 .. rubric:: Precondition
 
-\`J\` must be a \`java\` value \(array\, \*\)\, where \`array\` is an array\.
+\`J\` must be a \`java\` value \(array, \*\)\, where \`array\` is an array.
 
 .. _api-6707f6ec517186fb30c5f783ac70e012:
 
-J\.array\_get\(Ind\)
---------------------
+J.array_get\(Ind\)
+------------------
 
-\`array\_get\` returns the element of the array \`J\` at the index \`Ind\`\.
+\`array_get\` returns the element of the array \`J\` at the index \`Ind\`\.
 
-If the component type of the array is a reference type \`rt\`\, \`array\_get\` returns a \`java\` value \(element\, rt\)\, where \`element\` is the element of the array\.
+If the component type of the array is a reference type \`rt\`\, \`array_get\` returns a \`java\` value \(element, rt\)\, where \`element\` is the element of the array.
 
-If the component type of the array is a primitive type \`pt\`\, \`array\_get\` returns a \`java\` value \(box\, pt\)\, where \`box\` is a instance of the corresponding wrapper type which contains the element of the array\.
+If the component type of the array is a primitive type \`pt\`\, \`array_get\` returns a \`java\` value \(box, pt\)\, where \`box\` is a instance of the corresponding wrapper type which contains the element of the array.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(array\, \*\)\, where \`array\` is an array\.
+\`J\` must be a \`java\` value \(array, \*\)\, where \`array\` is an array.
 
-\`Ind\` must be an integer \`num\` value in the range \[0\, length\)\, where \`length\` is the length of the array\.
+\`Ind\` must be an integer \`num\` value in the range \[0, length\)\, where \`length\` is the length of the array.
 
 .. _api-a0987ed8cb63182c4067407a3c5e026d:
 
-J\.array\_set\(Ind Elem\)
--------------------------
+J.array_set\(Ind Elem\)
+-----------------------
 
-\`array\_set\` sets the value \`Elem\` to the array \`J\` at the index \`Ind\`\.
+\`array_set\` sets the value \`Elem\` to the array \`J\` at the index \`Ind\`\.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(array\, \*\)\, where \`array\` is an array\.
+\`J\` must be a \`java\` value \(array, \*\)\, where \`array\` is an array.
 
-\`Ind\` must be an integer \`num\` value in the range \[0\, length\)\, where \`length\` is the length of the array\.
+\`Ind\` must be an integer \`num\` value in the range \[0, length\)\, where \`length\` is the length of the array.
 
-\`Elem\` must be a \`java\` value \(elem\, \*\)\, where \`elem\` is typable\-as the component type of the array\.
+\`Elem\` must be a \`java\` value \(elem, \*\)\, where \`elem\` is typable\-as the component type of the array.
 
 .. _api-4d770acd5c9652a775a07b8989b8f602:
 
-J\.get\_field\(Field\_name\)
-----------------------------
+J.get_field\(Field_name\)
+-------------------------
 
-\`get\_field\` returns the content of the public instance field\.
+\`get_field\` returns the content of the public instance field.
 
-The field is looked up from \`type\` of \`J\`\, using Class\.getField\(String\)\.
+The field is looked up from \`type\` of \`J\`\, using Class.getField\(String\)\.
 
-If the declared type of the field is a reference type \`rt\`\, the result will be a \`java\` value \(contentObj\, rt\)\, where \`contentObj\` is the content of the field\.
+If the declared type of the field is a reference type \`rt\`\, the result will be a \`java\` value \(contentObj, rt\)\, where \`contentObj\` is the content of the field.
 
-If the declared type of the field is a primitive type \`pt\`\, the result will be a \`java\` value \(box\, pt\)\, where \`box\` is an instance of the corresponding wrapper type which contains the element of the field\.
+If the declared type of the field is a primitive type \`pt\`\, the result will be a \`java\` value \(box, pt\)\, where \`box\` is an instance of the corresponding wrapper type which contains the element of the field.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value\.
+\`J\` must be a \`java\` value.
 
-\`Field\_name\` must be a \`str\`\.
+\`objectReference\` of \`J\` must not be null.
 
-\`type\` of \`J\` must have a public instance field with the name \`Field\_name\`\.
+\`Field_name\` must be a \`str\`\.
+
+\`type\` of \`J\` must have a public instance field with the name \`Field_name\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -511,49 +528,52 @@ If the declared type of the field is a primitive type \`pt\`\, the result will b
 
 .. _api-ebb499209518eb119dd6c6b6ef367c40:
 
-J\.set\_field\(Field\_name Content\)
-------------------------------------
+J.set_field\(Field_name Content\)
+---------------------------------
 
-\`set\_field\` sets \`Content\` to the public instance field\.
+\`set_field\` sets \`Content\` to the public instance field.
 
-The field is looked up from \`type\` of \`J\`\, using Class\.getField\(String\)\.
+The field is looked up from \`type\` of \`J\`\, using Class.getField\(String\)\.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value\.
+\`J\` must be a \`java\` value.
 
-\`Field\_name\` must be a \`str\`\.
+\`objectReference\` of \`J\` must not be null.
 
-\`type\` of \`J\` must have a public instance field with the name \`Field\_name\`\.
+\`Field_name\` must be a \`str\`\.
 
-The field must not be final\.
+\`type\` of \`J\` must have a public instance field with the name \`Field_name\`\.
 
-\`Content\` must be a \`java\` value \(contentObj\, \*\)\, where \`contentObj\` must be typable\-as the declared type of the field\.
+The field must not be final.
+
+\`Content\` must be a \`java\` value \(contentObj, \*\)\, where \`contentObj\` must be typable\-as the declared type of the field.
 
 .. _api-5cb44d97a98cb538ebbd1875ae977959:
 
-J\.get\_static\(Field\_name\)
------------------------------
+J.get_static\(Field_name\)
+--------------------------
 
-\`get\_static\` returns the content of the public static field of the class \`J\`\.
+\`get_static\` returns the content of the public static field of the class \`J\`\.
 
-When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the field is looked up from \`ownerClass\` using Class\.getField\(String\)\.
+When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the field is looked up from \`ownerClass\` using Class.getField\(String\)\.
 
-If the declared type of the field is a reference type \`rt\`\, the result will be a \`java\` value \(contentObj\, rt\)\, where \`contentObj\` is the content of the field\.
+If the declared type of the field is a reference type \`rt\`\, the result will be a \`java\` value \(contentObj, rt\)\, where \`contentObj\` is the content of the field.
 
-If the declared type of the field is a primitive type \`pt\`\, the result will be a \`java\` value \(box\, pt\)\, where \`box\` is an instance of the corresponding wrapper type which contains the element of the field\.
+If the declared type of the field is a primitive type \`pt\`\, the result will be a \`java\` value \(box, pt\)\, where \`box\` is an instance of the corresponding wrapper type which contains the element of the field.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(ownerClass\, \*\)\, where \`ownerClass\` is an instance of java\.lang\.Class\.
+\`J\` must be a \`java\` value \(ownerClass, \*\)\, where \`ownerClass\` is an instance of java.lang.Class.
 
-\`Field\_name\` must be a \`str\`\.
+\`Field_name\` must be a \`str\`\.
 
-\`ownerClass\` must have a public static field with the name \`Field\_name\`\.
+\`ownerClass\` must have a public static field with the name \`Field_name\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -563,65 +583,66 @@ If the declared type of the field is a primitive type \`pt\`\, the result will b
 
 .. _api-19da60ec93f3279a1f7f8ffe305fda90:
 
-J\.set\_static\(Field\_name Content\)
--------------------------------------
+J.set_static\(Field_name Content\)
+----------------------------------
 
-\`set\_static\` sets \`Content\` to the public static field of the class \`J\`\.
+\`set_static\` sets \`Content\` to the public static field of the class \`J\`\.
 
-When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the field is looked up from \`ownerClass\` using Class\.getField\(String\)\.
+When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the field is looked up from \`ownerClass\` using Class.getField\(String\)\.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(ownerClass\, \*\)\, where \`ownerClass\` is an instance of java\.lang\.Class\.
+\`J\` must be a \`java\` value \(ownerClass, \*\)\, where \`ownerClass\` is an instance of java.lang.Class.
 
-\`Field\_name\` must be a \`str\`\.
+\`Field_name\` must be a \`str\`\.
 
-\`ownerClass\` must have a public static field with the name \`Field\_name\`\.
+\`ownerClass\` must have a public static field with the name \`Field_name\`\.
 
-The field must not be final\.
+The field must not be final.
 
-\`Content\` must be a \`java\` value \(contentObj\, \*\)\, where \`contentObj\` must be typable\-as the declared type of the field\.
+\`Content\` must be a \`java\` value \(contentObj, \*\)\, where \`contentObj\` must be typable\-as the declared type of the field.
 
 .. _api-a88a85d17e6737f382eaec6f6cf284de:
 
-J\.call\_method\(Method\_name \.\.\.\[A0 A1 \,\,\,\] \.\.\.\[\$config\=\{\}\]\)
--------------------------------------------------------------------------------
+J.call_method\(Method_name \.\.\.\[A0 A1 \,\,\,\] \.\.\.\[$config\=\{\}\]\)
+---------------------------------------------------------------------------
 
-\`call\_method\` calls a public instance method of the object \`J\`\.
+\`call_method\` calls a public instance method of the object \`J\`\.
 
 .. rubric:: Look up
 
-The instance method is looked up by \`J\.type\.getMethod\(Method\_name\, A0\.type\, A1\.type\, \,\,\,\)\`\.
+The instance method is looked up by \`J.type.getMethod\(Method_name, A0.type, A1.type, \,\,\,\)\`\.
 
 .. rubric:: Result
 
-1\)  If the declared return type of the method is a reference type \`rt\`\, and the method terminates without throwing an exception\, \`call\_method\` tail\-calls the success continuation with a \`java\` value \(resultObj\, rt\)\, where \`resultObj\` is the returned value of the method\.
+1\)  If the declared return type of the method is a reference type \`rt\`\, and the method terminates without throwing an exception, \`call_method\` tail\-calls the success continuation with a \`java\` value \(resultObj, rt\)\, where \`resultObj\` is the returned value of the method.
 
-2\)  If the declared return type \`pt\` of the method is char\, boolean\, byte\, short\, int\, long\, float or double\, and the method terminates without throwing an exception\, \`call\_method\` tail\-calls the success continuation with a \`java\` value \(resultObj\, pt\)\, where \`resultObj\` is a wrapper instance of the returned value\.
+2\)  If the declared return type \`pt\` of the method is char, boolean, byte, short, int, long, float or double, and the method terminates without throwing an exception, \`call_method\` tail\-calls the success continuation with a \`java\` value \(resultObj, pt\)\, where \`resultObj\` is a wrapper instance of the returned value.
 
-3\)  If the declared return type the method is void\, and the method terminates without throwing an exception\, \`call\_method\` tail\-calls the success continuation with no arg\.
+3\)  If the declared return type of the method is void, and the method terminates without throwing an exception, \`call_method\` tail\-calls the success continuation with no arg.
 
-4\)  If the method terminates throwing a Java exception \`exceptionObj\`\, and the exception is an instance of one or more exception types specified by invocations of C\.catch\, \`call\_method\` tail\-calls the error continuation corresponding to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
+4\)  If the method terminates throwing a Java exception \`exceptionObj\`\, and the exception is an instance of one or more exception types specified by invocations of C.catch, \`call_method\` tail\-calls the error continuation corresponding to the most specific exception type \`et\` with a \`java\` value \(exceptionObj, et\)\.
 
-5\)  If the method terminates throwing a Java exception\, and no exception type passed to C\.catch matches the thrown exception\, \`call\_method\` raises a Kink exception\.
+5\)  If the method terminates throwing a Java exception, and no exception type passed to C.catch matches the thrown exception, \`call_method\` raises a Kink exception.
 
-If C\.on\_success is not called for the config value\, and the declared return type of the method is void\, \{ nada \} is used as the default success continuation\.
+If C.on_success is not called for the config value, and the declared return type of the method is void, \{ nada \} is used as the default success continuation.
 
-If C\.on\_success is not called for the config value\, and the declared return type of the method is not void\, VAL\.identity is used as the default success continuation\.
+If C.on_success is not called for the config value, and the declared return type of the method is not void, VAL.identity is used as the default success continuation.
 
 .. rubric:: Preconditions
 
-\`Method\_name\` must be a \`str\`\.
+\`Method_name\` must be a \`str\`\.
 
-\`A0\`\, \`A1\` \,\,\, must be \`java\` values\.
+\`A0\`\, \`A1\` \,\,\, must be \`java\` values.
 
-\`type\` of \`J\` must have the specified public instance method\.
+\`type\` of \`J\` must have the specified public instance method.
 
-\$config must be a function which takes a \`java\_call\_config\` value\.
+$config must be a function which takes a \`java_call_config\` value.
 
 .. rubric:: Examples
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
     :ArrayList_class <- JAVA.class('java.util.ArrayList')
@@ -643,9 +664,10 @@ If C\.on\_success is not called for the config value\, and the declared return t
     :Success <- Lst.call_method('remove' JAVA.int(42).as(Object_class))
     stdout.print_line(Success.repr) # => (java "true" as boolean)
 
-By default\, a Java exception results in a Kink exception\.
+By default, a Java exception results in a Kink exception.
 
 .. code:: kink
+    :class: no-search
 
     :CONTROL.require_from('kink/')
     :JAVA.require_from('kink/javahost/')
@@ -661,9 +683,10 @@ By default\, a Java exception results in a Kink exception\.
     )
     # => java exception: java.lang.IndexOutOfBoundsException: Index 42 out of bounds for length 0
 
-The success\/error continuations can be configured by the config function\.
+The success\/error continuations can be configured by the config function.
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
     :BigInteger_class <- JAVA.class('java.math.BigInteger')
@@ -688,9 +711,10 @@ The success\/error continuations can be configured by the config function\.
     stdout.print_line(divide_10_by(JAVA.big_integer(0)))
     # => rte: (java "java.lang.ArithmeticException: BigInteger divide by zero" as java.lang.RuntimeException)
 
-If the return type of the Java method is void\, the success continuation is tail\-called with no arg\.
+If the return type of the Java method is void, the success continuation is tail\-called with no arg.
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
     :ArrayList_class <- JAVA.class('java.util.ArrayList')
@@ -709,34 +733,35 @@ If the return type of the Java method is void\, the success continuation is tail
 
 .. _api-c29cebd9582aa314d0da77584f52883c:
 
-J\.call\_static\(Method\_name \.\.\.\[A0 A1 \,\,\,\] \.\.\.\[\$config\=\{\}\]\)
--------------------------------------------------------------------------------
+J.call_static\(Method_name \.\.\.\[A0 A1 \,\,\,\] \.\.\.\[$config\=\{\}\]\)
+---------------------------------------------------------------------------
 
-\`call\_static\` calls a public static method of the class \`J\`\.
+\`call_static\` calls a public static method of the class \`J\`\.
 
 .. rubric:: Look up
 
-When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the static method is looked up by \`ownerClass\.getMethod\(Method\_name\, A0\.type\, A1\.type\, \,\,\,\)\`\.
+When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the static method is looked up by \`ownerClass.getMethod\(Method_name, A0.type, A1.type, \,\,\,\)\`\.
 
 .. rubric:: Result
 
-Same as J\.call\_method\.
+Same as J.call_method.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(ownerClass\, \*\)\, where \`ownerClass\` is a class object\.
+\`J\` must be a \`java\` value \(ownerClass, \*\)\, where \`ownerClass\` is a class object.
 
-\`Method\_name\` must be a \`str\`\.
+\`Method_name\` must be a \`str\`\.
 
-\`A0\`\, \`A1\` \,\,\, must be \`java\` values\.
+\`A0\`\, \`A1\` \,\,\, must be \`java\` values.
 
-\`ownerClass\` must have the specified public static method\.
+\`ownerClass\` must have the specified public static method.
 
-\$config must be a function which takes a \`java\_call\_config\` value\.
+$config must be a function which takes a \`java_call_config\` value.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -748,38 +773,39 @@ Same as J\.call\_method\.
 
 .. _api-cb58bf3938ed2a294fe6d9cdadd912a2:
 
-J\.new\(\.\.\.\[A0 A1 \,\,\,\] \.\.\.\[\$config\=\{\}\]\)
----------------------------------------------------------
+J.new\(\.\.\.\[A0 A1 \,\,\,\] \.\.\.\[$config\=\{\}\]\)
+-------------------------------------------------------
 
-\`new\` calls a public constructor of the class \`J\`\, and returns the new instance\.
+\`new\` calls a public constructor of the class \`J\`\, and returns the new instance.
 
 .. rubric:: Look up
 
-When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the public constructor is looked up by \`ownerClass\.getConstructor\(A0\.type\, A1\.type\, \,\,\,\)\`\.
+When \`objectReference\` of \`J\` is a class object \`ownerClass\`\, the public constructor is looked up by \`ownerClass.getConstructor\(A0.type, A1.type, \,\,\,\)\`\.
 
 .. rubric:: Result
 
-1\)  If a new instance \`resultObj\` is created\, \`new\` tail\-calls the success continuation with a \`java\` value \(resultObj\, ownerClass\)\.
+1\)  If a new instance \`resultObj\` is created, \`new\` tail\-calls the success continuation with a \`java\` value \(resultObj, ownerClass\)\.
 
-2\)  If the constructor terminates throwing a Java exception \`exceptionObj\`\, and the exception is an instance of one or more exception types specified by invocations of C\.catch\, \`new\` tail\-calls the error continuation corresponding to the most specific exception type \`et\` with a \`java\` value \(exceptionObj\, et\)\.
+2\)  If the constructor terminates throwing a Java exception \`exceptionObj\`\, and the exception is an instance of one or more exception types specified by invocations of C.catch, \`new\` tail\-calls the error continuation corresponding to the most specific exception type \`et\` with a \`java\` value \(exceptionObj, et\)\.
 
-3\)  If the constructor terminates throwing a Java exception\, and no exception type passed to C\.catch matches the thrown exception\, \`new\` raises a Kink exception\.
+3\)  If the constructor terminates throwing a Java exception, and no exception type passed to C.catch matches the thrown exception, \`new\` raises a Kink exception.
 
-If C\.on\_success is not called for the config value\, VAL\.identity is used as the default success continuation\.
+If C.on_success is not called for the config value, VAL.identity is used as the default success continuation.
 
 .. rubric:: Preconditions
 
-\`J\` must be a \`java\` value \(ownerClass\, \*\)\, where \`ownerClass\` is a class object\.
+\`J\` must be a \`java\` value \(ownerClass, \*\)\, where \`ownerClass\` is a class object.
 
-\`A0\`\, \`A1\` \,\,\, must be \`java\` values\.
+\`A0\`\, \`A1\` \,\,\, must be \`java\` values.
 
-\`ownerClass\` must have the specified public constructor\.
+\`ownerClass\` must have the specified public constructor.
 
-\$config must be a function which takes a \`java\_call\_config\` value\.
+$config must be a function which takes a \`java_call_config\` value.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :CONTROL.require_from('kink/')
     :JAVA.require_from('kink/javahost/')
@@ -802,84 +828,84 @@ If C\.on\_success is not called for the config value\, VAL\.identity is used as 
 
 .. _api-1a06ea9468b89c20d92b26d8c3e7ac25:
 
-type java\_call\_config
-=======================
+type java_call_config
+=====================
 
-\`java\_call\_config\` is a config value of J\.call\_method\, J\.call\_static\, and J\.new\.
+\`java_call_config\` is a config value of J.call_method, J.call_static, and J.new.
 
 .. _api-4c9620a4e105b451cad76eb0b32bb671:
 
-C\.on\_success\(\$success\)
----------------------------
+C.on_success\($success\)
+------------------------
 
-\`on\_success\` specifies \$success as the success continuation\.
+\`on_success\` specifies $success as the success continuation.
 
 .. _api-ad8c769ad8e7396b95aa92590571fb68:
 
-C\.catch\(Exception\_class \$error\)
-------------------------------------
+C.catch\(Exception_class $error\)
+---------------------------------
 
-\`catch\` specifies \$error as the error continuation corresponding to the exception type \`Exception\_class\`\.
+\`catch\` specifies $error as the error continuation corresponding to the exception type \`Exception_class\`\.
 
-\`catch\` can be called multiple times to specify error continuations for different exception types\.
+\`catch\` can be called multiple times to specify error continuations for different exception types.
 
 .. rubric:: Preconditions
 
-\`Exception\_class\` must be a \`java\` value \(et\, \*\)\, where \`et\` is a subclass of java\.lang\.Throwable\.
+\`Exception_class\` must be a \`java\` value \(et, \*\)\, where \`et\` is a subclass of java.lang.Throwable.
 
-\`Exception\_class\` must not be a subtype of exception types specified by preceding invocations of \`catch\`\.
+\`Exception_class\` must not be a subtype of exception types specified by preceding invocations of \`catch\`\.
 
-\$error must be a function which takes a \`java\` value\.
+$error must be a function which takes a \`java\` value.
 
 .. _api-01b2e16345130933f93fe63167e15c32:
 
-JAVA\.is\?\(Val\)
-=================
+JAVA.is?\(Val\)
+===============
 
-\`is\?\` returns whether \`Val\` is a \`java\` value\.
+\`is?\` returns whether \`Val\` is a \`java\` value.
 
 .. _api-a17414dab3a705ea1673aefb4572a9cc:
 
-JAVA\.string\(Str\)
-===================
+JAVA.string\(Str\)
+==================
 
 \`string\` returns a Java string which has the same string as \`Str\`\.
 
-The result will be a \`java\` value  \(string\, java\.lang\.String\)\, where \`string\` is an instance of String which has the same string as \`Str\`\.
+The result will be a \`java\` value  \(string, java.lang.String\)\, where \`string\` is an instance of String which has the same string as \`Str\`\.
 
 .. rubric:: Precondition
 
-\`Str\` must be a \`str\` value\.
+\`Str\` must be a \`str\` value.
 
 .. _api-38409f4b7fe4b8cdb7e3145c4934dcd8:
 
-JAVA\.bytes\(Bin \.\.\.\[From\=0 To\=Bin\.size\]\)
-==================================================
+JAVA.bytes\(Bin \.\.\.\[From\=0 To\=Bin.size\]\)
+================================================
 
-\`bytes\` returns a Java byte array from the slice of \`Bin\` in the range \[From\, To\)\.
+\`bytes\` returns a Java byte array from the slice of \`Bin\` in the range \[From, To\)\.
 
-The result will be a \`java\` value \(byteArray\, byte\[\]\)\, where \`byteArray\` is an array of bytes whose elements are copied from the slice of \`Bin\` in the range \[From\, To\)\.
+The result will be a \`java\` value \(byteArray, byte\[\]\)\, where \`byteArray\` is an array of bytes whose elements are copied from the slice of \`Bin\` in the range \[From, To\)\.
 
 .. rubric:: Preconditions
 
 \`Bin\` must be a \`bin\`\.
 
-\`From\` and \`To\` must be integer \`num\` values\.
+\`From\` and \`To\` must be integer \`num\` values.
 
-0 \<\= From \<\= To \<\= Bin\.size
+0 \<\= From \<\= To \<\= Bin.size
 
 .. _api-94d74e84a15500dacc000e8516b4c999:
 
-JAVA\.byte\_buffer\(Bin\)
-=========================
+JAVA.byte_buffer\(Bin\)
+=======================
 
-\`byte\_buffer\` returns a read only ByteBuffer containing the bytes of \`Bin\`\.
+\`byte_buffer\` returns a read only ByteBuffer containing the bytes of \`Bin\`\.
 
-The result will be a \`java\` value \(byteBuffer\, java\.nio\.ByteBuffer\)\. \`byteBuffer\` will have attributes as follows\:
+The result will be a \`java\` value \(byteBuffer, java.nio.ByteBuffer\)\. \`byteBuffer\` will have attributes as follows\:
 
-\• The capacity and the initial limit are Bin\.size\.
+\• The capacity and the initial limit are Bin.size.
 
-\• The initial position is 0\.
+\• The initial position is 0.
 
 .. rubric:: Precondition
 
@@ -887,12 +913,12 @@ The result will be a \`java\` value \(byteBuffer\, java\.nio\.ByteBuffer\)\. \`b
 
 .. _api-4105de46f68b0c0680892bb0adf45401:
 
-JAVA\.runtime\_exception\(Exc\)
-===============================
+JAVA.runtime_exception\(Exc\)
+=============================
 
-\`runtime\_exception\` returns a Java RuntimeException converted from the Kink exception\.
+\`runtime_exception\` returns a Java RuntimeException converted from the Kink exception.
 
-The result will be a \`java\` value \(rte\, java\.lang\.RuntimeException\)\, where \`rte\` is a RuntimeException instance\.
+The result will be a \`java\` value \(rte, java.lang.RuntimeException\)\, where \`rte\` is a RuntimeException instance.
 
 .. rubric:: Precondition
 
@@ -900,14 +926,14 @@ The result will be a \`java\` value \(rte\, java\.lang\.RuntimeException\)\, whe
 
 .. _api-573e951a5ce4533f3e960a19340cc367:
 
-JAVA\.boolean\(Bool\)
-=====================
+JAVA.boolean\(Bool\)
+====================
 
 \`boolean\` returns a Java boolean corresponding to \`Bool\`\.
 
-If \`Bool\` is true\, \`boolean\` returns a \`java\` value \(Boolean\.TRUE\, boolean\)\.
+If \`Bool\` is true, \`boolean\` returns a \`java\` value \(Boolean.TRUE, boolean\)\.
 
-If \`Bool\` is false\, \`boolean\` returns a \`java\` value \(Boolean\.FALSE\, boolean\)\.
+If \`Bool\` is false, \`boolean\` returns a \`java\` value \(Boolean.FALSE, boolean\)\.
 
 .. rubric:: Precondition
 
@@ -915,103 +941,103 @@ If \`Bool\` is false\, \`boolean\` returns a \`java\` value \(Boolean\.FALSE\, b
 
 .. _api-03ee2ace909fd91eacc651a9ad79897a:
 
-JAVA\.char\(Num\)
-=================
+JAVA.char\(Num\)
+================
 
 \`char\` returns a Java char corresponding to \`Num\`\.
 
-The result will be a \`java\` value \(objectReference\=ch\, type\=char\)\, where \`ch\` is an instance of java\.lang\.Character\.
+The result will be a \`java\` value \(objectReference\=ch, type\=char\)\, where \`ch\` is an instance of java.lang.Character.
 
 .. rubric:: Precondition
 
-\`Num\` must be an integer \`num\` in the range \[0\, 0xffff\]\.
+\`Num\` must be an integer \`num\` in the range \[0, 0xffff\]\.
 
 .. _api-d1e5a7af107a5cb61b33feacd980c2d5:
 
-JAVA\.byte\(Num\)
-=================
+JAVA.byte\(Num\)
+================
 
 \`byte\` returns a Java byte corresponding to \`Num\`\.
 
-The result will be a \`java\` value \(objectReference\=bt\, type\=byte\)\, where \`bt\` is an instance of java\.lang\.Byte\.
+The result will be a \`java\` value \(objectReference\=bt, type\=byte\)\, where \`bt\` is an instance of java.lang.Byte.
 
 .. rubric:: Precondition
 
-\`Num\` must be an integer \`num\` in the range \[\-128\, 127\]\.
+\`Num\` must be an integer \`num\` in the range \[\-128, 127\]\.
 
 .. _api-2fc6b56fcac8415c42d9c704f024fafb:
 
-JAVA\.short\(Num\)
-==================
+JAVA.short\(Num\)
+=================
 
 \`short\` returns a Java short corresponding to \`Num\`\.
 
-The result will be a \`java\` value \(objectReference\=sh\, type\=short\)\, where \`sh\` is an instance of java\.lang\.Short\.
+The result will be a \`java\` value \(objectReference\=sh, type\=short\)\, where \`sh\` is an instance of java.lang.Short.
 
 .. rubric:: Precondition
 
-\`Num\` must be an integer \`num\` in the range \[\- 2\*\*15\, 2\*\*15 \- 1\]\.
+\`Num\` must be an integer \`num\` in the range \[\- 2\*\*15, 2\*\*15 \- 1\]\.
 
 .. _api-000436967a852ce467bbb9e721efef6f:
 
-JAVA\.int\(Num\)
-================
+JAVA.int\(Num\)
+===============
 
 \`int\` returns a Java int corresponding to \`Num\`\.
 
-The result will be a \`java\` value \(objectReference\=n\, type\=int\)\, where \`n\` is an instance of java\.lang\.Integer\.
+The result will be a \`java\` value \(objectReference\=n, type\=int\)\, where \`n\` is an instance of java.lang.Integer.
 
 .. rubric:: Precondition
 
-\`Num\` must be an integer \`num\` in the range \[\- 2\*\*31\, 2\*\*31 \- 1\]\.
+\`Num\` must be an integer \`num\` in the range \[\- 2\*\*31, 2\*\*31 \- 1\]\.
 
 .. _api-6b26b2272eabd07991c052c23df12077:
 
-JAVA\.long\(Num\)
-=================
+JAVA.long\(Num\)
+================
 
 \`long\` returns a Java long corresponding to \`Num\`\.
 
-The result will be a \`java\` value \(objectReference\=ln\, type\=long\)\, where \`ln\` is an instance of java\.lang\.Long\.
+The result will be a \`java\` value \(objectReference\=ln, type\=long\)\, where \`ln\` is an instance of java.lang.Long.
 
 .. rubric:: Precondition
 
-\`Num\` must be an integer \`num\` in the range \[\- 2\*\*63\, 2\*\*63 \- 1\]\.
+\`Num\` must be an integer \`num\` in the range \[\- 2\*\*63, 2\*\*63 \- 1\]\.
 
 .. _api-3cf2d6ff9aea6e6d0158ab93daf53a07:
 
-JAVA\.float\(Num\)
-==================
+JAVA.float\(Num\)
+=================
 
 \`float\` returns a Java float value numerically close to \`Num\`\.
 
-The result will be a \`java\` value \(fl\, float\)\, where \`fl\` is an instance of java\.lang\.Float\, which is converted from \`Num\` by BigDecimal\.floatValue\(\)\.
+The result will be a \`java\` value \(fl, float\)\, where \`fl\` is an instance of java.lang.Float, which is converted from \`Num\` by BigDecimal.floatValue\(\)\.
 
 .. rubric:: Precondition
 
-\`Num\` must be a \`num\` value\.
+\`Num\` must be a \`num\` value.
 
 .. _api-a7c3d175a289f3b0543a44c5ea82cfe8:
 
-JAVA\.double\(Num\)
-===================
+JAVA.double\(Num\)
+==================
 
 \`double\` returns a Java double value numerically close to \`Num\`\.
 
-The result will be a \`java\` value \(dbl\, double\)\, where \`dbl\` is an instance of java\.lang\.Double\, which is converted from \`Num\` by BigDecimal\.doubleValue\(\)\.
+The result will be a \`java\` value \(dbl, double\)\, where \`dbl\` is an instance of java.lang.Double, which is converted from \`Num\` by BigDecimal.doubleValue\(\)\.
 
 .. rubric:: Precondition
 
-\`Num\` must be a \`num\` value\.
+\`Num\` must be a \`num\` value.
 
 .. _api-c5e20eff0b1332393ceec0a0ece9e7c9:
 
-JAVA\.big\_integer\(Num\)
-=========================
+JAVA.big_integer\(Num\)
+=======================
 
-\`big\_integer\` returns a Java BigInteger corresponding to \`Num\`\.
+\`big_integer\` returns a Java BigInteger corresponding to \`Num\`\.
 
-The result will be a \`java\` value \(objectReference\=bi\, type\=java\.math\.BigInteger\)\, where \`bi\` is an instance of java\.math\.BigInteger\, and the value is equal to \`Num\`\.
+The result will be a \`java\` value \(objectReference\=bi, type\=java.math.BigInteger\)\, where \`bi\` is an instance of java.math.BigInteger, and the value is equal to \`Num\`\.
 
 .. rubric:: Precondition
 
@@ -1019,31 +1045,32 @@ The result will be a \`java\` value \(objectReference\=bi\, type\=java\.math\.Bi
 
 .. _api-627c8673b34bce4f65fdad173d7fc24f:
 
-JAVA\.big\_decimal\(Num\)
-=========================
+JAVA.big_decimal\(Num\)
+=======================
 
-\`big\_decimal\` returns a Java BigDecimal corresponding to \`Num\`\.
+\`big_decimal\` returns a Java BigDecimal corresponding to \`Num\`\.
 
-The result will be a \`java\` value \(bd\, java\.math\.BigDecimal\)\, where \`bd\` is an instance of java\.math\.BigDecimal\, whose scale is equal to \`Scale\` of \`Num\`\, and the unscaledValue is equal to \`Mantissa\` of \`Num\`\.
+The result will be a \`java\` value \(bd, java.math.BigDecimal\)\, where \`bd\` is an instance of java.math.BigDecimal, whose scale is equal to \`Scale\` of \`Num\`\, and the unscaledValue is equal to \`Mantissa\` of \`Num\`\.
 
 .. rubric:: Precondition
 
-\`Num\` must be a \`num\` value\.
+\`Num\` must be a \`num\` value.
 
 .. _api-5a5979141c7581d88c50fcf1c0dfa864:
 
-JAVA\.wrap\(Wrapped\)
-=====================
+JAVA.wrap\(Wrapped\)
+====================
 
-\`wrap\` returns a \`java\` value which wraps a Kink value\.
+\`wrap\` returns a \`java\` value which wraps a Kink value.
 
-\`Wrapped\` can be a value of any type\. \`wrap\` returns a \`java\` value \(Wrapped\, org\.kink\_lang\.kink\.Val\)\.
+\`Wrapped\` can be a value of any type. \`wrap\` returns a \`java\` value \(Wrapped, org.kink_lang.kink.Val\)\.
 
-\`Wrapped\` can be extracted from the result \`java\` value using \`unwrap\` method\.
+\`Wrapped\` can be extracted from the result \`java\` value using \`unwrap\` method.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JAVA.require_from('kink/javahost/')
         
@@ -1054,109 +1081,109 @@ JAVA\.wrap\(Wrapped\)
 
 .. _api-668a1a6bcf8e031fbcc5e57fef6846f4:
 
-JAVA\.true
-==========
+JAVA.true
+=========
 
-\`true\` returns a \`java\` value \(Boolean\.TRUE\, boolean\)\.
+\`true\` returns a \`java\` value \(Boolean.TRUE, boolean\)\.
 
 .. _api-53bf40a4b1c53f68d26a93509239da0e:
 
-JAVA\.false
-===========
+JAVA.false
+==========
 
-\`false\` returns a \`java\` value \(Boolean\.FALSE\, boolean\)\.
+\`false\` returns a \`java\` value \(Boolean.FALSE, boolean\)\.
 
 .. _api-957c8217fb6034302756d828be9029a2:
 
-JAVA\.null
-==========
+JAVA.null
+=========
 
-\`null\` returns a \`java\` value \(null\, java\.lang\.Object\)\.
+\`null\` returns a \`java\` value \(null, java.lang.Object\)\.
 
 .. _api-b1e32ad9d629e1428f9e2519196b83a2:
 
-JAVA\.runtime
-=============
+JAVA.runtime
+============
 
-\`runtime\` returns the current runtime\.
+\`runtime\` returns the current runtime.
 
-The result is a \`java\` value \(vm\, org\.kink\_lang\.kink\.Vm\)\, where \`vm\` is the current runtime\.
+The result is a \`java\` value \(vm, org.kink_lang.kink.Vm\)\, where \`vm\` is the current runtime.
 
 .. _api-d8227633c2aa5e02ffed7e4a5881a4fa:
 
-JAVA\.boolean\_class
-====================
+JAVA.boolean_class
+==================
 
-\`boolean\_class\` returns a \`java\` value \(boolean\.class\, java\.lang\.Class\)\.
+\`boolean_class\` returns a \`java\` value \(boolean.class, java.lang.Class\)\.
 
 .. _api-70b803d4f29ba5608523a0724ba37e46:
 
-JAVA\.char\_class
-=================
+JAVA.char_class
+===============
 
-\`char\_class\` returns a \`java\` value \(char\.class\, java\.lang\.Class\)\.
+\`char_class\` returns a \`java\` value \(char.class, java.lang.Class\)\.
 
 .. _api-d94bffd9f1207087666acd768694c073:
 
-JAVA\.byte\_class
-=================
+JAVA.byte_class
+===============
 
-\`byte\_class\` returns a \`java\` value \(byte\.class\, java\.lang\.Class\)\.
+\`byte_class\` returns a \`java\` value \(byte.class, java.lang.Class\)\.
 
 .. _api-4d1ed496b29b42fabe4d1705ad13869e:
 
-JAVA\.short\_class
-==================
+JAVA.short_class
+================
 
-\`short\_class\` returns a \`java\` value \(short\.class\, java\.lang\.Class\)\.
+\`short_class\` returns a \`java\` value \(short.class, java.lang.Class\)\.
 
 .. _api-5e9e7d1a2a20b93d99c8a2cbf391b0f1:
 
-JAVA\.int\_class
-================
+JAVA.int_class
+==============
 
-\`int\_class\` returns a \`java\` value \(int\.class\, java\.lang\.Class\)\.
+\`int_class\` returns a \`java\` value \(int.class, java.lang.Class\)\.
 
 .. _api-ff84613832422dbbe7fc0adba188436e:
 
-JAVA\.long\_class
-=================
+JAVA.long_class
+===============
 
-\`long\_class\` returns a \`java\` value \(long\.class\, java\.lang\.Class\)\.
+\`long_class\` returns a \`java\` value \(long.class, java.lang.Class\)\.
 
 .. _api-af66f24d45df371674b11633d8b8b5d1:
 
-JAVA\.float\_class
-==================
+JAVA.float_class
+================
 
-\`float\_class\` returns a \`java\` value \(float\.class\, java\.lang\.Class\)\.
+\`float_class\` returns a \`java\` value \(float.class, java.lang.Class\)\.
 
 .. _api-e597da2d15b51babc3cc52b409fcc606:
 
-JAVA\.double\_class
-===================
+JAVA.double_class
+=================
 
-\`double\_class\` returns a \`java\` value \(double\.class\, java\.lang\.Class\)\.
+\`double_class\` returns a \`java\` value \(double.class, java.lang.Class\)\.
 
 .. _api-475b77f7ab3ee5002b9a6068c89cf7c8:
 
-JAVA\.void\_class
-=================
+JAVA.void_class
+===============
 
-\`void\_class\` returns a \`java\` value \(void\.class\, java\.lang\.Class\)\.
+\`void_class\` returns a \`java\` value \(void.class, java.lang.Class\)\.
 
 .. _api-a12b423b2635f4afc13ad91df4411c9b:
 
-JAVA\.class\(Class\_name\)
-==========================
+JAVA.class\(Class_name\)
+========================
 
-\`class\` looks up a class by the binary name \`Class\_name\`\.
+\`class\` looks up a class by the binary name \`Class_name\`\.
 
-\`class\` function loads the specified class\, using the reflection access of the unnamed module of the class loader from which org\.kink\_lang\.kink\.Vm class of the current runtime is loaded\. If the class \`klass\` is found\, \`class\` returns a \`java\` value \(klass\, java\.lang\.Class\)\.
+\`class\` function loads the specified class, using the reflection access of the unnamed module of the class loader from which org.kink_lang.kink.Vm class of the current runtime is loaded. If the class \`klass\` is found, \`class\` returns a \`java\` value \(klass, java.lang.Class\)\.
 
 .. rubric:: Preconditions
 
-\`Class\_name\` must be a \`str\` value\.
+\`Class_name\` must be a \`str\` value.
 
-The class specified by \`Class\_name\` must be available from the class loader which loaded the runtime\. The class must be public\.
+The class specified by \`Class_name\` must be available from the class loader which loaded the runtime. The class must be public.
 

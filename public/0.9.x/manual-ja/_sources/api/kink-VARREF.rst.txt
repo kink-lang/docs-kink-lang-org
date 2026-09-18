@@ -2,8 +2,6 @@
 kink\/VARREF
 ============
 
-Companion mod for varref vals\.
-
 .. contents::
     :local:
     :backlinks: none
@@ -13,24 +11,23 @@ Companion mod for varref vals\.
 type varref
 ===========
 
-A varref\, or a variable reference\, is a val which represents a variable\.
+\`varref\` is a variable reference, which is a value that represents a variable.
 
-Operations such as assignment are done via varref vals\.
+A \`varref\` is a tuple of \(Owner, Sym\)\, where \`Owner\` is the owner value of the variable, and \`Sym\` is the symbol of the variable.
 
-A varref consists of \(Owner\, Sym\)\, where the \`Owner\` is the owner of the variable\, and the \`Sym\` is the symbol of the variable\.
-
-A varref is a subtype of plain\_param\. See kink\/param\/PLAIN\_PARAM mod\.
+\`varref\` is a subtype of \`plain_param\`\. See kink\/param\/PLAIN_PARAM.
 
 .. _api-9149b04024119e6743bfce567a330250:
 
-Varref\.owner
--------------
+Varref.owner
+------------
 
-\`owner\` returns the \`Owner\` of \`Varref\`\.
+\`owner\` returns \`Owner\` of \`Varref\`\.
 
-Example\:
+.. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :Owner <- 42
     :Varref <- Owner:Foo
@@ -38,14 +35,15 @@ Example\:
 
 .. _api-f0bd1a74333e30f4a156fdead5a0aba1:
 
-Varref\.sym
------------
+Varref.sym
+----------
 
-\`sym\` returns the \`Sym\` of \`Varref\`\.
+\`sym\` returns a \`str\` value of \`Sym\` of \`Varref\`\.
 
-Example\:
+.. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :Owner <- 42
     :Varref <- Owner:Foo
@@ -56,43 +54,46 @@ Example\:
 Varref \<\- Content
 -------------------
 
-\`\<\-\` operator\, or \`op\_store\` method\, does variable\-store operation for the variable represented by \`Varref\`\, with \`Content\` as the content of the variable\.
+\`\<\-\` operator, or \`op_store\` method, performs variable\-store operation for the variable represented by \`Varref\`\, with \`Content\` as the content of the variable.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :V <- 42
     stdout.print_line(V.repr) # => 42
 
 .. _api-ccb05513dd1c65fedbb36887fcd81818:
 
-Varref\.load
-------------
+Varref.load
+-----------
 
-\`load\` does variable load operation for the variable represented by \`Varref\`\, and returns the content of the variable\.
+\`load\` performs variable\-load operation for the variable represented by \`Varref\`\, and returns the content value of the variable.
 
-Precondition\:
+.. rubric:: Precondition
 
-\• the content of the variable must not be empty
+The content of the variable must not be empty.
 
-Example\:
+.. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :V <- 42
     stdout.print_line(:V.load.repr) # => 42
 
 .. _api-76b0760cfb86b823ba19b86b27802ba7:
 
-Varref\.any\?
--------------
+Varref.any?
+-----------
 
-\`any\?\` returns whether the content of \`Varref\` is not empty\, but a value\.
+\`any?\` performs variable\-load operation for the variable represented by \`Varref\`\, and returns whether the content is not empty.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :Owner <- new_val('Foo' 42)
     stdout.print_line(Owner:Foo.any?.repr)  # => true
@@ -100,40 +101,40 @@ Varref\.any\?
 
 .. _api-63597fda3177ac30803c3405d3dd7ba7:
 
-Varref\.require\_from\(Prefix\)
--------------------------------
+Varref.require_from\(Prefix\)
+-----------------------------
 
-\`require\_from\` loads a mod then stores the mod to the variable\.
+\`require_from\` loads a module then stores the module to the variable.
 
-Calling this method is equivalent to calling “Varref \<\- MOD\.require\(Prefix \+ Varref\.sym\)”\.
+Calling this method is equivalent to calling \`Varref \<\- MOD.require\(Prefix \+ Varref.sym\)\`\.
 
-Example\:
+.. rubric:: Precondition
+
+\`Prefix\` must be a \`str\`\.
+
+.. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :NUM.require_from('kink/')
     stdout.print_line(NUM.is?(42).repr)  # => true
 
-The program above is equivalent to the following\.
-
-.. code:: kink
-
-    :MOD.require_from('kink/')
-    :NUM <- MOD.require('kink/NUM')
-    stdout.print_line(NUM.is?(42).repr)  # => true
-
 .. _api-58a0d84a3d4a63aee83546415f4bd5f5:
 
-Varref\.rest
-------------
+Varref.rest
+-----------
 
-\`rest\` makes a rest\_param backed by the variable\.
+\`rest\` returns a \`rest_param\` backed by the variable.
 
-\`pass\_rest\` method of the result rest\_param assigns the variable to the args\.
+\`pass_rest\(Rest_args\)\` method of the result \`rest_param\` stores \`Rest_args\` to the variable.
 
-Example\:
+See also kink\/param\/REST_PARAM
+
+.. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :take_args <- {(:X :Y :Z.rest)
       stdout.print_line(X.repr)
@@ -159,22 +160,23 @@ Example\:
     #   "bar"
     #   ["baz" "qux"]
 
-See also kink\/param\/REST\_PARAM\.
-
 .. _api-a6b43b4c86defa1c7e8594a542d1c2fa:
 
-Varref\.opt
------------
+Varref.opt
+----------
 
-\`opt\` makes an opt\_param backed by the variable\.
+\`opt\` makes an \`opt_param\` backed by the variable.
 
-\`pass\_arg\` method of the result opt\_param stores a singleton vec of the argument of \`pass\_arg\` to the variable\.
+\`pass_arg\(Arg\)\` method of the result \`opt_param\` stores a singleton vector \`\[Arg\]\` to the variable.
 
-\`pass\_nothing\` method of the result opt\_param stores an empty vec to the variable\.
+\`pass_nothing\` method of the result opt_param stores an empty vector to the variable.
 
-Example\:
+See also kink\/param\/OPT_PARAM
+
+.. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :take_args <- {(:X :Y :Z.opt :W.opt)
       stdout.print_line(X.repr)
@@ -204,39 +206,31 @@ Example\:
     #   ["baz"]
     #   ["qux"]
 
-See also kink\/param\/OPT\_PARAM\.
-
-.. _api-4916e3b9d10bfe6e0d720ab8278a3133:
-
-Varref\.repr
-------------
-
-\`repr\` returns a str representation of the Varref\, such as \"\:Foo\"\.
-
-.. _api-54700d6431b1d05dcd5e7329ad11e6b9:
-
-VARREF\.is\?\(Val\)
-===================
-
-\`is\?\` returns whether \`Val\` is a varref\.
-
 .. _api-6b886b86841f53184d092cbd1d1aee09:
 
-VARREF\.new\(Owner Sym\)
-========================
+VARREF.new\(Owner Sym\)
+=======================
 
-\`new\` makes a varref \(Owner\, Sym\)\.
+\`new\` returns a \`varref\` \(Owner, Sym\)\.
 
-Precondition\:
+.. rubric:: Precondition
 
-\• \`Sym\` must be a str
+\`Sym\` must be a \`str\`\.
 
-Example\:
+.. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :VARREF.require_from('kink/')
     :Owner <- new_val('Foo' 42)
     :Varref <- VARREF.new(Owner 'Foo')
     stdout.print_line(Varref.load.repr) # => 42
+
+.. _api-54700d6431b1d05dcd5e7329ad11e6b9:
+
+VARREF.is?\(Val\)
+=================
+
+\`is?\` returns whether \`Val\` is a \`varref\`\.
 

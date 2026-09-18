@@ -23,7 +23,7 @@ The program above is desugared as follows.
     { [\binding:Vec].op_store(\binding._Args)
       \binding.Vec.each({
         [\binding:E].op_store(\binding._Args)
-        \binding.bar[()](\binding.E)
+        bar(\binding.E)
       })
     }.call(() [[10 20 30]])
   })
@@ -248,17 +248,17 @@ Each operator expression is :dfn:`desugared` as follows.
   * - ``X <- Y``
     - ``(X).op_store(Y)``
   * - ``X || Y``
-    - ``\binding.op_logor[()](X { Y })``
+    - ``op_logor(X { Y })``
   * - ``X && Y``
-    - ``\binding.op_logand[()](X { Y })``
+    - ``op_logand(X { Y })``
   * - ``X == Y``
     - ``(X).op_eq(Y)``
   * - ``X != Y``
-    - ``\binding.op_lognot[()]((X).op_eq(Y))``
+    - ``op_lognot((X).op_eq(Y))``
   * - ``X < Y``
-    - ``\binding.op_lognot[()]((Y).op_le(X))``
+    - ``op_lognot((Y).op_le(X))``
   * - ``X > Y``
-    - ``\binding.op_lognot[()]((X).op_le(Y))``
+    - ``op_lognot((X).op_le(Y))``
   * - ``X <= Y``
     - ``(X).op_le(Y)``
   * - ``X >= Y``
@@ -288,7 +288,7 @@ Each operator expression is :dfn:`desugared` as follows.
   * - ``- U``
     - ``(U).op_minus()``
   * - ``! U``
-    - ``\binding.op_lognot[()](U)``
+    - ``op_lognot(U)``
   * - ``~ U``
     - ``(U).op_not()``
 
@@ -434,42 +434,6 @@ thus the invocations of both functions output ``42`` to the standard output.
     output(Val)
   }
   fun2  # => 42
-
-Local call expressions
-----------------------
-
-Local call expressions (:token:`local_call`) are syntactic sugar for
-member call expressions (:token:`member_call`) of functions owned by the local binding.
-
-The local call expression in the form ``fun(VB)`` is :dfn:`desugared` to ``\binding.fun[()](VB)``, where ``VB`` is a vector body.
-
-The local call expression in the form ``fun[R](VB)`` is :dfn:`desugared` to ``\binding.fun[R](VB)``,
-where ``R`` is an expression and ``VB`` is a vector body.
-
-In the following example, ``fun1`` and ``fun2`` are equivalent,
-thus the invocations of both functions output ``hello world`` to the standard output.
-
-::
-
-  :print_arg <- {(:Arg)
-    stdout.print_line(Arg.show)
-  }
-
-  :print_recv <- {[:R]
-    stdout.print_line(R.show)
-  }
-
-  :fun1 <- {
-    print_arg('hello ')
-    print_recv['world']
-  }
-  fun1  # => hello world
-
-  :fun2 <- {
-    \binding.print_arg[()]('hello ')
-    \binding.print_recv['world']()
-  }
-  fun2  # => hello world
 
 .. _translation:
 
@@ -621,9 +585,12 @@ is defined as follows.
   * - ``R``
     - ``R`` : :token:`member_varref`
     - ``«tmember_varref(R)»``
-  * - ``AC``
-    - ``AC`` : :token:`member_call`
-    - ``«tmember_call(AC)»``
+  * - ``C``
+    - ``C`` : :token:`local_call`
+    - ``«tlocal_call(C)»``
+  * - ``C``
+    - ``C`` : :token:`member_call`
+    - ``«tmember_call(C)»``
 
 Number expressions
 ------------------
@@ -892,6 +859,50 @@ is defined as follows.
       | ``V`` : ``FUN_SYM``
     - ``«tprimary(P)» (varref «V as str»)``
 
+Local call expressions
+----------------------
+
+A local call expression (:token:`local_call`) invokes a function which is stored
+in a local variable.
+
+Translation of a local call expression ``C`` to an instruction sequence ``tlocal_call(C)``
+is defined as follows.
+
+.. list-table::
+  :header-rows: 1
+
+  *
+    - Composition of C
+    - Where
+    - tlocal_call(C)
+
+  *
+    - ``V`` ``OPENPAREN`` ``VB`` ``')'``
+
+    - | ``V`` : ``FUN_SYM``
+      | ``VB`` : :token:`vec_body`
+
+    - | ``(binding)``
+      | ``(load «V as str»)``
+      | ``(dup)``
+      | ``(checkfun)``
+      | ``(nada)``
+      | ``(emptyvec)``
+      | ``«tvec_body(VB)»``
+      | ``(call «V as str»)``
+
+As you see above, ``nada`` is passed as the actual receiver of the function call.
+
+Example:
+
+::
+
+  :print_recv_args <- {[:Recv](:Args.rest)
+    stdout.print_line('Recv={} Args={}'.format(Recv.repr Args.repr))
+  }
+
+  print_recv_args(1 2 3)  # => Recv=nada Args=[1 2 3]
+
 Member call expressions
 -----------------------
 
@@ -902,35 +913,33 @@ is defined as follows.
 
 .. list-table::
   :header-rows: 1
-  :widths: 2 1 4
 
-  * - Composition of ``C``
+  *
+    - Composition of C
     - Where
-    - ``tmember_call(C)``
-  * - ``P`` ``'.'`` ``V`` ``OPENBRACKET`` ``R`` ``']'`` ``OPENPAREN`` ``VB`` ``')'``
-    - | ``P`` : :token:`primary`
-      | ``V`` : ``FUN_SYM``
-      | ``R`` : :token:`expression`
-      | ``VB`` : :token:`vec_body`
-    - ``«tprimary(P)» (load «V as str») (dup) (checkfun) «texpression(R)» (emptyvec) «tvec_body(VB)» (call «V as str»)``
-  * - ``P`` ``'.'`` ``V`` ``OPENPAREN`` ``VB`` ``')'``
+    - tmember_call(C)
+
+  *
+    - ``P`` ``'.'`` ``V`` ``OPENPAREN`` ``VB`` ``')'``
+
     - | ``P`` : :token:`primary`
       | ``V`` : ``FUN_SYM``
       | ``VB`` : :token:`vec_body`
-    - ``«tprimary(P)» (dup) (load «V as str») (dup) (checkfun) (flip) (emptyvec) «tvec_body(VB)» (call «V as str»)``
 
-In the first form,
-``P`` is the owner of the function variable with the symbol ``V``,
-and ``R`` is the actual receiver passed to the function call.
-The actual receiver will be stored to ``_Recv`` variable of the binding
-of the function call. See :ref:`storerecvargs-insn`.
+    - | ``«tprimary(P)»``
+      | ``(dup)``
+      | ``(load «V as str»)``
+      | ``(dup)``
+      | ``(checkfun)``
+      | ``(flip)``
+      | ``(emptyvec)``
+      | ``«tvec_body(VB)»``
+      | ``(call «V as str»)``
 
-In the second form,
 ``P`` is not only the owner of the function variable with the symbol ``V``,
 but also the actual receiver passed to the function call.
 
-In either form,
-the elements of ``VB`` will be copied to
+The elements of ``VB`` will be copied to
 the actual arguments passed to the function call.
 The actual arguments, which is a vec value, will be stored to ``_Args``
 variable of the binding of the function call.
@@ -946,7 +955,6 @@ Example:
     }
     'repr' { '(Owner)' }
   )
-  stdout.print_line(Owner.fun['recv'](1 2 3)) # => Recv="recv" Args=[1 2 3]
-  stdout.print_line(Owner.fun(4 5 6)) # => Recv=(Owner) Args=[4 5 6]
+  stdout.print_line(Owner.fun(1 2 3)) # => Recv=(Owner) Args=[1 2 3]
 
 .. vim: et sw=2 sts=2 et

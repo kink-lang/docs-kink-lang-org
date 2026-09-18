@@ -11,88 +11,88 @@ kink\/tls\/TLS
 type tls
 ========
 
-An either end of a TLS connection\.
+An either end of a TLS connection.
 
 .. _api-b0fb9e96a6c1f08e313a311c748e2195:
 
-Tls\.tcp
---------
+Tls.tcp
+-------
 
-\`tcp\` returns a \`tcp\` val as the TCP connecting socket backing the TLS connection\.
+\`tcp\` returns a \`tcp\` val as the TCP connecting socket backing the TLS connection.
 
 .. _api-76f659c5f204bcc5803a95348eb6d612:
 
-Tls\.input\(\.\.\.\[\$config\=\{\}\]\)
---------------------------------------
+Tls.input\(\.\.\.\[$config\=\{\}\]\)
+------------------------------------
 
-\`input\` returns an \`input\` of the TLS connection\.
+\`input\` returns an \`input\` of the TLS connection.
 
 Config method\:
 
-\• C\.buffer\(\.\.\.\[Max\_buf\_size\]\)
+\• C.buffer\(\.\.\.\[Max_buf_size\]\)
 
-If C\.buffer is called\, the result \`input\` will perform userspace buffering\. If \`Max\_buf\_size\` is given\, the buffer size does not exceed \`Max\_buf\_size\` in byte length\. If C\.buffer is not called\, the result \`input\` will not perform userspace buffering\.
+If C.buffer is called, the result \`input\` will perform userspace buffering. If \`Max_buf_size\` is given, the buffer size does not exceed \`Max_buf_size\` in byte length. If C.buffer is not called, the result \`input\` will not perform userspace buffering.
 
-When \`close\` is called for the result \`input\`\, the TLS connection is closed\. It\'s because there is no such feature to close only the input of a TLS connection\.
+When \`close\` is called for the result \`input\`\, the TLS connection is closed. It\'s because there is no such feature to close only the input of a TLS connection.
 
 .. rubric:: Preconditions
 
-The TLS connection must be open\.
+The TLS connection must be open.
 
-\`Max\_buf\_size\` must be a positive integer \`num\`\.
+\`Max_buf_size\` must be a positive integer \`num\`\.
 
 .. _api-0a2ab2064ccff8b81e4912f65c211dc6:
 
-Tls\.output\(\.\.\.\[\$config\=\{\}\]\)
----------------------------------------
+Tls.output\(\.\.\.\[$config\=\{\}\]\)
+-------------------------------------
 
-\`output\` returns an \`output\` of the TLS connection\.
+\`output\` returns an \`output\` of the TLS connection.
 
 Config method\:
 
-\• C\.buffer\(\.\.\.\[Max\_buf\_size\]\)
+\• C.buffer\(\.\.\.\[Max_buf_size\]\)
 
-If C\.buffer is called\, the result \`output\` will perform userspace buffering\. If \`Max\_buf\_size\` is given\, the buffer size will not exceed \`Max\_buf\_size\` in byte length\. If C\.buffer is not called\, the result \`output\` will not perform userspace buffering\.
+If C.buffer is called, the result \`output\` will perform userspace buffering. If \`Max_buf_size\` is given, the buffer size will not exceed \`Max_buf_size\` in byte length. If C.buffer is not called, the result \`output\` will not perform userspace buffering.
 
-When \`close\` is called for the result \`output\`\, the TLS connection is closed\. It\'s because there is no such feature to close only the output of a TLS connection\.
+When \`close\` is called for the result \`output\`\, the TLS connection is closed. It\'s because there is no such feature to close only the output of a TLS connection.
 
 .. rubric:: Preconditions
 
-The TLS connection must be open\.
+The TLS connection must be open.
 
-\`Max\_buf\_size\` must be a positive integer \`num\`\.
+\`Max_buf_size\` must be a positive integer \`num\`\.
 
 .. _api-cff63341500c495db11e6699af2ab571:
 
-Tls\.close\(\.\.\.\[\$config\=\{\}\]\)
---------------------------------------
+Tls.close\(\.\.\.\[$config\=\{\}\]\)
+------------------------------------
 
-\`close\` closes the TLS connection\.
+\`close\` closes the TLS connection.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= \{\}
+\• C.on_success\($success\)\: default \= \{\}
 
-\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+\• C.on_error\($error\)\: default \= \{\(\:Exc\) Exc.raise \}
 
-If the TLS connection is successfully closed\, \`close\` tail\-calls \$success with no argument\.
+If the TLS connection is successfully closed, \`close\` tail\-calls $success with no argument.
 
-If an IO error occurs\, \`close\` tail\-calls \$error with an \`exception\`\.
+If an IO error occurs, \`close\` tail\-calls $error with an \`exception\`\.
 
-When the TLS connection is already closed\, calling this method does nothing\.
+When the TLS connection is already closed, calling this method does nothing.
 
-Note that the backing TCP connection is NOT closed by this method\.
+Note that the backing TCP connection is NOT closed by this method.
 
 .. rubric:: Preconditions
 
-\• \$success must be a fun which takes no arg
+\• $success must be a fun which takes no arg
 
-\• \$error must be a fun which takes an \`exception\`
+\• $error must be a fun which takes an \`exception\`
 
 .. _api-ea3b9aa534daeef86347c7a20aa82bee:
 
-TLS\.is\?\(Val\)
-================
+TLS.is?\(Val\)
+==============
 
-\`is\?\` returns whether \`Val\` is a val of \`tls\` type\.
+\`is?\` returns whether \`Val\` is a val of \`tls\` type.
 

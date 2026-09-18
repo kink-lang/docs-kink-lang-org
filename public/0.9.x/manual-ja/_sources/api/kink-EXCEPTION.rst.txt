@@ -2,8 +2,6 @@
 kink\/EXCEPTION
 ===============
 
-Mod of exceptions\.
-
 .. contents::
     :local:
     :backlinks: none
@@ -13,112 +11,147 @@ Mod of exceptions\.
 type exception
 ==============
 
-An exception is a pair of a message str and a vec of traces\.
+\`exception\` is an immutable tuple of \(Message, Traces, optional Next\) which represents a runtime error of program execution.
 
-An exception can also have the \`next\` exception in the chain\. Exception chain is used for “suppressed” exceptions by CONTROL\.with\_finally\. It is not for exception wrapping\.
+.. rubric:: Message
+
+\`Message\` is a \`str\` value of the error message.
+
+.. rubric:: Traces
+
+\`Traces\` is a finite length sequence of \`trace\` values, in the order from the root to the top of the stack.
+
+.. rubric:: optional Next
+
+An \`exception\` may or may not have another \`exception\` as \`Next\` attribute.
+
+The sequence of \`exception\` values obtained by starting from \`exception\` \`E\` and following \`Next\` attributes is called a chain of exceptions. Here, \`E\` is called the main exception of the chain. A chain of exceptions is always finite length.
+
+A chain of exceptions is constructed when there are more than one exceptions to report. For example, CONTROL.with_finally raises a chained exception when $body raises an exception, and cleanup thunks also raise exceptions.
+
+.. rubric:: Exceptions are for debugging
+
+An \`exception\` contains information just for debugging of runtime errors. It does not contain hierarchical categories or error codes for programmatic error handling.
+
+If you need to pass programmatic information to the caller, consider using continuation passing style instead. If you also need to abort processing down the stack, consider mixing continuation passing style and CONTROL.with_return.
 
 .. _api-dba93da3df1180b6d7cc7bbc49f3abba:
 
-Exception\.message
-------------------
+Exception.message
+-----------------
 
-\`message\` returns the exception message str\.
+\`message\` returns a \`str\` value which is equal to \`Message\` attribute.
 
 .. _api-34e11ffce569c0202e4d218d26949c3c:
 
-Exception\.traces
------------------
+Exception.traces
+----------------
 
-\`traces\` returns a the exception traces\. The result is a vec of traces\, The traces are indexed from the root to the top\.
+\`traces\` returns a \`vec\` which have \`trace\` values of \`Traces\` attribute.
 
 .. _api-7f00e64e6227198358370c7b0bcce33a:
 
-Exception\.have\_next\?
------------------------
+Exception.have_next?
+--------------------
 
-\`have\_next\?\` returns whether \`Exception\` has the next exception in the chain\.
+\`have_next?\` returns whether \`Exception\` has \`Next\` attribute.
 
 .. _api-4e6be031a6eeac356ac71e7044139ab7:
 
-Exception\.next
----------------
+Exception.next
+--------------
 
-\`next\` returns the next exception in the chain\.
+\`next\` returns the \`exception\` of \`Next\` attribute.
 
-Precondition\:
+.. rubric:: Precondition
 
-\• \`Exception\` must have the next exception in the chain\.
+Exception.have_next? \=\= true
+
+.. _api-73c132bfb1c7add1df5ef15c75be4a94:
+
+Exception \+ Tail
+-----------------
+
+\`\+\` operator, or \`op_add\` method, concatenates the chain of \`Exception\` and the chain of \`Tail\`\, and returns an \`exception\` of the new chain.
+
+.. rubric:: Precondition
+
+\`Tail\` must be an \`exception\`\.
 
 .. _api-949358f64b2639e7f0ddc2f95a53aa1b:
 
-Exception\.raise
-----------------
+Exception.raise
+---------------
 
-\`raise\` raises an exception\.
+\`raise\` raises \`Exception\`\.
 
 At the tail of \`raise\`\, the following sequence of abstract instructions is evaluated\:
 
 .. code:: kink
+    :class: no-search
 
     (val Exception)
     (raise)
 
-.. _api-d2d1fd878c0ae35447d9cc1bb82a089b:
-
-Exception\.op\_add\(Tail\)
---------------------------
-
-\`op\_add\` concatenates the chain of \`Exception\` and the chain of \`Tail\`\, and returns an exception of the new chain\.
-
-Precondition\:
-
-\• \`Tail\` must be an exception\.
-
-Postcondition\:
-
-\• The resutl is an exception\.
-
 .. _api-168d06121a158b398f4e6f7abbf96c6b:
 
-Exception\.desc\_iter
----------------------
+Exception.desc_iter
+-------------------
 
-\`desc\_iter\` returns an iter of lines describing the exception\.
+\`desc_iter\` returns an \`iter\` of \`str\` values which describe \`Exception\`\.
 
-Each element of the iter is a str\, which does NOT end with newline\.
+The elements of the \`iter\` is expected to print by Printer.print_line method\:
 
-.. _api-3829b1b9dfc1cf2ac755316307edf339:
+.. code:: kink
+    :class: no-search
 
-Exception\.op\_eq\(Arg\_exception\)
------------------------------------
+    :CONTROL.require_from('kink/')
+        
+    CONTROL.try(
+      { 10 // 0 }
+      { _not_reach_here_ }
+      {(:Exc)
+        Exc.desc_iter.each{(:Str)
+          stderr.print_line('  ' + Str)
+        }
+      }
+    )
+    # Output:
+    #   -- main exception
+    #   [..root..]
+    #   ,,,
+    #   [builtin:kink-mods/kink/CONTROL.kn L101 C10 body] :R = -->body
+    #   {(stdin) L4 C8 op_intdiv} { 10 -->// 0 }
+    #   Num.op_intdiv(Divisor): zero division: 10 is divided by 0
 
-\`op\_eq\` returns whether the two exceptions are equal\.
+.. _api-6949f569199be3761a9855ff35a6422a:
 
-They are equal in either of the following conditions\:
+E1 \=\= E2
+----------
 
-\• Both exceptions don\'t have the next exception in the chain\, the message strs are equal\, and the vecs of traces are equal\.
+\`\=\=\` operator, or \`op_eq\` method, returns whether the two exceptions have the equal attributes.
 
-\• Both exceptions have the next exception in the chain\, the next exceptions are equal\, the message strs are equal\, and the vecs of traces are equal\.
+.. rubric:: Precondition
 
-.. _api-e8325567ca9201ecedd3460476b31fa1:
+\`E2\` must be an \`exception\`\.
 
-EXCEPTION\.new\(Message \.\.\.\[Traces\]\)
-==========================================
+.. _api-569b1f3a1ce06aa21e0502f1a51d429a:
 
-\`new\` makes an exception val\.
+EXCEPTION.new\(Message \.\.\.\[Traces\=TRACE.current_traces\]\)
+===============================================================
 
-If \`Traces\` is omitted\, the current traces is used\.
+\`new\` returns a new \`exception\` with \`Message\` as \`Message\` attribute, \`Traces\` as \`Traces\` attribute, and without \`Next\` attribute.
 
-Preconditions\:
+.. rubric:: Preconditions
 
-\• \`Message\` must be a str
+\`Message\` must be a \`str\`\.
 
-\• \`Traces\` must be a vec of traces
+\`Traces\` must be a \`vec\` of \`trace\` values.
 
 .. _api-1b3e885ef622377d1ef6fddb9705bfbe:
 
-EXCEPTION\.is\?\(Val\)
-======================
+EXCEPTION.is?\(Val\)
+====================
 
-Whether \`Val\` is an exception\.
+\`is?\` returns whether \`Val\` is an \`exception\`\.
 

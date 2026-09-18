@@ -11,51 +11,52 @@ kink\/TRACE
 type trace
 ==========
 
-\`trace\` is an element of a stack trace\.
+\`trace\` is an element of a stack trace.
 
-A \`trace\` consists of the attributes\.
+A \`trace\` consists of the attributes.
 
-\• Sym\: a \`str\` of the sym of the called fun\.
+\• Sym\: a \`str\` of the sym of the called fun.
 
-\• Location\: a \`location\` where the invocation occurred\.
+\• Location\: a \`location\` where the invocation occurred.
 
-\• Tail\?\: a \`bool\` whether the trace is of a tail\-call\.
+\• Tail?\: a \`bool\` whether the trace is of a tail\-call.
 
 .. _api-2ba81c0e97bfec30c05a1c2ee791af56:
 
-Trace\.sym
-----------
+Trace.sym
+---------
 
 \`sym\` returns \`Sym\` of \`Trace\`\.
 
 .. _api-a3664625e49873f4c2b7cf7d481cabbf:
 
-Trace\.location
----------------
+Trace.location
+--------------
 
 \`location\` returns \`Location\` of \`Trace\`\.
 
 .. _api-13ab50ec259d2388448220e62cce50d2:
 
-Trace\.tail\?
--------------
+Trace.tail?
+-----------
 
-\`tail\?\` returns \`Tail\?\` of \`Trace\`\.
+\`tail?\` returns \`Tail?\` of \`Trace\`\.
 
 .. _api-e21990b8b144a5a11105f45a10004f06:
 
-Trace\.desc
------------
+Trace.desc
+----------
 
 \`desc\` returns a \`str\` which describes \`Trace\`\.
 
-If \`Tail\?\` attribute is true\, the first part of the result is enclosed by braces like \"\{\.\.\.\}\"\.
+If \`Tail?\` attribute is true, the first part of the result is enclosed by braces like \"\{\.\.\.\}\"\.
 
-If \`Tail\?\` attribute is false\, the first part of the result is enclosed by brackets like \"\[\.\.\.\]\"\.
+If \`Tail?\` attribute is false, the first part of the result is enclosed by brackets like \"\[\.\.\.\]\"\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TRACE.require_from('kink/')
     :LOCATION.require_from('kink/program/')
@@ -89,7 +90,7 @@ If \`Tail\?\` attribute is false\, the first part of the result is enclosed by b
 Trace1 \=\= Trace2
 ------------------
 
-\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`Trace1\` and \`Trace2\` have the equal attributes\.
+\`\=\=\` operator, or \`op_eq\` method, returns whether \`Trace1\` and \`Trace2\` have the equal attributes.
 
 .. rubric:: Precondition
 
@@ -97,16 +98,16 @@ Trace1 \=\= Trace2
 
 .. _api-1542d05f7994da8df342930c3fc85acf:
 
-TRACE\.new\(Sym Location \.\.\.\[\$config\=\{\}\]\)
-===================================================
+TRACE.new\(Sym Location \.\.\.\[$config\=\{\}\]\)
+=================================================
 
 \`new\` returns a new \`trace\`\.
 
 Config method\:
 
-\• C\.tail
+\• C.tail
 
-The result \`trace\` will have \`Sym\` and \`Location\` as the attributes of the same names\. If C\.tail is called\, \`Tail\?\` attribute will be true\. If C\.tail is not called\, \`Tail\?\` attribute will be false\.
+The result \`trace\` will have \`Sym\` and \`Location\` as the attributes of the same names. If C.tail is called, \`Tail?\` attribute will be true. If C.tail is not called, \`Tail?\` attribute will be false.
 
 .. rubric:: Preconditions
 
@@ -117,6 +118,7 @@ The result \`trace\` will have \`Sym\` and \`Location\` as the attributes of the
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TRACE.require_from('kink/')
     :LOCATION.require_from('kink/program/')
@@ -130,30 +132,31 @@ The result \`trace\` will have \`Sym\` and \`Location\` as the attributes of the
 
 .. _api-3a2e2b9947bb9e2f36b83e5a4edafe4c:
 
-TRACE\.is\?\(Val\)
-==================
+TRACE.is?\(Val\)
+================
 
-\`is\?\` returns whether \`Val\` is a \`trace\`\.
+\`is?\` returns whether \`Val\` is a \`trace\`\.
 
 .. _api-6cd72dde3843f67adbdd312d7b1aa94e:
 
-TRACE\.snip
-===========
+TRACE.snip
+==========
 
-\`snip\` returns a \`trace\` with Sym\=\"\"\, Location\=LOCATION\.empty\, Tail\?\=true\.
+\`snip\` returns a \`trace\` with Sym\=\"\"\, Location\=LOCATION.empty, Tail?\=true.
 
-This \`trace\` value is used to replace snipped traces of tail\-calls\.
+This \`trace\` value is used to replace snipped traces of tail\-calls.
 
 .. _api-100432d5c2fc6d0855d4b8023811aca7:
 
-TRACE\.current\_traces
-======================
+TRACE.current_traces
+====================
 
-\`current\_traces\` returns a \`vec\` of \`trace\` values of the stack of the abstract stack machine\, from the bottom to the top\.
+\`current_traces\` returns a \`vec\` of \`trace\` values of the stack of the abstract stack machine, from the bottom to the top.
 
-At the tail of \`current\_traces\`\, the following sequence of abstract instructions is evaluated\:
+At the tail of \`current_traces\`\, the following sequence of abstract instructions is evaluated\:
 
 .. code:: kink
+    :class: no-search
 
     (traces)
 

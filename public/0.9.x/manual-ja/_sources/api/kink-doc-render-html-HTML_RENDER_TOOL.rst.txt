@@ -1,30 +1,32 @@
-===========================================
-kink\/doc\/render\/html\/HTML\_RENDER\_TOOL
-===========================================
+=========================================
+kink\/doc\/render\/html\/HTML_RENDER_TOOL
+=========================================
 
-Launcheable module to render a kinkdoc document to a single HTML file\.
+Launcheable module to render a kinkdoc document to a single HTML file.
 
 .. rubric:: Usage
 
 .. code:: kink
+    :class: no-search
 
     kink [Kink_options]... mod:kink/doc/render/html/HTML_RENDER_TOOL [Mod_options] <JSON >HTML
 
-The command reads kinkdoc JSON data from the standard input\, converts it to a single HTML file\, and writes it to the standard output\.
+The command reads kinkdoc JSON data from the standard input, converts it to a single HTML file, and writes it to the standard output.
 
-.. rubric:: Mod\_options
+.. rubric:: Mod_options
 
-\• \-\-style \{Style\_file\_path\} \: gives the file path of a CSS file\. The file content must be encoded in UTF\-8\. It is inserted in the style element of the HTML file\.
+\• \-\-style \{Style_file_path\} \: gives the file path of a CSS file. The file content must be encoded in UTF\-8. It is inserted in the style element of the HTML file.
 
-\• \-\-template \{Template\_file\_path\} \: gives the file path of the HTML template file\. See the next section for details\.
+\• \-\-template \{Template_file_path\} \: gives the file path of the HTML template file. See the next section for details.
 
 .. rubric:: HTML template content
 
-The HTML template must be encoded in UTF\-8\, and be a Str\.format template string\. It can contain placeholders \`\{Title\}\` for the HTML\-escaped document title\, \`\{Style\}\` for the CSS\, and \`\{Body\}\` for the content of \<body\> element\.
+The HTML template must be encoded in UTF\-8, and be a Str.format template string. It can contain placeholders \`\{Title\}\` for the HTML\-escaped document title, \`\{Style\}\` for the CSS, and \`\{Body\}\` for the content of \<body\> element.
 
 The default template is as follows\:
 
 .. code:: kink
+    :class: no-search
 
     <!DOCTYPE html>
     <html>
@@ -42,13 +44,14 @@ The default template is as follows\:
 
 .. rubric:: Exit statuses
 
-If the command succeeds\, it exits with 0 as the exit status\.
+If the command succeeds, it exits with 0 as the exit status.
 
-If not\, the command exits with a non\-zero exit status\.
+If not, the command exits with a non\-zero exit status.
 
 .. rubric:: Usage example
 
 .. code:: kink
+    :class: no-search
 
     $ kink mod:kink/doc/DOC_PARSE_TOOL --title 'API reference' src >doc.json
     ...
@@ -60,8 +63,8 @@ If not\, the command exits with a non\-zero exit status\.
 
 .. _api-ba2b9cdbcaad2987f13975bda140aac0:
 
-HTML\_RENDER\_TOOL\.main\(Argv\)
-================================
+HTML_RENDER_TOOL.main\(Argv\)
+=============================
 
-\`main\` is the launcher function of the module\.
+\`main\` is the launcher function of the module.
 

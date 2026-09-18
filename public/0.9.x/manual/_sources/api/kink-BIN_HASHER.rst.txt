@@ -1,6 +1,6 @@
-=================
-kink\/BIN\_HASHER
-=================
+================
+kink\/BIN_HASHER
+================
 
 .. contents::
     :local:
@@ -8,16 +8,17 @@ kink\/BIN\_HASHER
 
 .. _api-50404809bac753c9be0ad7e0a3fa2fbc:
 
-type bin\_hasher
-================
+type bin_hasher
+===============
 
-\`bin\_hasher\` is\, conceptually\, an immutable tuple of \(Hash\_algorithm\, Accumulated\_bin\)\. When \`Tail\_bin\` is given by \`hash\` method\, it calculates a hash value of \(Accumulated\_bin \+ Tail\_bin\) by Hash\_algorithm\.
+\`bin_hasher\` is, conceptually, an immutable tuple of \(Hash_algorithm, Accumulated_bin\)\. When \`Tail_bin\` is given to \`hash\` method, it calculates a hash value of \(Accumulated_bin \+ Tail_bin\) by \`Hash_algorithm\`\.
 
-Implementations are allowed not to hold Accumulated\_bin itself\. Instead\, holding the internal state calculated from \`Accumulated\_bin\` is allowed\.
+There is no method to return \`Accumulated_bin\` itself. Thus, implementations are allowed to hold the compressed state calculated from \`Accumulated_bin\`\, instead of \`Accumulated_bin\` itself.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :BIN.require_from('kink/')
     :BIN_HASHER.require_from('kink/')
@@ -44,51 +45,55 @@ Implementations are allowed not to hold Accumulated\_bin itself\. Instead\, hold
 
 .. _api-d9d9ea9d7870acff5719f00592512290:
 
-Hasher\.hash\(\.\.\.\[Tail\_bin\=BIN\.of\(\)\]\)
-------------------------------------------------
+Hasher.hash\(\.\.\.\[Tail_bin\=BIN.of\(\)\]\)
+---------------------------------------------
 
-\`hash\` calculates a hash value from \(Accumulated\_bin \+ Tail\_bin\)\, then return it as a \`bin\`\.
+\`hash\` calculates a hash value from \(Accumulated_bin \+ Tail_bin\)\, then return it as a \`bin\`\.
 
 .. rubric:: Precondition
 
-\• \`Tail\_bin\` must be a \`bin\`
+\`Tail_bin\` must be a \`bin\`
 
 .. _api-7b29855d4e71be0b33d6e2312dbf9f6e:
 
 Hasher \+ Bin
 -------------
 
-\`\+\` operator\, or \`op\_add\` method\, makes a new \`bin\_hasher\` of \(Hash\_algorithm\, Accumulated\_bin \+ Bin\)\.
+\`\+\` operator, or \`op_add\` method, returns a new \`bin_hasher\` of \(Hash_algorithm, Accumulated_bin \+ Bin\)\.
 
 .. rubric:: Precondition
 
-\• \`Bin\` must be a \`bin\`\.
+\`Bin\` must be a \`bin\`\.
 
 .. _api-b72109886bb16f524c8cead8a48d831d:
 
-BIN\_HASHER\.for\(Hash\_algorithm \.\.\.\[\$config\=\{\}\]\)
-============================================================
+BIN_HASHER.for\(Hash_algorithm \.\.\.\[$config\=\{\}\]\)
+========================================================
 
-\`for\` makes a \`bin\_hasher\` of \(Hash\_algorithm\, BIN\.of\(\)\)\.
+\`for\` makes a \`bin_hasher\` of \(Hash_algorithm, BIN.of\(\)\)\.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception\.
+\• C.on_error\($error\)\: default \= a fun which raises an exception
 
-If a \`bin\_hasher\` is created\, \`for\` tail\-calls \$success with the \`bin\_hasher\`\.
+If a \`bin_hasher\` is created, \`for\` tail\-calls $success with the \`bin_hasher\`\.
 
-If \`Hash\_algorithm\` is not supported\, \`for\` tail\-calls \$error with no arg\.
+If \`Hash_algorithm\` is not supported, \`for\` tail\-calls $error with no arg.
 
 .. rubric:: Precondition
 
-\• \`Hash\_algorithm\` must be a \`str\`\.
+\`Hash_algorithm\` must be a \`str\`\.
+
+$success must be a function which takes a \`bin_hasher\`\.
+
+$error must be a thunk.
 
 .. _api-13f73ee67f41164e2dfda55cf8bba1e3:
 
-BIN\_HASHER\.is\?\(Val\)
-========================
+BIN_HASHER.is?\(Val\)
+=====================
 
-\`is\?\` returns whether \`Val\` is a \`bin\_hasher\`\.
+\`is?\` returns whether \`Val\` is a \`bin_hasher\`\.
 

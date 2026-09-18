@@ -217,6 +217,12 @@ JAVA_HOME
   If the environment variable is not set and ``-E`` is not specified,
   the command just uses ``java`` or ``javaw`` command.
 
+Process name
+============
+
+On Linux, ``/proc/{PID}/comm`` is set to ``kink``.
+Tools like ``top`` and ``ps`` may display ``kink`` as the process name instead of ``java``.
+
 Exit status
 ===========
 

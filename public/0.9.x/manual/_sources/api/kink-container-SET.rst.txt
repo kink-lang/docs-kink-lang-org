@@ -11,13 +11,13 @@ kink\/container\/SET
 type set
 ========
 
-\`set\` is an abstract type of containers of unique elements\.
+\`set\` is an abstract type of containers of unique elements.
 
-Elements must be unique in the \`set\`\, in an equivalence relation among elements\.
+Elements must be unique in the \`set\`\, in an equivalence relation among elements.
 
 .. rubric:: Equivalence relation of elements
 
-The equivalence relation of elements\, \`equivalent\-to\`\, must suffice the following conditions for all X\, Y\, and Z in the domain of elements\.
+The equivalence relation of elements, \`equivalent\-to\`\, must suffice the following conditions for all X, Y, and Z in the domain of elements.
 
 \• reflexive\: X equivalent\-to X
 
@@ -27,27 +27,28 @@ The equivalence relation of elements\, \`equivalent\-to\`\, must suffice the fol
 
 .. _api-f420248378e51ba85fb8402790f24948:
 
-Set\.eq
--------
+Set.eq
+------
 
 \`eq\` returns the function of the equivalence relation of elements of \`Set\`\.
 
-The result function\, \$equivalent\_to\?\, is a function which takes two args \`X\` and \`Y\`\. \`equivalent\_to\?\(X Y\)\` returns the bool value of \`X equivalent\-to Y\`\, where \`equivalent\-to\` is the equivalence relation of elements of \`Set\`\.
+The result function, $equivalent_to?\, is a function which takes two args \`X\` and \`Y\`\. \`equivalent_to?\(X Y\)\` returns the bool value of \`X equivalent\-to Y\`\, where \`equivalent\-to\` is the equivalence relation of elements of \`Set\`\.
 
 .. _api-2d702c4c238e10b4e1521da50bdf47fd:
 
-Set\.have\?\(Elem\)
--------------------
+Set.have?\(Elem\)
+-----------------
 
-\`have\?\` returns whether \`Set\` has an element equivalent to \`Elem\`\.
+\`have?\` returns whether \`Set\` has an element equivalent to \`Elem\`\.
 
 .. rubric:: Precondition
 
-\`Elem\` must be in the domain of the equivalence relation of elements\.
+\`Elem\` must be in the domain of the equivalence relation of elements.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -57,14 +58,15 @@ Set\.have\?\(Elem\)
 
 .. _api-f6a870e052111a171a3a51a7632e76d5:
 
-Set\.size
----------
+Set.size
+--------
 
 \`size\` returns the number of elements of \`Set\` as an integer \`num\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -73,20 +75,21 @@ Set\.size
 
 .. _api-7b8e5aaed8d30a07260fcc20cd0dbdd8:
 
-Set\.push\(Elem\)
------------------
+Set.push\(Elem\)
+----------------
 
 \`push\` inserts \`Elem\` to \`Set\`\.
 
-If \`Set\` already has an element equivalent to \`Elem\`\, \`push\` might either do nothing\, or replace the element by \`Elem\`\.
+If \`Set\` already has an element equivalent to \`Elem\`\, \`push\` might either do nothing, or replace the element by \`Elem\`\.
 
 .. rubric:: Precondition
 
-\`Elem\` must be in the domain of the equivalence relation of elements\.
+\`Elem\` must be in the domain of the equivalence relation of elements.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -98,20 +101,21 @@ If \`Set\` already has an element equivalent to \`Elem\`\, \`push\` might either
 
 .. _api-81a0643d94216924bffb14257b663f13:
 
-Set\.append\(Eacher\)
----------------------
+Set.append\(Eacher\)
+--------------------
 
 \`append\` inserts elements of \`Eacher\` to \`Set\`\.
 
 .. rubric:: Preconditions
 
-\`Eacher\` must support \.each\(\$consume\) method\, which calls \$consume for each element of \`Eacher\`\.
+\`Eacher\` must support \.each\($consume\) method, which calls $consume for each element of \`Eacher\`\.
 
 The elements of \`Eacher\` must be in the domain of the elements of \`Set\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -122,18 +126,19 @@ The elements of \`Eacher\` must be in the domain of the elements of \`Set\`\.
 
 .. _api-6fb354b113ac862b36172bcc5236e248:
 
-Set\.remove\(Elem\)
--------------------
+Set.remove\(Elem\)
+------------------
 
-\`remove\` deletes an element equivalent to \`Elem\`\. If \`Set\` does not have such an element\, \`remove\` does nothing\.
+\`remove\` deletes an element equivalent to \`Elem\`\. If \`Set\` does not have such an element, \`remove\` does nothing.
 
 .. rubric:: Precondition
 
-\`Elem\` must be in the domain of the equivalence relation of elements\.
+\`Elem\` must be in the domain of the equivalence relation of elements.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -144,14 +149,15 @@ Set\.remove\(Elem\)
 
 .. _api-d35965eee7349b5ff82ee7ea0a644037:
 
-Set\.clear
-----------
+Set.clear
+---------
 
-\`clear\` removes all the elements\.
+\`clear\` removes all the elements.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -161,14 +167,15 @@ Set\.clear
 
 .. _api-5af69d82af3645140f3d1b4ac8e22912:
 
-Set\.iter
----------
+Set.iter
+--------
 
 \`iter\` method returns an \`iter\` of the elements of \`Set\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -183,18 +190,19 @@ Set\.iter
 
 .. _api-240a37b90bb8556a80d895e384f275b2:
 
-Set\.each\(\$consume\)
-----------------------
+Set.each\($consume\)
+--------------------
 
-\`each\` calls \$consume for each element of \`Set\`\.
+\`each\` calls $consume for each element of \`Set\`\.
 
 .. rubric:: Precondition
 
-\$consume must be a fun which takes a value\.
+$consume must be a fun which takes a value.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -209,18 +217,19 @@ Set\.each\(\$consume\)
 
 .. _api-0b782d162b7df18b6126b90dd687eb70:
 
-Set\.all\?\(\$match\?\)
------------------------
+Set.all?\($match?\)
+-------------------
 
-\`all\?\` returns whether all the elements of \`Set\` satisfy the predicate \$match\?\.
+\`all?\` returns whether all the elements of \`Set\` satisfy the predicate $match?\.
 
 .. rubric:: Precondition
 
-\$match\? must be a predicate\.
+$match? must be a predicate.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -231,20 +240,21 @@ Set\.all\?\(\$match\?\)
 
 .. _api-edeae5d88aa8bffb3dcd74e23424afb5:
 
-Set\.any\?\(\.\.\.\[\$match\?\=\{ true \}\]\)
----------------------------------------------
+Set.any?\(\.\.\.\[$match?\=\{ true \}\]\)
+-----------------------------------------
 
-\`any\?\` returns whether one or more elements of \`Set\` satisfy the predicate \$match\?\.
+\`any?\` returns whether one or more elements of \`Set\` satisfy the predicate $match?\.
 
-\$match\? is an optional arg with a default value \{ true \}\. So\, if \$match\? is not passed\, \`any\?\` returns whether \`Set\` is nonempty\.
+$match? is an optional arg with a default value \{ true \}\. So, if $match? is not passed, \`any?\` returns whether \`Set\` is nonempty.
 
 .. rubric:: Precondition
 
-\$match\? must be a predicate\.
+$match? must be a predicate.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -256,6 +266,7 @@ Set\.any\?\(\.\.\.\[\$match\?\=\{ true \}\]\)
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -265,18 +276,19 @@ Set\.any\?\(\.\.\.\[\$match\?\=\{ true \}\]\)
 
 .. _api-6d7bc24e8660964dfd50cf664e848b0f:
 
-Set\.count\(\$counted\?\)
--------------------------
+Set.count\($counted?\)
+----------------------
 
-\`count\` returns the number of elements of \`Set\` which satisfy the predicate \$counted\?\, as an integer \`num\`\.
+\`count\` returns the number of elements of \`Set\` which satisfy the predicate $counted?\, as an integer \`num\`\.
 
 .. rubric:: Precondition
 
-\$counted\? must be a predicate\.
+$counted? must be a predicate.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -286,22 +298,23 @@ Set\.count\(\$counted\?\)
 
 .. _api-5330fd16d1eaf8ab7d553fa260d12266:
 
-Set\.fold\(Init \$combine\)
----------------------------
+Set.fold\(Init $combine\)
+-------------------------
 
 \`fold\` folds elements of \`Set\` seeded by \`Init\`\.
 
-If \`Set\` has elements E1\, E2\, \,\,\, En\_1\, En\, \`fold\` returns combine\(combine\(\,\,\,combine\(combine\(Init E1\) E2\)\,\,\, En\_1\) En\)\. Elements can appear in any order\, unless \`Set\` is ordered\.
+If \`Set\` has elements E1, E2, \,\,\, En_1, En, \`fold\` returns combine\(combine\(\,\,\,combine\(combine\(Init E1\) E2\)\,\,\, En_1\) En\)\. Elements can appear in any order, unless \`Set\` is ordered.
 
-If \`Set\` is empty\, \`fold\` returns \`Init\`\.
+If \`Set\` is empty, \`fold\` returns \`Init\`\.
 
 .. rubric:: Precondition
 
-\$combine must be a fun which takes two values\.
+$combine must be a fun which takes two values.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -311,28 +324,29 @@ If \`Set\` is empty\, \`fold\` returns \`Init\`\.
 
 .. _api-a156e903d680115467cce66891212378:
 
-Set\.reduce\(\$combine \.\.\.\[\$empty\_fallback\]\)
-----------------------------------------------------
+Set.reduce\($combine \.\.\.\[$empty_fallback\]\)
+------------------------------------------------
 
-\`reduce\` folds elements of \`Set\` mutually\.
+\`reduce\` folds elements of \`Set\` mutually.
 
-If \`Set\` has elements E1\, E2\, E3\, \,\,\, En\_1\, En\, \`reduce\` returns combine\(combine\(\,\,\,combine\(combine\(E1 E2\) E3\)\,\,\, En\_1\) En\)\. Elements can appear in any order\, unless \`Set\` is ordered\.
+If \`Set\` has elements E1, E2, E3, \,\,\, En_1, En, \`reduce\` returns combine\(combine\(\,\,\,combine\(combine\(E1 E2\) E3\)\,\,\, En_1\) En\)\. Elements can appear in any order, unless \`Set\` is ordered.
 
 If \`Set\` has a single element \`E\`\, \`reduce\` returns \`E\`\.
 
-If \`Set\` is empty\, and \$empty\_fallback is given\, \`reduce\` tail\-calls \$empty\_fallback with no arg\.
+If \`Set\` is empty, and $empty_fallback is given, \`reduce\` tail\-calls $empty_fallback with no arg.
 
-If \`Set\` is empty\, and \$empty\_fallback is not given\, \`reduce\` raises an exception\.
+If \`Set\` is empty, and $empty_fallback is not given, \`reduce\` raises an exception.
 
 .. rubric:: Preconditions
 
-\$combine must take two values\.
+$combine must take two values.
 
-\$empty\_fallback must be a thunk\.
+$empty_fallback must be a thunk.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -344,20 +358,21 @@ If \`Set\` is empty\, and \$empty\_fallback is not given\, \`reduce\` raises an 
 
 .. _api-fbc71650f19e6cf3e5d5de8af6bb2a3a:
 
-Set\.have\_all\?\(Vals\)
-------------------------
+Set.have_all?\(Vals\)
+---------------------
 
-\`have\_all\?\` returns whether \`Set\` has all the elements of \`Vals\`\.
+\`have_all?\` returns whether \`Set\` has all the elements of \`Vals\`\.
 
 .. rubric:: Preconditions
 
-\`Vals\` must implement \.all\?\(\$match\?\)\.
+\`Vals\` must implement \.all?\($match?\)\.
 
 The elements of \`Vals\` must be in the domain of the equivalence relation of elements of \`Set\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -369,20 +384,21 @@ The elements of \`Vals\` must be in the domain of the equivalence relation of el
 
 .. _api-a3384489cc9874681c332297686f29d9:
 
-Set\.have\_any\?\(Vals\)
-------------------------
+Set.have_any?\(Vals\)
+---------------------
 
-\`have\_any\?\` returns whether \`Set\` has any element of \`Vals\`\.
+\`have_any?\` returns whether \`Set\` has any element of \`Vals\`\.
 
 .. rubric:: Preconditions
 
-\`Vals\` must implement \.any\?\(\$match\?\)\.
+\`Vals\` must implement \.any?\($match?\)\.
 
 The elements of \`Vals\` must be in the domain of the equivalence relation of elements of \`Set\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -397,19 +413,20 @@ The elements of \`Vals\` must be in the domain of the equivalence relation of el
 Set1 \=\= Set2
 --------------
 
-\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`Set1\` and \`Set2\` have equivalent collections of elements\.
+\`\=\=\` operator, or \`op_eq\` method, returns whether \`Set1\` and \`Set2\` have equivalent collections of elements.
 
-In other words\, \`op\_eq\` returns whether \`Set1\` has all the elements of \`Set2\`\, and \`Set2\` has all the elements of \`Set1\`\.
+In other words, \`op_eq\` returns whether \`Set1\` has all the elements of \`Set2\`\, and \`Set2\` has all the elements of \`Set1\`\.
 
 .. rubric:: Preconditions
 
 \`Set2\` must be a \`set\`\.
 
-The equivalence relations of elements of \`Set1\` and \`Set2\` must be the same\.
+The equivalence relations of elements of \`Set1\` and \`Set2\` must be the same.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -421,23 +438,23 @@ The equivalence relations of elements of \`Set1\` and \`Set2\` must be the same\
 
 .. _api-fbe09f5a1c8c097b4b22ec3c03804f84:
 
-SET\.is\?\(Val\)
-================
+SET.is?\(Val\)
+==============
 
-\`is\?\` returns whether \`Val\` is a \`set\`\.
+\`is?\` returns whether \`Val\` is a \`set\`\.
 
 .. _api-d7bd98ddc71645200b6fb8804071424d:
 
-SET\.mixin
-==========
+SET.mixin
+=========
 
-\`mixin\` returns a mixin trait which provides default implementations of the following \`set\` methods\.
+\`mixin\` returns a mixin trait which provides default implementations of the following \`set\` methods.
 
 \• each
 
-\• all\?
+\• all?
 
-\• any\?
+\• any?
 
 \• count
 
@@ -445,11 +462,11 @@ SET\.mixin
 
 \• reduce
 
-\• have\_all\?
+\• have_all?
 
-\• have\_any\?
+\• have_any?
 
 \• append
 
-\• op\_eq \/ \`\=\=\` operator
+\• op_eq \/ \`\=\=\` operator
 

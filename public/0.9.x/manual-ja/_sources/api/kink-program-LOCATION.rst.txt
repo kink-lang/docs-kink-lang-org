@@ -11,7 +11,7 @@ kink\/program\/LOCATION
 type location
 =============
 
-\`location\` is a position index of Unicode code points in a program text\.
+\`location\` is a position index of Unicode code points in a program text.
 
 A \`location\` consists of the following attributes\:
 
@@ -21,11 +21,12 @@ A \`location\` consists of the following attributes\:
 
 .. rubric:: Invariant
 
-0 \<\= Pos \<\= Program\.text\.size
+0 \<\= Pos \<\= Program.text.size
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :LOCATION.require_from('kink/program/')
     :PROGRAM.require_from('kink/program/')
@@ -41,30 +42,31 @@ A \`location\` consists of the following attributes\:
 
 .. _api-15be424ef6b8eb38d1a5e9b0a12bb9c3:
 
-Loc\.program
-------------
+Loc.program
+-----------
 
 \`program\` returns \`Program\` attribute of \`Loc\`\.
 
 .. _api-bb0c26e1f8c51e04146d76f904ecaeea:
 
-Loc\.pos
---------
+Loc.pos
+-------
 
 \`pos\` returns \`Pos\` attribute of \`Loc\`\.
 
 .. _api-eff147b67c5e9a53a27d7ffd01e5eaab:
 
-Loc\.line\_num
---------------
+Loc.line_num
+------------
 
-\`line\_num\` returns the line number of \`Loc\` as an integer \`num\`\.
+\`line_num\` returns the line number of \`Loc\` as an integer \`num\`\.
 
 The line number is the number of LF characters plus one in the program text before \`Loc\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :LOCATION.require_from('kink/program/')
     :PROGRAM.require_from('kink/program/')
@@ -75,16 +77,17 @@ The line number is the number of LF characters plus one in the program text befo
 
 .. _api-2889aaa2fe9f4306eb5cf1f9d426dfbc:
 
-Loc\.col\_num
--------------
+Loc.col_num
+-----------
 
-\`col\_num\` returns the column number of \`Loc\` as an integer \`num\`\.
+\`col_num\` returns the column number of \`Loc\` as an integer \`num\`\.
 
 The result is the number of code points plus one in the line before \`Loc\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :LOCATION.require_from('kink/program/')
     :PROGRAM.require_from('kink/program/')
@@ -95,16 +98,17 @@ The result is the number of code points plus one in the line before \`Loc\`\.
 
 .. _api-8dfb32333f1e2dc722def51797e9c0b9:
 
-Loc\.line
----------
+Loc.line
+--------
 
 \`line\` returns the line of \`Loc\` as a \`str\`\.
 
-\`line\` returns a slice of the program text in the range \[From\, To\)\, where \`From\` is the code point index of the beginning of the line\, and \`To\` is the code point index of the beginning of the next line or the end of the text\. Thus\, the result \`str\` may include an LF character as the last code point\.
+\`line\` returns a slice of the program text in the range \[From, To\)\, where \`From\` is the code point index of the beginning of the line, and \`To\` is the code point index of the beginning of the next line or the end of the text. Thus, the result \`str\` may include an LF character as the last code point.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :LOCATION.require_from('kink/program/')
     :PROGRAM.require_from('kink/program/')
@@ -115,16 +119,17 @@ Loc\.line
 
 .. _api-38e3b1e23fbe5a3b6764ab9f129b33f3:
 
-Loc\.indicator
---------------
+Loc.indicator
+-------------
 
-\`indicator\` returns a \`str\` which represents the position of \`Loc\` in the line\.
+\`indicator\` returns a \`str\` which represents the position of \`Loc\` in the line.
 
-The result \`str\` does not contain CR or LF characters\.
+The result \`str\` does not contain CR or LF characters.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :LOCATION.require_from('kink/program/')
     :PROGRAM.require_from('kink/program/')
@@ -135,14 +140,15 @@ The result \`str\` does not contain CR or LF characters\.
 
 .. _api-ffe45df006681d44965361ea1ce433ca:
 
-Loc\.desc
----------
+Loc.desc
+--------
 
-\`desc\` returns a \`str\` which describes the program name\, the line number\, and the column number\.
+\`desc\` returns a \`str\` which describes the program name, the line number, and the column number.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :LOCATION.require_from('kink/program/')
     :PROGRAM.require_from('kink/program/')
@@ -156,18 +162,19 @@ Loc\.desc
 Loc1 \=\= Loc2
 --------------
 
-\`\=\=\` operator\, or \`op\_eq\` method\, returns whether two \`location\` values have the equal \`Program\` and \`Pos\` attributes\.
+\`\=\=\` operator, or \`op_eq\` method, returns whether two \`location\` values have the equal \`Program\` and \`Pos\` attributes.
 
 .. _api-bc2e6f33dc15d11f44a0ce3ffa5f857c:
 
-Loc\.repr
----------
+Loc.repr
+--------
 
-\`repr\` returns a \`str\` representation of \`Loc\` for debugging purposes\.
+\`repr\` returns a \`str\` representation of \`Loc\` for debugging purposes.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :LOCATION.require_from('kink/program/')
     :PROGRAM.require_from('kink/program/')
@@ -178,10 +185,10 @@ Loc\.repr
 
 .. _api-041d6f86b1ea0cf3e7fa525e80c59311:
 
-LOCATION\.new\(Program Pos\)
-============================
+LOCATION.new\(Program Pos\)
+===========================
 
-\`new\` returns a \`location\` with the given attributes\.
+\`new\` returns a \`location\` with the given attributes.
 
 .. rubric:: Preconditions
 
@@ -189,19 +196,19 @@ LOCATION\.new\(Program Pos\)
 
 \`Pos\` must be an integer \`num\`\.
 
-0 \<\= Pos \<\= Program\.text\.size
+0 \<\= Pos \<\= Program.text.size
 
 .. _api-7d17f880a8882655c557d2e7910f1ede:
 
-LOCATION\.empty
-===============
+LOCATION.empty
+==============
 
-\`empty\` returns a \`location\` with the empty program name\, the empty program text\, and Pos\=0\.
+\`empty\` returns a \`location\` with the empty program name, the empty program text, and Pos\=0.
 
 .. _api-b133d93732e245701e7802169b3cbf77:
 
-LOCATION\.is\?\(Val\)
-=====================
+LOCATION.is?\(Val\)
+===================
 
-\`is\?\` returns whether \`Val\` is a \`location\`\.
+\`is?\` returns whether \`Val\` is a \`location\`\.
 

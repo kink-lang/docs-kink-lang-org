@@ -5,43 +5,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.2. kink/BIN &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.2. kink/BIN &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=6ab1bf41"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/translations.js?v=4755f45a"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="6.3. kink/BINDING" href="kink-BINDING.html" />
     <link rel="prev" title="6.1. kink/ARGV_PARSER" href="kink-ARGV_PARSER.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.2. kink/BIN</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-ARGV_PARSER.html"><span class="section-number">6.1. </span>kink/ARGV_PARSER</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-BINDING.html"><span class="section-number">6.3. </span>kink/BINDING</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. 組み込みライブラリAPI</a></li><li><a class="current" href="#" aria-current="page">6.2. kink/BIN</a></li></ol></nav>
+    <nav class="header-nav" aria-label="検索"><a href="../search.html">検索</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-bin">
 <h1><span class="section-number">6.2. </span>kink/BIN<a class="headerlink" href="#kink-bin" title="Link to this heading">¶</a></h1>
-<p>bin 型の値のコンパニオンモジュール。</p>
 <nav class="contents local" id="id1">
 <ul class="simple">
-<li><p><a class="reference internal" href="#type-bin" id="id4">bin 型</a></p>
+<li><p><a class="reference internal" href="#type-bin" id="id4">bin型</a></p>
 <ul>
 <li><p><a class="reference internal" href="#bin-size" id="id5">Bin.size</a></p></li>
 <li><p><a class="reference internal" href="#bin-any" id="id6">Bin.any?</a></p></li>
@@ -64,11 +52,12 @@
 </ul>
 </nav>
 <section id="type-bin">
-<span id="api-82b05762775bcc1b8e8b6a637617beaf"></span><h2><span class="section-number">6.2.1. </span>bin 型<a class="headerlink" href="#type-bin" title="Link to this heading">¶</a></h2>
-<p>bin は有限長の不変なバイト列である。</p>
-<p>bin の要素は、[0x00, 0xff]の範囲内の整数の num 値である。</p>
+<span id="api-82b05762775bcc1b8e8b6a637617beaf"></span><h2><span class="section-number">6.2.1. </span>bin型<a class="headerlink" href="#type-bin" title="Link to this heading">¶</a></h2>
+<p>binは有限長の不変なバイト列である。</p>
+<p>binの要素は、 [0x00, 0xff] の範囲内の整数のnum値である。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
 <span class="nv">:Magic</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xca</span> <span class="m">0xfe</span> <span class="m">0xba</span> <span class="m">0xbe</span>)
 <span class="nv">:Slice</span> &lt;- <span class="nv">Magic</span>.<span class="n">take_front</span>(<span class="m">2</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0xca 0xfe)</span>
@@ -76,18 +65,38 @@
 </div>
 <section id="bin-size">
 <span id="api-f2b44e4ba16a23807f9dbdfc39a0373f"></span><h3><span class="section-number">6.2.1.1. </span>Bin.size<a class="headerlink" href="#bin-size" title="Link to this heading">¶</a></h3>
-<p>size は Bin が含む要素の数を num 値として戻す。</p>
+<p>sizeはBinが含む要素の数をnum値として戻す。</p>
+<p class="rubric">例</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x00</span> <span class="m">0x01</span> <span class="m">0xff</span>).<span class="n">size</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 3</span>
+</pre></div>
+</div>
 </section>
 <section id="bin-any">
 <span id="api-ebed43145e5d610e70c443c5fff6c17f"></span><h3><span class="section-number">6.2.1.2. </span>Bin.any?<a class="headerlink" href="#bin-any" title="Link to this heading">¶</a></h3>
 <p>any?はBinの長さが1以上であるかどうかを戻す。</p>
+<p class="rubric">例</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">of</span>().<span class="n">any?</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; false</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x00</span>).<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+</pre></div>
+</div>
 </section>
 <section id="bin-get-ind">
 <span id="api-122a097b98c9a8356e280db3d12ce141"></span><h3><span class="section-number">6.2.1.3. </span>Bin.get(Ind)<a class="headerlink" href="#bin-get-ind" title="Link to this heading">¶</a></h3>
-<p>get は Ind の位置の Bin の要素を戻す。</p>
-<p>結果は[0, 0xff]の範囲内の整数の num 値である。</p>
+<p>getはIndの位置のBinの要素を戻す。</p>
+<p>結果は [0x00, 0xff] の範囲内の整数のnum値である。</p>
 <p class="rubric">事前条件</p>
-<p>Ind は[0, Bin.size]の範囲の整数の num 値でなければならない。</p>
+<p>Indは[0, Bin.size)の範囲の整数のnum値でなければならない。</p>
+<p class="rubric">例</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">:Magic</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xca</span> <span class="m">0xfe</span> <span class="m">0xba</span> <span class="m">0xbe</span>)
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Magic</span>.<span class="n">get</span>(<span class="m">1</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 254</span>
+</pre></div>
+</div>
 </section>
 <section id="bin-slice-from-to">
 <span id="api-3b2e2857cbb8a6c94a1be4155faa93ad"></span><h3><span class="section-number">6.2.1.4. </span>Bin.slice(From To)<a class="headerlink" href="#bin-slice-from-to" title="Link to this heading">¶</a></h3>
@@ -96,7 +105,7 @@
 <p>FromとToは整数のnum値でなければならない。</p>
 <p>0 &lt;= From &lt;= To &lt;= Bin.size</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">:Magic</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xca</span> <span class="m">0xfe</span> <span class="m">0xba</span> <span class="m">0xbe</span>)
 <span class="nv">:Slice</span> &lt;- <span class="nv">Magic</span>.<span class="n">slice</span>(<span class="m">1</span> <span class="m">3</span>)
@@ -106,11 +115,11 @@
 </section>
 <section id="bin-take-front-n">
 <span id="api-d1ac9d599b50ebd0adb923e7be1dbf5b"></span><h3><span class="section-number">6.2.1.5. </span>Bin.take_front(N)<a class="headerlink" href="#bin-take-front-n" title="Link to this heading">¶</a></h3>
-<p>take_front は Bin の最初の N 個の要素のスライスを bin 値として戻す。</p>
+<p>take_frontはBinの最初のN個の要素のスライスをbin値として戻す。</p>
 <p class="rubric">事前条件</p>
-<p>N は[0, Bin.size]の範囲の整数の num 値でなければならない。</p>
+<p>Nは[0, Bin.size]の範囲の整数のnum値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:Pdf_signature</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x25</span> <span class="m">0x50</span> <span class="m">0x44</span> <span class="m">0x46</span> <span class="m">0x2d</span>)
 <span class="nv">:Slice</span> &lt;- <span class="nv">Pdf_signature</span>.<span class="n">take_front</span>(<span class="m">2</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x25 0x50)</span>
@@ -119,11 +128,11 @@
 </section>
 <section id="bin-take-back-n">
 <span id="api-21ef0dca6a0e1fe2247205a3874e1d3b"></span><h3><span class="section-number">6.2.1.6. </span>Bin.take_back(N)<a class="headerlink" href="#bin-take-back-n" title="Link to this heading">¶</a></h3>
-<p>take_back は Bin の最後の N 個の要素のスライスを bin 値として戻す。</p>
+<p>take_backはBinの最後のN個の要素のスライスをbin値として戻す。</p>
 <p class="rubric">事前条件</p>
-<p>N は[0, Bin.size]の範囲の整数の num 値でなければならない。</p>
+<p>Nは[0, Bin.size]の範囲の整数のnum値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:Pdf_signature</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x25</span> <span class="m">0x50</span> <span class="m">0x44</span> <span class="m">0x46</span> <span class="m">0x2d</span>)
 <span class="nv">:Slice</span> &lt;- <span class="nv">Pdf_signature</span>.<span class="n">take_back</span>(<span class="m">2</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x46 0x2d)</span>
@@ -132,11 +141,11 @@
 </section>
 <section id="bin-drop-front-n">
 <span id="api-69b2a56f071156aa536f2710828e60e8"></span><h3><span class="section-number">6.2.1.7. </span>Bin.drop_front(N)<a class="headerlink" href="#bin-drop-front-n" title="Link to this heading">¶</a></h3>
-<p>drop_front は Bin の最初の N 個を除いた要素のスライスを bin 値として戻す。</p>
+<p>drop_frontはBinの最初のN個を除いた要素のスライスをbin値として戻す。</p>
 <p class="rubric">事前条件</p>
-<p>N は[0, Bin.size]の範囲の整数の num 値でなければならない。</p>
+<p>Nは[0, Bin.size]の範囲の整数のnum値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:Pdf_signature</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x25</span> <span class="m">0x50</span> <span class="m">0x44</span> <span class="m">0x46</span> <span class="m">0x2d</span>)
 <span class="nv">:Slice</span> &lt;- <span class="nv">Pdf_signature</span>.<span class="n">drop_front</span>(<span class="m">2</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x44 0x46 0x2d)</span>
@@ -145,11 +154,11 @@
 </section>
 <section id="bin-drop-back-n">
 <span id="api-c2d3ae3c1a7a4e8b234e7bb62501736c"></span><h3><span class="section-number">6.2.1.8. </span>Bin.drop_back(N)<a class="headerlink" href="#bin-drop-back-n" title="Link to this heading">¶</a></h3>
-<p>drop_back は Bin の最後の N 個を除いた要素のスライスを bin 値として戻す。</p>
+<p>drop_backはBinの最後のN個を除いた要素のスライスをbin値として戻す。</p>
 <p class="rubric">事前条件</p>
-<p>N は[0, Bin.size]の範囲の整数の num 値でなければならない。</p>
+<p>Nは[0, Bin.size]の範囲の整数のnum値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:Pdf_signature</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x25</span> <span class="m">0x50</span> <span class="m">0x44</span> <span class="m">0x46</span> <span class="m">0x2d</span>)
 <span class="nv">:Slice</span> &lt;- <span class="nv">Pdf_signature</span>.<span class="n">drop_back</span>(<span class="m">2</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Slice</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x25 0x50 0x44)</span>
@@ -158,11 +167,11 @@
 </section>
 <section id="bin1-bin2">
 <span id="api-3e13c84330f5676c9587947b89bb790b"></span><h3><span class="section-number">6.2.1.9. </span>Bin1 + Bin2<a class="headerlink" href="#bin1-bin2" title="Link to this heading">¶</a></h3>
-<p>+ 演算子、または op_add メソッドは、 Bin1 の要素を先頭に、 Bin2 の要素を末尾に持つ bin を戻す。</p>
+<p>+ 演算子、またはop_addメソッドは、Bin1の要素を先頭に、Bin2の要素を末尾に持つbinを戻す。</p>
 <p class="rubric">事前条件</p>
-<p>Bin2 は bin 値でなければならない。</p>
+<p>Bin2はbin値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:Cafe</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xca</span> <span class="m">0xfe</span>)
 <span class="nv">:Babe</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xba</span> <span class="m">0xbe</span>)
 <span class="nv">:Cafe_babe</span> &lt;- <span class="nv">Cafe</span> + <span class="nv">Babe</span>
@@ -172,11 +181,11 @@
 </section>
 <section id="bin-n">
 <span id="api-0682105fdc1cb4306b262f9c6d11469c"></span><h3><span class="section-number">6.2.1.10. </span>Bin * N<a class="headerlink" href="#bin-n" title="Link to this heading">¶</a></h3>
-<p>* 演算子、または op_mul メソッドは、 Bin の要素を N 回繰り返した bin 値を戻す。</p>
+<p>* 演算子、またはop_mulメソッドは、Binの要素をN回繰り返したbin値を戻す。</p>
 <p class="rubric">事前条件</p>
-<p>N は整数の num 値でなければならない。</p>
+<p>Nは非負の整数のnum値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:Babe</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0xba</span> <span class="m">0xbe</span>)
 <span class="nv">:Babe_babe_babe</span> &lt;- <span class="nv">Babe</span> * <span class="m">3</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Babe_babe_babe</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0xba 0xbe 0xba 0xbe 0xba 0xbe)</span>
@@ -185,11 +194,11 @@
 </section>
 <section id="api-878a019e16a5d5ef1afae22edeaa98d7">
 <span id="id2"></span><h3><span class="section-number">6.2.1.11. </span>Bin1 == Bin2<a class="headerlink" href="#api-878a019e16a5d5ef1afae22edeaa98d7" title="Link to this heading">¶</a></h3>
-<p>== 演算子、または op_eq メソッドは、 Bin1 と Bin2 が同じ要素の列を持っているかどうかを戻す。</p>
+<p>== 演算子、またはop_eqメソッドは、Bin1とBin2が同じ要素の列を持っているかどうかを戻す。</p>
 <p class="rubric">事前条件</p>
-<p>Bin1 と Bin2 は bin 値でなければならない。</p>
+<p>Bin2はbin値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:Bin</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)
 
 <span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">Bin</span> == <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
@@ -202,11 +211,11 @@
 </section>
 <section id="api-558b801a901b8a7134812b839c5296c8">
 <span id="id3"></span><h3><span class="section-number">6.2.1.12. </span>Bin1 &lt;= Bin2<a class="headerlink" href="#api-558b801a901b8a7134812b839c5296c8" title="Link to this heading">¶</a></h3>
-<p>&lt;=演算子、またはop_leメソッドは、Bin1がBin2よりも辞書順で小さいかどうかを戻す。</p>
+<p>&lt;= 演算子、またはop_leメソッドは、Bin1が辞書順でBin2以下であるかどうかを戻す。</p>
 <p class="rubric">事前条件</p>
-<p>Bin1とBin2はbin値でなければならない。</p>
+<p>Bin2はbin値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">:compare</span> &lt;- {(<span class="nv">:Bin</span> <span class="nv">:Arg_bin</span>)
   [<span class="nv">:Lt?</span> <span class="nv">:Le?</span> <span class="nv">:Gt?</span> <span class="nv">:Ge?</span>] = [
@@ -227,14 +236,22 @@
 </section>
 <section id="bin-repr">
 <span id="api-f6a86b6c41324569f1909a66cd2fdcad"></span><h3><span class="section-number">6.2.1.13. </span>Bin.repr<a class="headerlink" href="#bin-repr" title="Link to this heading">¶</a></h3>
-<p>repr は &quot;(bin 0xca 0xfe 0xba 0xbe)&quot;, &quot;(bin 0x01 0x02 0x03 ,,, size=999 ,,, 0xfd 0xfe 0xff)&quot; のような文字列を戻す。</p>
+<p>reprは、Binのstr表現を戻す。</p>
+<p>表現は、要素を16進数として持つ。たとえば: `(bin 0x00 0x01 0xfe 0xff)`</p>
+<p>Binの要素数が128を超える場合、表現は最初と最後のそれぞれ32要素に切り詰められる。また、全体の要素数がその間に表記される。</p>
+<p class="rubric">例</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0</span> <span class="m">1</span> <span class="m">254</span> <span class="m">255</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x00 0x01 0xfe 0xff)</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="bin-is-val">
 <span id="api-8e317be47842c41df30f7acc2ece1a61"></span><h2><span class="section-number">6.2.2. </span>BIN.is?(Val)<a class="headerlink" href="#bin-is-val" title="Link to this heading">¶</a></h2>
-<p>is? は Val が bin 値であるかどうかを戻す。</p>
+<p>is?はValがbin値であるかどうかを戻す。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:Bin</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">is?</span>(<span class="nv">Bin</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">BIN</span>.<span class="n">is?</span>(<span class="m">42</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
@@ -245,9 +262,9 @@
 <span id="api-72bef2f9ac0c3f203b50bf21397b173d"></span><h2><span class="section-number">6.2.3. </span>BIN.of(... Nums)<a class="headerlink" href="#bin-of-nums" title="Link to this heading">¶</a></h2>
 <p>ofはNumsを要素として持つbin値を戻す。</p>
 <p class="rubric">事前条件</p>
-<p>Numsの要素は[0, 0xff]の範囲の整数のnum値でなければならない。</p>
+<p>Numsの要素は [0x00, 0xff] の範囲の整数のnum値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">:Bin</span> &lt;- <span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0</span> <span class="m">1</span> <span class="m">254</span> <span class="m">255</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Bin</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x00 0x01 0xfe 0xff)</span>
@@ -258,10 +275,10 @@
 <span id="api-0587341c37a10bc7dd4025ce72743805"></span><h2><span class="section-number">6.2.4. </span>BIN.from_each(Eacher)<a class="headerlink" href="#bin-from-each-eacher" title="Link to this heading">¶</a></h2>
 <p>from_eachはEacherの要素を持つbinを戻す。</p>
 <p class="rubric">事前条件</p>
-<p>Eacherは、ベクタやiterのように、.each($consume)メソッドをサポートしなければならない。</p>
-<p>Eacherのそれぞれのの要素は[0, 0xff]の範囲の整数のnum値でなければならない。</p>
+<p>Eacherは、ベクタやiterのように、.each($consume) メソッドをサポートしなければならない。</p>
+<p>Eacherのそれぞれの要素は [0x00, 0xff] の範囲の整数のnum値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">:Bin</span> &lt;- <span class="nv">BIN</span>.<span class="n">from_each</span>([<span class="m">0</span> <span class="m">1</span> <span class="m">254</span> <span class="m">255</span>])
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Bin</span>.<span class="n">repr</span>) <span class="c1"># =&gt; (bin 0x00 0x01 0xfe 0xff)</span>
@@ -271,18 +288,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-ARGV_PARSER.html"><span class="section-number">6.1. </span>kink/ARGV_PARSER</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-BINDING.html"><span class="section-number">6.3. </span>kink/BINDING</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

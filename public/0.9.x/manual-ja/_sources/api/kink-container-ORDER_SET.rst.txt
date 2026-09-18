@@ -1,6 +1,6 @@
-===========================
-kink\/container\/ORDER\_SET
-===========================
+==========================
+kink\/container\/ORDER_SET
+==========================
 
 .. contents::
     :local:
@@ -8,14 +8,14 @@ kink\/container\/ORDER\_SET
 
 .. _api-9b02521c954a1a109d86a300b5473a39:
 
-type order\_set
-===============
+type order_set
+==============
 
-\`order\_set\` is a subtype of \`set\` type in which the elements are ordered in the toal order\. The equivalence relation of elements is derived from the total order relation\.
+\`order_set\` is a subtype of \`set\` type in which the elements are ordered in the toal order. The equivalence relation of elements is derived from the total order relation.
 
 .. rubric:: Total order relation of elements
 
-The total order relation of elements\, \`up\-to\`\, must suffice the following conditions for all X\, Y\, and Z in the domain of elements\.
+The total order relation of elements, \`up\-to\`\, must suffice the following conditions for all X, Y, and Z in the domain of elements.
 
 \• reflexive\: X up\-to X
 
@@ -25,17 +25,17 @@ The total order relation of elements\, \`up\-to\`\, must suffice the following c
 
 \• strongly connected\: X up\-to Y \|\| Y up\-to X
 
-The antisymmetry condition is the definition of \`equivalent\-to\`\, which is the equivalence relation of elements\.
+The antisymmetry condition is the definition of \`equivalent\-to\`\, which is the equivalence relation of elements.
 
 .. rubric:: Methods
 
-\`order\_set\` values have all the methods of \`set\`\. The following methods inherited from \`set\` guarantee that elements appear as they are ordered by \`up\-to\`\.
+\`order_set\` values have all the methods of \`set\`\. The following methods inherited from \`set\` guarantee that elements appear as they are ordered by \`up\-to\`\.
 
 \• each
 
-\• all\?
+\• all?
 
-\• any\?
+\• any?
 
 \• count
 
@@ -43,39 +43,40 @@ The antisymmetry condition is the definition of \`equivalent\-to\`\, which is th
 
 \• reduce
 
-\• have\_all\?
+\• have_all?
 
-\• have\_any\?
+\• have_any?
 
-Additionally\, \`order\_set\` values have the following methods\.
+Additionally, \`order_set\` values have the following methods.
 
 .. _api-30e8a5344ac1bb01082234400526f40a:
 
-Set\.order
-----------
+Set.order
+---------
 
 \`order\` returns the function of the total order relation of elements of \`Set\`\.
 
-The result function\, \$up\_to\?\, is a function which takes two args \`X\` and \`Y\`\. \`up\_to\?\(X Y\)\` returns the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total order relation of elements\.
+The result function, $up_to?\, is a function which takes two args \`X\` and \`Y\`\. \`up_to?\(X Y\)\` returns the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total order relation of elements.
 
 .. _api-f6e64adf6d25b6ec89c304ecc0f2b031:
 
-Set\.iter\(\.\.\.\[Min\]\)
---------------------------
+Set.iter\(\.\.\.\[Min\]\)
+-------------------------
 
 \`iter\` method returns an \`iter\` of elements of \`Set\` in the order of \`Set\`\.
 
-If \`Min\` is given\, the result \`iter\` will have elements bigger than or equivalent to \`Min\`\. If \`Min\` is not given\, the result \`iter\` will have all the elements of \`Set\`\.
+If \`Min\` is given, the result \`iter\` will have elements bigger than or equivalent to \`Min\`\. If \`Min\` is not given, the result \`iter\` will have all the elements of \`Set\`\.
 
 This method is an extension of \`iter\` method of type \`set\`\.
 
 .. rubric:: Precondition
 
-\`Min\` must be in the domain of the total order of elements\.
+\`Min\` must be in the domain of the total order of elements.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -110,18 +111,19 @@ This method is an extension of \`iter\` method of type \`set\`\.
 
 .. _api-d67794470bd884b28a4e189350e49956:
 
-Set\.front
-----------
+Set.front
+---------
 
 \`front\` returns the element which comes first in the order of \`Set\`\.
 
 .. rubric:: Precondition
 
-\`Set\` must not be empty\.
+\`Set\` must not be empty.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -130,18 +132,19 @@ Set\.front
 
 .. _api-3248a87e5de396c5cc8414255e6e4544:
 
-Set\.back
----------
+Set.back
+--------
 
 \`back\` returns the element which comes last in the order of \`Set\`\.
 
 .. rubric:: Precondition
 
-\`Set\` must not be empty\.
+\`Set\` must not be empty.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TREE_SET.require_from('kink/container/')
         
@@ -150,18 +153,19 @@ Set\.back
 
 .. _api-826228605169c7cd9e40d102ea040af1:
 
-Set\.pop\_front
----------------
+Set.pop_front
+-------------
 
-\`pop\_front\` pops the element which comes first in the order of \`Set\`\.
+\`pop_front\` pops the element which comes first in the order of \`Set\`\.
 
 .. rubric:: Precondition
 
-\`Set\` must not be empty\.
+\`Set\` must not be empty.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -172,18 +176,19 @@ Set\.pop\_front
 
 .. _api-9a7c42c7d37d01f06368aad258f54bbe:
 
-Set\.pop\_back
---------------
+Set.pop_back
+------------
 
-\`pop\_back\` pops the element which comes last in the order of \`Set\`\.
+\`pop_back\` pops the element which comes last in the order of \`Set\`\.
 
 .. rubric:: Precondition
 
-\`Set\` must not be empty\.
+\`Set\` must not be empty.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -194,25 +199,25 @@ Set\.pop\_back
 
 .. _api-4740b8f85bdf977bcf7f48506e553ac8:
 
-ORDER\_SET\.is\?\(Val\)
-=======================
+ORDER_SET.is?\(Val\)
+====================
 
-\`is\?\` returns whether \`Val\` is an \`order\_set\`\.
+\`is?\` returns whether \`Val\` is an \`order_set\`\.
 
 .. _api-c0d413cfd3b8489668c7358ff8f26706:
 
-ORDER\_SET\.mixin
-=================
+ORDER_SET.mixin
+===============
 
-\`mixin\` returns a mixin trait which provides default implementations of the following \`order\_set\` methods\.
+\`mixin\` returns a mixin trait which provides default implementations of the following \`order_set\` methods.
 
 \• eq
 
 \• each
 
-\• all\?
+\• all?
 
-\• any\?
+\• any?
 
 \• count
 
@@ -220,11 +225,11 @@ ORDER\_SET\.mixin
 
 \• reduce
 
-\• have\_all\?
+\• have_all?
 
-\• have\_any\?
+\• have_any?
 
 \• append
 
-\• op\_eq \/ \`\=\=\` operator
+\• op_eq \/ \`\=\=\` operator
 

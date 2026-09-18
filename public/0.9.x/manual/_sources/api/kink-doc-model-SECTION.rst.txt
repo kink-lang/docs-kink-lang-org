@@ -11,43 +11,44 @@ kink\/doc\/model\/SECTION
 type section
 ============
 
-A section of a kinkdoc\.
+A section of a kinkdoc.
 
-See “Kinkdoc\: API Documentation system” → “Data model” in the manual\.
+See “Kinkdoc\: API Documentation system” → “Data model” in the manual.
 
 .. _api-47eca6d4dda0e4074e3c4fc60b0ee34a:
 
-Section\.title
---------------
+Section.title
+-------------
 
 \`title\` returns a \`str\` of the title of \`Section\`\.
 
 .. _api-f3985d162a655e34c9380f0ebfb508ac:
 
-Section\.blocks
----------------
+Section.blocks
+--------------
 
 \`blocks\` a \`vec\` of the \`block\` values of \`Section\`\.
 
 .. _api-60466cf722d933d8b9a34275e046985f:
 
-Section\.subsections
---------------------
+Section.subsections
+-------------------
 
 \`subsections\` returns a \`vec\` of \`section\` values which are the subsections of \`Section\`\.
 
 .. _api-786bb6a451f4c3d1978eaded45b29a41:
 
-Section\.to\_json\_val
-----------------------
+Section.to_json_val
+-------------------
 
-\`to\_json\_val\` returns a JSON value of \`Section\`\.
+\`to_json_val\` returns a JSON value of \`Section\`\.
 
-See “Kinkdoc\: API Documentation system” → “Data model” → “JSON Schema” in the manual\.
+See “Kinkdoc\: API Documentation system” → “Data model” → “JSON Schema” in the manual.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :SECTION.require_from('kink/doc/model/')
     :BLOCK.require_from('kink/doc/model/')
@@ -86,40 +87,40 @@ See “Kinkdoc\: API Documentation system” → “Data model” → “JSON Sc
 
 .. _api-2b1744b332bf59c5f0e6294be0910d0b:
 
-Section\.depth
---------------
+Section.depth
+-------------
 
 \`depth\` returns an integer \`num\` of the depth of the tree of \`Section\`\.
 
 The depth of a \`section\` is defined as follows\:
 
-\• If the \`section\` has no subsection\, the depth is 1\.
+\• If the \`section\` has no subsection, the depth is 1.
 
-\• If the \`section\` has one or more subsections\, the depth of the \`section\` is the maximum depth of the subsections plus 1\.
+\• If the \`section\` has one or more subsections, the depth of the \`section\` is the maximum depth of the subsections plus 1.
 
 .. _api-eb1b9a03f16894a76ddac591b6c6669e:
 
-Section\.limit\_depth\(Max\_depth\)
------------------------------------
+Section.limit_depth\(Max_depth\)
+--------------------------------
 
-If the depth of \`Section\` is bigger than \`Max\_depth\`\, \`limit\_depth\` returns a \`section\` which is not deeper than \`Max\_depth\`\. The result \`section\` has a same set of subsections as \`Section\`\, except that branches deeper than \`Max\_depth\` are flattened\.
+If the depth of \`Section\` is bigger than \`Max_depth\`\, \`limit_depth\` returns a \`section\` which is not deeper than \`Max_depth\`\. The result \`section\` has a same set of subsections as \`Section\`\, except that branches deeper than \`Max_depth\` are flattened.
 
-If the depth of \`Section\` is smaller than or equal to \`Max\_depth\`\, \`limit\_depth\` returns \`Section\` itself\.
+If the depth of \`Section\` is smaller than or equal to \`Max_depth\`\, \`limit_depth\` returns \`Section\` itself.
 
 .. rubric:: Precondition
 
-\`Max\_depth\` must be an integer \`num\` which is bigger than or equal to 2\.
+\`Max_depth\` must be an integer \`num\` which is bigger than or equal to 2.
 
 .. rubric:: Postcondition
 
-\`Result\.depth\` is smaller than or equal to \`Max\_depth\`\.
+\`Result.depth\` is smaller than or equal to \`Max_depth\`\.
 
 .. _api-e69abb5caf54df1a50c5beb4ca0dcb3d:
 
 X \=\= Y
 --------
 
-Two sections are equal when they have equal titles\, equal blocks and equal subsections\.
+Two sections are equal when they have equal titles, equal blocks and equal subsections.
 
 .. rubric:: Precondition
 
@@ -127,50 +128,51 @@ Two sections are equal when they have equal titles\, equal blocks and equal subs
 
 .. _api-e97f5124ca84142c36c9b806f13e949d:
 
-SECTION\.new\(Title Blocks Subsections\)
-========================================
+SECTION.new\(Title Blocks Subsections\)
+=======================================
 
 \`new\` returns a new \`section\`\.
 
 .. rubric:: Preconditions
 
-\`Title\` must be a nonempty \`str\` which does not start or end with a whitespace character\, and does not contain ASCII control characters\.
+\`Title\` must be a nonempty \`str\` which does not start or end with a whitespace character, and does not contain ASCII control characters.
 
-\`Blocks\` must be a \`vec\` of \`block\` values\.
+\`Blocks\` must be a \`vec\` of \`block\` values.
 
-\`Subsections\` must be a \`vec\` of \`section\` values\.
+\`Subsections\` must be a \`vec\` of \`section\` values.
 
 .. _api-15acafcda0ba99f6c43556b99b125a7b:
 
-SECTION\.is\?\(Val\)
-====================
+SECTION.is?\(Val\)
+==================
 
-\`is\?\` returns whether \`Val\` is a \`section\`\.
+\`is?\` returns whether \`Val\` is a \`section\`\.
 
 .. _api-beb66e8f153a42211a28fc26c623ebf0:
 
-SECTION\.from\_json\_val\(Json\_val \.\.\.\[\$config\=\{\}\]\)
-==============================================================
+SECTION.from_json_val\(Json_val \.\.\.\[$config\=\{\}\]\)
+=========================================================
 
-\`from\_json\_val\` makes a \`section\` value from \`Json\_val\`\.
+\`from_json_val\` makes a \`section\` value from \`Json_val\`\.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_error\(\$error\)\: default \= \$raise
+\• C.on_error\($error\)\: default \= $raise
 
-If \`Json\_val\` matches the JSON Schema of kinkdoc sections\, \`from\_json\_val\` tail\-calls \$success with a \`section\`\.
+If \`Json_val\` matches the JSON Schema of kinkdoc sections, \`from_json_val\` tail\-calls $success with a \`section\`\.
 
-If \`Json\_val\` does not match the JSON Schema of kinkdoc sections\, \`from\_json\_val\` tail\-calls \$error with a \`str\` of an error message\.
+If \`Json_val\` does not match the JSON Schema of kinkdoc sections, \`from_json_val\` tail\-calls $error with a \`str\` of an error message.
 
 .. rubric:: Preconditions
 
-\`Json\_val\` must be a JSON value\.
+\`Json_val\` must be a JSON value.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :SECTION.require_from('kink/doc/model/')
     :FLAT_MAP.require_from('kink/container/')

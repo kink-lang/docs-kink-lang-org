@@ -46,20 +46,24 @@ or :term:`host procedures <host procedure>`.
 Variables
 =========
 
-A :dfn:`variable` is a pair of a value and a finite length sequence of Unicode code points, defined as follows:
-*Variables*  = { (owner, sym) | owner is a value, and sym is a finite length sequence of Unicode code points }.
+A :dfn:`variable` is a pair of a value and a finite length sequence of Unicode code points.
+The set of all the variables is defined as:
+*Variables*  = { (owner, symbol) | owner is a value, and symbol is a finite length sequence of Unicode code points }.
 
 Here, ``owner`` is said to be the :dfn:`owner of the variable`,
-and ``sym`` is said to be the :dfn:`symbol of the variable`.
+and ``symbol`` is said to be the :dfn:`symbol of the variable`.
 The variable is said to be a variable of ``owner``.
-“Variable” can be abbreviated to “var”.
 
 If a symbol is accepted by :regexp:`[a-z_][a-z0-9_?]*`,
 the symbol is called a :dfn:`function symbol`.
 If a symbol is accepted by :regexp:`([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*`,
 the symbol is called a :dfn:`data symbol`.
 
-A variable has a content, which is either empty, or a value.
+Variable content
+----------------
+
+A variable has a :dfn:`content`.
+The content is either empty, or a value.
 
 .. _variable_operations:
 
@@ -75,11 +79,7 @@ There are three primitive operations about variables.
   Sets a value as the content of the variable.
 * :dfn:`Variable-symbols operation`:
   For value X,
-  gets { sym | the content of variable (X, sym) is a value }.
-
-Note that you cannot delete a variable.
-In other words, if the content of a variable is a value,
-it does not become empty.
+  gets { symbol | the content of variable (X, symbol) is a value }.
 
 Memory model
 ------------

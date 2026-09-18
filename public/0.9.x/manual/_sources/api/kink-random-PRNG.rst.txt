@@ -2,11 +2,11 @@
 kink\/random\/PRNG
 ==================
 
-Pseudo random number generators using xoshiro256\*\* algorithm\.
+Pseudo random number generators using xoshiro256\*\* algorithm.
 
-This is a non\-blocking deterministic RNG\, desgined to be used for Monte Carlo simulation\.
+This is a non\-blocking deterministic RNG, desgined to be used for Monte Carlo simulation.
 
-xoshiro256\*\* is not cryptographically secure\. Thus\, if you have to generate such as random nonces\, salts\, or session ids\, use kink\/random\/CSRNG instead\.
+xoshiro256\*\* is not cryptographically secure. Thus, if you have to generate such as random nonces, salts, or session ids, use kink\/random\/CSRNG instead.
 
 .. contents::
     :local:
@@ -17,31 +17,32 @@ xoshiro256\*\* is not cryptographically secure\. Thus\, if you have to generate 
 type prng
 =========
 
-\`prng\` is a type of pseudo RNGs based on xoshiro256\*\* algorithm\.
+\`prng\` is a type of pseudo RNGs based on xoshiro256\*\* algorithm.
 
-\`prng\` is a subtype of \`rng\`\. See kink\/random\/RNG for \`rng\` type\.
+\`prng\` is a subtype of \`rng\`\. See kink\/random\/RNG for \`rng\` type.
 
-\`prng\` val is not thread\-safe\. Thus\, use of a single \`prng\` val from multiple threads must be synchronized\.
+\`prng\` val is not thread\-safe. Thus, use of a single \`prng\` val from multiple threads must be synchronized.
 
 .. _api-06e76b5fbe89d3d5179125d1bf312465:
 
-Prng\.gen\_int\(Seed\) \.gen\_bin\(Size\) \.gen\_bool
------------------------------------------------------
+Prng.gen_int\(Seed\) \.gen_bin\(Size\) \.gen_bool
+-------------------------------------------------
 
-See \`rng\` type on kink\/random\/RNG mod for these methods\.
+See \`rng\` type on kink\/random\/RNG mod for these methods.
 
 .. _api-fd072d7298084dc055f87efb3584510f:
 
-Prng\.state
------------
+Prng.state
+----------
 
-\`state\` returns the internal state of the RNG as a 32 bytes \`bin\` val\. The result bin contains at least one non\-zero bit\.
+\`state\` returns the internal state of the RNG as a 32 bytes \`bin\` val. The result bin contains at least one non\-zero bit.
 
-The result bin can be used as the arg of PRNG\.from\_state\.
+The result bin can be used as the arg of PRNG.from_state.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :PRNG.require_from('kink/random/')
         
@@ -55,26 +56,27 @@ Example\:
 
 .. _api-167f0c53a577b515b5a01450a63185c2:
 
-Prng\.jump\(\$config\)
-----------------------
+Prng.jump\($config\)
+--------------------
 
-\`jump\` moves the internal state of the RNG forward by the given number of steps\.
+\`jump\` moves the internal state of the RNG forward by the given number of steps.
 
-\$config must take a config val\, which has following methods\.
+$config must take a config val, which has following methods.
 
-\• C\.node\(Node\)
+\• C.node\(Node\)
 
-\• C\.thread\(Thread\)
+\• C.thread\(Thread\)
 
-\• C\.offset\(Offset\)
+\• C.offset\(Offset\)
 
-All the config methods take a non\-negative int numer as the argument\. If a method is not called\, the value defaults to 0\.
+All the config methods take a non\-negative int numer as the argument. If a method is not called, the value defaults to 0.
 
-The number of steps will be computed as follows\: Node \* 2\*\*192 \+ Thread \* 2\*\*128 \+ Offset\.
+The number of steps will be computed as follows\: Node \* 2\*\*192 \+ Thread \* 2\*\*128 \+ Offset.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :PRNG.require_from('kink/random/')
     :THREAD.require_from('kink/thread/')
@@ -125,18 +127,19 @@ Example\:
 
 .. _api-6035f5b46e9f6018fa38250895437c2f:
 
-PRNG\.from\_seed\(Seed\)
-========================
+PRNG.from_seed\(Seed\)
+======================
 
-\`from\_seed\` makes a new \`prng\` val from the Seed\.
+\`from_seed\` makes a new \`prng\` val from the Seed.
 
 Preconditions\:
 
-\• Seed must be an int num\.
+\• Seed must be an int num.
 
 The initial state of the RNG is created as follows\:
 
 .. code:: kink
+    :class: no-search
 
     seed_bin := sha256(ASCII representation of Seed.show)
     initial state := seed_bin if seed_bin is not all-zero, or otherwise sha256(empty bytes)
@@ -144,6 +147,7 @@ The initial state of the RNG is created as follows\:
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :PRNG.require_from('kink/random/')
         
@@ -164,10 +168,10 @@ Example\:
 
 .. _api-6ead0ee97c44d86f6c6928fddc1773bd:
 
-PRNG\.from\_state\(State\)
-==========================
+PRNG.from_state\(State\)
+========================
 
-\`from\_state\` makes a new \`prng\` val from the initial \`State\`\.
+\`from_state\` makes a new \`prng\` val from the initial \`State\`\.
 
 Preconditions\:
 
@@ -177,11 +181,12 @@ Preconditions\:
 
 \• At least one bit of \`State\` must be 1
 
-The result of Prng\.state can be used as the arg of \`from\_state\`\.
+The result of Prng.state can be used as the arg of \`from_state\`\.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :PRNG.require_from('kink/random/')
     :BIN.require_from('kink/')
@@ -197,8 +202,8 @@ Example\:
 
 .. _api-ca843d7dde212c24955baadc2b1ac44f:
 
-PRNG\.is\?\(Val\)
-=================
+PRNG.is?\(Val\)
+===============
 
-\`is\?\` returns whether \`Val\` is a \`prng\` val\.
+\`is?\` returns whether \`Val\` is a \`prng\` val.
 

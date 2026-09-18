@@ -91,7 +91,7 @@ This constructor can be called from a client of the mod as follows:
 Apparently, ``numer``, ``denom``, and ``repr`` methods can be shared among
 rational number values.
 Thus, usually, methods and the syms are stored in a vec called a :dfn:`trait`,
-then they are spreaded as arguments of :ref:`new_val <api-fbc90c7785322a766a80191e6e1ea8de>`.
+then they are spreaded as arguments of :ref:`new_val <api-57f5294cce02f93d87d637f6417c656f>`.
 
 For example, ``example/RAT`` mod can be rewritten as follows,
 using a trait ``Rat_trait``.

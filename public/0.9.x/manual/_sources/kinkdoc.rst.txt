@@ -439,8 +439,10 @@ doc.html looks like:
   </body>
   </html>
 
-Vim folding support
--------------------
+.. _kinkdocfolding:
+
+Folding support
+---------------
 
 If the title line contains ``{{{``,
 which is the default start marker of folding in vim,
@@ -472,6 +474,37 @@ the marker and the text after that are ignored.
   ] # }}}
 
   # vim: fdm=marker
+
+Some IDEs treat ``#region`` and ``#endregion`` as folding markers.
+To comply that, the title line can start with ``##region`` and a whitespace.
+vim can handle this as well with ``foldmarker`` option.
+
+::
+
+  ##region type rat
+  #
+  # `rat` is a type of rational numbers.
+  :Rat_trait <- [
+
+    ##region R.numer
+    #
+    # `numer` returns the numerator of the rational number `R`.
+    'numer' {[:R]
+      R.Numer
+    } #endregion
+
+    ##region R.denom
+    #
+    # `denom` returns the denominator of the rational number `R`.
+    'denom' {[:R]
+      R.Denom
+    } #endregion
+
+    'repr' {[:R] '(rat {} {})'.format(R.numer R.denom) }
+
+  ] #endregion
+
+  # vim: fdm=marker foldmarker=#region,#endregion
 
 Data model
 ==========
@@ -582,14 +615,11 @@ which meets one of the following conditions:
 
   * From the start of the source program, to the end of the source program.
 
-.. rubric:: Number sign
-
-The :dfn:`number sign` is the codepoint ``#`` (U+0023).
-
 .. rubric:: Comment delimiter
 
-The :dfn:`comment delimiter` of a comment is the longest sequence
-of number signs inclusively from the number sign which starts the comment.
+The :dfn:`comment delimiter` of a comment is ``#``, ``##``, or ``##region``
+at the beginning of the comment.
+The longest match is used.
 
 .. rubric:: Comment only line
 
@@ -629,9 +659,9 @@ it is called a :dfn:`kinkdoc comment chunk`.
 * The number of whitespace characters at the beginning of each line
   is the same for all the lines.
 
-* The comment delimiter of the first line is exactly two number signs ``##``.
+* The comment delimiter of the first line is ``##`` or ``##region``.
 
-* The comment delimiter of the second and onwards is exactly one number sign ``#``.
+* The comment delimiter of the second and onwards is ``#``.
 
 * If the comment text of a line is not empty,
   the first codepoint of the comment text is a whitespace character.

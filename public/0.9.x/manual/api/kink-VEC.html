@@ -5,36 +5,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.27. kink/VEC &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=6ce99075"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.27. kink/VEC &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="6.28. kink/container/FLAT_MAP" href="kink-container-FLAT_MAP.html" />
     <link rel="prev" title="6.26. kink/VARREF" href="kink-VARREF.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.27. kink/VEC</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-container-FLAT_MAP.html"><span class="section-number">6.28. </span>kink/container/FLAT_MAP</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. Builtin library API</a></li><li><a class="current" href="#" aria-current="page">6.27. kink/VEC</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="../search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-vec">
 <h1><span class="section-number">6.27. </span>kink/VEC<a class="headerlink" href="#kink-vec" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="contents">
@@ -107,7 +96,7 @@
 <p class="rubric">Precondition</p>
 <p>`Ind` must be an integer `num` in the range [0, Vec.size).</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">0</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">1</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;bar&quot;</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;baz&quot;</span>
@@ -118,7 +107,7 @@
 <span id="api-c63033490c55d6d5fa1ce68e3419f391"></span><h3><span class="section-number">6.27.1.2. </span>Vec.size<a class="headerlink" href="#vec-size" title="Link to this heading">¶</a></h3>
 <p>`size` returns the number of elements of `Vec` as an integer `num` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">size</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 3</span>
 </pre></div>
 </div>
@@ -129,7 +118,7 @@
 <p class="rubric">Precondition</p>
 <p>`Vec` must not be empty.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>].<span class="n">front</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>].<span class="n">front</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -139,7 +128,7 @@
 <p class="rubric">Precondition</p>
 <p>`Vec` must not be empty.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>].<span class="n">back</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;baz&quot;</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>].<span class="n">back</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;baz&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -149,7 +138,7 @@
 <p class="rubric">Precondition</p>
 <p>`N` must be an integer `num` in the range [0, Vec.size].</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">take_front</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot;]</span>
 </pre></div>
 </div>
@@ -160,7 +149,7 @@
 <p class="rubric">Precondition</p>
 <p>`N` must be an integer `num` in the range [0, Vec.size].</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">take_back</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;5&quot; &quot;6&quot;]</span>
 </pre></div>
 </div>
@@ -171,7 +160,7 @@
 <p class="rubric">Precondition</p>
 <p>`N` must be an integer `num` in the range [0, Vec.size].</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">drop_front</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot; &quot;6&quot;]</span>
 </pre></div>
 </div>
@@ -182,7 +171,7 @@
 <p class="rubric">Precondition</p>
 <p>`N` must be an integer `num` in the range [0, Vec.size].</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">drop_back</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot;]</span>
 </pre></div>
 </div>
@@ -194,7 +183,7 @@
 <p>`From` and `To` must be integer `num` values.</p>
 <p>0 &lt;= From &lt;= To &lt;= Vec.size</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">slice</span>(<span class="m">1</span> <span class="m">4</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
 </pre></div>
 </div>
@@ -206,7 +195,7 @@
 <p class="rubric">Precondition</p>
 <p>`Ind` must be an integer `num` in the range [0, Vec.size).</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">set</span>(<span class="m">1</span> <span class="s1">&#39;X&#39;</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;X&quot; &quot;baz&#39;]</span>
 </pre></div>
@@ -217,7 +206,7 @@
 <p>`push_front` inserts `Val` as the first element of `Vec`.</p>
 <p>The size of `Vec` is extended by one. The existing elements are copied to the back by one.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">push_front</span>(<span class="s1">&#39;X&#39;</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;X&quot; &quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
 </pre></div>
@@ -228,7 +217,7 @@
 <p>`push_back` inserts `Val` as the last element of `Vec`.</p>
 <p>The size of `Vec` is extended by one.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">push_back</span>(<span class="s1">&#39;X&#39;</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;X&quot;]</span>
 </pre></div>
@@ -242,7 +231,7 @@
 <p>`Pos` must be an integer `num`.</p>
 <p>0 &lt;= Pos &lt;= Vec.size</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">push_at</span>(<span class="m">2</span> <span class="s1">&#39;X&#39;</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;X&quot; &quot;baz&quot;]</span>
 </pre></div>
@@ -255,7 +244,7 @@
 <p class="rubric">Precondition</p>
 <p>`Eacher` must support each($consume) method, which calls $consume with each element of `Eacher`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">append_front</span>([<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>])
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
 <span class="c1"># =&gt; [&quot;X&quot; &quot;Y&quot; &quot;Z&quot; &quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
@@ -269,7 +258,7 @@
 <p class="rubric">Precondition</p>
 <p>`Eacher` must support each($consume) method, which calls $consume with each element of `Eacher`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">append_back</span>([<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>])
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
 <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot;]</span>
@@ -285,7 +274,7 @@
 <p>0 &lt;= Pos &lt;= Vec.size</p>
 <p>`Eacher` must support each($consume) method, which calls $consume with each element of `Eacher`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">append_at</span>(<span class="m">2</span> [<span class="s1">&#39;X&#39;</span> <span class="s1">&#39;Y&#39;</span> <span class="s1">&#39;Z&#39;</span>])
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
 <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
@@ -299,7 +288,7 @@
 <p class="rubric">Precondition</p>
 <p>`Vec` must not be empty.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
 <span class="nv">:Result</span> &lt;- <span class="nv">Vec</span>.<span class="n">pop_front</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;foo&quot;</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; [&quot;bar&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
@@ -313,7 +302,7 @@
 <p class="rubric">Precondition</p>
 <p>`Vec` must not be empty.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
 <span class="nv">:Result</span> &lt;- <span class="nv">Vec</span>.<span class="n">pop_back</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;grault&quot;</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)     <span class="c1"># =&gt; [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot;]</span>
@@ -328,7 +317,7 @@
 <p>`Ind` must be an integer `num`.</p>
 <p>0 &lt;= Ind &lt; Vec.size</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;qux&#39;</span> <span class="s1">&#39;grault&#39;</span>]
 <span class="nv">:Result</span> &lt;- <span class="nv">Vec</span>.<span class="n">pop_at</span>(<span class="m">1</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Result</span>)   <span class="c1"># =&gt; &quot;bar&quot;</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;foo&quot; &quot;baz&quot; &quot;qux&quot; &quot;grault&quot;]</span>
@@ -343,21 +332,21 @@
 <p>`From` and `To` must be integer `num` values.</p>
 <p>0 &lt;= From &lt;= To &lt;= Vec.size</p>
 <p class="rubric">Example: with no arg</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">clear</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
 <span class="c1"># =&gt; []</span>
 </pre></div>
 </div>
 <p class="rubric">Example: with From</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">clear</span>(<span class="m">3</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
 <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot;]</span>
 </pre></div>
 </div>
 <p class="rubric">Example: with From and To</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span> <span class="s1">&#39;6&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">clear</span>(<span class="m">3</span> <span class="m">5</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>)
 <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;5&quot; &quot;6&quot;]</span>
@@ -375,7 +364,7 @@
 <p>0 &lt;= S_from &lt;= S_to &lt;= Src.size</p>
 <p>D_from + (S_to - S_from) &lt;= Dest_vec.size</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>]
 <span class="nv">V</span>.<span class="n">move</span>(<span class="m">1</span> [<span class="s1">&#39;a&#39;</span> <span class="s1">&#39;b&#39;</span> <span class="s1">&#39;c&#39;</span>])
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;0&quot; &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;4&quot;]</span>
 
@@ -389,7 +378,7 @@
 <span id="api-4f175b876e19fc10c267f6fce74d5315"></span><h3><span class="section-number">6.27.1.22. </span>Vec.dup<a class="headerlink" href="#vec-dup" title="Link to this heading">¶</a></h3>
 <p>`dup` makes a new `vec` containing the same sequence of elements as `Vec` has.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Orig</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Orig</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
 <span class="nv">:Dup</span> &lt;- <span class="nv">Orig</span>.<span class="n">dup</span>
 <span class="nv">Orig</span>.<span class="n">set</span>(<span class="m">0</span> <span class="s1">&#39;X&#39;</span>)
 <span class="nv">Dup</span>.<span class="n">set</span>(<span class="m">1</span> <span class="s1">&#39;Y&#39;</span>)
@@ -402,7 +391,7 @@
 <span id="api-935ab420e28fb248fb8aae6d385b54a0"></span><h3><span class="section-number">6.27.1.23. </span>Vec.reverse<a class="headerlink" href="#vec-reverse" title="Link to this heading">¶</a></h3>
 <p>`reverse` makes a new `vec` containing the same elements as `Vec` has, in the reversed order.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">reverse</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;3&quot; &quot;2&quot; &quot;1&quot; &quot;0&quot;]</span>
 </pre></div>
 </div>
@@ -414,7 +403,7 @@
 <p class="rubric">Precondition</p>
 <p>All the elements of `Vec` must be `vec`s.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vecs</span> &lt;- [[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span>] [<span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>] [<span class="s1">&#39;4&#39;</span>]]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vecs</span> &lt;- [[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span>] [<span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>] [<span class="s1">&#39;4&#39;</span>]]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vecs</span>.<span class="n">concat</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot;]</span>
 </pre></div>
 </div>
@@ -427,7 +416,7 @@
 <p>`N` must be a positive integer `num`.</p>
 <p>Vec.size % N == 0</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span> <span class="s1">&#39;5&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">unconcat</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [[&quot;0&quot; &quot;1&quot;] [&quot;2&quot; &quot;3&quot;] [&quot;4&quot; &quot;5&quot;]]</span>
 </pre></div>
 </div>
@@ -440,7 +429,7 @@
 <p class="rubric">Precondition</p>
 <p>$if_empty must be a thunk.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">42</span>].<span class="n">just</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">42</span>].<span class="n">just</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>([].<span class="n">just</span>{ <span class="s1">&#39;empty&#39;</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; &quot;empty&quot;</span>
 
 [].<span class="n">just</span>
@@ -460,7 +449,7 @@
 <p>The size of `Vec` must be less than the number of args.</p>
 <p>$withK (K = 0, 1, 2 ,,,) must take K args.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">:print_num</span> &lt;- {(<span class="nv">:Num</span> <span class="nv">:Lang_tag</span>.<span class="n">opt</span>)
   <span class="nv">:Locale</span> = <span class="nv">Lang_tag</span>.<span class="n">with_elems</span>(
@@ -487,7 +476,7 @@
 <p class="rubric">Precondition</p>
 <p>$consume must be a fun which takes a value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>]
 <span class="nv">Vec</span>.<span class="n">each</span>{(<span class="nv">:E</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>)
 }
@@ -505,7 +494,7 @@
 <p class="rubric">Precondition</p>
 <p>$transform must be a fun which takes a value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>]
 <span class="nv">:Mapped</span> &lt;- <span class="nv">Vec</span>.<span class="n">map</span>{(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">10</span> }
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Mapped</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; [0 10 20 30 40]</span>
 </pre></div>
@@ -517,7 +506,7 @@
 <p class="rubric">Precondition</p>
 <p>$to_vec must be a fun which takes a value and returns a `vec`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># extracts codepoints from the strs</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># extracts codepoints from the strs</span>
 <span class="nv">:to_codepoints</span> &lt;- {(<span class="nv">:Strs</span>)
   <span class="nv">Strs</span>.<span class="n">concat_map</span>{(<span class="nv">:S</span>)
     <span class="nv">S</span>.<span class="n">codepoints</span>
@@ -535,7 +524,7 @@
 <p class="rubric">Precondition</p>
 <p>$include? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">13</span> <span class="m">21</span> <span class="m">34</span> <span class="m">55</span> <span class="m">89</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">13</span> <span class="m">21</span> <span class="m">34</span> <span class="m">55</span> <span class="m">89</span>]
 <span class="nv">:Evens</span> &lt;- <span class="nv">Nums</span>.<span class="n">filter</span>{(<span class="nv">:N</span>)
   <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
 }
@@ -549,7 +538,7 @@
 <p class="rubric">Precondition</p>
 <p>$counted? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">13</span> <span class="m">21</span> <span class="m">34</span> <span class="m">55</span> <span class="m">89</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">13</span> <span class="m">21</span> <span class="m">34</span> <span class="m">55</span> <span class="m">89</span>]
 <span class="nv">:Even_count</span> &lt;- <span class="nv">Nums</span>.<span class="n">count</span>{(<span class="nv">:N</span>)
   <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
 }
@@ -564,7 +553,7 @@
 <p class="rubric">Precondition</p>
 <p>$combine must take two values.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:to_quote_line</span> &lt;- {(<span class="nv">:Words</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:to_quote_line</span> &lt;- {(<span class="nv">:Words</span>)
   <span class="nv">Words</span>.<span class="n">fold</span>(<span class="s1">&#39;%&#39;</span>){(<span class="nv">:Accum</span> <span class="nv">:Word</span>)
     <span class="nv">Accum</span> + <span class="s1">&#39; &#39;</span> + <span class="nv">Word</span>
   }
@@ -584,13 +573,13 @@
 <p>$combine must be a fun which takes two values.</p>
 <p>$empty_fallback must be a thunk.</p>
 <p class="rubric">Example: without fallback</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ORDER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ORDER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">31</span> <span class="m">41</span> <span class="m">59</span> <span class="m">26</span> <span class="m">53</span>].<span class="n">reduce</span>(<span class="nv">ORDER$max</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 59</span>
 </pre></div>
 </div>
 <p class="rubric">Example: with fallback</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:separate_by_commas</span> &lt;- {(<span class="nv">:Args</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:separate_by_commas</span> &lt;- {(<span class="nv">:Args</span>)
   <span class="nv">Args</span>.<span class="n">reduce</span>(
     {(<span class="nv">:Accum</span> <span class="nv">:Arg</span>) <span class="nv">Accum</span> + <span class="s1">&#39;, &#39;</span> + <span class="nv">Arg</span> }
     { <span class="s1">&#39;&#39;</span> }
@@ -611,7 +600,7 @@
 <p class="rubric">Precondition</p>
 <p>$include? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> (-<span class="m">2</span>) <span class="m">3</span> (-<span class="m">4</span>) <span class="m">5</span> (-<span class="m">6</span>) <span class="m">7</span> (-<span class="m">8</span>)]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> (-<span class="m">2</span>) <span class="m">3</span> (-<span class="m">4</span>) <span class="m">5</span> (-<span class="m">6</span>) <span class="m">7</span> (-<span class="m">8</span>)]
 <span class="nv">:Prefix</span> &lt;- <span class="nv">Nums</span>.<span class="n">take_while</span>{(<span class="nv">:N</span>)
   <span class="nv">N</span> &lt; <span class="m">5</span>
 }
@@ -626,7 +615,7 @@
 <p class="rubric">Precondition</p>
 <p>$exclude? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> (-<span class="m">2</span>) <span class="m">3</span> (-<span class="m">4</span>) <span class="m">5</span> (-<span class="m">6</span>) <span class="m">7</span> (-<span class="m">8</span>)]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Nums</span> &lt;- [<span class="m">1</span> (-<span class="m">2</span>) <span class="m">3</span> (-<span class="m">4</span>) <span class="m">5</span> (-<span class="m">6</span>) <span class="m">7</span> (-<span class="m">8</span>)]
 <span class="nv">:Suffix</span> &lt;- <span class="nv">Nums</span>.<span class="n">drop_while</span>{(<span class="nv">:N</span>)
   <span class="nv">N</span> &lt; <span class="m">5</span>
 }
@@ -641,7 +630,7 @@
 <p class="rubric">Precondition</p>
 <p>$match? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:all_even?</span> &lt;- {(<span class="nv">:Nums</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:all_even?</span> &lt;- {(<span class="nv">:Nums</span>)
   <span class="nv">Nums</span>.<span class="n">all?</span>{(<span class="nv">:N</span>)
     <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
   }
@@ -659,7 +648,7 @@
 <p class="rubric">Precondition</p>
 <p>$match? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:any_even?</span> &lt;- {(<span class="nv">:Nums</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:any_even?</span> &lt;- {(<span class="nv">:Nums</span>)
   <span class="nv">Nums</span>.<span class="n">any?</span>{(<span class="nv">:N</span>)
     <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>
   }
@@ -670,7 +659,7 @@
 </pre></div>
 </div>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span>].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>].<span class="n">any?</span>.<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
 </pre></div>
@@ -681,7 +670,7 @@
 <p>`have?` returns whether `Vec` has an element which is equal to `Target` by `==` operator, or `op_eq` method.</p>
 <p>Calling Vec.have?(Target) is equivalent to calling Vec.any?{(:E) Target == E }.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">1</span> <span class="m">3</span> <span class="m">5</span>].<span class="n">have?</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">1</span> <span class="m">3</span> <span class="m">5</span>].<span class="n">have?</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>([<span class="m">2</span> <span class="m">4</span> <span class="m">6</span>].<span class="n">have?</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
 </pre></div>
 </div>
@@ -694,7 +683,7 @@
 <p>`Vals` must have all?($match?) method.</p>
 <p>`==` operator, or `op_eq` method, must be able to compare elements of `Vec` and `Vals`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
 
 <span class="nv">:Vec</span> &lt;- [<span class="m">2</span> <span class="m">4</span> <span class="m">6</span> <span class="m">8</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_all?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">2</span> <span class="m">4</span>)).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
@@ -710,7 +699,7 @@
 <p>`Vals` must have any?($match?) method.</p>
 <p>`==` operator, or `op_eq` method, must be able to compare elements of `Vec` and `Vals`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
 
 <span class="nv">:Vec</span> &lt;- [<span class="m">2</span> <span class="m">4</span> <span class="m">6</span> <span class="m">8</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">have_any?</span>(<span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="m">2</span> <span class="m">4</span>)).<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
@@ -734,7 +723,7 @@
 <p class="rubric">Precondition</p>
 <p>$up_to? must be a function which takes two values and returns a `bool`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;FOO&#39;</span> <span class="s1">&#39;BAR&#39;</span> <span class="s1">&#39;BAZ&#39;</span>]
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- [<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span> <span class="s1">&#39;FOO&#39;</span> <span class="s1">&#39;BAR&#39;</span> <span class="s1">&#39;BAZ&#39;</span>]
 
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">sort</span>.<span class="n">repr</span>)
 <span class="c1"># =&gt; [&quot;BAR&quot; &quot;BAZ&quot; &quot;FOO&quot; &quot;bar&quot; &quot;baz&quot; &quot;foo&quot;]</span>
@@ -751,7 +740,7 @@
 <p>`From` and `To` must be integer `num` values.</p>
 <p>0 &lt;= From &lt;= To &lt;= Vec.size</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>].<span class="n">iter</span>.<span class="n">each</span>{(<span class="nv">:S</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span>[<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span> <span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span> <span class="s1">&#39;4&#39;</span>].<span class="n">iter</span>.<span class="n">each</span>{(<span class="nv">:S</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">S</span>.<span class="n">repr</span>)
 }
 <span class="c1"># Output:</span>
@@ -784,7 +773,7 @@
 <p class="rubric">Precondition</p>
 <p>`Vec2` must be a `vec`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(([<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span>] + [<span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(([<span class="s1">&#39;0&#39;</span> <span class="s1">&#39;1&#39;</span>] + [<span class="s1">&#39;2&#39;</span> <span class="s1">&#39;3&#39;</span>]).<span class="n">repr</span>) <span class="c1"># =&gt; [&quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot;]</span>
 </pre></div>
 </div>
 </section>
@@ -794,7 +783,7 @@
 <p class="rubric">Preconditions</p>
 <p>`N` must be a nonnegative integer `num`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(([<span class="m">1</span> <span class="m">2</span>] * <span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [1 2 1 2 1 2]</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(([<span class="m">1</span> <span class="m">2</span>] * <span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; [1 2 1 2 1 2]</span>
 </pre></div>
 </div>
 </section>
@@ -808,7 +797,7 @@
 <p class="rubric">Precondition</p>
 <p>`Vec1` and `Vec2` must be `vec` values.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">:test_equality</span> &lt;- {(<span class="nv">:Vec1</span> <span class="nv">:Vec2</span>)
   <span class="nv">CONTROL</span>.<span class="n">try</span>(
@@ -853,7 +842,7 @@
 <p class="rubric">Precondition</p>
 <p>`Vec2` must be a `vec`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:compare</span> &lt;- {(<span class="nv">:Vec1</span> <span class="nv">:Vec2</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:compare</span> &lt;- {(<span class="nv">:Vec1</span> <span class="nv">:Vec2</span>)
   [<span class="nv">:Lt?</span> <span class="nv">:Le?</span> <span class="nv">:Gt?</span> <span class="nv">:Ge?</span>] = [
     <span class="nv">Vec1</span> &lt; <span class="nv">Vec2</span>
     <span class="nv">Vec1</span> &lt;= <span class="nv">Vec2</span>
@@ -913,7 +902,7 @@
 <p class="rubric">Precondition</p>
 <p>`Rhs` must be a `vec`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 [<span class="nv">:X</span> <span class="nv">:Y</span>] &lt;- [<span class="s1">&#39;x&#39;</span> <span class="s1">&#39;y&#39;</span>]
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;X={} Y={}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span>))
@@ -980,7 +969,7 @@
 <span id="api-97b5493e30b9b5d7d421ed0d4c007f3e"></span><h3><span class="section-number">6.27.1.49. </span>Vec.repr<a class="headerlink" href="#vec-repr" title="Link to this heading">¶</a></h3>
 <p>`repr` returns a `str` representation of `Vec`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>].<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;foo&quot; 42]</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>([<span class="s1">&#39;foo&#39;</span> <span class="m">42</span>].<span class="n">repr</span>)  <span class="c1"># =&gt; [&quot;foo&quot; 42]</span>
 </pre></div>
 </div>
 </section>
@@ -994,7 +983,7 @@
 <p>`from_each` returns a new `vec` including all the elements of `Eacher`.</p>
 <p>`Eacher` must have .each($consume) method which calls $consume for each element.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VEC</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:VEC</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:FLAT_SET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
 
 <span class="nv">:Set</span> &lt;- <span class="nv">FLAT_SET</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
@@ -1006,18 +995,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-VARREF.html"><span class="section-number">6.26. </span>kink/VARREF</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-container-FLAT_MAP.html"><span class="section-number">6.28. </span>kink/container/FLAT_MAP</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

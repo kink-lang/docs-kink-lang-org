@@ -1,6 +1,6 @@
-========================
-kink\/http\/REQ\_CONTENT
-========================
+=======================
+kink\/http\/REQ_CONTENT
+=======================
 
 .. contents::
     :local:
@@ -8,128 +8,128 @@ kink\/http\/REQ\_CONTENT
 
 .. _api-2a8fdfa9548077b2718a09dfb1b1fbfd:
 
-type req\_content
-=================
+type req_content
+================
 
-\`req\_content\` is an abstract type of an HTTP request content\.
+\`req_content\` is an abstract type of an HTTP request content.
 
-A value is a \`req\_content\` if and only if it implements the following methods\.
+A value is a \`req_content\` if and only if it implements the following methods.
 
 .. _api-9a44b3b09cc51a4798f5dfabb8c20014:
 
-Content\.input
---------------
+Content.input
+-------------
 
-\`input\` method returns a new \`input\` which produces bytes of the HTTP request content\.
+\`input\` method returns a new \`input\` which produces bytes of the HTTP request content.
 
-\`input\` is called every time the request is retried\, or redirected\.
+\`input\` is called every time the request is retried, or redirected.
 
 .. _api-a57a760e6a11e26a24a02399adf683bc:
 
-Content\.have\_media\_type\?
-----------------------------
+Content.have_media_type?
+------------------------
 
-\`have\_media\_type\?\` returns whether \`Content\` has a \`media\_type\`\.
+\`have_media_type?\` returns whether \`Content\` has a \`media_type\`\.
 
 .. _api-28a7bfd8aaed0143817ca1bd3845f249:
 
-Content\.media\_type
---------------------
+Content.media_type
+------------------
 
-\`media\_type\` returns the \`media\_type\` of \`Content\`\. If \`Content\` has no \`media\_type\`\, the result is unspecified\.
+\`media_type\` returns the \`media_type\` of \`Content\`\. If \`Content\` has no \`media_type\`\, the result is unspecified.
 
-The \`media\_type\` value is used for Content\-Type header of the request\, when the header value is not explicitly specified\.
+The \`media_type\` value is used for Content\-Type header of the request, when the header value is not explicitly specified.
 
 .. rubric:: Precondition
 
-\`Content\.have\_media\_type\?\` must be true\.
+\`Content.have_media_type?\` must be true.
 
 .. _api-36226f7eae91ccd0dab02d05233cd8d6:
 
-Content\.have\_bin\?
---------------------
+Content.have_bin?
+-----------------
 
-\`have\_bin\?\` returns whether \`Content\` has a fixed \`bin\`\.
+\`have_bin?\` returns whether \`Content\` has a fixed \`bin\`\.
 
 .. _api-fcdb0a69fd45aa14c97b8b4ece4633f0:
 
-Content\.bin
-------------
+Content.bin
+-----------
 
-\`bin\` returns the fixed \`bin\` of \`Content\`\. If \`Content\` has no fixed \`bin\`\, the result is unspecified\.
+\`bin\` returns the fixed \`bin\` of \`Content\`\. If \`Content\` has no fixed \`bin\`\, the result is unspecified.
 
 .. rubric:: Precondition
 
-\`Content\.have\_bin\?\` must be true\.
+\`Content.have_bin?\` must be true.
 
 .. _api-ca23085b042b4dfa356fa7460e32b3ad:
 
-REQ\_CONTENT\.from\_bin\(Bin \.\.\.\[\$config\=\{\}\]\)
-=======================================================
+REQ_CONTENT.from_bin\(Bin \.\.\.\[$config\=\{\}\]\)
+===================================================
 
-\`from\_bin\` makes a \`req\_content\` of a fixed \`Bin\`\.
+\`from_bin\` makes a \`req_content\` of a fixed \`Bin\`\.
 
 Config method\:
 
-\• C\.media\_type\(Media\_type\)
+\• C.media_type\(Media_type\)
 
-If C\.media\_type is called\, \`Media\_type\` is used as the media\_type of the result \`req\_content\`\.
+If C.media_type is called, \`Media_type\` is used as the media_type of the result \`req_content\`\.
 
 .. rubric:: Preconditions
 
 \`Bin\` must be a \`bin\`\.
 
-\`Media\_type\` must be a \`media\_type\`\.
+\`Media_type\` must be a \`media_type\`\.
 
 .. _api-54b2ccd216844828df53265725165ac5:
 
-REQ\_CONTENT\.from\_input\(\$make\_input \.\.\.\[\$config\=\{\}\]\)
-===================================================================
+REQ_CONTENT.from_input\($make_input \.\.\.\[$config\=\{\}\]\)
+=============================================================
 
-\`from\_input\` returns a \`req\_content\` which produces an \`input\` made by \$make\_input\.
+\`from_input\` returns a \`req_content\` which produces an \`input\` made by $make_input.
 
 Config method\:
 
-\• C\.media\_type\(Media\_type\)
+\• C.media_type\(Media_type\)
 
-If C\.media\_type is called\, \`Media\_type\` is used as the media\_type of the result \`req\_content\`\.
+If C.media_type is called, \`Media_type\` is used as the media_type of the result \`req_content\`\.
 
 .. rubric:: Preconditions
 
-\$make\_input must be a thunk which returns an \`input\`\.
+$make_input must be a thunk which returns an \`input\`\.
 
-\`Media\_type\` must be a \`media\_type\`\.
+\`Media_type\` must be a \`media_type\`\.
 
 .. _api-5c5b35b398e14562d0caeabe59493093:
 
-REQ\_CONTENT\.from\_output\(\$generator \.\.\.\[\$config\=\{\}\]\)
-==================================================================
+REQ_CONTENT.from_output\($generator \.\.\.\[$config\=\{\}\]\)
+=============================================================
 
-\`from\_output\` returns a \`req\_content\` which produces an \`input\` whose bytes are written to an \`output\` within invocation of \$generator\.
+\`from_output\` returns a \`req_content\` which produces an \`input\` whose bytes are written to an \`output\` within invocation of $generator.
 
 Config method\:
 
-\• C\.media\_type\(Media\_type\)
+\• C.media_type\(Media_type\)
 
-If C\.media\_type is called\, \`Media\_type\` is used as the media\_type of the result \`req\_content\`\.
+If C.media_type is called, \`Media_type\` is used as the media_type of the result \`req_content\`\.
 
-The input is made by GENERATOR\_INPUT\.new\.
+The input is made by GENERATOR_INPUT.new.
 
 .. rubric:: Preconditions
 
-\$generator must be a function which takes an \`output\`\.
+$generator must be a function which takes an \`output\`\.
 
 .. _api-aa5c0213bad04498c48ec088c8548a22:
 
-REQ\_CONTENT\.is\?\(Val\)
-=========================
+REQ_CONTENT.is?\(Val\)
+======================
 
-\`is\?\` returns whether \`Val\` is a \`req\_content\`\.
+\`is?\` returns whether \`Val\` is a \`req_content\`\.
 
 .. _api-414ac07b91e0c1509516ab6741c2bfad:
 
-REQ\_CONTENT\.empty
-===================
+REQ_CONTENT.empty
+=================
 
-\`empty\` returns a \`req\_content\` of an empty \`bin\`\, with no \`media\_type\`\.
+\`empty\` returns a \`req_content\` of an empty \`bin\`\, with no \`media_type\`\.
 

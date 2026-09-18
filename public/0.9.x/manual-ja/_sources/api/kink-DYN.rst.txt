@@ -11,13 +11,14 @@ kink\/DYN
 type dyn
 ========
 
-A \`dyn\` is a tag of values which are pushed and popped on the call stack\.
+A \`dyn\` is a tag of values which are pushed and popped on the call stack.
 
-The name \`dyn\` comes from “dynamic scope”\, as it acts like dynamically scoped variables of some dialects of Lisp\.
+The name \`dyn\` comes from “dynamic scope”\, as it acts like dynamically scoped variables of some dialects of Lisp.
 
-A \`dyn\` can be used to carry runtime context\, such as transactions\. See the following example\:
+A \`dyn\` can be used to carry runtime context, such as transactions. See the following example\:
 
 .. code:: kink
+    :class: no-search
 
     :DYN.require_from('kink/')
         
@@ -44,25 +45,26 @@ A \`dyn\` can be used to carry runtime context\, such as transactions\. See the 
 
 .. _api-2c27f8f74ce3dab7f33b5d9ca1950786:
 
-Dyn\.with\(Val \$thunk\)
-------------------------
+Dyn.with\(Val $thunk\)
+----------------------
 
-\`with\` pushes \`Val\`\, associating it with \`Dyn\`\, on the call stack\, and calls \$thunk with no arg\. When the invocation of \$thunk exits\, \`Val\` is popped from the call stack\.
+\`with\` pushes \`Val\`\, associating it with \`Dyn\`\, on the call stack, and calls $thunk with no arg. When the invocation of $thunk exits, \`Val\` is popped from the call stack.
 
 .. rubric:: Precondition
 
-\$thunk must be a thunk\.
+$thunk must be a thunk.
 
 .. _api-135c4d320d91a28be33edf3e8ccfe4a9:
 
-Dyn\.all
---------
+Dyn.all
+-------
 
-\`all\` returns a vec of values associated with \`Dyn\`\, in the order from the bottom of the call stack to the top of the call stack\.
+\`all\` returns a vec of values associated with \`Dyn\`\, in the order from the bottom of the call stack to the top of the call stack.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :DYN.require_from('kink/')
         
@@ -81,18 +83,19 @@ Dyn\.all
 
 .. _api-273361543cd275c0692117dde2ea82ff:
 
-Dyn\.top
---------
+Dyn.top
+-------
 
-\`top\` returns the value associated with \`Dyn\` which is closest to the top of the call stack\.
+\`top\` returns the value associated with \`Dyn\` which is closest to the top of the call stack.
 
 .. rubric:: Precondition
 
-At least one value must be associated with \`Dyn\` in the call stack\.
+At least one value must be associated with \`Dyn\` in the call stack.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :DYN.require_from('kink/')
         
@@ -105,14 +108,15 @@ At least one value must be associated with \`Dyn\` in the call stack\.
 
 .. _api-68457ea90ac062e2c2b824aae11911a8:
 
-Dyn\.any\?
-----------
+Dyn.any?
+--------
 
-\`any\?\` returns whether any value is associated with \`Dyn\` in the call stack\.
+\`any?\` returns whether any value is associated with \`Dyn\` in the call stack.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :DYN.require_from('kink/')
         
@@ -125,15 +129,15 @@ Dyn\.any\?
 
 .. _api-ad397f21080e64cc50f0d1baa0f6f764:
 
-DYN\.new
-========
+DYN.new
+=======
 
 \`new\` makes a new \`dyn\`\.
 
 .. _api-624a4955f41017521c4be265fd5785e8:
 
-DYN\.is\?\(Val\)
-================
+DYN.is?\(Val\)
+==============
 
-\`is\?\` returns whether \`Val\` is a \`dyn\`\.
+\`is?\` returns whether \`Val\` is a \`dyn\`\.
 

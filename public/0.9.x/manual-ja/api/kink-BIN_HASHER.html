@@ -5,42 +5,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.4. kink/BIN_HASHER &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.4. kink/BIN_HASHER &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=6ab1bf41"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/translations.js?v=4755f45a"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="6.5. kink/BOOL" href="kink-BOOL.html" />
     <link rel="prev" title="6.3. kink/BINDING" href="kink-BINDING.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.4. kink/BIN_HASHER</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-BINDING.html"><span class="section-number">6.3. </span>kink/BINDING</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-BOOL.html"><span class="section-number">6.5. </span>kink/BOOL</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. 組み込みライブラリAPI</a></li><li><a class="current" href="#" aria-current="page">6.4. kink/BIN_HASHER</a></li></ol></nav>
+    <nav class="header-nav" aria-label="検索"><a href="../search.html">検索</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-bin-hasher">
 <h1><span class="section-number">6.4. </span>kink/BIN_HASHER<a class="headerlink" href="#kink-bin-hasher" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="id1">
 <ul class="simple">
-<li><p><a class="reference internal" href="#type-bin-hasher" id="id2">type bin_hasher</a></p>
+<li><p><a class="reference internal" href="#type-bin-hasher" id="id2">bin_hasher型</a></p>
 <ul>
 <li><p><a class="reference internal" href="#hasher-hash-tail-bin-bin-of" id="id3">Hasher.hash(...[Tail_bin=BIN.of()])</a></p></li>
 <li><p><a class="reference internal" href="#hasher-bin" id="id4">Hasher + Bin</a></p></li>
@@ -51,11 +40,11 @@
 </ul>
 </nav>
 <section id="type-bin-hasher">
-<span id="api-50404809bac753c9be0ad7e0a3fa2fbc"></span><h2><span class="section-number">6.4.1. </span>type bin_hasher<a class="headerlink" href="#type-bin-hasher" title="Link to this heading">¶</a></h2>
-<p>`bin_hasher` is, conceptually, an immutable tuple of (Hash_algorithm, Accumulated_bin). When `Tail_bin` is given by `hash` method, it calculates a hash value of (Accumulated_bin + Tail_bin) by Hash_algorithm.</p>
-<p>Implementations are allowed not to hold Accumulated_bin itself. Instead, holding the internal state calculated from `Accumulated_bin` is allowed.</p>
-<p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span id="api-50404809bac753c9be0ad7e0a3fa2fbc"></span><h2><span class="section-number">6.4.1. </span>bin_hasher型<a class="headerlink" href="#type-bin-hasher" title="Link to this heading">¶</a></h2>
+<p>bin_hasherは、概念的には、不変のタプル (Hash_algorithm, Accumulated_bin) である。hashメソッドにTail_binが与えられると、Hash_algorithmによる (Accumulated_bin + Tail_bin) のハッシュ値を計算する。</p>
+<p>Accumulated_binそのものを戻すメソッドはない。したがって実装は、Accumulated_binそれ自体のかわりに、Accumulated_binから計算された、圧縮された状態を保持しても良い。</p>
+<p class="rubric">例</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:BIN_HASHER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">:Md5</span> &lt;- <span class="nv">BIN_HASHER</span>.<span class="n">for</span>(<span class="s1">&#39;MD5&#39;</span>)
@@ -81,47 +70,39 @@
 </div>
 <section id="hasher-hash-tail-bin-bin-of">
 <span id="api-d9d9ea9d7870acff5719f00592512290"></span><h3><span class="section-number">6.4.1.1. </span>Hasher.hash(...[Tail_bin=BIN.of()])<a class="headerlink" href="#hasher-hash-tail-bin-bin-of" title="Link to this heading">¶</a></h3>
-<p>`hash` calculates a hash value from (Accumulated_bin + Tail_bin), then return it as a `bin`.</p>
-<p class="rubric">Precondition</p>
-<p>• `Tail_bin` must be a `bin`</p>
+<p>hashは、 (Accumulated_bin + Tail_bin) のハッシュ値を計算して、binを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Tail_binはbin値でなければならない。</p>
 </section>
 <section id="hasher-bin">
 <span id="api-7b29855d4e71be0b33d6e2312dbf9f6e"></span><h3><span class="section-number">6.4.1.2. </span>Hasher + Bin<a class="headerlink" href="#hasher-bin" title="Link to this heading">¶</a></h3>
-<p>`+` operator, or `op_add` method, makes a new `bin_hasher` of (Hash_algorithm, Accumulated_bin + Bin).</p>
-<p class="rubric">Precondition</p>
-<p>• `Bin` must be a `bin`.</p>
+<p>`+` 演算子、つまりop_addメソッドは、 (Hash_algorithm, Accumulated_bin + Bin) の新しいbin_hasher値を戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Binはbin値でなければならない。</p>
 </section>
 </section>
 <section id="bin-hasher-for-hash-algorithm-config">
 <span id="api-b72109886bb16f524c8cead8a48d831d"></span><h2><span class="section-number">6.4.2. </span>BIN_HASHER.for(Hash_algorithm ...[$config={}])<a class="headerlink" href="#bin-hasher-for-hash-algorithm-config" title="Link to this heading">¶</a></h2>
-<p>`for` makes a `bin_hasher` of (Hash_algorithm, BIN.of()).</p>
-<p>Config methods:</p>
+<p>forは、 (Hash_algorithm, BIN.of()) のbin_hasher値を作る。</p>
+<p>コンフィグメソッド:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
-<p>• C.on_error($error): default = a fun which raises an exception.</p>
-<p>If a `bin_hasher` is created, `for` tail-calls $success with the `bin_hasher`.</p>
-<p>If `Hash_algorithm` is not supported, `for` tail-calls $error with no arg.</p>
-<p class="rubric">Precondition</p>
-<p>• `Hash_algorithm` must be a `str`.</p>
+<p>• C.on_error($error): default = 例外を投げる関数</p>
+<p>bin_hasherが作られたら、forは、bin_hasherを引数として$successを末尾呼び出しする。</p>
+<p>Hash_algorithmがサポートされていなければ、forは、引数なしで$errorを末尾呼び出しする。</p>
+<p class="rubric">事前条件</p>
+<p>Hash_algorithmはstr値でなければならない。</p>
+<p>$successはbin_hasherを取る関数でなければならない。</p>
+<p>$errorはサンクでなければならない。</p>
 </section>
 <section id="bin-hasher-is-val">
 <span id="api-13f73ee67f41164e2dfda55cf8bba1e3"></span><h2><span class="section-number">6.4.3. </span>BIN_HASHER.is?(Val)<a class="headerlink" href="#bin-hasher-is-val" title="Link to this heading">¶</a></h2>
-<p>`is?` returns whether `Val` is a `bin_hasher`.</p>
+<p>is?は、Valがbin_hasherであるかどうかを戻す。</p>
 </section>
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-BINDING.html"><span class="section-number">6.3. </span>kink/BINDING</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-BOOL.html"><span class="section-number">6.5. </span>kink/BOOL</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

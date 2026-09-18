@@ -11,13 +11,14 @@ kink\/regex\/GROUP
 type group
 ==========
 
-A \`group\` is a slice in the matched text\.
+A \`group\` is a slice in the matched text.
 
-A \`group\` is either the entire region of the match result\, or a region which a named capturing group matches\.
+A \`group\` is either the entire region of the match result, or a region which a named capturing group matches.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Regex <- REGEX.compile('(?<Lhs>[a-z]+) *= *(?<Rhs>[a-z]+)')
@@ -29,29 +30,29 @@ Example\:
 
 .. _api-8b0441029c179cca565623b4f6948aef:
 
-G\.slice
---------
+G.slice
+-------
 
-\`slice\` returns the sliced str of the text where the group matches\.
+\`slice\` returns the sliced str of the text where the group matches.
 
 .. _api-8460149cc02b1fd6908ad98957f8d537:
 
-G\.from
--------
+G.from
+------
 
-\`from\` returns the pos from which the group matches in the text\.
+\`from\` returns the pos from which the group matches in the text.
 
 .. _api-64920b793253afd96f6ac3140af7aa9e:
 
-G\.to
------
+G.to
+----
 
-\`to\` returns the pos to which the group matches in the text\.
+\`to\` returns the pos to which the group matches in the text.
 
 .. _api-3bd7e77b57182d6f5aac2ba9178283d6:
 
-GROUP\.is\?\(Val\)
-==================
+GROUP.is?\(Val\)
+================
 
-\`is\?\` returns whether \`Val\` is a group val\.
+\`is?\` returns whether \`Val\` is a group val.
 

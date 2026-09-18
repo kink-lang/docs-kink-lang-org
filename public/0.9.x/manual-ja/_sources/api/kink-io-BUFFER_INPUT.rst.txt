@@ -1,6 +1,6 @@
-=======================
-kink\/io\/BUFFER\_INPUT
-=======================
+======================
+kink\/io\/BUFFER_INPUT
+======================
 
 .. contents::
     :local:
@@ -8,18 +8,18 @@ kink\/io\/BUFFER\_INPUT
 
 .. _api-a528d5ee6cbcd641615ba653008dd0ac:
 
-BUFFER\_INPUT\.new\(Wrapped\_input \.\.\.\[Max\_buf\_size\]\)
-=============================================================
+BUFFER_INPUT.new\(Wrapped_input \.\.\.\[Max_buf_size\]\)
+========================================================
 
-\`new\` returns a \`input\` which performs userspace buffering in front of the underlying \`Wrapped\_input\`\.
+\`new\` returns a \`input\` which performs userspace buffering in front of the underlying \`Wrapped_input\`\.
 
-Bytes read from \`Wrapped\_input\` will be once buffered before provided to the caller\.
+Bytes read from \`Wrapped_input\` will be once buffered before provided to the caller.
 
-\`Max\_buf\_size\` is used as the preferred buffer size\. The actual buffer size will not exceed \`Max\_buf\_size\`\. If not specified\, a default size will be used\.
+\`Max_buf_size\` is used as the preferred buffer size. The actual buffer size will not exceed \`Max_buf_size\`\. If not specified, a default size will be used.
 
 .. rubric:: Preconditions
 
-\`Wrapped\_input\` must be an \`input\`\.
+\`Wrapped_input\` must be an \`input\`\.
 
-\`Max\_buf\_size\` must be a positive int \`num\`\.
+\`Max_buf_size\` must be a positive int \`num\`\.
 

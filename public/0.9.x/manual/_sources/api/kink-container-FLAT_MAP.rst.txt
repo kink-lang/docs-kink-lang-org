@@ -1,10 +1,10 @@
-==========================
-kink\/container\/FLAT\_MAP
-==========================
+=========================
+kink\/container\/FLAT_MAP
+=========================
 
-Provides an \`order\_map\` implementation which stores keys in a sorted vector\.
+Provides an \`order_map\` implementation which stores keys in a sorted vector.
 
-Flat map is a good choice when keys are rarely inserted or deleted\, or the size of the map is small\.
+Flat map is a good choice when keys are rarely inserted or deleted, or the size of the map is small.
 
 .. contents::
     :local:
@@ -12,26 +12,27 @@ Flat map is a good choice when keys are rarely inserted or deleted\, or the size
 
 .. _api-69fc49c96b5591cdc23427639bccaaba:
 
-FLAT\_MAP\.new\(\.\.\.\[\$config\=\{\}\]\)
-==========================================
+FLAT_MAP.new\(\.\.\.\[$config\=\{\}\]\)
+=======================================
 
-\`new\` returns a new empty flat \`order\_map\`\.
+\`new\` returns a new empty flat \`order_map\`\.
 
 .. rubric:: Config method
 
-C\.order\(\$up\_to\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
+C.order\($up_to?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 
 .. rubric:: Total order relation of keys
 
-\$up\_to\? must be a function which takes two args X and Y\. \`up\_to\?\(X Y\)\` must return the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total order relation of keys\.
+$up_to? must be a function which takes two args X and Y. \`up_to?\(X Y\)\` must return the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total order relation of keys.
 
 .. rubric:: Preconditions
 
-\$up\_to\? must be a function which takes two values and returns a \`bool\`\.
+$up_to? must be a function which takes two values and returns a \`bool\`\.
 
 .. rubric:: Example\: default order
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_MAP.require_from('kink/container/')
         
@@ -47,6 +48,7 @@ C\.order\(\$up\_to\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 .. rubric:: Example\: custom order
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_MAP.require_from('kink/container/')
         
@@ -65,20 +67,21 @@ C\.order\(\$up\_to\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 
 .. _api-af4ff8b1fee593db37120c9ba8d3e77a:
 
-FLAT\_MAP\.of\(\.\.\.\[K0 V0 K1 V1 \,\,\,\]\)
-=============================================
+FLAT_MAP.of\(\.\.\.\[K0 V0 K1 V1 \,\,\,\]\)
+===========================================
 
-\`of\` makes a new flat \`order\_map\` which contains the given keys and values\. Keys are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
+\`of\` makes a new flat \`order_map\` which contains the given keys and values. Keys are ordered by \`\<\=\` operator, or \`op_le\` method.
 
-The result map has key\-value pairs \(K0\, V0\)\, \(K1\, V1\)\, \(K2\, V2\) \,\,\,\.
+The result map has key\-value pairs \(K0, V0\)\, \(K1, V1\)\, \(K2, V2\) \,\,\,\.
 
 .. rubric:: Precondition
 
-\`K0\`\, \`K1\`\, \`K2\` \,\,\, must be in the domain of keys\.
+\`K0\`\, \`K1\`\, \`K2\` \,\,\, must be in the domain of keys.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_MAP.require_from('kink/container/')
         

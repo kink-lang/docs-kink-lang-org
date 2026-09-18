@@ -1,34 +1,35 @@
-===========================
-kink\/doc\/DOC\_PARSE\_TOOL
-===========================
+=========================
+kink\/doc\/DOC_PARSE_TOOL
+=========================
 
-Launcheable module to parse a kindoc document from program files\, and generate JSON data\.
+Launcheable module to parse a kindoc document from program files, and generate JSON data.
 
 .. rubric:: Usage
 
 .. code:: kink
+    :class: no-search
 
     kink [Kink_options]... mod:kink/doc/DOC_PARSE_TOOL [Mod_options]... Module_base_paths...
 
-The command finds Kink program files of public modules under Module\_base\_paths\, and it parses a kinkdoc document from the program files\. Then it outputs JSON data of the kinkdoc document\.
+The command finds Kink program files of public modules under Module_base_paths, and it parses a kinkdoc document from the program files. Then it outputs JSON data of the kinkdoc document.
 
-By default\, the command writes the JSON data to the standard output\. If \`\-\-output\` option is specified\, the command writes the JSON data to the specified file\.
+By default, the command writes the JSON data to the standard output. If \`\-\-output\` option is specified, the command writes the JSON data to the specified file.
 
-For detailed usage and information of the toolchain\, refer to “Kinkdoc\: API Documentation system” chapter of the manual\.
+For detailed usage and information of the toolchain, refer to “Kinkdoc\: API Documentation system” chapter of the manual.
 
-.. rubric:: Mod\_options
+.. rubric:: Mod_options
 
-\• \-\-title \{Title\} \: gives the title of the kinkdoc document\.
+\• \-\-title \{Title\} \: gives the title of the kinkdoc document.
 
-\• \-\-overview \{Overview\_file\_path\} \: gives the file path of a program file which contains kinkdoc comment chunks of the overview text\.
+\• \-\-overview \{Overview_file_path\} \: gives the file path of a program file which contains kinkdoc comment chunks of the overview text.
 
-\• \-\-output \{Output\_file\_path\} \: gives the file path of the output JSON data\.
+\• \-\-output \{Output_file_path\} \: gives the file path of the output JSON data.
 
 .. rubric:: Exit statuses
 
-If the command succeeds\, it exits with 0 as the exit status\.
+If the command succeeds, it exits with 0 as the exit status.
 
-If the command fails\, it exits with non\-zero exit status\.
+If the command fails, it exits with non\-zero exit status.
 
 .. contents::
     :local:
@@ -36,8 +37,8 @@ If the command fails\, it exits with non\-zero exit status\.
 
 .. _api-14c0e8fa7d0e30676496de9871537294:
 
-DOC\_PARSE\_TOOL\.main\(Argv\)
-==============================
+DOC_PARSE_TOOL.main\(Argv\)
+===========================
 
-\`main\` is the launcher function of the module\.
+\`main\` is the launcher function of the module.
 

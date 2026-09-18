@@ -5,36 +5,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>4. Object system &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
-    <script src="_static/documentation_options.js?v=6ce99075"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <title>4. Object system &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <script src="_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="5. Module system" href="modsystem.html" />
     <link rel="prev" title="3.3. Evaluation" href="language/eval.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>4. Object system</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="language/eval.html"><span class="section-number">3.3. </span>Evaluation</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="modsystem.html"><span class="section-number">5. </span>Module system</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="index.html">Kink 0.9.7-beta</a></li><li><a class="current" href="#" aria-current="page">4. Object system</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="object-system">
 <h1><span class="section-number">4. </span>Object system<a class="headerlink" href="#object-system" title="Link to this heading">¶</a></h1>
 <p>This chapter describes the object system.</p>
@@ -44,8 +33,9 @@
 <li><p><a class="reference internal" href="#embedded-properties" id="id4">Embedded properties</a></p></li>
 <li><p><a class="reference internal" href="#variables" id="id5">Variables</a></p>
 <ul>
-<li><p><a class="reference internal" href="#variable-operations" id="id6">Variable operations</a></p></li>
-<li><p><a class="reference internal" href="#memory-model" id="id7">Memory model</a></p></li>
+<li><p><a class="reference internal" href="#variable-content" id="id6">Variable content</a></p></li>
+<li><p><a class="reference internal" href="#variable-operations" id="id7">Variable operations</a></p></li>
+<li><p><a class="reference internal" href="#memory-model" id="id8">Memory model</a></p></li>
 </ul>
 </li>
 </ul>
@@ -78,19 +68,23 @@ or <a class="reference internal" href="glossary.html#term-host-procedure"><span 
 </section>
 <section id="variables">
 <span id="variable"></span><h2><span class="section-number">4.3. </span>Variables<a class="headerlink" href="#variables" title="Link to this heading">¶</a></h2>
-<p>A <em class="dfn">variable</em> is a pair of a value and a finite length sequence of Unicode code points, defined as follows:
-<em>Variables</em>  = { (owner, sym) | owner is a value, and sym is a finite length sequence of Unicode code points }.</p>
+<p>A <em class="dfn">variable</em> is a pair of a value and a finite length sequence of Unicode code points.
+The set of all the variables is defined as:
+<em>Variables</em>  = { (owner, symbol) | owner is a value, and symbol is a finite length sequence of Unicode code points }.</p>
 <p>Here, <code class="docutils literal notranslate"><span class="pre">owner</span></code> is said to be the <em class="dfn">owner of the variable</em>,
-and <code class="docutils literal notranslate"><span class="pre">sym</span></code> is said to be the <em class="dfn">symbol of the variable</em>.
-The variable is said to be a variable of <code class="docutils literal notranslate"><span class="pre">owner</span></code>.
-“Variable” can be abbreviated to “var”.</p>
+and <code class="docutils literal notranslate"><span class="pre">symbol</span></code> is said to be the <em class="dfn">symbol of the variable</em>.
+The variable is said to be a variable of <code class="docutils literal notranslate"><span class="pre">owner</span></code>.</p>
 <p>If a symbol is accepted by <code class="regexp docutils literal notranslate"><span class="pre">[a-z_][a-z0-9_?]*</span></code>,
 the symbol is called a <em class="dfn">function symbol</em>.
 If a symbol is accepted by <code class="regexp docutils literal notranslate"><span class="pre">([a-z_][a-z0-9_?]*)?[A-Z][a-zA-Z0-9_?]*</span></code>,
 the symbol is called a <em class="dfn">data symbol</em>.</p>
-<p>A variable has a content, which is either empty, or a value.</p>
+<section id="variable-content">
+<h3><span class="section-number">4.3.1. </span>Variable content<a class="headerlink" href="#variable-content" title="Link to this heading">¶</a></h3>
+<p>A variable has a <em class="dfn">content</em>.
+The content is either empty, or a value.</p>
+</section>
 <section id="variable-operations">
-<span id="id2"></span><h3><span class="section-number">4.3.1. </span>Variable operations<a class="headerlink" href="#variable-operations" title="Link to this heading">¶</a></h3>
+<span id="id2"></span><h3><span class="section-number">4.3.2. </span>Variable operations<a class="headerlink" href="#variable-operations" title="Link to this heading">¶</a></h3>
 <p>There are three primitive operations about variables.</p>
 <ul class="simple">
 <li><p><em class="dfn">Variable-load operation</em>:
@@ -100,32 +94,19 @@ The result is either empty or a value.</p></li>
 Sets a value as the content of the variable.</p></li>
 <li><p><em class="dfn">Variable-symbols operation</em>:
 For value X,
-gets { sym | the content of variable (X, sym) is a value }.</p></li>
+gets { symbol | the content of variable (X, symbol) is a value }.</p></li>
 </ul>
-<p>Note that you cannot delete a variable.
-In other words, if the content of a variable is a value,
-it does not become empty.</p>
 </section>
 <section id="memory-model">
-<h3><span class="section-number">4.3.2. </span>Memory model<a class="headerlink" href="#memory-model" title="Link to this heading">¶</a></h3>
+<h3><span class="section-number">4.3.3. </span>Memory model<a class="headerlink" href="#memory-model" title="Link to this heading">¶</a></h3>
 <p>A variable acts like a non-volatile field of Java.</p>
 </section>
 </section>
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="language/eval.html"><span class="section-number">3.3. </span>Evaluation</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="modsystem.html"><span class="section-number">5. </span>Module system</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

@@ -5,36 +5,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>10.1. kink and kinkw commands &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=6ce99075"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>10.1. kink and kinkw commands &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="10.2. REPL" href="repl.html" />
     <link rel="prev" title="10. Commandline" href="index.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>10.1. kink and kinkw commands</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="index.html"><span class="section-number">10. </span>Commandline</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="repl.html"><span class="section-number">10.2. </span>REPL</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">10. Commandline</a></li><li><a class="current" href="#" aria-current="page">10.1. kink and kinkw commands</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="../search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-and-kinkw-commands">
 <h1><span class="section-number">10.1. </span>kink and kinkw commands<a class="headerlink" href="#kink-and-kinkw-commands" title="Link to this heading">¶</a></h1>
 <p>kink and kinkw commands run a Kink runtime.</p>
@@ -50,7 +39,8 @@
 </ul>
 </li>
 <li><p><a class="reference internal" href="#environment-variables" id="id7">Environment variables</a></p></li>
-<li><p><a class="reference internal" href="#exit-status" id="id8">Exit status</a></p></li>
+<li><p><a class="reference internal" href="#process-name" id="id8">Process name</a></p></li>
+<li><p><a class="reference internal" href="#exit-status" id="id9">Exit status</a></p></li>
 </ul>
 </nav>
 <section id="executable-files">
@@ -202,8 +192,13 @@ the command just uses <code class="docutils literal notranslate"><span class="pr
 </dd>
 </dl>
 </section>
+<section id="process-name">
+<h2><span class="section-number">10.1.4. </span>Process name<a class="headerlink" href="#process-name" title="Link to this heading">¶</a></h2>
+<p>On Linux, <code class="docutils literal notranslate"><span class="pre">/proc/{PID}/comm</span></code> is set to <code class="docutils literal notranslate"><span class="pre">kink</span></code>.
+Tools like <code class="docutils literal notranslate"><span class="pre">top</span></code> and <code class="docutils literal notranslate"><span class="pre">ps</span></code> may display <code class="docutils literal notranslate"><span class="pre">kink</span></code> as the process name instead of <code class="docutils literal notranslate"><span class="pre">java</span></code>.</p>
+</section>
 <section id="exit-status">
-<h2><span class="section-number">10.1.4. </span>Exit status<a class="headerlink" href="#exit-status" title="Link to this heading">¶</a></h2>
+<h2><span class="section-number">10.1.5. </span>Exit status<a class="headerlink" href="#exit-status" title="Link to this heading">¶</a></h2>
 <p>The following exit values are returned.</p>
 <dl class="simple">
 <dt>0</dt><dd><p>When the program terminates without raising an exception,
@@ -219,18 +214,8 @@ See <a class="reference internal" href="../api/kink-PROCESS.html"><span class="d
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="index.html"><span class="section-number">10. </span>Commandline</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="repl.html"><span class="section-number">10.2. </span>REPL</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

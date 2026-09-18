@@ -2,7 +2,7 @@
 kink\/datetime\/TIMEZONE
 ========================
 
-Provides timezone type\.
+Provides timezone type.
 
 .. contents::
     :local:
@@ -13,34 +13,34 @@ Provides timezone type\.
 type timezone
 =============
 
-A timezone represents the rule of transition of UTC offset in a specific region\.
+A timezone represents the rule of transition of UTC offset in a specific region.
 
-The set of timezones are provided by the runtime\.
+The set of timezones are provided by the runtime.
 
 .. _api-9ff404ea24f6da24e67ca04d93a2cf5a:
 
-Tz\.name
---------
+Tz.name
+-------
 
-“name” method returns the name of Tz\, such as \"Asia\/Tokyo\"\.
+“name” method returns the name of Tz, such as \"Asia\/Tokyo\"\.
 
 .. _api-1bdec58e99e88b1dd1afb3fdffdd9716:
 
-Tz\.offset\_for\_instant\(Instant\)
------------------------------------
+Tz.offset_for_instant\(Instant\)
+--------------------------------
 
-\`offset\_for\_instant\` returns the \`offset\` valid in the timezone at \`Instant\`\.
+\`offset_for_instant\` returns the \`offset\` valid in the timezone at \`Instant\`\.
 
 Precondition\:
 
-\• Instant must be an instant\.
+\• Instant must be an instant.
 
 .. _api-b50d44302e95b494831aedd10590c697:
 
-Tz\.offset\_for\_datetime\(Datetime \$single\_cont \$overlap\_cont \$gap\_cont\)
---------------------------------------------------------------------------------
+Tz.offset_for_datetime\(Datetime $single_cont $overlap_cont $gap_cont\)
+-----------------------------------------------------------------------
 
-\`offset\_for\_datetime\` produces the \`offset\`\, or the pair of \`offset\` vals\, valid in the timezone at \`Datetime\`\.
+\`offset_for_datetime\` produces the \`offset\`\, or the pair of \`offset\` vals, valid in the timezone at \`Datetime\`\.
 
 Precondition\:
 
@@ -48,16 +48,16 @@ Precondition\:
 
 Result\:
 
-\• If there is only one \`offset\` valid at \`Datetime\`\, \`offset\_for\_datetime\` tail\-calls \$single\_cont with the \`offset\`\.
+\• If there is only one \`offset\` valid at \`Datetime\`\, \`offset_for_datetime\` tail\-calls $single_cont with the \`offset\`\.
 
-\• If there are two \`offset\` vals valid at \`Datetime\` due to transition\, \`offset\_for\_datetime\` tail\-calls \$overlap\_cont with the offset before the transition\, and the offset after the transition\.
+\• If there are two \`offset\` vals valid at \`Datetime\` due to transition, \`offset_for_datetime\` tail\-calls $overlap_cont with the offset before the transition, and the offset after the transition.
 
-\• If there is no \`offset\` valid at \`Datetime\` due to transition\, \`offset\_for\_datetime\` tail\-calls \$gap\_cont with the offset before the transition\, and the offset after the transition\.
+\• If there is no \`offset\` valid at \`Datetime\` due to transition, \`offset_for_datetime\` tail\-calls $gap_cont with the offset before the transition, and the offset after the transition.
 
 .. _api-6be3fa397391362f2a206f85f3400b2c:
 
-Tz\.repr
---------
+Tz.repr
+-------
 
 \`repr\` returns a str representation of \`Tz\`\, such as \"\(timezone Asia\/Tokyo\)\"\.
 
@@ -66,36 +66,37 @@ Tz\.repr
 Tz1 \=\= Tz2
 ------------
 
-Two timezone values are equal when they have the same name\.
+Two timezone values are equal when they have the same name.
 
 .. _api-0b4ce0b38f97b43d64bdbf4f32f2a05d:
 
-TIMEZONE\.for\(Name \.\.\.\[\$config\=\{\}\]\)
-==============================================
+TIMEZONE.for\(Name \.\.\.\[$config\=\{\}\]\)
+============================================
 
-\`for\` tries to find a timezone specified by \`Name\`\, from the timezone repository provided by the runtime\.
+\`for\` tries to find a timezone specified by \`Name\`\, from the timezone repository provided by the runtime.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+\• C.on_error\($error\)\: default \= a fun which raises an exception
 
-If the timezone is found\, \`for\` tail\-calls \$success with the timezone\.
+If the timezone is found, \`for\` tail\-calls $success with the timezone.
 
-If no timezone is found\, \`for\` tail\-calls \$error with no arg\.
+If no timezone is found, \`for\` tail\-calls $error with no arg.
 
 .. rubric:: Preconditions
 
-\• \`Name\` must be a str\.
+\• \`Name\` must be a str.
 
-\• \$success must be a fun which takes a \`timezone\` val\.
+\• $success must be a fun which takes a \`timezone\` val.
 
-\• \$error must be a fun which takes no arg\.
+\• $error must be a fun which takes no arg.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TIMEZONE.require_from('kink/datetime/')
     :CONTROL.require_from('kink/')
@@ -112,6 +113,7 @@ If no timezone is found\, \`for\` tail\-calls \$error with no arg\.
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :TIMEZONE.require_from('kink/datetime/')
     :CONTROL.require_from('kink/')
@@ -128,15 +130,15 @@ If no timezone is found\, \`for\` tail\-calls \$error with no arg\.
 
 .. _api-79a9d8bdc68fbaa3922faf57338ce456:
 
-TIMEZONE\.is\?\(Val\)
-=====================
+TIMEZONE.is?\(Val\)
+===================
 
-TIMEZONE\.is\? returns whether Val is a timezone\.
+TIMEZONE.is? returns whether Val is a timezone.
 
 .. _api-8adcd1d11a720ffcd4eeabc9342999a5:
 
-TIMEZONE\.default
-=================
+TIMEZONE.default
+================
 
-“default” fun returns the runtime\-default timezone\.
+“default” fun returns the runtime\-default timezone.
 

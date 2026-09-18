@@ -5,37 +5,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.75. kink/javahost/JAVA_PROXY &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.75. kink/javahost/JAVA_PROXY &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=6ab1bf41"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/translations.js?v=4755f45a"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="6.76. kink/javahost/JAVA_STREAM_INPUT" href="kink-javahost-JAVA_STREAM_INPUT.html" />
     <link rel="prev" title="6.74. kink/javahost/JAVA_CHANNEL_OUTPUT" href="kink-javahost-JAVA_CHANNEL_OUTPUT.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.75. kink/javahost/JAVA_PROXY</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-javahost-JAVA_CHANNEL_OUTPUT.html"><span class="section-number">6.74. </span>kink/javahost/JAVA_CHANNEL_OUTPUT</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-javahost-JAVA_STREAM_INPUT.html"><span class="section-number">6.76. </span>kink/javahost/JAVA_STREAM_INPUT</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. 組み込みライブラリAPI</a></li><li><a class="current" href="#" aria-current="page">6.75. kink/javahost/JAVA_PROXY</a></li></ol></nav>
+    <nav class="header-nav" aria-label="検索"><a href="../search.html">検索</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-javahost-java-proxy">
 <h1><span class="section-number">6.75. </span>kink/javahost/JAVA_PROXY<a class="headerlink" href="#kink-javahost-java-proxy" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="id1">
@@ -47,7 +36,7 @@
 <span id="api-e983bebce8034ca135e11da64358ffed"></span><h2><span class="section-number">6.75.1. </span>JAVA_PROXY.new(Interface $handler ...[$config={}])<a class="headerlink" href="#java-proxy-new-interface-handler-config" title="Link to this heading">¶</a></h2>
 <p>newは、メソッドの動作をKinkの関数$handlerに委譲するJavaオブジェクトを作る。</p>
 <p>コンフィグメソッド:</p>
-<p>• C.also_implement(Also_implement): 複数回呼び出しできる</p>
+<p>• C.also_implement(Also_implement): 複数回呼び出せる</p>
 <p>• C.override_tostring</p>
 <p>• C.override_equals</p>
 <p>• C.override_hashcode</p>
@@ -56,7 +45,7 @@
 <p>• C.on_error($error): default = 例外を投げる関数</p>
 <p>作られたJavaオブジェクトは、java.lang.reflect.Proxyのインスタンスになる。このプロキシは、インタフェースInterfaceを実装する。C.also_implementが呼ばれた場合は、Also_implementで指定されたインタフェースもあわせて実装する。</p>
 <p>プロキシの生成が成功したとき、newは、java値(proxy, Interface)を引数として$successを末尾呼び出しする。ここでproxyは、生成されたインスタンスである。</p>
-<p>プロキシの生成が、Proxy.newProxyInstanceの仕様で説明されるように、IllegalArgumentExceptionで失敗したとき、newは、java値(iae, IllegalArgumentException)を引数として$errorを末尾呼び出し する。ここでiaeは、投げられたIllegalArgumentExceptionである。</p>
+<p>プロキシの生成が、Proxy.newProxyInstanceの仕様で説明されるように、IllegalArgumentExceptionで失敗したとき、newは、java値(iae, IllegalArgumentException)を引数として$errorを末尾呼び出しする。ここでiaeは、投げられたIllegalArgumentExceptionである。</p>
 <p class="rubric">呼び出し</p>
 <p>プロキシのメソッドの呼び出しは、後述する例外を除いて、$handlerに委譲される。</p>
 <p>メソッドが呼び出されると、新しい抽象スタックマシンが作られる。その抽象スタックマシンの中で、java.lang.reflect.Methodオブジェクトと、Javaメソッドの引数列からなるvecを引数として、$handlerが呼び出される。</p>
@@ -86,7 +75,7 @@
 <p>$successはjava値を取る関数でなければならない。</p>
 <p>$errorはIllegalArgumentExceptionのjava値を取る関数でなければならない。</p>
 <p class="rubric">例: プロキシインスタンスを作る</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
 <span class="nv">:JAVA_PROXY</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
 
 <span class="nv">:IntUnaryOperator_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.util.function.IntUnaryOperator&#39;</span>)
@@ -107,7 +96,7 @@
 </pre></div>
 </div>
 <p class="rubric">例: toStringをオーバーライドする</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
 <span class="nv">:JAVA_PROXY</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
 
 <span class="nv">:IntUnaryOperator_class</span> &lt;- <span class="nv">JAVA</span>.<span class="n">class</span>(<span class="s1">&#39;java.util.function.IntUnaryOperator&#39;</span>)
@@ -143,18 +132,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-javahost-JAVA_CHANNEL_OUTPUT.html"><span class="section-number">6.74. </span>kink/javahost/JAVA_CHANNEL_OUTPUT</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-javahost-JAVA_STREAM_INPUT.html"><span class="section-number">6.76. </span>kink/javahost/JAVA_STREAM_INPUT</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

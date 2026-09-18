@@ -5,39 +5,28 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.114. kink/tls/TLS_SERVER &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.113. kink/tls/TLS_SERVER &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=6ab1bf41"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/translations.js?v=4755f45a"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="6.115. kink/tls/TRUST_ANCHOR" href="kink-tls-TRUST_ANCHOR.html" />
-    <link rel="prev" title="6.113. kink/tls/TLS_CLIENT" href="kink-tls-TLS_CLIENT.html" /> 
+    <link rel="next" title="6.114. kink/tls/TRUST_ANCHOR" href="kink-tls-TRUST_ANCHOR.html" />
+    <link rel="prev" title="6.112. kink/tls/TLS_CLIENT" href="kink-tls-TLS_CLIENT.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.114. kink/tls/TLS_SERVER</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-tls-TLS_CLIENT.html"><span class="section-number">6.113. </span>kink/tls/TLS_CLIENT</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-tls-TRUST_ANCHOR.html"><span class="section-number">6.115. </span>kink/tls/TRUST_ANCHOR</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. 組み込みライブラリAPI</a></li><li><a class="current" href="#" aria-current="page">6.113. kink/tls/TLS_SERVER</a></li></ol></nav>
+    <nav class="header-nav" aria-label="検索"><a href="../search.html">検索</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-tls-tls-server">
-<h1><span class="section-number">6.114. </span>kink/tls/TLS_SERVER<a class="headerlink" href="#kink-tls-tls-server" title="Link to this heading">¶</a></h1>
+<h1><span class="section-number">6.113. </span>kink/tls/TLS_SERVER<a class="headerlink" href="#kink-tls-tls-server" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="id1">
 <ul class="simple">
 <li><p><a class="reference internal" href="#type-tls-server" id="id2">tls_server型</a></p>
@@ -50,11 +39,11 @@
 </ul>
 </nav>
 <section id="type-tls-server">
-<span id="api-9021256bdecf20a3dbca4b952f4d79b7"></span><h2><span class="section-number">6.114.1. </span>tls_server型<a class="headerlink" href="#type-tls-server" title="Link to this heading">¶</a></h2>
+<span id="api-9021256bdecf20a3dbca4b952f4d79b7"></span><h2><span class="section-number">6.113.1. </span>tls_server型<a class="headerlink" href="#type-tls-server" title="Link to this heading">¶</a></h2>
 <p>tls_serverは、サーバサイドのTLS接続のファクトリである。</p>
 <p>tls_serverは、単一のTLS接続よりも長く生存する種々のデータを保持する。たとえば鍵ペア、証明書、 セッション再開のためのデータなどである。</p>
 <section id="serv-connect-tcp-config">
-<span id="api-26403f32104843e912be057c437d25b9"></span><h3><span class="section-number">6.114.1.1. </span>Serv.connect(Tcp ...[$config={}])<a class="headerlink" href="#serv-connect-tcp-config" title="Link to this heading">¶</a></h3>
+<span id="api-26403f32104843e912be057c437d25b9"></span><h3><span class="section-number">6.113.1.1. </span>Serv.connect(Tcp ...[$config={}])<a class="headerlink" href="#serv-connect-tcp-config" title="Link to this heading">¶</a></h3>
 <p>connectは、新しいTLS接続を作り、最初のハンドシェイクを行う。</p>
 <p>コンフィグメソッド</p>
 <p>• C.need_cert</p>
@@ -75,7 +64,7 @@
 </section>
 </section>
 <section id="tls-server-new-key-pair-set-config">
-<span id="api-3aa9d9decfe516a28ba58db6bbc06e3c"></span><h2><span class="section-number">6.114.2. </span>TLS_SERVER.new(Key_pair_set ...[$config={}])<a class="headerlink" href="#tls-server-new-key-pair-set-config" title="Link to this heading">¶</a></h2>
+<span id="api-3aa9d9decfe516a28ba58db6bbc06e3c"></span><h2><span class="section-number">6.113.2. </span>TLS_SERVER.new(Key_pair_set ...[$config={}])<a class="headerlink" href="#tls-server-new-key-pair-set-config" title="Link to this heading">¶</a></h2>
 <p>newは、新しいtls_serverを作る。</p>
 <p>コンフィグメソッド</p>
 <p>• C.trust_anchor(Ta): default = 空のtrust_anchor</p>
@@ -91,24 +80,14 @@
 <p>$errorは、exceptionを取る関数でなければならない。</p>
 </section>
 <section id="tls-server-is-val">
-<span id="api-315efaaea8dd085560dba53a1ce887f6"></span><h2><span class="section-number">6.114.3. </span>TLS_SERVER.is?(Val)<a class="headerlink" href="#tls-server-is-val" title="Link to this heading">¶</a></h2>
+<span id="api-315efaaea8dd085560dba53a1ce887f6"></span><h2><span class="section-number">6.113.3. </span>TLS_SERVER.is?(Val)<a class="headerlink" href="#tls-server-is-val" title="Link to this heading">¶</a></h2>
 <p>is?は、Valがtls_serverであるかどうかを戻す。</p>
 </section>
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-tls-TLS_CLIENT.html"><span class="section-number">6.113. </span>kink/tls/TLS_CLIENT</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-tls-TRUST_ANCHOR.html"><span class="section-number">6.115. </span>kink/tls/TRUST_ANCHOR</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

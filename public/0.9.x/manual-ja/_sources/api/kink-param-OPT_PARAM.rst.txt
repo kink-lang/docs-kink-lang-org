@@ -1,8 +1,8 @@
-=======================
-kink\/param\/OPT\_PARAM
-=======================
+======================
+kink\/param\/OPT_PARAM
+======================
 
-Provides opt\_param data type\.
+Provides opt_param data type.
 
 .. contents::
     :local:
@@ -10,18 +10,19 @@ Provides opt\_param data type\.
 
 .. _api-4e6cf98b60e2815f79ef8e09831c69aa:
 
-type opt\_param
-===============
+type opt_param
+==============
 
-An opt\_param is a param which can consume 0 or 1 argument\.
+An opt_param is a param which can consume 0 or 1 argument.
 
-See Vec\.op\_store for handling of params\.
+See Vec.op_store for handling of params.
 
-Usually\, an opt\_param is provided by Varref\.opt method\.
+Usually, an opt_param is provided by Varref.opt method.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     [:A :B :C.opt] <- [1 2 3]
     stdout.print_line(C.repr) # => [3]
@@ -31,22 +32,22 @@ Example\:
 
 .. _api-c2d7e3b5a004c1016da4d9c0a4d2fe99:
 
-Opt\_param\.pass\_arg\(Arg\)
-----------------------------
+Opt_param.pass_arg\(Arg\)
+-------------------------
 
-Opt\_param\.pass\_arg consumes Arg as a single argument\.
+Opt_param.pass_arg consumes Arg as a single argument.
 
 .. _api-58a386b726619ac29d412af2ab0a5893:
 
-Opt\_param\.pass\_nothing
--------------------------
+Opt_param.pass_nothing
+----------------------
 
-Opt\_param\.pass\_nothing consumes no argument\.
+Opt_param.pass_nothing consumes no argument.
 
 .. _api-9cc43f38dcc6ace055acb435b2f28528:
 
-OPT\_PARAM\.is\?\(Val\)
-=======================
+OPT_PARAM.is?\(Val\)
+====================
 
-OPT\_PARAM\.is\? returns whether the Val is an opt\_param\.
+OPT_PARAM.is? returns whether the Val is an opt_param.
 

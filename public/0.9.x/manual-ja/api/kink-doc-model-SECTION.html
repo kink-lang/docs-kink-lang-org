@@ -5,37 +5,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.47. kink/doc/model/SECTION &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.47. kink/doc/model/SECTION &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=6ab1bf41"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/translations.js?v=4755f45a"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="6.48. kink/doc/render/html/HTML_RENDER_TOOL" href="kink-doc-render-html-HTML_RENDER_TOOL.html" />
     <link rel="prev" title="6.46. kink/doc/model/BLOCK_TYPE" href="kink-doc-model-BLOCK_TYPE.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.47. kink/doc/model/SECTION</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-doc-model-BLOCK_TYPE.html"><span class="section-number">6.46. </span>kink/doc/model/BLOCK_TYPE</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-doc-render-html-HTML_RENDER_TOOL.html"><span class="section-number">6.48. </span>kink/doc/render/html/HTML_RENDER_TOOL</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. 組み込みライブラリAPI</a></li><li><a class="current" href="#" aria-current="page">6.47. kink/doc/model/SECTION</a></li></ol></nav>
+    <nav class="header-nav" aria-label="検索"><a href="../search.html">検索</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-doc-model-section">
 <h1><span class="section-number">6.47. </span>kink/doc/model/SECTION<a class="headerlink" href="#kink-doc-model-section" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="id1">
@@ -77,7 +66,7 @@
 <p>to_json_valは、SectionのJSON値を戻す。</p>
 <p>マニュアルの「Kinkdoc: API文書化システム」 → 「データモデル」 → 「JSONスキーマ」を見よう。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:SECTION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/doc/model/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:SECTION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/doc/model/&#39;</span>)
 <span class="nv">:BLOCK</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/doc/model/&#39;</span>)
 <span class="nv">:BLOCK_TYPE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/doc/model/&#39;</span>)
 <span class="nv">:JSON</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/json/&#39;</span>)
@@ -119,7 +108,7 @@
 <p>depthは、Sectionの木の深さを、整数のnum値として戻す。</p>
 <p>sectionの深さは次のように定義される:</p>
 <p>• sectionが小節をひとつも持たない場合、深さは1である。</p>
-<p>• sectionがひとつ以上の小節を持っている場合、sectionの深さは、小説の深さの最大値に1を足したものになる。</p>
+<p>• sectionがひとつ以上の小節を持っている場合、sectionの深さは、小節の深さの最大値に1を足したものになる。</p>
 </section>
 <section id="section-limit-depth-max-depth">
 <span id="api-eb1b9a03f16894a76ddac591b6c6669e"></span><h3><span class="section-number">6.47.1.6. </span>Section.limit_depth(Max_depth)<a class="headerlink" href="#section-limit-depth-max-depth" title="Link to this heading">¶</a></h3>
@@ -160,7 +149,7 @@
 <p class="rubric">事前条件</p>
 <p>Json_valはJSON値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:SECTION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/doc/model/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:SECTION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/doc/model/&#39;</span>)
 <span class="nv">:FLAT_MAP</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/container/&#39;</span>)
 
 <span class="nv">:Json_val</span> &lt;- <span class="nv">FLAT_MAP</span>.<span class="n">of</span>(
@@ -186,18 +175,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-doc-model-BLOCK_TYPE.html"><span class="section-number">6.46. </span>kink/doc/model/BLOCK_TYPE</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-doc-render-html-HTML_RENDER_TOOL.html"><span class="section-number">6.48. </span>kink/doc/render/html/HTML_RENDER_TOOL</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

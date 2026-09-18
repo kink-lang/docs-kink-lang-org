@@ -2,7 +2,7 @@
 kink\/random\/RNG
 =================
 
-Random number generators\.
+Random number generators.
 
 .. contents::
     :local:
@@ -13,26 +13,27 @@ Random number generators\.
 type rng
 ========
 
-Abstract type of random number generator\.
+Abstract type of random number generator.
 
 .. _api-e8712e91e935dcfdb3a7645b7c5c4293:
 
-Rng\.gen\_int\(Upper\_bound\)
------------------------------
+Rng.gen_int\(Upper_bound\)
+--------------------------
 
-\`gen\_int\` produces a random int num in the range \[0\, Upper\_bound\)\.
+\`gen_int\` produces a random int num in the range \[0, Upper_bound\)\.
 
 Preconditions\:
 
-\• \`Upper\_bound\` must be an int num
+\• \`Upper_bound\` must be an int num
 
-\• \`Upper\_bound\` must be greater than or equal to 1
+\• \`Upper_bound\` must be greater than or equal to 1
 
-Every int nums in the range should be produced with approximately equal probability\.
+Every int nums in the range should be produced with approximately equal probability.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :PRNG.require_from('kink/random/')
         
@@ -43,20 +44,21 @@ Example\:
 
 .. _api-d1aa89956770037161b946b45d4c6a64:
 
-Rng\.gen\_bin\(Size\)
----------------------
+Rng.gen_bin\(Size\)
+-------------------
 
-\`gen\_bin\` produces a bin of the \`Size\` bits of which is randomly determined\.
+\`gen_bin\` produces a bin of the \`Size\` bits of which is randomly determined.
 
 Preconditions\:
 
 \• \`Size\` must be a non\-negative int num
 
-Probability of \`1\` bits and \`0\` bits should be approximately equal\.
+Probability of \`1\` bits and \`0\` bits should be approximately equal.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :PRNG.require_from('kink/random/')
         
@@ -66,16 +68,17 @@ Example\:
 
 .. _api-f83907f1fbc438afd84325d8d0a9d3b0:
 
-Rng\.gen\_bool
---------------
+Rng.gen_bool
+------------
 
-\`gen\_bool\` produces a random bool\.
+\`gen_bool\` produces a random bool.
 
-Probability of true and false should be approximately equal\.
+Probability of true and false should be approximately equal.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :PRNG.require_from('kink/random/')
         
@@ -86,8 +89,8 @@ Example\:
 
 .. _api-55f109c080d27d2abc3343d86fb07102:
 
-RNG\.is\?\(Val\)
-================
+RNG.is?\(Val\)
+==============
 
-\`is\?\` returns whether \`Val\` is an rng val\.
+\`is?\` returns whether \`Val\` is an rng val.
 

@@ -4,8 +4,7 @@ REPL
 
 .. highlight:: none
 
-REPL (read-evel-print loop) is an interactive shell of Kink language.
-The core functionality of REPL is provided by :doc:`kink/repl/REPL </api/kink-repl-REPL>` mod.
+REPL (read-evel-print loop) is an interactive shell of the Kink language.
 
 .. contents::
   :local:

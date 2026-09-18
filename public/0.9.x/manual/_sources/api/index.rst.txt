@@ -2,9 +2,9 @@
 Builtin library API
 ===================
 
-This chapter describes API of builtin modules and types\.
+This chapter describes API of builtin modules and types.
 
-Types are described in the page of its companion module\. For example\, methods of \`str\` type are described in the page of kink\/STR module\.
+Types are described in the page of its companion module. For example, methods of \`str\` type are described in the page of kink\/STR module.
 
 .. toctree::
     :maxdepth: 1
@@ -102,7 +102,6 @@ Types are described in the page of its companion module\. For example\, methods 
     kink-regex-GROUP
     kink-regex-MATCH
     kink-regex-REGEX
-    kink-repl-REPL
     kink-socket-DATAGRAM
     kink-socket-IP
     kink-socket-IP_PORT

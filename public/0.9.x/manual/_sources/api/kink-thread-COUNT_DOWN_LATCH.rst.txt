@@ -1,6 +1,6 @@
-================================
-kink\/thread\/COUNT\_DOWN\_LATCH
-================================
+==============================
+kink\/thread\/COUNT_DOWN_LATCH
+==============================
 
 .. contents::
     :local:
@@ -8,14 +8,15 @@ kink\/thread\/COUNT\_DOWN\_LATCH
 
 .. _api-38b462f09a076ec8a686c5d06f0e6d74:
 
-type count\_down\_latch
-=======================
+type count_down_latch
+=====================
 
-\`count\_down\_latch\` is a downward counter which is used to wait until the specified number of operations are performed in multiple threads\.
+\`count_down_latch\` is a downward counter which is used to wait until the specified number of operations are performed in multiple threads.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :MUTEX.require_from('kink/thread/')
     :THREAD.require_from('kink/thread/')
@@ -42,54 +43,54 @@ Example\:
 
 Concurrency\:
 
-\• If the count is not zero when \`count\_down\` is called\, the invocation of \`count\_down\` happens\-before returning from \`wait\` on the same latch\.
+\• If the count is not zero when \`count_down\` is called, the invocation of \`count_down\` happens\-before returning from \`wait\` on the same latch.
 
-\• If the count is not zero when \`count\_down\` is called\, the invocation of \`count\_down\` happens\-before returning from \`count\` on the same latch the result of which is zero\.
+\• If the count is not zero when \`count_down\` is called, the invocation of \`count_down\` happens\-before returning from \`count\` on the same latch the result of which is zero.
 
 .. _api-b720bbeebbb8ee4ac121e39faa2fad36:
 
-L\.count\_down
---------------
+L.count_down
+------------
 
-\`count\_down\` subtract 1 from the count of the latch when it is greater than zero\. \`count\_down\` does nothing if the count is already zero\.
+\`count_down\` subtract 1 from the count of the latch when it is greater than zero. \`count_down\` does nothing if the count is already zero.
 
-If the count becomes zero\, all the threads blocked by \`wait\` method of the latch are released\.
+If the count becomes zero, all the threads blocked by \`wait\` method of the latch are released.
 
 .. _api-d311ea22e64b981a3d6b95e2fa1a1af5:
 
-L\.wait
--------
+L.wait
+------
 
-\`wait\` blocks the current thread until the count of the latch becomes zero\.
+\`wait\` blocks the current thread until the count of the latch becomes zero.
 
-If the count of the latch is already zero when \`wait\` is called\, \`wait\` returns immediately without blocking the current thread\.
+If the count of the latch is already zero when \`wait\` is called, \`wait\` returns immediately without blocking the current thread.
 
 .. _api-839b0b36822111413e59bf398a1ee79b:
 
-L\.count
---------
+L.count
+-------
 
-\`count\` returns the count of the latch as an int num\.
+\`count\` returns the count of the latch as an int num.
 
 Result\:
 
-\• The result is a non\-negative int num\.
+\• The result is a non\-negative int num.
 
 .. _api-ad54536b6338313ad5af47be87c63f82:
 
-COUNT\_DOWN\_LATCH\.new\(Count\)
-================================
+COUNT_DOWN_LATCH.new\(Count\)
+=============================
 
-\`new\` makes a \`count\_down\_latch\` val with \`Count\` as the initial count\.
+\`new\` makes a \`count_down_latch\` val with \`Count\` as the initial count.
 
 Precondition\:
 
-\• \`Count\` must be a non\-negative int num\.
+\• \`Count\` must be a non\-negative int num.
 
 .. _api-d1439718498a1d3e2ed849ec1ab81d86:
 
-COUNT\_DOWN\_LATCH\.is\?\(Val\)
-===============================
+COUNT_DOWN_LATCH.is?\(Val\)
+===========================
 
-\`is\?\` returns whether \`Val\` is a \`count\_down\_latch\` val\.
+\`is?\` returns whether \`Val\` is a \`count_down_latch\` val.
 

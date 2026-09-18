@@ -1,6 +1,6 @@
-========================================
-kink\/socket\/UNIX\_DOMAIN\_SOCKET\_PATH
-========================================
+=====================================
+kink\/socket\/UNIX_DOMAIN_SOCKET_PATH
+=====================================
 
 .. contents::
     :local:
@@ -8,16 +8,17 @@ kink\/socket\/UNIX\_DOMAIN\_SOCKET\_PATH
 
 .. _api-aead5d16f7310b505971f63f94a888b5:
 
-type unix\_domain\_socket\_path
-===============================
+type unix_domain_socket_path
+============================
 
-\`unix\_domain\_socket\_path\` is a path of a UNIX domain socket\.
+\`unix_domain_socket_path\` is a path of a UNIX domain socket.
 
-\`unix\_domain\_socket\_path\` is a subtype of \`socket\_address\`\.
+\`unix_domain_socket_path\` is a subtype of \`socket_address\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :UNIX_DOMAIN_SOCKET_PATH.require_from('kink/socket/')
     :PROTOCOL_FAMILY.require_from('kink/socket/')
@@ -59,35 +60,35 @@ type unix\_domain\_socket\_path
 
 .. _api-124ab68e12b2aa435e8adc8b8bc0f21c:
 
-Udsp\.path
-----------
+Udsp.path
+---------
 
-\`path\` returns the path on the file system of the UNIX domain socket as a \`str\` value\.
+\`path\` returns the path on the file system of the UNIX domain socket as a \`str\` value.
 
 .. _api-42d4508aa3fa3d0dc691e991226bf135:
 
-Udsp\.protocol\_family
-----------------------
+Udsp.protocol_family
+--------------------
 
-\`protocol\_family\` returns PROTOCOL\_FAMILY\.unix\.
+\`protocol_family\` returns PROTOCOL_FAMILY.unix.
 
 .. _api-3d0289cba4d6f554f52caf53d0508282:
 
 Udsp \=\= Addr
 --------------
 
-\`\=\=\` operator\, or \`op\_eq\` method\, returns true if and only if \`Addr\` is a \`unix\_domain\_socket\_path\` value\, and the paths of \`Udsp\` and \`Addr\` are equal by \`\=\=\` operator of type \`str\`\.
+\`\=\=\` operator, or \`op_eq\` method, returns true if and only if \`Addr\` is a \`unix_domain_socket_path\` value, and the paths of \`Udsp\` and \`Addr\` are equal by \`\=\=\` operator of type \`str\`\.
 
 .. rubric:: Precondition
 
-\`Addr\` must be a \`socket\_address\`\.
+\`Addr\` must be a \`socket_address\`\.
 
 .. _api-adc2c7294b15ceed2fa49ccd0178f7f9:
 
-UNIX\_DOMAIN\_SOCKET\_PATH\.new\(Path\)
-=======================================
+UNIX_DOMAIN_SOCKET_PATH.new\(Path\)
+===================================
 
-\`new\` returns a \`unix\_domain\_socket\_path\` value\.
+\`new\` returns a \`unix_domain_socket_path\` value.
 
 .. rubric:: Precondition
 
@@ -95,8 +96,8 @@ UNIX\_DOMAIN\_SOCKET\_PATH\.new\(Path\)
 
 .. _api-efde51706c66c8a2906b43e505ad8338:
 
-UNIX\_DOMAIN\_SOCKET\_PATH\.is\?\(Val\)
-=======================================
+UNIX_DOMAIN_SOCKET_PATH.is?\(Val\)
+==================================
 
-\`is\?\` returns whether \`Val\` is a \`unix\_domain\_socket\_path\` value\.
+\`is?\` returns whether \`Val\` is a \`unix_domain_socket_path\` value.
 

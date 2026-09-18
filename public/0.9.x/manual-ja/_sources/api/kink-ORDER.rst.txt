@@ -2,11 +2,11 @@
 kink\/ORDER
 ===========
 
-Features of total order relations backed by \`\<\=\` operator\, or \`op\_le\` methods\.
+Features of total order relations backed by \`\<\=\` operator, or \`op_le\` methods.
 
 .. rubric:: \<\= operator
 
-Implementations of \`\<\=\` operator should be a total order which satisfies the following for all X\, Y\, and Z in the domain of the operands\.
+Implementations of \`\<\=\` operator should be a total order which satisfies the following for all X, Y, and Z in the domain of the operands.
 
 \• reflexive\: X \<\= X
 
@@ -22,18 +22,19 @@ Implementations of \`\<\=\` operator should be a total order which satisfies the
 
 .. _api-fcc9fca6e3b37794a6881df72d3db7f5:
 
-ORDER\.by\(\$extract\_key\)
-===========================
+ORDER.by\($extract_key\)
+========================
 
-\`by\` returns a function which orders two args by the extracted keys\, that is \`\{\(\:X \:Y\) extract\_key\(X\) \<\= extract\_key\(Y\) \}\`\.
+\`by\` returns a function which orders two args by the extracted keys, that is \`\{\(\:X \:Y\) extract_key\(X\) \<\= extract_key\(Y\) \}\`\.
 
 .. rubric:: Precondition
 
-\$extract\_key must be a function which takes one arg\.
+$extract_key must be a function which takes one arg.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :ORDER.require_from('kink/')
     :TREE_SET.require_from('kink/container/')
@@ -50,10 +51,10 @@ ORDER\.by\(\$extract\_key\)
 
 .. _api-7dffa4680594fc3d7228a0d21e96d2e3:
 
-ORDER\.min\(X Y\)
-=================
+ORDER.min\(X Y\)
+================
 
-\`min\` returns X if X \<\= Y\, otherwise Y\.
+\`min\` returns X if X \<\= Y, otherwise Y.
 
 .. rubric:: Precondition
 
@@ -62,6 +63,7 @@ ORDER\.min\(X Y\)
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :ORDER.require_from('kink/')
         
@@ -72,10 +74,10 @@ ORDER\.min\(X Y\)
 
 .. _api-a54bcf33df35cfd3da10f913ed55573b:
 
-ORDER\.max\(X Y\)
-=================
+ORDER.max\(X Y\)
+================
 
-\`max\` returns X if X \>\= Y\, otherwise Y\.
+\`max\` returns X if X \>\= Y, otherwise Y.
 
 .. rubric:: Precondition
 
@@ -84,6 +86,7 @@ ORDER\.max\(X Y\)
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :ORDER.require_from('kink/')
         

@@ -1,8 +1,8 @@
-====================================
-kink\/javahost\/JAVA\_CHANNEL\_INPUT
-====================================
+==================================
+kink\/javahost\/JAVA_CHANNEL_INPUT
+==================================
 
-Provides \`input\` based on Java ReadableByteChannel\.
+Provides \`input\` based on Java ReadableByteChannel.
 
 .. contents::
     :local:
@@ -10,36 +10,36 @@ Provides \`input\` based on Java ReadableByteChannel\.
 
 .. _api-36a6c637d53a52e6f539c9cb961ea1ca:
 
-JAVA\_CHANNEL\_INPUT\.new\(Channel \.\.\.\[\$config\=\{\}\]\)
-=============================================================
+JAVA_CHANNEL_INPUT.new\(Channel \.\.\.\[$config\=\{\}\]\)
+=========================================================
 
-\`new\` makes an \`input\` from java\.nio\.channels\.ReadableByteChannel\.
+\`new\` makes an \`input\` from java.nio.channels.ReadableByteChannel.
 
 Config methods\:
 
-\• C\.buffer\(\.\.\.\[Max\_buf\_size\]\)
+\• C.buffer\(\.\.\.\[Max_buf_size\]\)
 
-\• C\.close\_method\_handle\(Close\_mh\)\: default \= ReadableByteChannel\:\:close
+\• C.close_method_handle\(Close_mh\)\: default \= ReadableByteChannel\:\:close
 
 .. rubric:: Buffering
 
-If C\.buffer is called\, the result \`input\` performs userspace buffering\. If \`Max\_buf\_size\` is given\, the buffer size does not exceed \`Max\_buf\_size\` in byte length\.
+If C.buffer is called, the result \`input\` performs userspace buffering. If \`Max_buf_size\` is given, the buffer size does not exceed \`Max_buf_size\` in byte length.
 
-If C\.buffer is not called\, the result \`input\` does not perform userspace buffering\.
+If C.buffer is not called, the result \`input\` does not perform userspace buffering.
 
 .. rubric:: Closing of the input
 
-When \`close\` method of the result \`input\` is called\, \`Close\_mh\` is invoked with \`Channel\` as the argument\.
+When \`close\` method of the result \`input\` is called, \`Close_mh\` is invoked with \`Channel\` as the argument.
 
-If \`Close\_mh\` throws an IOException during its invocation\, \`close\` ends with an IO error\.
+If \`Close_mh\` throws an IOException during its invocation, \`close\` ends with an IO error.
 
 .. rubric:: Preconditions
 
-\`Channel\` must be a \`java\` value whose objectReference is a ReadableByteChannel\. The objectReference must also be an instance of the parameter type of \`Close\_mh\`\.
+\`Channel\` must be a \`java\` value whose objectReference is a ReadableByteChannel. The objectReference must also be an instance of the parameter type of \`Close_mh\`\.
 
-\`Max\_buf\_size\` must be a positive int num\.
+\`Max_buf_size\` must be a positive int \`num\`\.
 
-\`Close\_mh\` must be a \`java\` value of a MethodHandle\, which takes a single parameter\.
+\`Close_mh\` must be a \`java\` value of a MethodHandle, which takes a single parameter.
 
-Invocation of \`Close\_mh\` must throw an IOException when an IO error occurs\.
+Invocation of \`Close_mh\` must throw an IOException when an IO error occurs.
 

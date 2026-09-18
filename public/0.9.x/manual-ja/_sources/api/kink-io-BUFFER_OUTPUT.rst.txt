@@ -1,6 +1,6 @@
-========================
-kink\/io\/BUFFER\_OUTPUT
-========================
+=======================
+kink\/io\/BUFFER_OUTPUT
+=======================
 
 .. contents::
     :local:
@@ -8,18 +8,18 @@ kink\/io\/BUFFER\_OUTPUT
 
 .. _api-bf80c4f15b812d98a97ecf406a80561f:
 
-BUFFER\_OUTPUT\.new\(Wrapped\_output \.\.\.\[Max\_buf\_size\]\)
-===============================================================
+BUFFER_OUTPUT.new\(Wrapped_output \.\.\.\[Max_buf_size\]\)
+==========================================================
 
-\`new\` returns an \`output\` which does userspace buffering\.
+\`new\` returns an \`output\` which does userspace buffering.
 
-Bytes written to the result output will be eventually written to \`Wrapped\_output\` after buffering\.
+Bytes written to the result output will be eventually written to \`Wrapped_output\` after buffering.
 
-\`Max\_buf\_size\` is used as the preferred buffer size\. The actual buffer size will not exceed \`Max\_buf\_size\`\. If not specified\, a default size will be used\.
+\`Max_buf_size\` is used as the preferred buffer size. The actual buffer size will not exceed \`Max_buf_size\`\. If not specified, a default size will be used.
 
 .. rubric:: Preconditions
 
-\`Wrapped\_output\` must be an \`output\` val\.
+\`Wrapped_output\` must be an \`output\` val.
 
-\`Max\_buf\_size\` must be an int num \>\=1\.
+\`Max_buf_size\` must be an int num \>\=1.
 

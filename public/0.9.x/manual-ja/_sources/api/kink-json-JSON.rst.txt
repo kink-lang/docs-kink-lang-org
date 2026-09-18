@@ -2,11 +2,11 @@
 kink\/json\/JSON
 ================
 
-Converts between JSON strings and JSON values\. See kink\/json\/JSON\_VAL module for JSON values\.
+Converts between JSON strings and JSON values. See kink\/json\/JSON_VAL module for JSON values.
 
 This module supports JSON specified in \[RFC 8259\]\.
 
-\[RFC 8259\] https\:\/\/tools\.ietf\.org\/html\/rfc8259
+\[RFC 8259\] https\:\/\/tools.ietf.org\/html\/rfc8259
 
 .. contents::
     :local:
@@ -14,28 +14,29 @@ This module supports JSON specified in \[RFC 8259\]\.
 
 .. _api-0f95a6404e8aa3e0ba07f36f8bbbfe42:
 
-JSON\.parse\(Json \.\.\.\[\$config\=\{\}\]\)
-============================================
+JSON.parse\(Json \.\.\.\[$config\=\{\}\]\)
+==========================================
 
 \`parse\` decodes a JSON value from a \`str\` value \`Json\`\.
 
 Config methods\:
 
-\• C\.allow\_unpaired\_surrogates
+\• C.allow_unpaired_surrogates
 
-\• C\.on\_success\(\$success\)\: default \= VAL\$identity
+\• C.on_success\($success\)\: default \= VAL$identity
 
-\• C\.on\_error\(\$error\)\: default \= a function which raises an exception
+\• C.on_error\($error\)\: default \= a function which raises an exception
 
-If \`Json\` is a valid JSON string\, \`parse\` tail\-calls \$success with the decoded JSON value\.
+If \`Json\` is a valid JSON string, \`parse\` tail\-calls $success with the decoded JSON value.
 
-If \`Json\` is not a valid JSON string\, \`parse\` tail\-calls \$error with \(Msg\, Pos\)\, where \`Msg\` is a \`str\` value of the error message\, and \`Pos\` is the position index in \`Json\` where the error is detected\.
+If \`Json\` is not a valid JSON string, \`parse\` tail\-calls $error with \(Msg, Pos\)\, where \`Msg\` is a \`str\` value of the error message, and \`Pos\` is the position index in \`Json\` where the error is detected.
 
 .. rubric:: Scale of a number
 
-The scale of a number in the result JSON value is normalized to the minimum non\-negative number which can represent the number in the JSON\. Example\:
+The scale of a number in the result JSON value is normalized to the minimum non\-negative number which can represent the number in the JSON. Example\:
 
 .. code:: kink
+    :class: no-search
 
     :JSON.require_from('kink/json/')
         
@@ -44,21 +45,22 @@ The scale of a number in the result JSON value is normalized to the minimum non\
 
 .. rubric:: Unpaired surrogate code points
 
-By default\, \`parse\` treats an unpaired surrogate code point in object member names and string values as an error\. If such a code point is found\, \`parse\` tail\-calls \$error\.
+By default, \`parse\` treats an unpaired surrogate code point in object member names and string values as an error. If such a code point is found, \`parse\` tail\-calls $error.
 
-If C\.allow\_unpaired\_surrogates is called\, \`parse\` allows unpaired surrogate code points\. The constrcuted JSON value is dependent on the runtime\. The code point might be removed\, or might remain in the \`str\` value\.
+If C.allow_unpaired_surrogates is called, \`parse\` allows unpaired surrogate code points. The constrcuted JSON value is dependent on the runtime. The code point might be removed, or might remain in the \`str\` value.
 
 .. rubric:: Preconditions
 
-\`Json\` must be a \`str\` value\.
+\`Json\` must be a \`str\` value.
 
-\$success must be a function which takes a JSON value\.
+$success must be a function which takes a JSON value.
 
-\$error must be a function which takes \(Msg\, Pos\)\, where \`Msg\` is a \`str\` value\, and \`Pos\` is an integer \`num\` value\.
+$error must be a function which takes \(Msg, Pos\)\, where \`Msg\` is a \`str\` value, and \`Pos\` is an integer \`num\` value.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JSON.require_from('kink/json/')
         
@@ -84,42 +86,43 @@ If C\.allow\_unpaired\_surrogates is called\, \`parse\` allows unpaired surrogat
 
 .. _api-39f69c0820a41596644a8568bbc574af:
 
-JSON\.stringify\(Json\_val \.\.\.\[\$config\=\{\}\]\)
-=====================================================
+JSON.stringify\(Json_val \.\.\.\[$config\=\{\}\]\)
+==================================================
 
-\`stringify\` converts \`Json\_val\` to a \`str\` value of JSON\.
+\`stringify\` converts \`Json_val\` to a \`str\` value of JSON.
 
 Config methods\:
 
-\• C\.pretty\(\.\.\.\[Indent \= two white spaces\]\)\: turns on pretty\-print mode\.
+\• C.pretty\(\.\.\.\[Indent \= two white spaces\]\)\: turns on pretty\-print mode.
 
-\• C\.after\_colon\(After\_colon\)\: default \= a whitespace in pretry\-print mode\, an empty \`str\` otherwise\.
+\• C.after_colon\(After_colon\)\: default \= a whitespace in pretry\-print mode, an empty \`str\` otherwise.
 
-\• C\.after\_comma\(After\_comma\)\: default \= an empty \`str\`\.
+\• C.after_comma\(After_comma\)\: default \= an empty \`str\`\.
 
 .. rubric:: Format
 
-If pretty\-print mode is not turned on\, the result JSON is formatted in a single line\.
+If pretty\-print mode is not turned on, the result JSON is formatted in a single line.
 
-If pretty\-print mode is turned on\, a line feed is inserted for each entry of objects or arrays\. Entries are indented by \`Indent\` for each nest\.
+If pretty\-print mode is turned on, a line feed is inserted for each entry of objects or arrays. Entries are indented by \`Indent\` for each nest.
 
-After the colon \`\:\` of each entry of objects\, \`After\_colon\` is inserted\.
+After the colon \`\:\` of each entry of objects, \`After_colon\` is inserted.
 
-If not in pretty\-print mode\, after the comma \`\,\` of each entry of objects or arrays\, \`After\_comma\` is inserted\.
+If not in pretty\-print mode, after the comma \`\,\` of each entry of objects or arrays, \`After_comma\` is inserted.
 
 .. rubric:: Preconditions
 
-\`Json\_val\` must be a JSON value\.
+\`Json_val\` must be a JSON value.
 
-\`Indent\` must be a \`str\` value which contains only white spaces and tabs\.
+\`Indent\` must be a \`str\` value which contains only white spaces and tabs.
 
-\`After\_colon\` must be a \`str\` value which contains only white spaces and tabs\.
+\`After_colon\` must be a \`str\` value which contains only white spaces and tabs.
 
-\`After\_comma\` must be a \`str\` value which contains only white spaces and tabs\.
+\`After_comma\` must be a \`str\` value which contains only white spaces and tabs.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :JSON.require_from('kink/json/')
     :FLAT_MAP.require_from('kink/container/')

@@ -1,8 +1,8 @@
-========================
-kink\/param\/REST\_PARAM
-========================
+=======================
+kink\/param\/REST_PARAM
+=======================
 
-Provides rest\_param data type\.
+Provides rest_param data type.
 
 .. contents::
     :local:
@@ -10,37 +10,38 @@ Provides rest\_param data type\.
 
 .. _api-9f89a49ebeb96be8b8e6e9416354c61d:
 
-type rest\_param
-================
+type rest_param
+===============
 
-A rest\_param is a param which consumes an arbitrary number of arguments\.
+A rest_param is a param which consumes an arbitrary number of arguments.
 
-See Vec\.op\_store for handling of params\.
+See Vec.op_store for handling of params.
 
-Usually\, a rest\_param is provided by Varref\.rest method\.
+Usually, a rest_param is provided by Varref.rest method.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     [:A :B :R.rest] <- [1 2 3 4 5]
     stdout.print_line(R.repr) # => [3 4 5]
 
 .. _api-f5d2a86d34e227301f94f021d3639802:
 
-Rest\_param\.pass\_rest\(Rest\_args\)
--------------------------------------
+Rest_param.pass_rest\(Rest_args\)
+---------------------------------
 
-Rest\_param\.pass\_rest consumes Rest\_args as an arbitrary number of arguments\.
+Rest_param.pass_rest consumes Rest_args as an arbitrary number of arguments.
 
 Precondition\:
 
-\• Rest\_args must be a vec
+\• Rest_args must be a vec
 
 .. _api-5ac8400004e38d9575c9c111ad9b03d1:
 
-REST\_PARAM\.is\?\(Val\)
-========================
+REST_PARAM.is?\(Val\)
+=====================
 
-REST\_PARAM\.is\? returns whether the Val is a rest\_param\.
+REST_PARAM.is? returns whether the Val is a rest_param.
 

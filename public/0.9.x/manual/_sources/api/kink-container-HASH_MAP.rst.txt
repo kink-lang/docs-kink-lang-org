@@ -1,10 +1,10 @@
-==========================
-kink\/container\/HASH\_MAP
-==========================
+=========================
+kink\/container\/HASH_MAP
+=========================
 
-Provides a \`map\` implementation which stores keys in a hash table\.
+Provides a \`map\` implementation which stores keys in a hash table.
 
-If keys can be passed from the public\, ensure that the distribution of the hash is not predictable\, in order to prevent DDoS attacks\. You might need to use a cryptograghic hash function and perform key extension by crypto\-random data\.
+If keys can be passed from the public, ensure that the distribution of the hash is not predictable, in order to prevent DDoS attacks. You might need to use a cryptograghic hash function and perform key extension by crypto\-random data.
 
 .. contents::
     :local:
@@ -12,34 +12,35 @@ If keys can be passed from the public\, ensure that the distribution of the hash
 
 .. _api-b00095904db421301fa7656c6a49d32b:
 
-HASH\_MAP\.new\(\$hash \.\.\.\[\$config\=\{\}\]\)
-=================================================
+HASH_MAP.new\($hash \.\.\.\[$config\=\{\}\]\)
+=============================================
 
 \`new\` returns a new empty hash \`map\`\.
 
 Config method\:
 
-\• C\.eq\(\$equivalent\_to\?\)\: default \= \{\(\:X \:Y\) X \=\= Y \}
+\• C.eq\($equivalent_to?\)\: default \= \{\(\:X \:Y\) X \=\= Y \}
 
 .. rubric:: Equivalence relation of keys
 
-\$equivalent\_to\? must be a function which takes two args X and Y\. \`equivalent\_to\?\(X Y\)\` must return the bool value of \`X equivalent\-to Y\`\, where \`equivalent\-to\` is the equivalence relation of keys\.
+$equivalent_to? must be a function which takes two args X and Y. \`equivalent_to?\(X Y\)\` must return the bool value of \`X equivalent\-to Y\`\, where \`equivalent\-to\` is the equivalence relation of keys.
 
 .. rubric:: Hash
 
-\$hash must satisfy the following for all X and Y in the domain of keys\.
+$hash must satisfy the following for all X and Y in the domain of keys.
 
-\• if equivalent\_to\?\(X Y\) then hash\(X\) \=\= hash\(Y\)
+\• if equivalent_to?\(X Y\) then hash\(X\) \=\= hash\(Y\)
 
 .. rubric:: Preconditions
 
-\$hash must be a fun which takes a key\, and returns an integer \`num\`\.
+$hash must be a fun which takes a key, and returns an integer \`num\`\.
 
-\$equivalent\_to\? must be a fun which takes two keys\, and returns a \`bool\`\.
+$equivalent_to? must be a fun which takes two keys, and returns a \`bool\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :HASH_MAP.require_from('kink/container/')
     :VAL.require_from('kink/')

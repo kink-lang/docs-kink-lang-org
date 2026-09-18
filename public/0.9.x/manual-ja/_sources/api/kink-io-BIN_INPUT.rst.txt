@@ -1,6 +1,6 @@
-====================
-kink\/io\/BIN\_INPUT
-====================
+===================
+kink\/io\/BIN_INPUT
+===================
 
 Provides \`input\` implementation which extracts bytes from \`bin\`\.
 
@@ -10,12 +10,12 @@ Provides \`input\` implementation which extracts bytes from \`bin\`\.
 
 .. _api-18b8ede1d533cb7e68eea03e112dc946:
 
-BIN\_INPUT\.new\(Bin\)
-======================
+BIN_INPUT.new\(Bin\)
+====================
 
 \`new\` returns an \`input\` which extracts bytes from \`Bin\`\.
 
-If the \`input\` is closed\, read operation causes an IO error\, like other implementations based on system resources\.
+If the \`input\` is closed, read operation causes an IO error, like other implementations based on system resources.
 
 .. rubric:: Precondition
 
@@ -24,6 +24,7 @@ If the \`input\` is closed\, read operation causes an IO error\, like other impl
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :BIN.require_from('kink/')
     :CONTROL.require_from('kink/')

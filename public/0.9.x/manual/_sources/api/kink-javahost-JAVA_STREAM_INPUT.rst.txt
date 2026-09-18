@@ -1,6 +1,6 @@
-===================================
-kink\/javahost\/JAVA\_STREAM\_INPUT
-===================================
+=================================
+kink\/javahost\/JAVA_STREAM_INPUT
+=================================
 
 .. contents::
     :local:
@@ -8,20 +8,23 @@ kink\/javahost\/JAVA\_STREAM\_INPUT
 
 .. _api-d9c7f2a5801f701f38d21168079534e7:
 
-JAVA\_STREAM\_INPUT\.new\(Stream\)
-==================================
+JAVA_STREAM_INPUT.new\(Stream\)
+===============================
 
-\`new\` makes an \`input\` val which wraps a Java InputStream object specified by \`Stream\` arg\.
+\`new\` returns an \`input\` value which wraps a Java InputStream object.
 
-Preconditions\:
+See kink\/io\/INPUT for \`input\` type.
 
-\• \`Stream\` must be a java val\.
+.. rubric:: Preconditions
 
-\• The object reference of \`Stream\` must be an instance of java\.io\.InputStream\.
+\`Stream\` must be a \`java\` value.
 
-Example\:
+The object reference of \`Stream\` must be an instance of java.io.InputStream.
+
+.. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :BIN.require_from('kink/')
     :CONTROL.require_from('kink/')
@@ -36,6 +39,4 @@ Example\:
       :Bin = In.read_all
       stdout.print_line(Bin.repr) # => (bin 0x01 0x02 0x03)
     }
-
-See kink\/io\/INPUT for \`input\` type\.
 

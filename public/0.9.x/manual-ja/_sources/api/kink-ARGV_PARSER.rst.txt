@@ -1,12 +1,13 @@
-==================
-kink\/ARGV\_PARSER
-==================
+=================
+kink\/ARGV_PARSER
+=================
 
-Parses command line arguments\, org argv\, into option switches\, option arguments\, and non\-option elements\. Parsing is done in the style of glibc getopt\_long\.
+Parses command line arguments, org argv, into option switches, option arguments, and non\-option elements. Parsing is done in the style of glibc getopt_long.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     # filename: voxxx.kn
         
@@ -52,111 +53,111 @@ Parses command line arguments\, org argv\, into option switches\, option argumen
 
 There are two types of option switches\:
 
-\• short switch\: consists of leading \`\-\` and one other code point\, excluding \`\-\-\`\. Ex\. \`\-h\`
+\• short switch\: consists of leading \`\-\` and one other code point, excluding \`\-\-\`\. Ex. \`\-h\`
 
-\• long switch\: consists of leading \`\-\-\` and one or more code points\. The switch must not include \`\=\`\. Ex\. \`\-\-help\`
+\• long switch\: consists of leading \`\-\-\` and one or more code points. The switch must not include \`\=\`\. Ex. \`\-\-help\`
 
-Each option switch can be grouped to three categories depending on how it takes an argument\.
+Each option switch can be grouped to three categories depending on how it takes an argument.
 
-\• req\_arg\: takes one option argument
+\• req_arg\: takes one option argument
 
-\• opt\_arg\: takes zero or one option argument
+\• opt_arg\: takes zero or one option argument
 
-\• no\_arg\: takes no option argument
+\• no_arg\: takes no option argument
 
-An argv element consisting of two hyphens \`\-\-\` is not an option switch\, but can be used as a separator between options and non\-option elements\.
+An argv element consisting of two hyphens \`\-\-\` is not an option switch, but can be used as a separator between options and non\-option elements.
 
-.. rubric:: Short req\_arg option switch
+.. rubric:: Short req_arg option switch
 
-Assume a short req\_arg switch \`\-p\` is defined\. This option switch can be used in the following ways\.
+Assume a short req_arg switch \`\-p\` is defined. This option switch can be used in the following ways.
 
 \• \-pkink\/ → option argument \= \`kink\/\`
 
 \• \-p kink\/ → option argument \= \`kink\/\`
 
-.. rubric:: Long req\_arg option switch
+.. rubric:: Long req_arg option switch
 
-Assuem a long req\_arg switch \`\-\-prefix\` is defined\. This option switch can be used in the following ways\.
+Assuem a long req_arg switch \`\-\-prefix\` is defined. This option switch can be used in the following ways.
 
 \• \-\-prefix\=kink\/ → option argument \= \`kink\/\`
 
 \• \-\-prefix kink\/ → option argument \= \`kink\/\`
 
-The option switch can be abbreviated like \`\-\-pat\`\, \`\-\-pa\`\, or \`\-\-p\`\, if it is not ambiguous\. See the later section for details\.
+The option switch can be abbreviated like \`\-\-pat\`\, \`\-\-pa\`\, or \`\-\-p\`\, if it is not ambiguous. See the later section for details.
 
-.. rubric:: Short opt\_arg option switch
+.. rubric:: Short opt_arg option switch
 
-Assume a short opt\_arg switch \`\-b\` is defined\. This option switch can be used in the following ways\.
+Assume a short opt_arg switch \`\-b\` is defined. This option switch can be used in the following ways.
 
 \• \-b4096 → option argument \= \`4096\`
 
 \• \-b → option argument \= an empty string \`\`
 
-.. rubric:: Long opt\_arg option switch
+.. rubric:: Long opt_arg option switch
 
-Assume a long opt\_arg switch \`\-\-buffer\` is defined\. This option switch can be used in the following ways\.
+Assume a long opt_arg switch \`\-\-buffer\` is defined. This option switch can be used in the following ways.
 
 \• \-\-buffer\=4096 → option argument \= \`4096\`
 
 \• \-\-buffer → option argument \= an empty string \`\`
 
-.. rubric:: Short no\_arg option switch
+.. rubric:: Short no_arg option switch
 
-Assume a short no\_arg switch \`\-h\` is defined\. This option switch can be used in the following way\.
+Assume a short no_arg switch \`\-h\` is defined. This option switch can be used in the following way.
 
 \• \-h
 
-When there is one or more code points after the option switch\, the following code points are handled as separate options\. For example\, if no\_arg option switches \`\-x\` and \`\-z\` are defined\, and a req\_arg switch \`\-f\` is defined\, argv \`\-xzf\.\/archive\.tgz\` is parsed as follows\:
+When there is one or more code points after the option switch, the following code points are handled as separate options. For example, if no_arg option switches \`\-x\` and \`\-z\` are defined, and a req_arg switch \`\-f\` is defined, argv \`\-xzf.\/archive.tgz\` is parsed as follows\:
 
 \• \-x with no option argument
 
 \• \-z with no option argument
 
-\• \-f with option argument \`\.\/archive\.tgz\`
+\• \-f with option argument \`\.\/archive.tgz\`
 
-.. rubric:: Long no\_arg option switch
+.. rubric:: Long no_arg option switch
 
-Assume a long no\_arg switch \`\-\-help\` is defined\. This option switch can be used in the following way\.
+Assume a long no_arg switch \`\-\-help\` is defined. This option switch can be used in the following way.
 
 \• \-\-help
 
 .. rubric:: Abbreviation of long option switches
 
-A long option switch can be abbreviated to its prefix when it is not ambiguous\. For example\, if long options switches \`\-\-verbose\` and \`\-\-version\` are defined\, they can be abbreviated as follows\:
+A long option switch can be abbreviated to its prefix when it is not ambiguous. For example, if long options switches \`\-\-verbose\` and \`\-\-version\` are defined, they can be abbreviated as follows\:
 
-\• \-\-verbose\: \-\-verbos\, \-\-verbo\, \-\-verb
+\• \-\-verbose\: \-\-verbos, \-\-verbo, \-\-verb
 
-\• \-\-version\: \-\-versio\, \-\-versi\, \-\-vers
+\• \-\-version\: \-\-versio, \-\-versi, \-\-vers
 
-The exact match always takes precedence over abbreviation\. For example\, if long option switches \`\-\-time\` and \`\-\-time\-style\` are defined\, argv \`\-\-time\` is parsed as the option switch \`\-\-time\`\, rather than abbreviation of \`\-\-time\-style\`\.
+The exact match always takes precedence over abbreviation. For example, if long option switches \`\-\-time\` and \`\-\-time\-style\` are defined, argv \`\-\-time\` is parsed as the option switch \`\-\-time\`\, rather than abbreviation of \`\-\-time\-style\`\.
 
 .. rubric:: Non\-option elements
 
-Argv elements which are neither option switches\, option arguments\, nor separator \`\-\-\` are non\-option elements\.
+Argv elements which are neither option switches, option arguments, nor separator \`\-\-\` are non\-option elements.
 
-Two hyphens \`\-\-\` can be used to separate between options and non\-option elements\. For example\, if no\_arg switches \`\-x\`\, \`\-y\`\, and \`\-z\` are defined\, argv \`\-x \-y \-\- \-z a b c\` is parsed as follows\:
+Two hyphens \`\-\-\` can be used to separate between options and non\-option elements. For example, if no_arg switches \`\-x\`\, \`\-y\`\, and \`\-z\` are defined, argv \`\-x \-y \-\- \-z a b c\` is parsed as follows\:
 
-\• options\: \-x\, \-y
+\• options\: \-x, \-y
 
-\• non\-option elements\: \-z\, a\, b\, c
+\• non\-option elements\: \-z, a, b, c
 
-If strict\_order mode is not specified\, options can appear after non\-option elements\. For example\, if no\_arg switches \`\-x\`\, \`\-y\`\, and \`\-z\` are defined\, argv \`\-x a b c \-y \-z\` is parsed as follows\:
+If strict_order mode is not specified, options can appear after non\-option elements. For example, if no_arg switches \`\-x\`\, \`\-y\`\, and \`\-z\` are defined, argv \`\-x a b c \-y \-z\` is parsed as follows\:
 
-\• options\: \-x\, \-y\, \-z
+\• options\: \-x, \-y, \-z
 
 \• non\-option elements\: a b c
 
-If strict\_order mode is turned on\, all the elements after the first non\-option element are parsed as non\-option elements\. This corresponds to the behavior of getopt\_long when POSIXLY\_CORRECT is set\. For example\, if no\_arg switches \`\-x\`\, \`\-y\`\, and \`\-z\` are defined\, argv \`\-x a b c \-y \-z\` is parsed as follows\:
+If strict_order mode is turned on, all the elements after the first non\-option element are parsed as non\-option elements. This corresponds to the behavior of getopt_long when POSIXLY_CORRECT is set. For example, if no_arg switches \`\-x\`\, \`\-y\`\, and \`\-z\` are defined, argv \`\-x a b c \-y \-z\` is parsed as follows\:
 
 \• option\: \-x
 
-\• non\-option elements\: a\, b\, c\, \-y\, \-z
+\• non\-option elements\: a, b, c, \-y, \-z
 
-.. rubric:: Difference from getopt\_long
+.. rubric:: Difference from getopt_long
 
-1\. getopt\_long assumes argv\[0\] is the name of the program\, while ARGV\_PARSER handles the arguments after the program name\.
+1. getopt_long assumes argv\[0\] is the name of the program, while ARGV_PARSER handles the arguments after the program name.
 
-2\. getopt\_long has a feature to handle \`\-W foo\` as \`\-\-foo\`\, while ARGV\_PARSER has no such feature\.
+2. getopt_long has a feature to handle \`\-W foo\` as \`\-\-foo\`\, while ARGV_PARSER has no such feature.
 
 .. contents::
     :local:
@@ -164,117 +165,117 @@ If strict\_order mode is turned on\, all the elements after the first non\-optio
 
 .. _api-20d0e30dbbaaae728610db868b43648d:
 
-ARGV\_PARSER\.parse\(Argv \.\.\.\[\$config\=\{\}\]\)
-====================================================
+ARGV_PARSER.parse\(Argv \.\.\.\[$config\=\{\}\]\)
+=================================================
 
-\`parse\` method parses \`Argv\` into options and non\-option elements\, as configured by \$config\.
+\`parse\` method parses \`Argv\` into options and non\-option elements, as configured by $config.
 
-If the parsing completes without an error\, \`parse\` tail\-calls the success continuation \(see C\.on\_success\) with a \`vec\` of \`str\` values of non\-option elements\.
+If the parsing completes without an error, \`parse\` tail\-calls the success continuation \(see C.on_success\) with a \`vec\` of \`str\` values of non\-option elements.
 
-If the parsing results in an error\, \`parse\` tail\-calls the error continuation \(see C\.on\_error\) with a \`str\` value of the error message\.
+If the parsing results in an error, \`parse\` tail\-calls the error continuation \(see C.on_error\) with a \`str\` value of the error message.
 
 .. rubric:: Precondition
 
-\`Argv\` must be a \`vec\` of \`str\` values\.
+\`Argv\` must be a \`vec\` of \`str\` values.
 
-\$config must be a function which takes a \`argv\_parser\_config\`\.
+$config must be a function which takes a \`argv_parser_config\`\.
 
 .. _api-2cae8c47c6649b93b070149bd6c0cf8d:
 
-type argv\_parser\_config
-=========================
+type argv_parser_config
+=======================
 
-\`argv\_parser\_config\` is a config value of ARGV\_PARSER\.parse\.
+\`argv_parser_config\` is a config value of ARGV_PARSER.parse.
 
 .. _api-227bf9a432eef45f2333d28d16867dc0:
 
-C\.req\_arg\(Switches \$action\)
---------------------------------
+C.req_arg\(Switches $action\)
+-----------------------------
 
-\`req\_arg\` method defines req\_arg option switches in \`Switches\`\.
+\`req_arg\` method defines req_arg option switches in \`Switches\`\.
 
-When an option switch in \`Switches\` is parsed\, \$action is called with a \`str\` value of the corresponding option argument\.
+When an option switch in \`Switches\` is parsed, $action is called with a \`str\` value of the corresponding option argument.
 
 .. rubric:: Preconditions
 
-\`Switches\` must be a \`vec\` of \`str\` values which are long or short option switches\.
+\`Switches\` must be a \`vec\` of \`str\` values which are long or short option switches.
 
-\`Switches\` must not be empty\.
+\`Switches\` must not be empty.
 
-Option switches must be unique within an invocation of ARGV\_PARSER\.parse\.
+Option switches must be unique within an invocation of ARGV_PARSER.parse.
 
-\$action must be a function which takes a \`str\`\.
+$action must be a function which takes a \`str\`\.
 
 .. _api-836c06a611d1b1376f669c40248501bc:
 
-C\.opt\_arg\(Switches \$action\)
---------------------------------
+C.opt_arg\(Switches $action\)
+-----------------------------
 
-\`opt\_arg\` method defines opt\_arg option switches in \`Switches\`\.
+\`opt_arg\` method defines opt_arg option switches in \`Switches\`\.
 
-When an option switch in \`Switches\` is parsed\, \$action is called with a \`str\` value of the corresponding option argument\. If the option argument is omitted\, an empty \`str\` is passed to \$action\.
+When an option switch in \`Switches\` is parsed, $action is called with a \`str\` value of the corresponding option argument. If the option argument is omitted, an empty \`str\` is passed to $action.
 
 .. rubric:: Preconditions
 
-\`Switches\` must be a \`vec\` of \`str\` values which are long or short option switches\.
+\`Switches\` must be a \`vec\` of \`str\` values which are long or short option switches.
 
-\`Switches\` must not be empty\.
+\`Switches\` must not be empty.
 
-Option switches must be unique within an invocation of ARGV\_PARSER\.parse\.
+Option switches must be unique within an invocation of ARGV_PARSER.parse.
 
-\$action must be a function which takes a \`str\`\.
+$action must be a function which takes a \`str\`\.
 
 .. _api-43ae6ee9196db0ced6256f52466eaddd:
 
-C\.no\_arg\(Switches \$action\)
--------------------------------
+C.no_arg\(Switches $action\)
+----------------------------
 
-\`no\_arg\` method defines no\_arg option switches in \`Switches\`\.
+\`no_arg\` method defines no_arg option switches in \`Switches\`\.
 
-When an option switch in \`Switches\` is parsed\, \$action is called with no arg\.
+When an option switch in \`Switches\` is parsed, $action is called with no arg.
 
 .. rubric:: Preconditions
 
-\`Switches\` must be a \`vec\` of \`str\` values which are long or short option switches\.
+\`Switches\` must be a \`vec\` of \`str\` values which are long or short option switches.
 
-\`Switches\` must not be empty\.
+\`Switches\` must not be empty.
 
-Option switches must be unique within an invocation of ARGV\_PARSER\.parse\.
+Option switches must be unique within an invocation of ARGV_PARSER.parse.
 
-\$action must be a thunk\.
+$action must be a thunk.
 
 .. _api-e39164e62f7378d5b585a97fef1e9857:
 
-C\.strict\_order
-----------------
+C.strict_order
+--------------
 
-\`strict\_order\` method specifies that parsing is done in strict\_order mode\.
+\`strict_order\` method specifies that parsing is done in strict_order mode.
 
-This corresponds to setting POSIXLY\_CORRECT to getopt\_long\.
+This corresponds to setting POSIXLY_CORRECT to getopt_long.
 
 .. _api-b0cbfcb6ef3684da17be394777e92ed5:
 
-C\.on\_success\(\$success\)
----------------------------
+C.on_success\($success\)
+------------------------
 
-\`on\_success\` specifies that \$success be used as the success continuation of ARGV\_PARSER\.parse\.
+\`on_success\` specifies that $success be used as the success continuation of ARGV_PARSER.parse.
 
-If \`on\_success\` is not called\, VAL\.identity is used as the default\.
+If \`on_success\` is not called, VAL.identity is used as the default.
 
 .. rubric:: Precondition
 
-\$success must be a function which takes a \`vec\` of \`str\` values\, which are non\-option elements of argv\.
+$success must be a function which takes a \`vec\` of \`str\` values, which are non\-option elements of argv.
 
 .. _api-ce6e55d012d2d3ab8944d1cacf50e1c0:
 
-C\.on\_error\(\$error\)
------------------------
+C.on_error\($error\)
+--------------------
 
-\`on\_error\` specifies that \$error be used as the error continuation of ARGV\_PARSER\.parse\.
+\`on_error\` specifies that $error be used as the error continuation of ARGV_PARSER.parse.
 
-If \`on\_error\` is not called\, \`raise\` is used as the default\.
+If \`on_error\` is not called, \`raise\` is used as the default.
 
 .. rubric:: Precondition
 
-\$error must be a function which takes a \`str\` value\, which is an error message\.
+$error must be a function which takes a \`str\` value, which is an error message.
 

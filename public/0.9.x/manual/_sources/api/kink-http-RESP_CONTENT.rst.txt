@@ -1,6 +1,6 @@
-=========================
-kink\/http\/RESP\_CONTENT
-=========================
+========================
+kink\/http\/RESP_CONTENT
+========================
 
 .. contents::
     :local:
@@ -8,125 +8,125 @@ kink\/http\/RESP\_CONTENT
 
 .. _api-3a22805c45b6a83229c2f66b508b3ae1:
 
-type resp\_content
-==================
+type resp_content
+=================
 
-\`resp\_content\` is a HTTP response content\.
+\`resp_content\` is a HTTP response content.
 
-A \`resp\_content\` contains the following properties\.
+A \`resp_content\` contains the following attributes.
 
-\• input\: An \`input\` value which reads bytes of the response content\.
+\• input\: An \`input\` value which reads bytes of the response content.
 
-\• media\_type\: The \`media\_type\` value of the response content\.
+\• media_type\: The \`media_type\` value of the response content.
 
-\• bin \(optional\)\: A \`bin\` value of the bytes of the response content\. If this property is given\, the value is equal to bytes read from the \`input\` property\.
+\• bin \(optional\)\: A \`bin\` value of the bytes of the response content. If this attribute is given, the value is equal to bytes read from the \`input\` attribute.
 
 .. _api-4ff3f50052d4b7bffccc6d5d8c612c95:
 
-Rsc\.input
-----------
+Rsc.input
+---------
 
-\`input\` method returns the \`input\` property\.
+\`input\` method returns the \`input\` attribute.
 
 .. _api-2ecd7e3fb0bbf21e66c48c594f64aefe:
 
-Rsc\.media\_type
-----------------
+Rsc.media_type
+--------------
 
-\`media\_type\` method returns the \`media\_type\` property\.
+\`media_type\` method returns the \`media_type\` attribute.
 
 .. _api-e2a0b7422177b7a98756b5d14cded0e0:
 
-Rsc\.have\_bin\?
-----------------
+Rsc.have_bin?
+-------------
 
-\`have\_bin\?\` returns whether \`Rsc\` has \`bin\` property\.
+\`have_bin?\` returns whether \`Rsc\` has \`bin\` attribute.
 
 .. _api-4516f8b053efd5e890269940676d308c:
 
-Rsc\.bin
---------
+Rsc.bin
+-------
 
-\`bin\` method returns the \`bin\` property\.
+\`bin\` method returns the \`bin\` attribute.
 
 .. rubric:: Precondition
 
-\`Rsc\` must have \`bin\` property\.
+\`Rsc\` must have \`bin\` attribute.
 
 .. _api-9d8da296196d8ef281ebf79534d0a0d1:
 
-Rsc\.text
----------
+Rsc.text
+--------
 
-\`text\` method returns the response content as a \`str\` value\.
+\`text\` method returns the response content as a \`str\` value.
 
-The content is decoded by \`Rsc\.media\_type\.charset\`\. Conversion errors are replaced to replacement characters\.
+The content is decoded by \`Rsc.media_type.charset\`\. Conversion errors are replaced to replacement characters.
 
 .. rubric:: Precondition
 
-\`Rsc\` must have \`bin\` property\.
+\`Rsc\` must have \`bin\` attribute.
 
 .. _api-72e35aa7c5386749a2a0172e195f645c:
 
-Rsc\.close\(\.\.\.\[\$config\=\{\}\]\)
---------------------------------------
+Rsc.close\(\.\.\.\[$config\=\{\}\]\)
+------------------------------------
 
-\`close\` method closes the \`input\` property\.
+\`close\` method closes the \`input\` attribute.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= \{\}
+\• C.on_success\($success\)\: default \= \{\}
 
-\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+\• C.on_error\($error\)\: default \= \{\(\:Exc\) Exc.raise \}
 
-If the \`input\` is successfully closed\, \`close\` tail\-calls \$success with no arg\.
+If the \`input\` is successfully closed, \`close\` tail\-calls $success with no arg.
 
-If the an IO error occurs\, \`close\` tail\-calls \$error with an \`exception\`\.
+If the an IO error occurs, \`close\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Preconditions
 
-\$success must be a thunk\.
+$success must be a thunk.
 
-\$error must be a function which takes an \`exception\`\.
+$error must be a function which takes an \`exception\`\.
 
 .. _api-bb2ca926da3a6735dada5c768026eadf:
 
-RESP\_CONTENT\.from\_bin\(Bin Mt\)
-==================================
+RESP_CONTENT.from_bin\(Bin Mt\)
+===============================
 
-\`from\_bin\` returns a \`resp\_content\` whose bytes is given as a \`bin\` value\.
+\`from_bin\` returns a \`resp_content\` whose bytes is given as a \`bin\` value.
 
-The properties of the result \`resp\_content\` will be \(input\=Bin\_input\, media\_type\=Mt\, bin\=Bin\)\, where \`Bin\_input\` is an \`input\` value which reads the bytes of \`Bin\`\.
+The attributes of the result \`resp_content\` will be \(input\=Bin_input, media_type\=Mt, bin\=Bin\)\, where \`Bin_input\` is an \`input\` value which reads the bytes of \`Bin\`\.
 
-You don\'t need to close the result \`resp\_content\`\.
+You don\'t need to close the result \`resp_content\`\.
 
 .. rubric:: Preconditions
 
-\`Bin\` must be a \`bin\` value\.
+\`Bin\` must be a \`bin\` value.
 
-\`Mt\` must be a \`media\_type\` value\.
+\`Mt\` must be a \`media_type\` value.
 
 .. _api-0efa49e16d0aac9e78eadb4b54a88ec1:
 
-RESP\_CONTENT\.from\_input\(In Mt\)
-===================================
+RESP_CONTENT.from_input\(In Mt\)
+================================
 
-\`from\_input\` returns a \`resp\_content\` made from an \`input\` value\.
+\`from_input\` returns a \`resp_content\` made from an \`input\` value.
 
-The properties of the result \`resp\_content\` will be \(input\=In\, media\_type\=Mt\)\.
+The attributes of the result \`resp_content\` will be \(input\=In, media_type\=Mt\)\.
 
-You need to close the result \`resp\_content\`\.
+You need to close the result \`resp_content\`\.
 
 .. rubric:: Preconditions
 
-\`In\` must be an \`input\` value\.
+\`In\` must be an \`input\` value.
 
-\`Mt\` must be a \`media\_type\` value\.
+\`Mt\` must be a \`media_type\` value.
 
 .. _api-133a026628680ee336013723981cc454:
 
-RESP\_CONTENT\.is\?\(Val\)
-==========================
+RESP_CONTENT.is?\(Val\)
+=======================
 
-\`is\?\` returns whether \`Val\` is a \`resp\_content\`\.
+\`is?\` returns whether \`Val\` is a \`resp_content\`\.
 

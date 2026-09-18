@@ -5,36 +5,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.77. kink/javahost/JAVA_STREAM_OUTPUT &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=6ce99075"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.77. kink/javahost/JAVA_STREAM_OUTPUT &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="6.78. kink/javahost/JAVA_THROW" href="kink-javahost-JAVA_THROW.html" />
     <link rel="prev" title="6.76. kink/javahost/JAVA_STREAM_INPUT" href="kink-javahost-JAVA_STREAM_INPUT.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.77. kink/javahost/JAVA_STREAM_OUTPUT</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-javahost-JAVA_STREAM_INPUT.html"><span class="section-number">6.76. </span>kink/javahost/JAVA_STREAM_INPUT</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-javahost-JAVA_THROW.html"><span class="section-number">6.78. </span>kink/javahost/JAVA_THROW</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. Builtin library API</a></li><li><a class="current" href="#" aria-current="page">6.77. kink/javahost/JAVA_STREAM_OUTPUT</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="../search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-javahost-java-stream-output">
 <h1><span class="section-number">6.77. </span>kink/javahost/JAVA_STREAM_OUTPUT<a class="headerlink" href="#kink-javahost-java-stream-output" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="contents">
@@ -44,12 +33,13 @@
 </nav>
 <section id="java-stream-output-new-stream">
 <span id="api-88ce4afab8ce2e256a08ca3f00105d77"></span><h2><span class="section-number">6.77.1. </span>JAVA_STREAM_OUTPUT.new(Stream)<a class="headerlink" href="#java-stream-output-new-stream" title="Link to this heading">¶</a></h2>
-<p>`new` makes an `output` val which wraps a Java OutputStream object specified by `Stream` arg.</p>
-<p>Preconditions:</p>
-<p>• `Stream` must be a java val</p>
-<p>• The object reference of `Stream` must be an instance of java.io.OutputStream.</p>
-<p>Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
+<p>`new` returns an `output` value which wraps a Java OutputStream object.</p>
+<p>See kink/io/OUTPUT for `output` type.</p>
+<p class="rubric">Preconditions</p>
+<p>`Stream` must be a `java` value.</p>
+<p>The object reference of `Stream` must be an instance of java.io.OutputStream.</p>
+<p class="rubric">Example</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:JAVA</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
 <span class="nv">:JAVA_STREAM_OUTPUT</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/javahost/&#39;</span>)
 <span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 <span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
@@ -70,18 +60,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-javahost-JAVA_STREAM_INPUT.html"><span class="section-number">6.76. </span>kink/javahost/JAVA_STREAM_INPUT</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-javahost-JAVA_THROW.html"><span class="section-number">6.78. </span>kink/javahost/JAVA_THROW</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

@@ -5,36 +5,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.70. kink/iter/IFUN &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=6ce99075"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.70. kink/iter/IFUN &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="6.71. kink/iter/ITER" href="kink-iter-ITER.html" />
     <link rel="prev" title="6.69. kink/io/STR_SCANNER" href="kink-io-STR_SCANNER.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.70. kink/iter/IFUN</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-io-STR_SCANNER.html"><span class="section-number">6.69. </span>kink/io/STR_SCANNER</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-iter-ITER.html"><span class="section-number">6.71. </span>kink/iter/ITER</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. Builtin library API</a></li><li><a class="current" href="#" aria-current="page">6.70. kink/iter/IFUN</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="../search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-iter-ifun">
 <h1><span class="section-number">6.70. </span>kink/iter/IFUN<a class="headerlink" href="#kink-iter-ifun" title="Link to this heading">¶</a></h1>
 <p>Operations of ifuns.</p>
@@ -46,7 +35,7 @@
 <p>$fin is a thunk, which is tail-called when the ifun has no element.</p>
 <p class="rubric">Examples</p>
 <p>In the next program, `make_vec_ifun` makes an ifun which iterates over the elements of `Vec`.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:make_vec_ifun</span> &lt;- {(<span class="nv">:Vec</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:make_vec_ifun</span> &lt;- {(<span class="nv">:Vec</span>)
   {(<span class="nv">:proc</span> <span class="nv">:fin</span>)
     <span class="n">if</span>(<span class="nv">Vec</span>.<span class="n">any?</span>
       { <span class="nv">:Head</span> = <span class="nv">Vec</span>.<span class="n">get</span>(<span class="m">0</span>)
@@ -60,11 +49,11 @@
 </pre></div>
 </div>
 <p>Let's make an `ifun`.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:nums_ifun</span> &lt;- <span class="n">make_vec_ifun</span>([<span class="m">100</span> <span class="m">200</span> <span class="m">300</span>])
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:nums_ifun</span> &lt;- <span class="n">make_vec_ifun</span>([<span class="m">100</span> <span class="m">200</span> <span class="m">300</span>])
 </pre></div>
 </div>
 <p>You can iterate over the elements of $nums_ifun using IFUN.each.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">IFUN</span>.<span class="n">each</span>(
   <span class="nv">$nums_ifun</span>
@@ -77,7 +66,7 @@
 </pre></div>
 </div>
 <p>You can make another ifun mapping the elements.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:doubled_ifun</span> &lt;- <span class="nv">IFUN</span>.<span class="n">map</span>(<span class="nv">$nums_ifun</span> {(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">2</span> })
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:doubled_ifun</span> &lt;- <span class="nv">IFUN</span>.<span class="n">map</span>(<span class="nv">$nums_ifun</span> {(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">2</span> })
 <span class="nv">IFUN</span>.<span class="n">each</span>(
   <span class="nv">$doubled_ifun</span>
   {(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
@@ -89,7 +78,7 @@
 </pre></div>
 </div>
 <p>You can accumulate the elements.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Sum</span> &lt;- <span class="nv">IFUN</span>.<span class="n">fold</span>(<span class="nv">$nums_ifun</span> <span class="m">0</span> {(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> })
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Sum</span> &lt;- <span class="nv">IFUN</span>.<span class="n">fold</span>(<span class="nv">$nums_ifun</span> <span class="m">0</span> {(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> })
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 600</span>
 </pre></div>
 </div>
@@ -121,13 +110,12 @@
 </nav>
 <section id="ifun-each-ifun-consume">
 <span id="api-9f4963ad25e690214de79a6d024d5ad8"></span><h2><span class="section-number">6.70.1. </span>IFUN.each($ifun $consume)<a class="headerlink" href="#ifun-each-ifun-consume" title="Link to this heading">¶</a></h2>
-<p>`each` calls $consume with each element of $ifun, then returns the last result of $consume.</p>
-<p>If $ifun has no elements, `each` returns nada.</p>
+<p>`each` calls $consume for each element of $ifun.</p>
 <p class="rubric">Preconditions</p>
 <p>$ifun must be an ifun.</p>
-<p>$consume must be a fun which takes an arg.</p>
+<p>$consume must be a function which takes an arg.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">IFUN</span>.<span class="n">each</span>(<span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)){(<span class="nv">:E</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>)
@@ -146,7 +134,7 @@
 <p>$ifun must be an ifun.</p>
 <p>$transform must take an arg.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>)
 <span class="nv">:Doubles</span> &lt;- <span class="nv">IFUN</span>.<span class="n">map</span>(<span class="nv">Ns</span>){(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">2</span> }
@@ -168,7 +156,7 @@
 <p>$ifun must be an ifun.</p>
 <p>$to_ifun must take an arg, and returns an ifun.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>)
 <span class="nv">:Mapped</span> &lt;- <span class="nv">IFUN</span>.<span class="n">concat_map</span>(<span class="nv">Ns</span>){(<span class="nv">:N</span>)
@@ -186,7 +174,7 @@
 <p>$ifun must be an ifun.</p>
 <p>$include? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Orig</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span>)
 <span class="nv">:Evens</span> &lt;- <span class="nv">IFUN</span>.<span class="n">filter</span>(<span class="nv">Orig</span>){(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
@@ -209,7 +197,7 @@
 <p>$ifun must be an ifun.</p>
 <p>$counted? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:ifun</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span>)
 <span class="nv">:Count</span> &lt;- <span class="nv">IFUN</span>.<span class="n">count</span>(<span class="nv">$ifun</span>){(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
@@ -226,7 +214,7 @@
 <p>$ifun must be an ifun.</p>
 <p>$combine must take two args.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IFUN</span>.<span class="n">fold</span>(<span class="nv">Ns</span> <span class="m">100</span>){(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; 115</span>
@@ -245,7 +233,7 @@
 <p>$combine must take two args.</p>
 <p>$empty_fallback must be a thunk.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IFUN</span>.<span class="n">reduce</span>(<span class="nv">Ns</span>){(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; 15</span>
@@ -259,7 +247,7 @@
 <p>$ifun must be an ifun.</p>
 <p>`N` must be an int `num`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">IFUN</span>.<span class="n">each</span>(<span class="nv">IFUN</span>.<span class="n">take_front</span>(<span class="m">1</span>.<span class="n">up</span>.<span class="n">ifun</span> <span class="m">5</span>)){(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
@@ -280,7 +268,7 @@
 <p>$ifun must be an ifun.</p>
 <p>`N` must be an int `num`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">IFUN</span>.<span class="n">each</span>(<span class="nv">IFUN</span>.<span class="n">drop_front</span>(<span class="m">10</span>.<span class="n">times</span>.<span class="n">ifun</span> <span class="m">5</span>)){(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
@@ -301,7 +289,7 @@
 <p>$ifun must be an ifun.</p>
 <p>$include? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:ns</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1000</span> <span class="m">500</span> <span class="m">250</span> <span class="m">125</span> <span class="m">62</span> <span class="m">31</span> <span class="m">15</span> <span class="m">7</span> <span class="m">3</span> <span class="m">1</span> <span class="m">0</span>)
 <span class="nv">:front</span> &lt;- <span class="nv">IFUN</span>.<span class="n">take_while</span>(<span class="nv">$ns</span>){(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
@@ -317,7 +305,7 @@
 <p>$ifun must be an ifun.</p>
 <p>$exclude? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:ns</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1000</span> <span class="m">500</span> <span class="m">250</span> <span class="m">125</span> <span class="m">62</span> <span class="m">31</span> <span class="m">15</span> <span class="m">7</span> <span class="m">3</span> <span class="m">1</span> <span class="m">0</span>)
 <span class="nv">:back</span> &lt;- <span class="nv">IFUN</span>.<span class="n">drop_while</span>(<span class="nv">$ns</span>){(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
@@ -334,7 +322,7 @@
 <p>$ifun must be an ifun.</p>
 <p>$match? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:ns</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IFUN</span>.<span class="n">all?</span>(<span class="nv">$ns</span>){(<span class="nv">:N</span>) <span class="nv">N</span> &lt; <span class="m">10</span> }.<span class="n">repr</span>)      <span class="c1"># =&gt; true</span>
@@ -350,7 +338,7 @@
 <p>$ifun must be an ifun.</p>
 <p>$match? must be a predicate.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:ns</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">IFUN</span>.<span class="n">any?</span>(<span class="nv">$ns</span>){(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
@@ -364,7 +352,7 @@
 <p class="rubric">Preconditions</p>
 <p>$ifun_of_ifuns must be an ifun of ifuns.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:nums</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)
 <span class="nv">:strs</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>)
@@ -384,7 +372,7 @@
 <p>$ifun must be an ifun.</p>
 <p>`Chunk_size` must be a positive int num.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:ns</span> &lt;- <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span>)
 <span class="nv">:chunks</span> &lt;- <span class="nv">IFUN</span>.<span class="n">unconcat</span>(<span class="nv">$ns</span> <span class="m">2</span>)
@@ -405,7 +393,7 @@
 <p class="rubric">Precondition</p>
 <p>$ifun must be an ifun.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:flip_flop</span> &lt;- <span class="nv">IFUN</span>.<span class="n">cycle</span>(<span class="nv">IFUN</span>.<span class="n">of</span>(<span class="n">true</span> <span class="n">false</span>))
 <span class="nv">:filtered_pairs</span> &lt;- <span class="nv">IFUN</span>.<span class="n">filter</span>(<span class="nv">IFUN</span>.<span class="n">zip</span>(<span class="m">1</span>.<span class="n">up</span>.<span class="n">ifun</span> <span class="nv">$flip_flop</span>)){([<span class="nv">:N</span> <span class="nv">:Include?</span>])
@@ -428,7 +416,7 @@
 <span id="api-063457d194fc820788df803dd7a2fb8e"></span><h2><span class="section-number">6.70.17. </span>IFUN.of(...Elems)<a class="headerlink" href="#ifun-of-elems" title="Link to this heading">¶</a></h2>
 <p>`of` returns an ifun containing the elements of `Elems`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">IFUN</span>.<span class="n">each</span>(<span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)){(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
@@ -441,7 +429,7 @@
 <p>`join` makes an ifun concatenating two ifuns $front and $back.</p>
 <p>The result ifun produces the elements of $front in the same order, and then the elements of $back in the same order.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:joined</span> &lt;- <span class="nv">IFUN</span>.<span class="n">join</span>(
   <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)
@@ -461,7 +449,7 @@
 <p>$ifun must be an ifun.</p>
 <p>Each element of `Other_ifuns` must be an ifun.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:zipped</span> &lt;- <span class="nv">IFUN</span>.<span class="n">zip</span>(
   <span class="nv">IFUN</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
@@ -485,7 +473,7 @@
 <p class="rubric">Precondition</p>
 <p>$make_ifun must be a thunk which returns an ifun.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:count_down</span> &lt;- {(<span class="nv">:N</span>)
   <span class="n">if</span>(<span class="nv">N</span> &lt; <span class="m">0</span>
@@ -506,7 +494,7 @@
 <p>$generator must take an unary fun $yield as the arg. When $yield is called with a val in invocation of $generator, that val will be an element of the result ifun. When the invocation of $generator returns, it is the end of the ifun.</p>
 <p>$generator is called when the result ifun is called. The invocation of $generator is suspended when $yield is called. The invocation is resumed when the trailing ifun is called.</p>
 <p class="rubric">Example: make a finite length ifun</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:ifun</span> &lt;- <span class="nv">IFUN</span>.<span class="n">from_generator</span>{(<span class="nv">:yield</span>)
   <span class="n">yield</span>(<span class="s1">&#39;foo&#39;</span>)
@@ -523,7 +511,7 @@
 </pre></div>
 </div>
 <p class="rubric">Example: make an infinite length ifun</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:ifun</span> &lt;- <span class="nv">IFUN</span>.<span class="n">from_generator</span>{(<span class="nv">:yield</span>)
   <span class="nv">:loop</span> &lt;- {(<span class="nv">:N</span>)
@@ -551,7 +539,7 @@
 <p class="rubric">Precondition</p>
 <p>`Eacher` must support each($consume) method, which is called to enumerate each element of `Eacher`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:take_five</span> &lt;- <span class="nv">IFUN</span>.<span class="n">from_each</span>([<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>])
 <span class="nv">IFUN</span>.<span class="n">each</span>(<span class="nv">$take_five</span>){(<span class="nv">:N</span>)
@@ -564,18 +552,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-io-STR_SCANNER.html"><span class="section-number">6.69. </span>kink/io/STR_SCANNER</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-iter-ITER.html"><span class="section-number">6.71. </span>kink/iter/ITER</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

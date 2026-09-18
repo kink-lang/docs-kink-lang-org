@@ -5,42 +5,31 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.48. kink/doc/render/html/HTML_RENDER_TOOL &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.48. kink/doc/render/html/HTML_RENDER_TOOL &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=6ab1bf41"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/translations.js?v=4755f45a"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="6.49. kink/doc/render/sphinx/SPHINX_RENDER_TOOL" href="kink-doc-render-sphinx-SPHINX_RENDER_TOOL.html" />
     <link rel="prev" title="6.47. kink/doc/model/SECTION" href="kink-doc-model-SECTION.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.48. kink/doc/render/html/HTML_RENDER_TOOL</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-doc-model-SECTION.html"><span class="section-number">6.47. </span>kink/doc/model/SECTION</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-doc-render-sphinx-SPHINX_RENDER_TOOL.html"><span class="section-number">6.49. </span>kink/doc/render/sphinx/SPHINX_RENDER_TOOL</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. 組み込みライブラリAPI</a></li><li><a class="current" href="#" aria-current="page">6.48. kink/doc/render/html/HTML_RENDER_TOOL</a></li></ol></nav>
+    <nav class="header-nav" aria-label="検索"><a href="../search.html">検索</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-doc-render-html-html-render-tool">
 <h1><span class="section-number">6.48. </span>kink/doc/render/html/HTML_RENDER_TOOL<a class="headerlink" href="#kink-doc-render-html-html-render-tool" title="Link to this heading">¶</a></h1>
 <p>Kinkdoc文書を単一のHTMLファイルにレンダリングする起動可能モジュール。</p>
 <p class="rubric">使い方</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">kink</span> [<span class="nv">Kink_options</span>]... <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="n">render</span>/<span class="n">html</span>/<span class="nv">HTML_RENDER_TOOL</span> [<span class="nv">Mod_options</span>] &lt;<span class="nv">JSON</span> &gt;<span class="nv">HTML</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">kink</span> [<span class="nv">Kink_options</span>]... <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="n">render</span>/<span class="n">html</span>/<span class="nv">HTML_RENDER_TOOL</span> [<span class="nv">Mod_options</span>] &lt;<span class="nv">JSON</span> &gt;<span class="nv">HTML</span>
 </pre></div>
 </div>
 <p>コマンドは、kinkdocのJSONデータを標準出力から読み取って、単一のHTMLファイルに変換し、標準出力に書き出す。</p>
@@ -50,7 +39,7 @@
 <p class="rubric">HTMLテンプレートの内容</p>
 <p>HTMLテンプレートはUTF-8でエンコードされていた、Str.formatのテンプレート文字列でなければならない。その内容には、HTMLエスケープされた文書タイトルのためのプレースホルダとして `{Title}`, CSSのプレースホルダとして `{Style}`, &lt;body&gt;要素の内容のプレースホルダとして `{Body}` を含まなければならない。</p>
 <p>デフォルトのテンプレートは次の通り:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>&lt;!<span class="nv">DOCTYPE</span> <span class="n">html</span>&gt;
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span>&lt;!<span class="nv">DOCTYPE</span> <span class="n">html</span>&gt;
 &lt;<span class="n">html</span>&gt;
 &lt;<span class="n">head</span>&gt;
   &lt;<span class="n">meta</span> <span class="n">charset</span>=<span class="s2">&quot;utf-8&quot;</span> /&gt;
@@ -69,7 +58,7 @@
 <p>コマンドが成功したら、終了ステータス0で終了する。</p>
 <p>失敗したら、コマンドは0以外の終了ステータスで終了する。</p>
 <p class="rubric">使い方の例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">$ kink</span> <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="nv">DOC_PARSE_TOOL</span> --<span class="n">title</span> <span class="s1">&#39;API reference&#39;</span> <span class="n">src</span> &gt;<span class="n">doc</span>.<span class="n">json</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">$ kink</span> <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="nv">DOC_PARSE_TOOL</span> --<span class="n">title</span> <span class="s1">&#39;API reference&#39;</span> <span class="n">src</span> &gt;<span class="n">doc</span>.<span class="n">json</span>
 ...
 <span class="nv">$ kink</span> <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="n">render</span>/<span class="n">html</span>/<span class="nv">HTML_RENDER_TOOL</span> &lt;<span class="n">doc</span>.<span class="n">json</span> &gt;<span class="n">doc</span>.<span class="n">html</span>
 </pre></div>
@@ -86,18 +75,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-doc-model-SECTION.html"><span class="section-number">6.47. </span>kink/doc/model/SECTION</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-doc-render-sphinx-SPHINX_RENDER_TOOL.html"><span class="section-number">6.49. </span>kink/doc/render/sphinx/SPHINX_RENDER_TOOL</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

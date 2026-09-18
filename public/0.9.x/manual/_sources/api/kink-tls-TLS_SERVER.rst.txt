@@ -1,6 +1,6 @@
-======================
-kink\/tls\/TLS\_SERVER
-======================
+=====================
+kink\/tls\/TLS_SERVER
+=====================
 
 .. contents::
     :local:
@@ -8,87 +8,87 @@ kink\/tls\/TLS\_SERVER
 
 .. _api-9021256bdecf20a3dbca4b952f4d79b7:
 
-type tls\_server
-================
+type tls_server
+===============
 
-A \`tls\_server\` is a factory of server side TLS connections\.
+A \`tls_server\` is a factory of server side TLS connections.
 
-A \`tls\_server\` holds various data which live longer than single TLS connections\, such as key pairs\, certificates\, and data for session resumption\.
+A \`tls_server\` holds various data which live longer than single TLS connections, such as key pairs, certificates, and data for session resumption.
 
 .. _api-26403f32104843e912be057c437d25b9:
 
-Serv\.connect\(Tcp \.\.\.\[\$config\=\{\}\]\)
----------------------------------------------
+Serv.connect\(Tcp \.\.\.\[$config\=\{\}\]\)
+-------------------------------------------
 
-\`connect\` makes a new \`tls\` connection\, and performs the initial handshake\.
+\`connect\` makes a new \`tls\` connection, and performs the initial handshake.
 
 Config methods\:
 
-\• C\.need\_cert
+\• C.need_cert
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+\• C.on_error\($error\)\: default \= \{\(\:Exc\) Exc.raise \}
 
-If the connection is made and the initial handshake succeeds\, \`connect\` tail\-calls \$success with the created \`tls\` value\.
+If the connection is made and the initial handshake succeeds, \`connect\` tail\-calls $success with the created \`tls\` value.
 
-If the connection is not made\, or the initial handshake fails\, \`connect\` tail\-calls \$error with an \`exception\`\.
+If the connection is not made, or the initial handshake fails, \`connect\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Client authentication
 
-If C\.need\_cert is called\, the TLS connection desires certificate\-based client authentications\, and verifies the returned certificate\.
+If C.need_cert is called, the TLS connection desires certificate\-based client authentications, and verifies the returned certificate.
 
-If no certificate is returned from the client\, or verification fails\, \`connect\` results in an error\.
+If no certificate is returned from the client, or verification fails, \`connect\` results in an error.
 
-If the \`tls\_server\` desires client authentication\, usually the \`tls\_server\` also needs to be configured with the a non\-empty \`trust\_anchor\`\.
+If the \`tls_server\` desires client authentication, usually the \`tls_server\` also needs to be configured with the a non\-empty \`trust_anchor\`\.
 
 .. rubric:: Preconditions
 
-\`Tcp\` must be a \`tcp\`\, which the TLS connection uses\.
+\`Tcp\` must be a \`tcp\`\, which the TLS connection uses.
 
-The protocol family of \`Tcp\` must be IPv4 or IPv6\.
+The protocol family of \`Tcp\` must be IPv4 or IPv6.
 
-\`Tcp\` must be open\.
+\`Tcp\` must be open.
 
-\$success must be a function which takes a \`tls\`\.
+$success must be a function which takes a \`tls\`\.
 
-\$error must be a function which takes an \`exception\`\.
+$error must be a function which takes an \`exception\`\.
 
 .. _api-3aa9d9decfe516a28ba58db6bbc06e3c:
 
-TLS\_SERVER\.new\(Key\_pair\_set \.\.\.\[\$config\=\{\}\]\)
-===========================================================
+TLS_SERVER.new\(Key_pair_set \.\.\.\[$config\=\{\}\]\)
+======================================================
 
-\`new\` makes a new \`tls\_server\`\.
+\`new\` makes a new \`tls_server\`\.
 
 Config methods\:
 
-\• C\.trust\_anchor\(Ta\)\: default \= empty \`trust\_anchor\`
+\• C.trust_anchor\(Ta\)\: default \= empty \`trust_anchor\`
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+\• C.on_error\($error\)\: default \= \{\(\:Exc\) Exc.raise \}
 
-\`Ta\` is used to verify certificates of TLS clients\.
+\`Ta\` is used to verify certificates of TLS clients.
 
-If successful\, \`new\` tails\-calls \$success with the created \`tls\_server\`\.
+If successful, \`new\` tails\-calls $success with the created \`tls_server\`\.
 
-On an error\, \`new\` tail\-calls \$error with an \`exception\`\.
+On an error, \`new\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Preconditions
 
-\`Key\_pair\_set\` must be a \`key\_pair\_set\`\, which contains the server key pairs\.
+\`Key_pair_set\` must be a \`key_pair_set\`\, which contains the server key pairs.
 
-\`Ta\` must be a \`trust\_anchor\`\.
+\`Ta\` must be a \`trust_anchor\`\.
 
-\$success must be a function which takes a \`tls\_server\`\.
+$success must be a function which takes a \`tls_server\`\.
 
-\$error must be a function which takes an \`exception\`\.
+$error must be a function which takes an \`exception\`\.
 
 .. _api-315efaaea8dd085560dba53a1ce887f6:
 
-TLS\_SERVER\.is\?\(Val\)
-========================
+TLS_SERVER.is?\(Val\)
+=====================
 
-\`is\?\` returns whether \`Val\` is a \`tls\_server\`\.
+\`is?\` returns whether \`Val\` is a \`tls_server\`\.
 

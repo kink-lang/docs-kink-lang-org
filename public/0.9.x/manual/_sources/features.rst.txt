@@ -63,7 +63,7 @@ are just deduplication for optimization.
 If deduplication is done in the backend by the runtime,
 it does not need to appear in the language specification.
 
-You can just call :ref:`new_val <api-fbc90c7785322a766a80191e6e1ea8de>` function to make a value
+You can just call :ref:`new_val <api-57f5294cce02f93d87d637f6417c656f>` function to make a value
 with data and methods.
 
 ::

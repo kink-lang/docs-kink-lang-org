@@ -1,12 +1,13 @@
-===============================
-kink\/test\/COLLECT\_FROM\_FILE
-===============================
+=============================
+kink\/test\/COLLECT_FROM_FILE
+=============================
 
-Collects tests from files\.
+Collects tests from files.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :TEST.require_from('kink/test/')
     :COLLECT_FROM_FILE.require_from('kink/test/')
@@ -21,7 +22,7 @@ Example\:
         
     Tests.each{(:T) T.run }
 
-COLLECT\_FROM\_FILE is used by TEST\_TOOL to load tests\.
+COLLECT_FROM_FILE is used by TEST_TOOL to load tests.
 
 .. contents::
     :local:
@@ -29,22 +30,22 @@ COLLECT\_FROM\_FILE is used by TEST\_TOOL to load tests\.
 
 .. _api-7ce40206f1c129705bef7789b9fe9af9:
 
-COLLECT\_FROM\_FILE\.under\(Path\)
-==================================
+COLLECT_FROM_FILE.under\(Path\)
+===============================
 
-\`under\` collects tests under the path\.
+\`under\` collects tests under the path.
 
 Preconditions\:
 
-\• \`under\` must be called within invocation of TEST\.collect\_in\.
+\• \`under\` must be called within invocation of TEST.collect_in.
 
-\• \`Path\` must be a str\.
+\• \`Path\` must be a str.
 
-If \`Path\` is the path of file\, \`under\` reads and compiles the file\, and runs the program\.
+If \`Path\` is the path of file, \`under\` reads and compiles the file, and runs the program.
 
-If \`Path\` is the path of a directory\, \`under\` reads\, compiles\, and runs all the files named as \*\_test\.kn under the directory and its subdirectories recursively\. The name pattern matching is done case\-insensitively\. Thus\, for example\, a file named FOO\_TEST\.KN is also run\.
+If \`Path\` is the path of a directory, \`under\` reads, compiles, and runs all the files named as \*_test.kn under the directory and its subdirectories recursively. The name pattern matching is done case\-insensitively. Thus, for example, a file named FOO_TEST.KN is also run.
 
-\`under\` reads program files by UTF\-8 charset\.
+\`under\` reads program files by UTF\-8 charset.
 
-In case of an IO error\, or a compile error\, \`under\` raises an exception\. If a test program raises an exception\, \`under\` justs propagates it\.
+In case of an IO error, or a compile error, \`under\` raises an exception. If a test program raises an exception, \`under\` justs propagates it.
 

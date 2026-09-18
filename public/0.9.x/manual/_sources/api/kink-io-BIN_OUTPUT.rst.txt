@@ -1,6 +1,6 @@
-=====================
-kink\/io\/BIN\_OUTPUT
-=====================
+====================
+kink\/io\/BIN_OUTPUT
+====================
 
 .. contents::
     :local:
@@ -8,24 +8,25 @@ kink\/io\/BIN\_OUTPUT
 
 .. _api-465e4fe593d4e259bdb3e5433529b2d4:
 
-BIN\_OUTPUT\.new
-================
+BIN_OUTPUT.new
+==============
 
 \`new\` makes an \`output\` which builds a \`bin\`\.
 
-The result \`output\` also provides \`bin\` method\. It returns a \`bin\` val which joins bytes passed to \`write\` method\.
+The result \`output\` also provides \`bin\` method. It returns a \`bin\` val which joins bytes passed to \`write\` method.
 
 .. rubric:: flush
 
-\`flush\` method does nothing\. It just tail\-calls \$success\, if the \`output\` is not closed\.
+\`flush\` method does nothing. It just tail\-calls $success, if the \`output\` is not closed.
 
 .. rubric:: close
 
-If the \`output\` is closed\, \`write\` and \`flush\` methods cause an IO error\, like other \`output\` implementations based on system resources\.
+If the \`output\` is closed, \`write\` and \`flush\` methods cause an IO error, like other \`output\` implementations based on system resources.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :BIN_OUTPUT.require_from('kink/io/')
     :BIN.require_from('kink/')

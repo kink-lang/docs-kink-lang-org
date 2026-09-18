@@ -2,25 +2,26 @@
 kink\/iter\/IFUN
 ================
 
-Operations of ifuns\.
+Operations of ifuns.
 
-“ifun” is an abbreviation of “iterator function\.” An ifun is a fun which works as a pointer of a finite\-length or infinite\-length stream of values\.
+“ifun” is an abbreviation of “iterator function.” An ifun is a fun which works as a pointer of a finite\-length or infinite\-length stream of values.
 
-Usually\, it is more convenient to use iters\, which are wrappers of ifuns\, rather than directly using ifuns\. See kink\/iter\/ITER for iters\.
+Usually, it is more convenient to use iters, which are wrappers of ifuns, rather than directly using ifuns. See kink\/iter\/ITER for iters.
 
 .. rubric:: Specification
 
-An ifun is a 2ary fun\, which takes \$proc and \$fin as arguments\. The ifun must tail\-call \$proc if it has an element\, or \$fin if it has no element\.
+An ifun is a 2ary fun, which takes $proc and $fin as arguments. The ifun must tail\-call $proc if it has an element, or $fin if it has no element.
 
-\$proc is a 2ary fun\, which takes \`Head\` and \$tail as arguments\. The ifun passes its first element as \`Head\`\, and passes the next ifun\, which points to remaining elements after \`Head\`\, as \$tail\.
+$proc is a 2ary fun, which takes \`Head\` and $tail as arguments. The ifun passes its first element as \`Head\`\, and passes the next ifun, which points to remaining elements after \`Head\`\, as $tail.
 
-\$fin is a thunk\, which is tail\-called when the ifun has no element\.
+$fin is a thunk, which is tail\-called when the ifun has no element.
 
 .. rubric:: Examples
 
-In the next program\, \`make\_vec\_ifun\` makes an ifun which iterates over the elements of \`Vec\`\.
+In the next program, \`make_vec_ifun\` makes an ifun which iterates over the elements of \`Vec\`\.
 
 .. code:: kink
+    :class: no-search
 
     :make_vec_ifun <- {(:Vec)
       {(:proc :fin)
@@ -37,12 +38,14 @@ In the next program\, \`make\_vec\_ifun\` makes an ifun which iterates over the 
 Let\'s make an \`ifun\`\.
 
 .. code:: kink
+    :class: no-search
 
     :nums_ifun <- make_vec_ifun([100 200 300])
 
-You can iterate over the elements of \$nums\_ifun using IFUN\.each\.
+You can iterate over the elements of $nums_ifun using IFUN.each.
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -55,9 +58,10 @@ You can iterate over the elements of \$nums\_ifun using IFUN\.each\.
     #   200
     #   300
 
-You can make another ifun mapping the elements\.
+You can make another ifun mapping the elements.
 
 .. code:: kink
+    :class: no-search
 
     :doubled_ifun <- IFUN.map($nums_ifun {(:N) N * 2 })
     IFUN.each(
@@ -69,9 +73,10 @@ You can make another ifun mapping the elements\.
     #   400
     #   600
 
-You can accumulate the elements\.
+You can accumulate the elements.
 
 .. code:: kink
+    :class: no-search
 
     :Sum <- IFUN.fold($nums_ifun 0 {(:X :Y) X + Y })
     stdout.print_line(Sum.repr) # => 600
@@ -82,22 +87,21 @@ You can accumulate the elements\.
 
 .. _api-9f4963ad25e690214de79a6d024d5ad8:
 
-IFUN\.each\(\$ifun \$consume\)
-==============================
+IFUN.each\($ifun $consume\)
+===========================
 
-\`each\` calls \$consume with each element of \$ifun\, then returns the last result of \$consume\.
-
-If \$ifun has no elements\, \`each\` returns nada\.
+\`each\` calls $consume for each element of $ifun.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$consume must be a fun which takes an arg\.
+$consume must be a function which takes an arg.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -111,20 +115,21 @@ If \$ifun has no elements\, \`each\` returns nada\.
 
 .. _api-6303ea1fc7f8c2961ced8d729636797b:
 
-IFUN\.map\(\$ifun \$transform\)
-===============================
+IFUN.map\($ifun $transform\)
+============================
 
-\`map\` returns an ifun whose nth element is transform\(nth\-element\-of\-\$ifun\)\.
+\`map\` returns an ifun whose nth element is transform\(nth\-element\-of\-$ifun\)\.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$transform must take an arg\.
+$transform must take an arg.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -141,20 +146,21 @@ IFUN\.map\(\$ifun \$transform\)
 
 .. _api-879f438db7c0685264b522e1ddb2b595:
 
-IFUN\.concat\_map\(\$ifun \$to\_ifun\)
-======================================
+IFUN.concat_map\($ifun $to_ifun\)
+=================================
 
-\`concat\_map\` returns an ifun which contains elements of ifuns which are results of to\_ifun\(element\-of\-\$ifun\)\.
+\`concat_map\` returns an ifun which contains elements of ifuns which are results of to_ifun\(element\-of\-$ifun\)\.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$to\_ifun must take an arg\, and returns an ifun\.
+$to_ifun must take an arg, and returns an ifun.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -167,20 +173,21 @@ IFUN\.concat\_map\(\$ifun \$to\_ifun\)
 
 .. _api-1306d6fa495d37ec980ebae76b50b407:
 
-IFUN\.filter\(\$ifun \$include\?\)
-==================================
+IFUN.filter\($ifun $include?\)
+==============================
 
-\`filter\` returns all the elements of \$ifun which satisfy \$include\?\, as an ifun\. The order of elements is not changed\.
+\`filter\` returns all the elements of $ifun which satisfy $include?\, as an ifun. The order of elements is not changed.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$include\? must be a predicate\.
+$include? must be a predicate.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -197,22 +204,23 @@ IFUN\.filter\(\$ifun \$include\?\)
 
 .. _api-42d3abdef4d81f0150b92937ea0b2ab0:
 
-IFUN\.count\(\$ifun \$counted\?\)
-=================================
+IFUN.count\($ifun $counted?\)
+=============================
 
-\`count\` returns the number of elements of \$ifun\, which satisfy \$counted\?\.
+\`count\` returns the number of elements of $ifun, which satisfy $counted?\.
 
 The result is an int \`num\`\.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$counted\? must be a predicate\.
+$counted? must be a predicate.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -222,24 +230,25 @@ The result is an int \`num\`\.
 
 .. _api-10659086df67c16e539ec4018b4752fd:
 
-IFUN\.fold\(\$ifun Init \$combine\)
-===================================
+IFUN.fold\($ifun Init $combine\)
+================================
 
-\`fold\` folds elements of \$ifun seeded by \`Init\`\.
+\`fold\` folds elements of $ifun seeded by \`Init\`\.
 
-If the elements of \$ifun is E1\, E2\, \,\,\, En\_1\, En\, \`fold\` returns combine\(combine\(\,\,\,combine\(combine\(Init E1\) E2\)\,\,\, En\_1\) En\)\.
+If the elements of $ifun is E1, E2, \,\,\, En_1, En, \`fold\` returns combine\(combine\(\,\,\,combine\(combine\(Init E1\) E2\)\,\,\, En_1\) En\)\.
 
-If \$ifun is empty\, \`fold\` returns \`Init\`\.
+If $ifun is empty, \`fold\` returns \`Init\`\.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$combine must take two args\.
+$combine must take two args.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -248,30 +257,31 @@ If \$ifun is empty\, \`fold\` returns \`Init\`\.
 
 .. _api-2a9c2f566c473ef3b9fe48164091d562:
 
-IFUN\.reduce\(\$ifun \$combine \.\.\.\[\$empty\_fallback\]\)
-============================================================
+IFUN.reduce\($ifun $combine \.\.\.\[$empty_fallback\]\)
+=======================================================
 
-\`reduce\` folds elements of \$ifun mutually\.
+\`reduce\` folds elements of $ifun mutually.
 
-If \$ifun has elements E1\, E2\, E3\, \,\,\, En\_1\, En\, \`reduce\` returns combine\(combine\(\,\,\,combine\(combine\(E1 E2\) E3\)\,\,\, En\_1\) En\)\.
+If $ifun has elements E1, E2, E3, \,\,\, En_1, En, \`reduce\` returns combine\(combine\(\,\,\,combine\(combine\(E1 E2\) E3\)\,\,\, En_1\) En\)\.
 
-If \$ifun has a single element \`E\`\, \`reduce\` returns \`E\`\.
+If $ifun has a single element \`E\`\, \`reduce\` returns \`E\`\.
 
-If \$ifun has no element\, and \$empty\_fallback is given\, \`reduce\` tail\-calls \$empty\_fallback with no arg\.
+If $ifun has no element, and $empty_fallback is given, \`reduce\` tail\-calls $empty_fallback with no arg.
 
-If \$ifun has no element\, and \$empty\_fallback is not given\, \`reduce\` raises an exception\.
+If $ifun has no element, and $empty_fallback is not given, \`reduce\` raises an exception.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$combine must take two args\.
+$combine must take two args.
 
-\$empty\_fallback must be a thunk\.
+$empty_fallback must be a thunk.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -280,20 +290,21 @@ If \$ifun has no element\, and \$empty\_fallback is not given\, \`reduce\` raise
 
 .. _api-ec181347780f010400fd802cf7237a66:
 
-IFUN\.take\_front\(\$ifun N\)
-=============================
+IFUN.take_front\($ifun N\)
+==========================
 
-\`take\_front\` returns an ifun containing the first N elements of \$ifun\, or all the elements if \$ifun has less than N elements\.
+\`take_front\` returns an ifun containing the first N elements of $ifun, or all the elements if $ifun has less than N elements.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
 \`N\` must be an int \`num\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -309,20 +320,21 @@ IFUN\.take\_front\(\$ifun N\)
 
 .. _api-2428b2fcb2590b659744414d67f545de:
 
-IFUN\.drop\_front\(\$ifun N\)
-=============================
+IFUN.drop_front\($ifun N\)
+==========================
 
-\`drop\_front\` returns an ifun omitting the first N elements of \$ifun\, or an empty ifun if \$ifun has less than N elements\.
+\`drop_front\` returns an ifun omitting the first N elements of $ifun, or an empty ifun if $ifun has less than N elements.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
 \`N\` must be an int \`num\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -338,20 +350,21 @@ IFUN\.drop\_front\(\$ifun N\)
 
 .. _api-f7c4984df79208b19eb1c2fa8a9f4f68:
 
-IFUN\.take\_while\(\$ifun \$include\?\)
-=======================================
+IFUN.take_while\($ifun $include?\)
+==================================
 
-\`take\_while\` returns an ifun of the longest initial prefix of \$ifun\, whose elements all satisfy \$include\?\.
+\`take_while\` returns an ifun of the longest initial prefix of $ifun, whose elements all satisfy $include?\.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$include\? must be a predicate\.
+$include? must be a predicate.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -362,20 +375,21 @@ IFUN\.take\_while\(\$ifun \$include\?\)
 
 .. _api-d0b1d95bbd462caa35aeada3afbcc1d1:
 
-IFUN\.drop\_while\(\$ifun \$exclude\?\)
-=======================================
+IFUN.drop_while\($ifun $exclude?\)
+==================================
 
-\`drop\_while\` returns an ifun after the longest initial prefix of \$ifun\, whose elements all satisfy \$exclude\?\.
+\`drop_while\` returns an ifun after the longest initial prefix of $ifun, whose elements all satisfy $exclude?\.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$exclude\? must be a predicate\.
+$exclude? must be a predicate.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -386,22 +400,23 @@ IFUN\.drop\_while\(\$ifun \$exclude\?\)
 
 .. _api-7b0cd0b1122161db2c351de4958656cb:
 
-IFUN\.all\?\(\$ifun \$match\?\)
-===============================
+IFUN.all?\($ifun $match?\)
+==========================
 
-\`all\?\` returns true if all the elements of \$ifun satisfy \$match\?\, otherwise returns false\.
+\`all?\` returns true if all the elements of $ifun satisfy $match?\, otherwise returns false.
 
-If \$ifun is infinite\-length\, \`all\?\` is not guaranteed to return\.
+If $ifun is infinite\-length, \`all?\` is not guaranteed to return.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$match\? must be a predicate\.
+$match? must be a predicate.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -411,22 +426,23 @@ If \$ifun is infinite\-length\, \`all\?\` is not guaranteed to return\.
 
 .. _api-fd7a6021a5a2c83999daca419a1b24d5:
 
-IFUN\.any\?\(\$ifun \$match\?\)
-===============================
+IFUN.any?\($ifun $match?\)
+==========================
 
-\`any\?\` returns true if one or more elements of \$ifun satisfy \$match\?\, otherwise returns false\.
+\`any?\` returns true if one or more elements of $ifun satisfy $match?\, otherwise returns false.
 
-If \$ifun is infinite\-length\, \`any\?\` is not guaranteed to return\.
+If $ifun is infinite\-length, \`any?\` is not guaranteed to return.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\$match\? must be a predicate\.
+$match? must be a predicate.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -436,18 +452,19 @@ If \$ifun is infinite\-length\, \`any\?\` is not guaranteed to return\.
 
 .. _api-9527c30e6ed2e24319b3b8795734b046:
 
-IFUN\.concat\(\$ifun\_of\_ifuns\)
-=================================
+IFUN.concat\($ifun_of_ifuns\)
+=============================
 
-\`concat\` returns an ifun which concatenates the ifuns contained in \$ifun\_of\_ifuns\.
+\`concat\` returns an ifun which concatenates the ifuns contained in $ifun_of_ifuns.
 
 .. rubric:: Preconditions
 
-\$ifun\_of\_ifuns must be an ifun of ifuns\.
+$ifun_of_ifuns must be an ifun of ifuns.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -461,22 +478,23 @@ IFUN\.concat\(\$ifun\_of\_ifuns\)
 
 .. _api-1568b429ec04b9367393789d70c86e42:
 
-IFUN\.unconcat\(\$ifun Chunk\_size\)
-====================================
+IFUN.unconcat\($ifun Chunk_size\)
+=================================
 
-\`unconcat\` splits \$ifun into vecs whose size is \`Chunk\_size\`\, and returns an ifun of those vecs\.
+\`unconcat\` splits $ifun into vecs whose size is \`Chunk_size\`\, and returns an ifun of those vecs.
 
-If the size of \$ifun is a finite number Chunk\_size \* N \+ R\, where N and R are non\-negative integers\, the last R elements of \$ifun will be discarded\.
+If the size of $ifun is a finite number Chunk_size \* N \+ R, where N and R are non\-negative integers, the last R elements of $ifun will be discarded.
 
 .. rubric:: Precondition
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-\`Chunk\_size\` must be a positive int num\.
+\`Chunk_size\` must be a positive int num.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -492,20 +510,21 @@ If the size of \$ifun is a finite number Chunk\_size \* N \+ R\, where N and R a
 
 .. _api-cb943c256a7d78283fb6008bee85e0e5:
 
-IFUN\.cycle\(\$ifun\)
-=====================
+IFUN.cycle\($ifun\)
+===================
 
-\`cycle\` returns an ifun which infinitely repeats the elements of \$ifun\.
+\`cycle\` returns an ifun which infinitely repeats the elements of $ifun.
 
-If \$ifun is empty\, the result ifun will be also empty\.
+If $ifun is empty, the result ifun will be also empty.
 
 .. rubric:: Precondition
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -526,14 +545,15 @@ If \$ifun is empty\, the result ifun will be also empty\.
 
 .. _api-063457d194fc820788df803dd7a2fb8e:
 
-IFUN\.of\(\.\.\.Elems\)
-=======================
+IFUN.of\(\.\.\.Elems\)
+======================
 
 \`of\` returns an ifun containing the elements of \`Elems\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -543,16 +563,17 @@ IFUN\.of\(\.\.\.Elems\)
 
 .. _api-174dad688c763676d10f2b6ffa216451:
 
-IFUN\.join\(\$front \$back\)
-============================
+IFUN.join\($front $back\)
+=========================
 
-\`join\` makes an ifun concatenating two ifuns \$front and \$back\.
+\`join\` makes an ifun concatenating two ifuns $front and $back.
 
-The result ifun produces the elements of \$front in the same order\, and then the elements of \$back in the same order\.
+The result ifun produces the elements of $front in the same order, and then the elements of $back in the same order.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -566,22 +587,23 @@ The result ifun produces the elements of \$front in the same order\, and then th
 
 .. _api-d0bf76be6af0b9e916a4e171ed422232:
 
-IFUN\.zip\(\$ifun \.\.\.Other\_ifuns\)
-======================================
+IFUN.zip\($ifun \.\.\.Other_ifuns\)
+===================================
 
-If \`zip\` is passed N ifuns\, \`zip\` returns an ifun as long as the shortest of these ifuns\, each element of which is an N\-element vec comprised of the corresponding elements from the passed ifuns\.
+If \`zip\` is passed N ifuns, \`zip\` returns an ifun as long as the shortest of these ifuns, each element of which is an N\-element vec comprised of the corresponding elements from the passed ifuns.
 
-For example\, if an ifun X has elements X1\, X2\, X3\, \,\,\, \, Y has elements Y1\, Y2\, Y3\, \,\,\, \, and Z has elements Z1\, Z2\, Z3\, \,\,\, \, zip\(X Y Z\) returns an ifun containing \[X1 Y1 Z1\]\, \[X2 Y2 Z2\]\, \[X3 Y3 Z3\]\, \,\,\, \.
+For example, if an ifun X has elements X1, X2, X3, \,\,\, \, Y has elements Y1, Y2, Y3, \,\,\, \, and Z has elements Z1, Z2, Z3, \,\,\, \, zip\(X Y Z\) returns an ifun containing \[X1 Y1 Z1\]\, \[X2 Y2 Z2\]\, \[X3 Y3 Z3\]\, \,\,\, \.
 
 .. rubric:: Preconditions
 
-\$ifun must be an ifun\.
+$ifun must be an ifun.
 
-Each element of \`Other\_ifuns\` must be an ifun\.
+Each element of \`Other_ifuns\` must be an ifun.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -600,20 +622,21 @@ Each element of \`Other\_ifuns\` must be an ifun\.
 
 .. _api-873f5603a47d615f838591d5f3acd5ed:
 
-IFUN\.lazy\(\$make\_ifun\)
-==========================
+IFUN.lazy\($make_ifun\)
+=======================
 
-\`lazy\` returns an ifun\, whose elements are equal to the ifun returned by \$make\_ifun\.
+\`lazy\` returns an ifun, whose elements are equal to the ifun returned by $make_ifun.
 
-\$make\_ifun is called when the result ifun is called\.
+$make_ifun is called when the result ifun is called.
 
 .. rubric:: Precondition
 
-\$make\_ifun must be a thunk which returns an ifun\.
+$make_ifun must be a thunk which returns an ifun.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -630,18 +653,19 @@ IFUN\.lazy\(\$make\_ifun\)
 
 .. _api-660814aa768d0a3e233af71fa315ecf8:
 
-IFUN\.from\_generator\(\$generator\)
-====================================
+IFUN.from_generator\($generator\)
+=================================
 
-\`from\_generator\` makes an ifun of elements yielded in \$generator\.
+\`from_generator\` makes an ifun of elements yielded in $generator.
 
-\$generator must take an unary fun \$yield as the arg\. When \$yield is called with a val in invocation of \$generator\, that val will be an element of the result ifun\. When the invocation of \$generator returns\, it is the end of the ifun\.
+$generator must take an unary fun $yield as the arg. When $yield is called with a val in invocation of $generator, that val will be an element of the result ifun. When the invocation of $generator returns, it is the end of the ifun.
 
-\$generator is called when the result ifun is called\. The invocation of \$generator is suspended when \$yield is called\. The invocation is resumed when the trailing ifun is called\.
+$generator is called when the result ifun is called. The invocation of $generator is suspended when $yield is called. The invocation is resumed when the trailing ifun is called.
 
 .. rubric:: Example\: make a finite length ifun
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -661,6 +685,7 @@ IFUN\.from\_generator\(\$generator\)
 .. rubric:: Example\: make an infinite length ifun
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         
@@ -683,20 +708,21 @@ IFUN\.from\_generator\(\$generator\)
 
 .. _api-be7058985970221edd8a5f47737c8174:
 
-IFUN\.from\_each\(Eacher\)
-==========================
+IFUN.from_each\(Eacher\)
+========================
 
-\`from\_each\` makes an ifun of values which are enumerated in Eacher\.each\.
+\`from_each\` makes an ifun of values which are enumerated in Eacher.each.
 
-The invocation of \`each\` is suspended and resumed for evaluation of each element of the ifun\.
+The invocation of \`each\` is suspended and resumed for evaluation of each element of the ifun.
 
 .. rubric:: Precondition
 
-\`Eacher\` must support each\(\$consume\) method\, which is called to enumerate each element of \`Eacher\`\.
+\`Eacher\` must support each\($consume\) method, which is called to enumerate each element of \`Eacher\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :IFUN.require_from('kink/iter/')
         

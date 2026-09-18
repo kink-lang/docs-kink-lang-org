@@ -2,7 +2,7 @@
 kink\/io\/SCANNER
 =================
 
-Companion mod of scanners\.
+Companion mod of scanners.
 
 .. contents::
     :local:
@@ -13,11 +13,12 @@ Companion mod of scanners\.
 type scanner
 ============
 
-\`scanner\` is an input port for strings or Unicode code points\. A scanner provides sequential forward access to the underlying source\.
+\`scanner\` is an input port for strings or Unicode code points. A scanner provides sequential forward access to the underlying source.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FILE.require_from('kink/io/')
     :CHARSET.require_from('kink/')
@@ -39,36 +40,37 @@ type scanner
 
 .. _api-32926d746a77841b745a4c3d029804bc:
 
-Scanner\.scan\(Max\_codepoints \.\.\.\[\$config\]\)
----------------------------------------------------
+Scanner.scan\(Max_codepoints \.\.\.\[$config\]\)
+------------------------------------------------
 
-\`scan\` reads a \`str\` consisting of up to \`Max\_codepoints\` code points\.
+\`scan\` reads a \`str\` consisting of up to \`Max_codepoints\` code points.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_eof\(\$eof\)\: default \= a fun which raises an exception
+\• C.on_eof\($eof\)\: default \= a fun which raises an exception
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+\• C.on_error\($error\)\: default \= a fun which raises an exception
 
-If the end\-of\-file has not been reached\, \`scan\` tail\-calls \$success with a \`str\` read from the source\.
+If the end\-of\-file has not been reached, \`scan\` tail\-calls $success with a \`str\` read from the source.
 
-If the end\-of\-file has been reached\, \`scan\` tail\-calls \$eof with no arg\.
+If the end\-of\-file has been reached, \`scan\` tail\-calls $eof with no arg.
 
-If an IO error occurs\, \`scan\` tail\-calls \$error with an \`exception\`\.
+If an IO error occurs, \`scan\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Preconditions
 
-\$success must be a fun which takes a \`str\`\.
+$success must be a fun which takes a \`str\`\.
 
-\$eof must be a fun which takes no arg\.
+$eof must be a fun which takes no arg.
 
-\$error must be a fun which takes an \`exception\`\.
+$error must be a fun which takes an \`exception\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :STR_SCANNER.require_from('kink/io/')
         
@@ -84,36 +86,37 @@ If an IO error occurs\, \`scan\` tail\-calls \$error with an \`exception\`\.
 
 .. _api-24486798989c12e30cd33e07a794967a:
 
-Scanner\.scan\_line\(\.\.\.\[\$config\=\{\}\]\)
------------------------------------------------
+Scanner.scan_line\(\.\.\.\[$config\=\{\}\]\)
+--------------------------------------------
 
-\`scan\_line\` reads a \`str\` until \"\\n\" or the end\-of\-file is reached\.
+\`scan_line\` reads a \`str\` until \"\\n\" or the end\-of\-file is reached.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_eof\(\$eof\)\: default \= a fun which raises an exception
+\• C.on_eof\($eof\)\: default \= a fun which raises an exception
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+\• C.on_error\($error\)\: default \= a fun which raises an exception
 
-If \"\\n\" is reached\, \`scan\_line\` tail\-calls \$success with a \`str\`\. The \`str\` contains \"\\n\" at the back\.
+If \"\\n\" is reached, \`scan_line\` tail\-calls $success with a \`str\`\. The \`str\` contains \"\\n\" at the back.
 
-If the end\-of\-file has been reached\, \`scan\_line\` tail\-calls \$eof with no arg\.
+If the end\-of\-file has been reached, \`scan_line\` tail\-calls $eof with no arg.
 
-If an IO error occurs\, \`scan\_line\` tail\-calls \$error with an \`exception\`\.
+If an IO error occurs, \`scan_line\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Preconditions
 
-\$success must be a fun which takes a \`str\`\.
+$success must be a fun which takes a \`str\`\.
 
-\$eof must be a fun which takes no arg\.
+$eof must be a fun which takes no arg.
 
-\$error must be a fun which takes an \`exception\`\.
+$error must be a fun which takes an \`exception\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :STR_SCANNER.require_from('kink/io/')
         
@@ -129,30 +132,31 @@ If an IO error occurs\, \`scan\_line\` tail\-calls \$error with an \`exception\`
 
 .. _api-9e49e339b0e3d2271feb6d22ed83df69:
 
-Scanner\.scan\_all\(\.\.\.\[\$config\=\{\}\]\)
-----------------------------------------------
+Scanner.scan_all\(\.\.\.\[$config\=\{\}\]\)
+-------------------------------------------
 
-\`scan\_all\` reads a \`str\` until the end\-of\-file\.
+\`scan_all\` reads a \`str\` until the end\-of\-file.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+\• C.on_error\($error\)\: default \= a fun which raises an exception
 
-If the end\-of\-file has been reached\, \`scan\_all\` tail\-calls \$success with a \`str\` read from the source\.
+If the end\-of\-file has been reached, \`scan_all\` tail\-calls $success with a \`str\` read from the source.
 
-If an IO error occurs\, \`scan\_all\` tail\-calls \$error with an \`exception\`\.
+If an IO error occurs, \`scan_all\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Preconditions
 
-\$success must be a fun which takes a \`str\`
+$success must be a fun which takes a \`str\`
 
-\$error must be a fun which takes an \`exception\`
+$error must be a fun which takes an \`exception\`
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :STR_SCANNER.require_from('kink/io/')
         
@@ -164,6 +168,7 @@ If an IO error occurs\, \`scan\_all\` tail\-calls \$error with an \`exception\`\
 .. rubric:: Example\: IO error
 
 .. code:: kink
+    :class: no-search
 
     :FILE.require_from('kink/io/')
     :CHARSET.require_from('kink/')
@@ -189,15 +194,15 @@ If an IO error occurs\, \`scan\_all\` tail\-calls \$error with an \`exception\`\
 
 .. _api-d81ad89a8b435a36ffed4b54849ac30f:
 
-SCANNER\.is\?\(Val\)
-====================
+SCANNER.is?\(Val\)
+==================
 
-\`is\?\` returns whether \`Val\` is a \`scanner\`\.
+\`is?\` returns whether \`Val\` is a \`scanner\`\.
 
 .. _api-f59821767c40792913ee646f25094aba:
 
-SCANNER\.mixin
-==============
+SCANNER.mixin
+=============
 
-\`\`mixin\`\` returns a mixin trait which provides an implementation of Scanner\.scan\_all\. \`scan\_all\` will be implemented using \`scan\` method\.
+\`\`mixin\`\` returns a mixin trait which provides an implementation of Scanner.scan_all. \`scan_all\` will be implemented using \`scan\` method.
 

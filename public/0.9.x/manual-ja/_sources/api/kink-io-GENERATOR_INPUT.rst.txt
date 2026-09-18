@@ -1,6 +1,6 @@
-==========================
-kink\/io\/GENERATOR\_INPUT
-==========================
+=========================
+kink\/io\/GENERATOR_INPUT
+=========================
 
 .. contents::
     :local:
@@ -8,14 +8,15 @@ kink\/io\/GENERATOR\_INPUT
 
 .. _api-0c35ace4f04f0b81fe2e2e093b7a4823:
 
-GENERATOR\_INPUT\.new\(\$generator\)
-====================================
+GENERATOR_INPUT.new\($generator\)
+=================================
 
-\`new\` returns an \`input\` whose bytes are written to an \`output\` within invocation of \$generator\.
+\`new\` returns an \`input\` whose bytes are written to an \`output\` within invocation of $generator.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :BIN.require_from('kink/')
     :CONTROL.require_from('kink/')
@@ -49,31 +50,31 @@ GENERATOR\_INPUT\.new\(\$generator\)
 
 .. rubric:: Pass bytes
 
-When \`In\.read\` is called for the first time\, \$generator is called with an \`output\`\.
+When \`In.read\` is called for the first time, $generator is called with an \`output\`\.
 
-When \`Out\.write\` is called within the invocation of \$generator\, the invocation of \$generator is suspended\, and the bytes are given to the \`input\`\.
+When \`Out.write\` is called within the invocation of $generator, the invocation of $generator is suspended, and the bytes are given to the \`input\`\.
 
-When more bytes are required by the \`input\`\, the invocation of \$generator is resumed\.
+When more bytes are required by the \`input\`\, the invocation of $generator is resumed.
 
-When the invocation of \$generator returns\, the \`input\` reaches EOF\.
+When the invocation of $generator returns, the \`input\` reaches EOF.
 
 .. rubric:: Close the \`input\`
 
-The \`input\` made by \`new\` is recommended to be closed using CONTROL\.with\_finally\, so that finalization is properly done in \$generator\.
+The \`input\` made by \`new\` is recommended to be closed using CONTROL.with_finally, so that finalization is properly done in $generator.
 
-If the \`input\` is closed before \`In\.read\`\, or after reaching EOF\, it marks the input as the closed status\.
+If the \`input\` is closed before \`In.read\`\, or after reaching EOF, it marks the input as the closed status.
 
-If the \`input\` is closed when there is a suspended invocation of \$generator\, the invocation is resumed\, then the current and subsequent invocations of \`Out\.write\` will receive an IO error\.
+If the \`input\` is closed when there is a suspended invocation of $generator, the invocation is resumed, then the current and subsequent invocations of \`Out.write\` will receive an IO error.
 
-.. rubric:: Exception raised from \$generator
+.. rubric:: Exception raised from $generator
 
-If \$generator raises an exception\, the current and subsequent invocations of \`In\.read\`\, or the current invocation of \`In\.close\` will receive an IO error\.
+If $generator raises an exception, the current and subsequent invocations of \`In.read\`\, or the current invocation of \`In.close\` will receive an IO error.
 
 .. rubric:: Should not close \`output\`
 
-You should not close the \`output\` given to \$generator\. \`Out\.close\` always receives an IO error\.
+You should not close the \`output\` given to $generator. \`Out.close\` always receives an IO error.
 
 .. rubric:: Precondition
 
-\$generator must be a function which takes an \`output\`\.
+$generator must be a function which takes an \`output\`\.
 

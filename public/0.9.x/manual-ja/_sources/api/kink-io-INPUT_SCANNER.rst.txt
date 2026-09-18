@@ -1,6 +1,6 @@
-========================
-kink\/io\/INPUT\_SCANNER
-========================
+=======================
+kink\/io\/INPUT_SCANNER
+=======================
 
 Provides a \`scanner\` implementation wrapping \`input\`\.
 
@@ -10,26 +10,27 @@ Provides a \`scanner\` implementation wrapping \`input\`\.
 
 .. _api-d1e32a7edd5b3d1b05222e870e0f43de:
 
-INPUT\_SCANNER\.new\(Input Charset \.\.\.\[\$config\=\{\}\]\)
-=============================================================
+INPUT_SCANNER.new\(Input Charset \.\.\.\[$config\=\{\}\]\)
+==========================================================
 
-\`new\` makes a \`scanner\` which also support \`input\` methods\. The created scanner reads bytes from \`Input\` and converts them to strings using \`Charset\`\. Methods of \`input\` type are delegated to \`Input\`\.
+\`new\` makes a \`scanner\` which also support \`input\` methods. The created scanner reads bytes from \`Input\` and converts them to strings using \`Charset\`\. Methods of \`input\` type are delegated to \`Input\`\.
 
 Config method\:
 
-\• C\.replace\_conversion\_error
+\• C.replace_conversion_error
 
-When \`scan\_line\` or \`scan\` methods detect malformed byte sequence or a character which cannot be mapped to Unicode\, those methods tail\-call \$error by default\. If C\.replace\_conversion\_error is called\, \`scan\` and \`scan\_line\` insert replacement character sequence into the string instead of calling \$error\.
+When \`scan_line\` or \`scan\` methods detect malformed byte sequence or a character which cannot be mapped to Unicode, those methods tail\-call $error by default. If C.replace_conversion_error is called, \`scan\` and \`scan_line\` insert replacement character sequence into the string instead of calling $error.
 
 .. rubric:: Preconditions
 
-\`Input\` must be \`input\` type\.
+\`Input\` must be \`input\` type.
 
-\`Charset\` must be \`charset\` type\.
+\`Charset\` must be \`charset\` type.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :INPUT_SCANNER.require_from('kink/io/')
     :BIN_INPUT.require_from('kink/io/')

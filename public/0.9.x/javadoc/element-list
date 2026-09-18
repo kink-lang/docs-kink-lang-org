@@ -25,5 +25,7 @@ org.kink_lang.kink.internal.program.itreeoptimize
 org.kink_lang.kink.internal.program.itreeoptimize.ssafy
 org.kink_lang.kink.internal.program.lex
 org.kink_lang.kink.internal.startup
+org.kink_lang.kink.internal.str
 org.kink_lang.kink.internal.sym
 org.kink_lang.kink.internal.vec
+org.kink_lang.kink.op

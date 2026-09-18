@@ -5,36 +5,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.55. kink/http/RESP_CONTENT &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=6ce99075"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.55. kink/http/RESP_CONTENT &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="6.56. kink/io/BIN_INPUT" href="kink-io-BIN_INPUT.html" />
     <link rel="prev" title="6.54. kink/http/RESP" href="kink-http-RESP.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.55. kink/http/RESP_CONTENT</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-http-RESP.html"><span class="section-number">6.54. </span>kink/http/RESP</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-io-BIN_INPUT.html"><span class="section-number">6.56. </span>kink/io/BIN_INPUT</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. Builtin library API</a></li><li><a class="current" href="#" aria-current="page">6.55. kink/http/RESP_CONTENT</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="../search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-http-resp-content">
 <h1><span class="section-number">6.55. </span>kink/http/RESP_CONTENT<a class="headerlink" href="#kink-http-resp-content" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="contents">
@@ -57,38 +46,38 @@
 <section id="type-resp-content">
 <span id="api-3a22805c45b6a83229c2f66b508b3ae1"></span><h2><span class="section-number">6.55.1. </span>type resp_content<a class="headerlink" href="#type-resp-content" title="Link to this heading">¶</a></h2>
 <p>`resp_content` is a HTTP response content.</p>
-<p>A `resp_content` contains the following properties.</p>
+<p>A `resp_content` contains the following attributes.</p>
 <p>• input: An `input` value which reads bytes of the response content.</p>
 <p>• media_type: The `media_type` value of the response content.</p>
-<p>• bin (optional): A `bin` value of the bytes of the response content. If this property is given, the value is equal to bytes read from the `input` property.</p>
+<p>• bin (optional): A `bin` value of the bytes of the response content. If this attribute is given, the value is equal to bytes read from the `input` attribute.</p>
 <section id="rsc-input">
 <span id="api-4ff3f50052d4b7bffccc6d5d8c612c95"></span><h3><span class="section-number">6.55.1.1. </span>Rsc.input<a class="headerlink" href="#rsc-input" title="Link to this heading">¶</a></h3>
-<p>`input` method returns the `input` property.</p>
+<p>`input` method returns the `input` attribute.</p>
 </section>
 <section id="rsc-media-type">
 <span id="api-2ecd7e3fb0bbf21e66c48c594f64aefe"></span><h3><span class="section-number">6.55.1.2. </span>Rsc.media_type<a class="headerlink" href="#rsc-media-type" title="Link to this heading">¶</a></h3>
-<p>`media_type` method returns the `media_type` property.</p>
+<p>`media_type` method returns the `media_type` attribute.</p>
 </section>
 <section id="rsc-have-bin">
 <span id="api-e2a0b7422177b7a98756b5d14cded0e0"></span><h3><span class="section-number">6.55.1.3. </span>Rsc.have_bin?<a class="headerlink" href="#rsc-have-bin" title="Link to this heading">¶</a></h3>
-<p>`have_bin?` returns whether `Rsc` has `bin` property.</p>
+<p>`have_bin?` returns whether `Rsc` has `bin` attribute.</p>
 </section>
 <section id="rsc-bin">
 <span id="api-4516f8b053efd5e890269940676d308c"></span><h3><span class="section-number">6.55.1.4. </span>Rsc.bin<a class="headerlink" href="#rsc-bin" title="Link to this heading">¶</a></h3>
-<p>`bin` method returns the `bin` property.</p>
+<p>`bin` method returns the `bin` attribute.</p>
 <p class="rubric">Precondition</p>
-<p>`Rsc` must have `bin` property.</p>
+<p>`Rsc` must have `bin` attribute.</p>
 </section>
 <section id="rsc-text">
 <span id="api-9d8da296196d8ef281ebf79534d0a0d1"></span><h3><span class="section-number">6.55.1.5. </span>Rsc.text<a class="headerlink" href="#rsc-text" title="Link to this heading">¶</a></h3>
 <p>`text` method returns the response content as a `str` value.</p>
 <p>The content is decoded by `Rsc.media_type.charset`. Conversion errors are replaced to replacement characters.</p>
 <p class="rubric">Precondition</p>
-<p>`Rsc` must have `bin` property.</p>
+<p>`Rsc` must have `bin` attribute.</p>
 </section>
 <section id="rsc-close-config">
 <span id="api-72e35aa7c5386749a2a0172e195f645c"></span><h3><span class="section-number">6.55.1.6. </span>Rsc.close(...[$config={}])<a class="headerlink" href="#rsc-close-config" title="Link to this heading">¶</a></h3>
-<p>`close` method closes the `input` property.</p>
+<p>`close` method closes the `input` attribute.</p>
 <p>Config methods:</p>
 <p>• C.on_success($success): default = {}</p>
 <p>• C.on_error($error): default = {(:Exc) Exc.raise }</p>
@@ -102,7 +91,7 @@
 <section id="resp-content-from-bin-bin-mt">
 <span id="api-bb2ca926da3a6735dada5c768026eadf"></span><h2><span class="section-number">6.55.2. </span>RESP_CONTENT.from_bin(Bin Mt)<a class="headerlink" href="#resp-content-from-bin-bin-mt" title="Link to this heading">¶</a></h2>
 <p>`from_bin` returns a `resp_content` whose bytes is given as a `bin` value.</p>
-<p>The properties of the result `resp_content` will be (input=Bin_input, media_type=Mt, bin=Bin), where `Bin_input` is an `input` value which reads the bytes of `Bin`.</p>
+<p>The attributes of the result `resp_content` will be (input=Bin_input, media_type=Mt, bin=Bin), where `Bin_input` is an `input` value which reads the bytes of `Bin`.</p>
 <p>You don't need to close the result `resp_content`.</p>
 <p class="rubric">Preconditions</p>
 <p>`Bin` must be a `bin` value.</p>
@@ -111,7 +100,7 @@
 <section id="resp-content-from-input-in-mt">
 <span id="api-0efa49e16d0aac9e78eadb4b54a88ec1"></span><h2><span class="section-number">6.55.3. </span>RESP_CONTENT.from_input(In Mt)<a class="headerlink" href="#resp-content-from-input-in-mt" title="Link to this heading">¶</a></h2>
 <p>`from_input` returns a `resp_content` made from an `input` value.</p>
-<p>The properties of the result `resp_content` will be (input=In, media_type=Mt).</p>
+<p>The attributes of the result `resp_content` will be (input=In, media_type=Mt).</p>
 <p>You need to close the result `resp_content`.</p>
 <p class="rubric">Preconditions</p>
 <p>`In` must be an `input` value.</p>
@@ -124,18 +113,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-http-RESP.html"><span class="section-number">6.54. </span>kink/http/RESP</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-io-BIN_INPUT.html"><span class="section-number">6.56. </span>kink/io/BIN_INPUT</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

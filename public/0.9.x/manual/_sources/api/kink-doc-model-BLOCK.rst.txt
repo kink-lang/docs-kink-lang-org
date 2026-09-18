@@ -11,38 +11,39 @@ kink\/doc\/model\/BLOCK
 type block
 ==========
 
-\`block\` is a block in a kinkdoc document\.
+\`block\` is a block in a kinkdoc document.
 
-A \`block\` has following properties\:
+A \`block\` has the following attributes\:
 
-\• Type\: a \`block\_type\` which corresponds to \"type\" property in JSON data
+\• Type\: a \`block_type\` which corresponds to \"type\" property in JSON data
 
 \• Text\: a \`str\` which corresponds to \"text\" property in JSON data
 
 .. _api-51283f777897decab1f7eeabd642f013:
 
-Block\.type
------------
+Block.type
+----------
 
-\`type\` method returns \`Type\` property of \`Block\`\.
+\`type\` method returns \`Type\` attribute of \`Block\`\.
 
 .. _api-373399257a68d0434305ac53476b4654:
 
-Block\.text
------------
+Block.text
+----------
 
-\`text\` returns \`Text\` property of \`Block\`\.
+\`text\` returns \`Text\` attribute of \`Block\`\.
 
 .. _api-a2685142858e5e776e66e15ee1d0072c:
 
-Block\.to\_json\_val
---------------------
+Block.to_json_val
+-----------------
 
-\`to\_json\_val\` converts \`Block\` to a JSON value\.
+\`to_json_val\` converts \`Block\` to a JSON value.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :BLOCK.require_from('kink/doc/model/')
     :BLOCK_TYPE.require_from('kink/doc/model/')
@@ -60,7 +61,7 @@ Block\.to\_json\_val
 X \=\= Y
 --------
 
-Two \`block\` values are equal when they have equal \`Type\` properties and \`Text\` properties\.
+Two \`block\` values are equal when they have equal \`Type\` attributes and \`Text\` attributes.
 
 .. rubric:: Precondition
 
@@ -68,23 +69,23 @@ Two \`block\` values are equal when they have equal \`Type\` properties and \`Te
 
 .. _api-b218008aa5d51547dacb4daf4e4e0a36:
 
-BLOCK\.new\(Type Text\)
-=======================
+BLOCK.new\(Type Text\)
+======================
 
-\`new\` returns a new \`block\` value with properties \`Type\` and \`Text\`\.
+\`new\` returns a new \`block\` value with attributes \`Type\` and \`Text\`\.
 
 .. rubric:: Preconditions
 
-\`Type\` must be a \`block\_type\`\.
+\`Type\` must be a \`block_type\`\.
 
 \`Text\` must be a \`str\`\.
 
-\`Type\.valid\_text\?\(Text\)\` must be true\.
+\`Type.valid_text?\(Text\)\` must be true.
 
 .. _api-97d330a2e5b386b1db3899fb2d5af37a:
 
-BLOCK\.is\?\(Val\)
-==================
+BLOCK.is?\(Val\)
+================
 
-\`is\?\` returns whether \`Val\` is a \`block\`\.
+\`is?\` returns whether \`Val\` is a \`block\`\.
 

@@ -5,41 +5,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.49. kink/doc/render/sphinx/SPHINX_RENDER_TOOL &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=6ce99075"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.49. kink/doc/render/sphinx/SPHINX_RENDER_TOOL &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="6.50. kink/http/HTTP" href="kink-http-HTTP.html" />
     <link rel="prev" title="6.48. kink/doc/render/html/HTML_RENDER_TOOL" href="kink-doc-render-html-HTML_RENDER_TOOL.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.49. kink/doc/render/sphinx/SPHINX_RENDER_TOOL</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-doc-render-html-HTML_RENDER_TOOL.html"><span class="section-number">6.48. </span>kink/doc/render/html/HTML_RENDER_TOOL</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-http-HTTP.html"><span class="section-number">6.50. </span>kink/http/HTTP</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. Builtin library API</a></li><li><a class="current" href="#" aria-current="page">6.49. kink/doc/render/sphinx/SPHINX_RENDER_TOOL</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="../search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-doc-render-sphinx-sphinx-render-tool">
 <h1><span class="section-number">6.49. </span>kink/doc/render/sphinx/SPHINX_RENDER_TOOL<a class="headerlink" href="#kink-doc-render-sphinx-sphinx-render-tool" title="Link to this heading">¶</a></h1>
 <p>Launcheable module to render a kinkdoc document into a set of reStructuredText files for Sphinx document generator.</p>
 <p class="rubric">Usage</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">kink</span> [<span class="nv">Kink_options</span>]... <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="n">render</span>/<span class="n">sphinx</span>/<span class="nv">SPHINX_RENDER_TOOL</span> [<span class="nv">Mod_options</span>] <span class="nv">Dir</span> &lt;<span class="nv">Json</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">kink</span> [<span class="nv">Kink_options</span>]... <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="n">render</span>/<span class="n">sphinx</span>/<span class="nv">SPHINX_RENDER_TOOL</span> [<span class="nv">Mod_options</span>] <span class="nv">Dir</span> &lt;<span class="nv">Json</span>
 </pre></div>
 </div>
 <p>The command reads the kinkdoc JSON data from the standard input, converts it to a set of reStructuredText files for Sphinx, and writes them under the directory `Dir`.</p>
@@ -58,24 +47,24 @@
 <p>• ...</p>
 <p class="rubric">Anchors</p>
 <p>The tiles of sections of the third and deeper levels will have anchors for cross reference. Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>.. <span class="n">_kinkdoc</span>-<span class="m">0123456789</span><span class="n">abcdef0123456789abcdef</span>:
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span>.. <span class="n">_kinkdoc</span>-<span class="m">0123456789</span><span class="n">abcdef0123456789abcdef</span>:
 
-<span class="n">type</span> <span class="n">finger</span>\<span class="n">_tree</span>
-=================
+<span class="n">type</span> <span class="n">finger_tree</span>
+================
 
 <span class="nv">A</span> <span class="n">finger</span> <span class="n">tree</span> <span class="n">is</span> <span class="n">an</span> <span class="n">immutable</span> <span class="n">data</span> <span class="n">structure</span> <span class="n">for</span> <span class="nv">O</span>\(<span class="n">log</span> <span class="nv">N</span>\)
-<span class="n">concatenation</span> <span class="n">and</span> <span class="n">splitting</span>\.
+<span class="n">concatenation</span> <span class="n">and</span> <span class="n">splitting</span>.
 
 .. <span class="n">_kinkdoc</span>-<span class="n">fedcba9876543210fedcba9876543210</span>:
 
-<span class="nv">Ft</span>\.<span class="n">size</span>
---------
+<span class="nv">Ft</span>.<span class="n">size</span>
+-------
 
-\`<span class="n">size</span>\` <span class="n">returns</span> <span class="n">the</span> <span class="n">size</span> <span class="n">of</span> <span class="n">the</span> <span class="n">finger</span> <span class="n">tree</span>\.
+\`<span class="n">size</span>\` <span class="n">returns</span> <span class="n">the</span> <span class="n">size</span> <span class="n">of</span> <span class="n">the</span> <span class="n">finger</span> <span class="n">tree</span>.
 </pre></div>
 </div>
 <p>reST files in the Sphinx document can refer to a section using :ref: role like:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>.. <span class="n">someotherpage</span>.<span class="n">rst</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span>.. <span class="n">someotherpage</span>.<span class="n">rst</span>
 
 <span class="nv">You</span> <span class="n">can</span> <span class="n">call</span> <span class="nv">:ref</span>:`<span class="nv">Ft</span>.<span class="n">size</span> &lt;<span class="n">kinkdoc</span>-<span class="n">fedcba9876543210fedcba9876543210</span>&gt;`
 <span class="n">to</span> <span class="n">get</span> <span class="n">the</span> <span class="n">size</span> <span class="n">of</span> <span class="n">the</span> <span class="n">finger</span> <span class="n">tree</span>.
@@ -83,7 +72,7 @@
 </div>
 <p>Anchors are generated from the text of the title of the section, and the titles of the anscestors.</p>
 <p class="rubric">Usage example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">$ kink</span> <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="nv">DOC_PARSE_TOOL</span> --<span class="n">title</span> <span class="s1">&#39;API reference&#39;</span> <span class="n">src</span> &gt;<span class="n">doc</span>.<span class="n">json</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">$ kink</span> <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="nv">DOC_PARSE_TOOL</span> --<span class="n">title</span> <span class="s1">&#39;API reference&#39;</span> <span class="n">src</span> &gt;<span class="n">doc</span>.<span class="n">json</span>
 ...
 <span class="nv">$ kink</span> <span class="n">mod</span><span class="nv">:kink</span>/<span class="n">doc</span>/<span class="n">render</span>/<span class="n">sphinx</span>/<span class="nv">SPHINX_RENDER_TOOL</span> <span class="n">src</span>/<span class="n">sphinx</span>/<span class="n">api</span>  &lt;<span class="n">doc</span>.<span class="n">json</span>
 </pre></div>
@@ -100,18 +89,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-doc-render-html-HTML_RENDER_TOOL.html"><span class="section-number">6.48. </span>kink/doc/render/html/HTML_RENDER_TOOL</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-http-HTTP.html"><span class="section-number">6.50. </span>kink/http/HTTP</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

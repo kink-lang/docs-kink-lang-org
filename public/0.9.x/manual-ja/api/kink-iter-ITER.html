@@ -5,37 +5,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.71. kink/iter/ITER &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.71. kink/iter/ITER &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=6ab1bf41"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/translations.js?v=4755f45a"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="6.72. kink/javahost/JAVA" href="kink-javahost-JAVA.html" />
     <link rel="prev" title="6.70. kink/iter/IFUN" href="kink-iter-IFUN.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.71. kink/iter/ITER</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-iter-IFUN.html"><span class="section-number">6.70. </span>kink/iter/IFUN</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-javahost-JAVA.html"><span class="section-number">6.72. </span>kink/javahost/JAVA</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. 組み込みライブラリAPI</a></li><li><a class="current" href="#" aria-current="page">6.71. kink/iter/ITER</a></li></ol></nav>
+    <nav class="header-nav" aria-label="検索"><a href="../search.html">検索</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-iter-iter">
 <h1><span class="section-number">6.71. </span>kink/iter/ITER<a class="headerlink" href="#kink-iter-iter" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="id1">
@@ -80,7 +69,7 @@
 <span id="api-44ca02d34d982234fa48658bbea8b4be"></span><h3><span class="section-number">6.71.1.1. </span>Iter.ifun<a class="headerlink" href="#iter-ifun" title="Link to this heading">¶</a></h3>
 <p>ifunメソッドは、Iterがラップしているifunを戻す。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:IFUN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Num_iter</span> &lt;- <span class="m">5</span>.<span class="n">times</span>
 
@@ -95,12 +84,11 @@
 </section>
 <section id="iter-each-consume">
 <span id="api-5ca6b279a4095243180a754558cda613"></span><h3><span class="section-number">6.71.1.2. </span>Iter.each($consume)<a class="headerlink" href="#iter-each-consume" title="Link to this heading">¶</a></h3>
-<p>eachはIterの各要素について$consumeを呼び出し、最後の$consumeの戻り値を戻す。</p>
-<p>もしIterが要素を持たない場合、eachはnadaを戻す。</p>
+<p>eachはIterの各要素について$consumeを呼び出す。</p>
 <p class="rubric">事前条件</p>
 <p>$consumeはひとつの引数を取る関数でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">3</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:E</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">3</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:E</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">E</span>.<span class="n">repr</span>)
 }
 <span class="c1"># Output:</span>
@@ -116,7 +104,7 @@
 <p class="rubric">事前条件</p>
 <p>$transformはひとつの引数を取らなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>)
 <span class="nv">:Doubles</span> &lt;- <span class="nv">Ns</span>.<span class="n">map</span>{(<span class="nv">:N</span>) <span class="nv">N</span> * <span class="m">2</span> }
@@ -137,7 +125,7 @@
 <p class="rubric">事前条件</p>
 <p>$to_iterは引数をひとつ取り、iterを戻さなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span>)
 <span class="nv">:Mapped</span> &lt;- <span class="nv">Ns</span>.<span class="n">concat_map</span>{(<span class="nv">:N</span>)
@@ -154,7 +142,7 @@
 <p class="rubric">事前条件</p>
 <p>$include?は述語でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Orig</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span>)
 <span class="nv">:Evens</span> &lt;- <span class="nv">Orig</span>.<span class="n">filter</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
@@ -176,7 +164,7 @@
 <p class="rubric">事前条件</p>
 <p>$counted?は述語でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Nums</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span>)
 <span class="nv">:Count</span> &lt;- <span class="nv">Nums</span>.<span class="n">count</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
@@ -192,7 +180,7 @@
 <p class="rubric">事前条件</p>
 <p>$combineはふたつの引数を取らなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">fold</span>(<span class="m">100</span>){(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; 115</span>
@@ -210,7 +198,7 @@
 <p>$combineはふたつの引数を取らなければならない。</p>
 <p>$empty_fallbackはサンクでなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">reduce</span>{(<span class="nv">:X</span> <span class="nv">:Y</span>) <span class="nv">X</span> + <span class="nv">Y</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; 15</span>
@@ -223,7 +211,7 @@
 <p class="rubric">事前条件</p>
 <p>Nは整数のnum値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="m">1</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
@@ -243,7 +231,7 @@
 <p class="rubric">事前条件</p>
 <p>Nは整数のnum値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="m">10</span>.<span class="n">times</span>.<span class="n">drop_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
@@ -263,7 +251,7 @@
 <p class="rubric">事前条件</p>
 <p>$include?は述語でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1000</span> <span class="m">500</span> <span class="m">250</span> <span class="m">125</span> <span class="m">62</span> <span class="m">31</span> <span class="m">15</span> <span class="m">7</span> <span class="m">3</span> <span class="m">1</span> <span class="m">0</span>)
 <span class="nv">:Front</span> &lt;- <span class="nv">Ns</span>.<span class="n">take_while</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
@@ -278,7 +266,7 @@
 <p class="rubric">事前条件</p>
 <p>$exclude?は述語でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1000</span> <span class="m">500</span> <span class="m">250</span> <span class="m">125</span> <span class="m">62</span> <span class="m">31</span> <span class="m">15</span> <span class="m">7</span> <span class="m">3</span> <span class="m">1</span> <span class="m">0</span>)
 <span class="nv">:Back</span> &lt;- <span class="nv">Ns</span>.<span class="n">drop_while</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }
@@ -294,7 +282,7 @@
 <p class="rubric">事前条件</p>
 <p>$match?は述語でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">all?</span>{(<span class="nv">:N</span>) <span class="nv">N</span> &lt; <span class="m">10</span> }.<span class="n">repr</span>)      <span class="c1"># =&gt; true</span>
@@ -310,7 +298,7 @@
 <p class="rubric">事前条件</p>
 <p>$match?は述語でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Ns</span>.<span class="n">any?</span>{(<span class="nv">:N</span>) <span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span> }.<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
@@ -318,7 +306,7 @@
 </pre></div>
 </div>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">ITER</span>.<span class="n">of</span>().<span class="n">any?</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; false</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span>).<span class="n">any?</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; true</span>
@@ -332,7 +320,7 @@
 <p class="rubric">事前条件</p>
 <p>Iterは、iterを要素に持つiterでなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Nums</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span>)
 <span class="nv">:Strs</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span>)
@@ -351,7 +339,7 @@
 <p class="rubric">事前条件</p>
 <p>Chunk_sizeは正の整数でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Ns</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span>)
 <span class="nv">:Chunks</span> &lt;- <span class="nv">Ns</span>.<span class="n">unconcat</span>(<span class="m">2</span>)
@@ -370,7 +358,7 @@
 <p>cycleはIterの要素を無限に繰り返したiterを戻す。</p>
 <p>Iterが空の場合、結果のiterも空である。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="m">3</span>.<span class="n">times</span>.<span class="n">cycle</span>.<span class="n">take_front</span>(<span class="m">10</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
@@ -390,7 +378,7 @@
 <p class="rubric">事前条件</p>
 <p>Iterは有限長でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- <span class="m">3</span>.<span class="n">times</span>.<span class="n">vec</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Vec</span> &lt;- <span class="m">3</span>.<span class="n">times</span>.<span class="n">vec</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Vec</span>.<span class="n">repr</span>) <span class="c1"># =&gt; [0 1 2]</span>
 </pre></div>
 </div>
@@ -401,7 +389,7 @@
 <p class="rubric">事前条件</p>
 <p>FrontとBackはiter値でなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Iter</span> &lt;- <span class="m">1</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">3</span>) + <span class="m">11</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">3</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Iter</span> &lt;- <span class="m">1</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">3</span>) + <span class="m">11</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">3</span>)
 <span class="nv">Iter</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
 }
@@ -416,7 +404,7 @@
 <p class="rubric">事前条件</p>
 <p>$ifunはifunでなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:make_vec_ifun</span> &lt;- {(<span class="nv">:Vec</span>)
   {(<span class="nv">:proc</span> <span class="nv">:fin</span>)
@@ -448,7 +436,7 @@
 <span id="api-119705136739da62d44434cd2e92f10f"></span><h2><span class="section-number">6.71.4. </span>ITER.of(...Elems)<a class="headerlink" href="#iter-of-elems" title="Link to this heading">¶</a></h2>
 <p>ofはElemsの要素を含むiterを戻す。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Iter</span> &lt;- <span class="nv">ITER</span>.<span class="n">of</span>(<span class="s1">&#39;foo&#39;</span> <span class="s1">&#39;bar&#39;</span> <span class="s1">&#39;baz&#39;</span>)
 <span class="nv">Iter</span>.<span class="n">each</span>{(<span class="nv">:S</span>)
@@ -468,7 +456,7 @@
 <p class="rubric">事前条件</p>
 <p>Other_itersの要素はiterでなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Zipped</span> &lt;- <span class="nv">ITER</span>.<span class="n">zip</span>(
   <span class="nv">ITER</span>.<span class="n">of</span>(<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>)
@@ -492,7 +480,7 @@
 <p class="rubric">事前条件</p>
 <p>$make_iterはiterを戻すサンクでなければならない。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:count_down</span> &lt;- {(<span class="nv">:N</span>)
   <span class="n">if</span>(<span class="nv">N</span> &lt; <span class="m">0</span>
@@ -513,7 +501,7 @@
 <p>$generatorは、引数ひとつの関数$yieldを引数に取らなければならない。$generatorの呼び出しの中で$yieldが引数とともに呼ばれると、その引数が結果のiterの要素になる。$generatorの呼び出しが終わると、そこがiterの末尾になる。</p>
 <p>$generatorは、結果のiterの内容が必要になったときに呼び出される。$generatorの呼び出しは、$yieldが呼ばれたときに中断される。呼び出しは、後続するiterの内容が必要になったときに再開される。</p>
 <p class="rubric">例: 有限長のiterを作る</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Iter</span> &lt;- <span class="nv">ITER</span>.<span class="n">from_generator</span>{(<span class="nv">:yield</span>)
   <span class="n">yield</span>(<span class="s1">&#39;foo&#39;</span>)
@@ -530,7 +518,7 @@
 </pre></div>
 </div>
 <p class="rubric">例: 無限長のiterを作る</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Iter</span> &lt;- <span class="nv">ITER</span>.<span class="n">from_generator</span>{(<span class="nv">:yield</span>)
   <span class="nv">:loop</span> &lt;- {(<span class="nv">:N</span>)
@@ -558,7 +546,7 @@
 <p class="rubric">事前条件</p>
 <p>Eacherはeach($consume)メソッドをサポートしなければならない。eachはEacherの要素を列挙するために呼ばれる。</p>
 <p class="rubric">例</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:ITER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/iter/&#39;</span>)
 
 <span class="nv">:Take_five</span> &lt;- <span class="nv">ITER</span>.<span class="n">from_each</span>([<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span>])
 <span class="nv">Take_five</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
@@ -571,18 +559,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-iter-IFUN.html"><span class="section-number">6.70. </span>kink/iter/IFUN</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-javahost-JAVA.html"><span class="section-number">6.72. </span>kink/javahost/JAVA</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

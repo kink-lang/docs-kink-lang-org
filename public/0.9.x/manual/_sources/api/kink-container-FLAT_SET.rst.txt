@@ -1,10 +1,10 @@
-==========================
-kink\/container\/FLAT\_SET
-==========================
+=========================
+kink\/container\/FLAT_SET
+=========================
 
-Provides an \`order\_set\` implementation which stores all the elements in a sorted \`vec\`\.
+Provides an \`order_set\` implementation which stores all the elements in a sorted \`vec\`\.
 
-Flat set is a good choice when elements are rarely inserted or deleted\, or the size of the set is small\.
+Flat set is a good choice when elements are rarely inserted or deleted, or the size of the set is small.
 
 .. contents::
     :local:
@@ -12,26 +12,27 @@ Flat set is a good choice when elements are rarely inserted or deleted\, or the 
 
 .. _api-ed23cd8f93d19b85949851152938880a:
 
-FLAT\_SET\.new\(\.\.\.\[\$config\=\{\}\]\)
-==========================================
+FLAT_SET.new\(\.\.\.\[$config\=\{\}\]\)
+=======================================
 
-\`new\` returns a new empty flat \`order\_set\`\.
+\`new\` returns a new empty flat \`order_set\`\.
 
 .. rubric:: Config method
 
-C\.order\(\$up\_to\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
+C.order\($up_to?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 
 .. rubric:: Total order relation
 
-\$up\_to\? must be a function which takes two args X and Y\. \`up\_to\?\(X Y\)\` must return the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total order relation of elements\.
+$up_to? must be a function which takes two args X and Y. \`up_to?\(X Y\)\` must return the bool value of \`X up\-to Y\`\, where \`up\-to\` is the total order relation of elements.
 
 .. rubric:: Precondition
 
-\$up\_to\? must be a function which takes two values and returns a \`bool\`\.
+$up_to? must be a function which takes two values and returns a \`bool\`\.
 
 .. rubric:: Example\: default order
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -52,6 +53,7 @@ C\.order\(\$up\_to\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 .. rubric:: Example\: reversed order
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -71,18 +73,19 @@ C\.order\(\$up\_to\?\)\: default \= \{\(\:X \:Y\) X \<\= Y \}
 
 .. _api-bd81478257c48cc2be0e4be4211b4108:
 
-FLAT\_SET\.of\(\.\.\.Elems\)
-============================
+FLAT_SET.of\(\.\.\.Elems\)
+==========================
 
-\`of\` makes a new flat \`order\_set\` which contains the values of \`Elems\`\. The elements are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
+\`of\` makes a new flat \`order_set\` which contains the values of \`Elems\`\. The elements are ordered by \`\<\=\` operator, or \`op_le\` method.
 
 .. rubric:: Precondition
 
-The elements of \`Elems\` must be in the domain of the elements of the set\.
+The elements of \`Elems\` must be in the domain of the elements of the set.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         
@@ -99,20 +102,21 @@ The elements of \`Elems\` must be in the domain of the elements of the set\.
 
 .. _api-32b8bdf470bb6dab3ac8b930498743c4:
 
-FLAT\_SET\.from\_each\(Eacher\)
-===============================
+FLAT_SET.from_each\(Eacher\)
+============================
 
-\`from\_each\` makes a flat \`order\_set\` containing the elements of \`Eacher\`\. The elements are ordered by \`\<\=\` operator\, or \`op\_le\` method\.
+\`from_each\` makes a flat \`order_set\` containing the elements of \`Eacher\`\. The elements are ordered by \`\<\=\` operator, or \`op_le\` method.
 
 .. rubric:: Precondition
 
-\`Eacher\` must implement each\(\$consume\) method\, which calls \$consume for each element of \`Eacher\`\.
+\`Eacher\` must implement each\($consume\) method, which calls $consume for each element of \`Eacher\`\.
 
-The elements of \`Eacher\` must be in the domain of the elements of the set\.
+The elements of \`Eacher\` must be in the domain of the elements of the set.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :FLAT_SET.require_from('kink/container/')
         

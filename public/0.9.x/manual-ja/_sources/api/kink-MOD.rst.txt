@@ -2,7 +2,7 @@
 kink\/MOD
 =========
 
-Operates the module system\.
+Operates the module system.
 
 .. contents::
     :local:
@@ -10,40 +10,41 @@ Operates the module system\.
 
 .. _api-36236434317e1c52d15948d18e2c4bc2:
 
-MOD\.require\(Mod\_name \.\.\.\[\$config\=\{\}\]\)
-==================================================
+MOD.require\(Mod_name \.\.\.\[$config\=\{\}\]\)
+===============================================
 
-\`require\` loads the module specified by \`Mod\_name\`\. See “Module system” section of the manual for details of module loading\.
+\`require\` loads the module specified by \`Mod_name\`\. See “Module system” section of the manual for details of module loading.
 
 Config methods\:
 
-\• C\.on\_success\(\$success\)\: default \= VAL\$identity
+\• C.on_success\($success\)\: default \= VAL$identity
 
-\• C\.on\_not\_found\(\$not\_found\)\: default \= a fun which raises an exception
+\• C.on_not_found\($not_found\)\: default \= a fun which raises an exception
 
-\• C\.on\_compile\_error\(\$compile\_error\)\: default \= a fun which raises an exception
+\• C.on_compile_error\($compile_error\)\: default \= a fun which raises an exception
 
-If module loading ends with \`success\` status\, \`require\` tail\-calls \$success with the loaded module\.
+If module loading ends with \`success\` status, \`require\` tail\-calls $success with the loaded module.
 
-If module loading ends with \`not\_found\` status\, \`require\` tail\-calls \$not\_found with no arg\.
+If module loading ends with \`not_found\` status, \`require\` tail\-calls $not_found with no arg.
 
-If module loading ends with \`compile\_error\` status\, \`require\` tail\-calls \$compile\_error with a \`compile\_error\` value\.
+If module loading ends with \`compile_error\` status, \`require\` tail\-calls $compile_error with a \`compile_error\` value.
 
-If an exception is thrown while module loading\, the exception is propagated to the caller\.
+If an exception is thrown while module loading, the exception is propagated to the caller.
 
 .. rubric:: Preconditions
 
-\`Mod\_name\` must be a \`str\`\.
+\`Mod_name\` must be a \`str\`\.
 
-\$success must be a fun which takes a module\.
+$success must be a fun which takes a module.
 
-\$not\_found must be a thunk\.
+$not_found must be a thunk.
 
-\$compile\_error must be a fun which takes a \`compile\_error\` value\.
+$compile_error must be a fun which takes a \`compile_error\` value.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :MOD.require_from('kink/')
         
@@ -56,10 +57,10 @@ If an exception is thrown while module loading\, the exception is propagated to 
 
 .. _api-82a542809dbc766c2795a2ac99f618be:
 
-MOD\.add\_path\(Path\)
-======================
+MOD.add_path\(Path\)
+====================
 
-\`add\_path\` inserts \`Path\` to the mod base paths as the last path\.
+\`add_path\` inserts \`Path\` to the mod base paths as the last path.
 
 Precondition\:
 

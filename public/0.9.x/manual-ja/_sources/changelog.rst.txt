@@ -12,6 +12,44 @@ Versioning of this project adheres to `Semantic Versioning <https://semver.org/s
   :depth: 1
   :backlinks: none
 
+.. _changes-0.9.7-beta:
+
+0.9.7-beta
+==========
+
+Added
+-----
+
+* :ref:`CONTROL.with_return_finally <api-ea47c0cd2259212482eaa3057626453b>`
+
+* :ref:`Kinkdoc title line starting from ##region <kinkdocfolding>`
+
+Changed
+-------
+
+* :doc:`SPHINX_RENDER_TOOL <api/kink-doc-render-sphinx-SPHINX_RENDER_TOOL>` now avoids escaping
+  most symbols and punctuations.
+
+* :ref:`Iter.each <api-5ca6b279a4095243180a754558cda613>` and :ref:`IFUN.each <api-9f4963ad25e690214de79a6d024d5ad8>`
+  now don't specify the result value.
+
+* Rename STR.from_codepoints to :ref:`.from_each <api-98afe2f97d23799c01fdd5d5727ed3d5>`.
+
+* On Linux, the :doc:`command line tool </commandline/kink-kinkw>` sets the process name to ``kink``.
+
+* :ref:`num type <api-94ecaace8aa3cab97d09f89a70b9228e>` now has the value range.
+
+* Made REPL module private.
+
+Removed
+-------
+
+* C.stdin_inherit, C.stdout_inherit, and C.stderr_inherit config methods
+  from :ref:`PROCESS.start <api-382f762afb4d1fd1261301a4d54b00a4>`, as they are the default.
+
+* The syntax to change the actual receiver from the default,
+  as we already have :ref:`Fun.call <api-6fa30820b07f255c739983259119b7c6>`.
+
 .. _changes-0.9.6-beta:
 
 0.9.6-beta
@@ -39,9 +77,6 @@ Added
 * :ref:`Str.well_formed? <api-6ffcba40a665e0b1525311b2f8bc212b>`
 * C.allow_unpaired_surrogates option of :ref:`JSON.parse <api-0f95a6404e8aa3e0ba07f36f8bbbfe42>`.
 * :ref:`Vec.move <api-ed9d77caa26ac4ad6f494e3dc712cfd0>`
-
-Changed
--------
 
 * Config options of :ref:`C.no_arg <api-6b1c821f119c15f9670068b33a6653af>` will set true or false
   as the map value.
@@ -138,7 +173,7 @@ Changed
 * :ref:`Charset.str_to_bin <api-590e3a6ff9d9a23d587075b43669a876>` now raises an exception on
   encoding error.
 * Rename Str.runes to :ref:`.codepoints <api-486dd39bdf6a9aec769ae7c5f1bd522d>`.
-* Rename STR.from_runes to :ref:`.from_codepoints <api-9b2020a08d0489817e2f48a4a900f780>`.
+* Rename STR.from_runes to :ref:`.from_codepoints <api-98afe2f97d23799c01fdd5d5727ed3d5>`.
 * Rename JAVA.read_only_byte_buffer to :ref:`JAVA.byte_buffer <api-94d74e84a15500dacc000e8516b4c999>`.
 * Rename VAL.val_id to :ref:`VAL.id_hash <api-2d36b72d68d811f56ce0ba7352a8818a>`.
 * :ref:`Str.repr <api-37a73555aab4b7cde2ae69615d91f7e9>` now produces unpaired surrogates to
@@ -237,7 +272,7 @@ Changed
 
 * Generate 32 bytes section id instead of 62 bytes in kinkdoc
 * When making an exception with the current traces,
-  now the second parameter of :ref:`EXCEPTION.new <api-e8325567ca9201ecedd3460476b31fa1>` can be omitted.
+  now the second parameter of :ref:`EXCEPTION.new <api-569b1f3a1ce06aa21e0502f1a51d429a>` can be omitted.
 * .reduce methods like :ref:`Vec.reduce <api-2df32705c7bfd54f55ac6f4e6b827746>`
   take an optional fallback continuation for empty streams,
   instead of returning maybe_vec.

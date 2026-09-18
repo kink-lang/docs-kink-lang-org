@@ -2,8 +2,6 @@
 kink\/FUN
 =========
 
-The companion mod for fun vals\.
-
 .. contents::
     :local:
     :backlinks: none
@@ -13,25 +11,35 @@ The companion mod for fun vals\.
 type fun
 ========
 
-A fun is a function value\.
+\`fun\` is a function,
 
-Conceptually\, a fun holds a sequence of abstract instructions\. See “Language specification” → “Evaluation” chapter for abstract instructinos\.
+A \`fun\` is thought to have an immutable finite\-length sequence of abstract instructions. See “Language specification” → “Evaluation” chapter for abstract instructinos.
 
 .. _api-6fa30820b07f255c739983259119b7c6:
 
-Fun\.call\(Recv Args\)
-----------------------
+Fun.call\(Recv Args\)
+---------------------
 
-\`call\` tail\-calls \`Fun\` with \`Recv\` as the recv\, and \`Args\` as the args of the invocation\.
+\`call\` tail\-calls \`Fun\` with \`Recv\` as the receiver, and \`Args\` as the argument vector of the invocation.
 
-Precondition\:
+At the tail of \`call\`\, the following sequence of abstract instructinos is evaluated\:
 
-\• \`Args\` must be a vec\.
+.. code:: kink
+    :class: no-search
+
+    (val Fun)
+    (val Recv)
+    (val Args)
+    (tailcall)
+
+.. rubric:: Precondition
+
+\`Args\` must be a \`vec\`\.
 
 .. _api-c688f30d4c84298a3bb2fca5d76b33a1:
 
-FUN\.is\?\(Val\)
-================
+FUN.is?\(Val\)
+==============
 
-\`is\?\` returns whether the \`Val\` is a fun\.
+\`is?\` returns whether the \`Val\` is a \`fun\`\.
 

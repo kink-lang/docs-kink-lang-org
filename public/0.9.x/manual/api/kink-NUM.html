@@ -5,36 +5,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.16. kink/NUM &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=6ce99075"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.16. kink/NUM &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="6.17. kink/NUM_DIV" href="kink-NUM_DIV.html" />
     <link rel="prev" title="6.15. kink/MOD" href="kink-MOD.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.16. kink/NUM</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-MOD.html"><span class="section-number">6.15. </span>kink/MOD</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-NUM_DIV.html"><span class="section-number">6.17. </span>kink/NUM_DIV</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. Builtin library API</a></li><li><a class="current" href="#" aria-current="page">6.16. kink/NUM</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="../search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-num">
 <h1><span class="section-number">6.16. </span>kink/NUM<a class="headerlink" href="#kink-num" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="contents">
@@ -64,47 +53,59 @@
 <li><p><a class="reference internal" href="#num-times" id="id33">Num.times</a></p></li>
 <li><p><a class="reference internal" href="#num-up" id="id34">Num.up</a></p></li>
 <li><p><a class="reference internal" href="#num-down" id="id35">Num.down</a></p></li>
-<li><p><a class="reference internal" href="#num-show-show-config" id="id36">Num.show(...[$show_config={}])</a></p></li>
+<li><p><a class="reference internal" href="#num-show-config" id="id36">Num.show(...[$config={}])</a></p></li>
 <li><p><a class="reference internal" href="#num-repr" id="id37">Num.repr</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#num-is-val" id="id38">NUM.is?(Val)</a></p></li>
-<li><p><a class="reference internal" href="#num-new-mantissa-scale" id="id39">NUM.new(Mantissa Scale)</a></p></li>
-<li><p><a class="reference internal" href="#num-parse-int-str-config" id="id40">NUM.parse_int(Str ...[$config={}])</a></p></li>
-<li><p><a class="reference internal" href="#num-parse-decimal-str-config" id="id41">NUM.parse_decimal(Str ...[$config={}])</a></p></li>
-<li><p><a class="reference internal" href="#type-num-show-config" id="id42">type num_show_config</a></p>
+<li><p><a class="reference internal" href="#num-new-mantissa-scale" id="id38">NUM.new(Mantissa Scale)</a></p></li>
+<li><p><a class="reference internal" href="#num-is-val" id="id39">NUM.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#num-mantissa-bits" id="id40">NUM.mantissa_bits</a></p></li>
+<li><p><a class="reference internal" href="#num-max-mantissa" id="id41">NUM.max_mantissa</a></p></li>
+<li><p><a class="reference internal" href="#num-min-mantissa" id="id42">NUM.min_mantissa</a></p></li>
+<li><p><a class="reference internal" href="#num-max-scale" id="id43">NUM.max_scale</a></p></li>
+<li><p><a class="reference internal" href="#num-parse-int-str-config" id="id44">NUM.parse_int(Str ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#num-parse-decimal-str-config" id="id45">NUM.parse_decimal(Str ...[$config={}])</a></p></li>
+<li><p><a class="reference internal" href="#type-num-show-config" id="id46">type num_show_config</a></p>
 <ul>
-<li><p><a class="reference internal" href="#c-locale-locale" id="id43">C.locale(Locale)</a></p></li>
-<li><p><a class="reference internal" href="#c-spec-spec" id="id44">C.spec(Spec)</a></p></li>
-<li><p><a class="reference internal" href="#c-plus-sign-plus-sign" id="id45">C.plus_sign(Plus_sign)</a></p></li>
-<li><p><a class="reference internal" href="#c-minus-sign-minus-sign" id="id46">C.minus_sign(Minus_sign)</a></p></li>
-<li><p><a class="reference internal" href="#c-group-sep-group-sep" id="id47">C.group_sep(Group_sep)</a></p></li>
-<li><p><a class="reference internal" href="#c-group-len-group-len" id="id48">C.group_len(Group_len)</a></p></li>
-<li><p><a class="reference internal" href="#c-decimal-sep-decimal-sep" id="id49">C.decimal_sep(Decimal_sep)</a></p></li>
-<li><p><a class="reference internal" href="#c-pad-zero-min-int-digits" id="id50">C.pad_zero(Min_int_digits)</a></p></li>
-<li><p><a class="reference internal" href="#c-radix-radix" id="id51">C.radix(Radix)</a></p></li>
+<li><p><a class="reference internal" href="#c-locale-locale" id="id47">C.locale(Locale)</a></p></li>
+<li><p><a class="reference internal" href="#c-spec-spec" id="id48">C.spec(Spec)</a></p></li>
+<li><p><a class="reference internal" href="#c-plus-sign-plus-sign" id="id49">C.plus_sign(Plus_sign)</a></p></li>
+<li><p><a class="reference internal" href="#c-minus-sign-minus-sign" id="id50">C.minus_sign(Minus_sign)</a></p></li>
+<li><p><a class="reference internal" href="#c-group-sep-group-sep" id="id51">C.group_sep(Group_sep)</a></p></li>
+<li><p><a class="reference internal" href="#c-group-len-group-len" id="id52">C.group_len(Group_len)</a></p></li>
+<li><p><a class="reference internal" href="#c-decimal-sep-decimal-sep" id="id53">C.decimal_sep(Decimal_sep)</a></p></li>
+<li><p><a class="reference internal" href="#c-pad-zero-min-int-digits" id="id54">C.pad_zero(Min_int_digits)</a></p></li>
+<li><p><a class="reference internal" href="#c-radix-radix" id="id55">C.radix(Radix)</a></p></li>
 </ul>
 </li>
 </ul>
 </nav>
 <section id="type-num">
 <span id="api-94ecaace8aa3cab97d09f89a70b9228e"></span><h2><span class="section-number">6.16.1. </span>type num<a class="headerlink" href="#type-num" title="Link to this heading">¶</a></h2>
-<p>`num` is a floating point decimal number.</p>
-<p>A `num` value consists of (Mantissa, Scale). The number represented by the `num` value is Mantissa * (10 ** (-Scale)). Here, `Mantissa` and `Scale` are signed integer numbers.</p>
-<p>The runtime must at least support the range [-(2**95), (2**95) - 1] for `Mantissa`, and the range [-(2**7), (2**7) - 1] for `Scale`. Exceeding these limits may result in overflow or underflow.</p>
-<p>Note: the Kink runtime on the JVM supports [-(2**2048 - 1), 2**2048 - 1] for `Mantissa`, and [-(2**15), (2**15)-1] for `Scale`.</p>
-<p>Infinity, NaN, signed zeros are not supported.</p>
+<p>`num` is a floating point decimal number. A `num` value consists of the following attributes:</p>
+<p>• Mantissa: a signed integer obtained by removing the decimal point from the number</p>
+<p>• Scale: a nonnegative integer which is the number of digits of the fractional part</p>
+<p>The number represented by the `num` value is `Mantissa * (10 ** (-Scale))`. Infinity, NaN, signed zeros are not supported.</p>
+<p class="rubric">Invariants</p>
+<p>The following invariants hold on `Mantissa`:</p>
+<p>• mantissa_bits = 8192</p>
+<p>• max_mantissa = 2**mantissa_bits - 1</p>
+<p>• min_mantissa = - (2**mantissa_bits - 1)</p>
+<p>• min_mantissa ≦ Mantissa ≦ max_mantissa</p>
+<p>and on `Scale`:</p>
+<p>• max_scale = 32767</p>
+<p>• 0 ≦ Scale ≦ max_scale</p>
+<p>With those ranges, `num` values should be able to represent:</p>
+<p>• The epoch times of all the `instant` values in nanosecond precision.</p>
+<p>• Finite (neither NaN nor ±Infinity) IEEE 754 binary64 and decimal128 values, except for the sign of zeros.</p>
 <p class="rubric">Equality</p>
-<p>There are multiple representations for one number. For example, 420 can be represented as (Mantissa=420, Scale=0), (Mantissa=42000, Scale=2) or (Mantissa=42, Scale=-1) and so on. They are treated as equal by == (op_eq) operator:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
-
-<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">420</span> == <span class="m">420.00</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">420</span> == <span class="nv">NUM</span>.<span class="n">new</span>(<span class="m">42</span> (-<span class="m">1</span>))).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
+<p>There are multiple representations for one number. For example, 420 can be represented as (Mantissa=420, Scale=0), (Mantissa=42000, Scale=2), and so on. They are treated as equal by the == (op_eq) operator:</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">420</span> == <span class="m">420.00</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
 </pre></div>
 </div>
 <p class="rubric">Bit operations</p>
-<p>Bit operations take only int `num` values as operands. Nonnegative int `num` values are treated as if infinite 0 bits precede. Negative int `num` values are treated as two's complement with infinite preceding 1 bits.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((~ <span class="m">0b_1010</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-11)</span>
+<p>Bit operations take only integer `num` values as operands. Nonnegative integer `num` values are treated as if infinite 0 bits precede them. Negative integer `num` values are treated as if in two's complement representation with infinite preceding 1 bits.</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((~ <span class="m">0b_1010</span>).<span class="n">repr</span>) <span class="c1"># =&gt; (-11)</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%b}&#39;</span>.<span class="n">format</span>(~ <span class="m">0b_1010</span>)) <span class="c1"># =&gt; -1011</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%b}&#39;</span>.<span class="n">format</span>(~ <span class="m">0b_1010</span> &amp; <span class="m">0b_1111_1111</span>)) <span class="c1"># =&gt; 11110101</span>
 </pre></div>
@@ -114,7 +115,7 @@
 <p>`mantissa` returns `Mantissa` of `Num`.</p>
 <p>The result is an int `num`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">123.45</span>.<span class="n">mantissa</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 12345</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">123.45</span>.<span class="n">mantissa</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 12345</span>
 </pre></div>
 </div>
 </section>
@@ -123,7 +124,7 @@
 <p>`scale` returns `Scale` of `Num`.</p>
 <p>The result is an int `num`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">123.45</span>.<span class="n">scale</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 2</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">123.45</span>.<span class="n">scale</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 2</span>
 </pre></div>
 </div>
 </section>
@@ -132,7 +133,7 @@
 <p>`int?` returns whether `Num` is an integer.</p>
 <p>A `num` is an integer when `Scale` is zero.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">120</span>.<span class="n">int?</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; true</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">120</span>.<span class="n">int?</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; true</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">120.0</span>.<span class="n">int?</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">3.14</span>.<span class="n">int?</span>.<span class="n">repr</span>)   <span class="c1"># =&gt; false</span>
 </pre></div>
@@ -145,7 +146,7 @@
 <p class="rubric">Precondition</p>
 <p>`Y` must be a `num` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Sum</span> &lt;- <span class="m">1.234</span> + <span class="m">0.12</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Sum</span> &lt;- <span class="m">1.234</span> + <span class="m">0.12</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">repr</span>)       <span class="c1"># =&gt; 1.354</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Sum</span>.<span class="n">scale</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 3</span>
 </pre></div>
@@ -158,7 +159,7 @@
 <p class="rubric">Precondition</p>
 <p>`Y` must be a `num` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Diff</span> &lt;- <span class="m">1.234</span> - <span class="m">0.12</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Diff</span> &lt;- <span class="m">1.234</span> - <span class="m">0.12</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Diff</span>.<span class="n">repr</span>)        <span class="c1"># =&gt; 1.114</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Diff</span>.<span class="n">scale</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 3</span>
 </pre></div>
@@ -168,7 +169,7 @@
 <span id="api-bd9d2fee7c2996acc458a8ddd79ccd88"></span><h3><span class="section-number">6.16.1.6. </span>- X<a class="headerlink" href="#x" title="Link to this heading">¶</a></h3>
 <p>The unary `-` operator, or `op_minus` method, flips the sign of `X`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">42</span>).<span class="n">repr</span>)     <span class="c1"># =&gt; (-42)</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">42</span>).<span class="n">repr</span>)     <span class="c1"># =&gt; (-42)</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>((-(-<span class="m">42</span>)).<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">0</span>).<span class="n">repr</span>)      <span class="c1"># =&gt; 0</span>
 </pre></div>
@@ -176,12 +177,12 @@
 </section>
 <section id="api-30d402ff3f8dab7b42383d10b1eeec6a">
 <span id="id2"></span><h3><span class="section-number">6.16.1.7. </span>X * Y<a class="headerlink" href="#api-30d402ff3f8dab7b42383d10b1eeec6a" title="Link to this heading">¶</a></h3>
-<p>`*` operator, or `op_mul` method, returns the production of `X` and `Y`.</p>
+<p>`*` operator, or `op_mul` method, returns the product of `X` and `Y`.</p>
 <p>`Scale` of the result will be X.scale + Y.scale.</p>
 <p class="rubric">Precondition</p>
 <p>`Y` must be a `num` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Prod</span> &lt;- <span class="m">1.2</span> * <span class="m">3.45</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Prod</span> &lt;- <span class="m">1.2</span> * <span class="m">3.45</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Prod</span>.<span class="n">repr</span>)        <span class="c1"># =&gt; 4.140</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">Prod</span>.<span class="n">scale</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; 3</span>
 </pre></div>
@@ -195,7 +196,7 @@
 <p>`Y` must be a `num` value.</p>
 <p>`Y` must not be equal to 0.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">10</span> / <span class="m">3</span>).<span class="n">floor</span>(<span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 3.333</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">10</span> / <span class="m">3</span>).<span class="n">floor</span>(<span class="m">3</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 3.333</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">10</span> / <span class="m">3</span>).<span class="n">ceil</span>(<span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 3.334</span>
 </pre></div>
 </div>
@@ -205,16 +206,14 @@
 <p>`//` operator, or `op_intdiv` method, performs integral division, and returns the quotient.</p>
 <p>Q = X // Y and R = X % Y will suffice the following conditions.</p>
 <p>• Q * Y + R = X</p>
-<p>• 0 &lt;= R &lt; Y.abs</p>
+<p>• 0 ≦ R &lt; Y.abs</p>
 <p>• Q.scale = 0</p>
-<p>• R.scale = X.scale</p>
-<p>The rule above is equivalent to DIV and MOD of R6RS Scheme. See:</p>
-<p>http://www.r6rs.org/final/html/r6rs/r6rs-Z-H-14.html#node_sec_11.7.3.1</p>
-<p class="rubric">Precondition</p>
+<p>• R.scale = max(X.scale Y.scale)</p>
+<p class="rubric">Preconditions</p>
 <p>`Y` must be a `num` value.</p>
 <p>`Y` must not be equal to 0.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:attempt_intdiv</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:attempt_intdiv</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)
   <span class="nv">:Q</span> = <span class="nv">X</span> // <span class="nv">Y</span>
   <span class="nv">:R</span> = <span class="nv">X</span> % <span class="nv">Y</span>
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{} // {} = {}, remainder: {}&#39;</span>.<span class="n">format</span>(<span class="nv">X</span>.<span class="n">repr</span> <span class="nv">Y</span>.<span class="n">repr</span> <span class="nv">Q</span>.<span class="n">repr</span> <span class="nv">R</span>.<span class="n">repr</span>))
@@ -247,7 +246,7 @@
 <span id="id5"></span><h3><span class="section-number">6.16.1.10. </span>X % Y<a class="headerlink" href="#api-0131f4bf3e7485b8b28131b0316c2617" title="Link to this heading">¶</a></h3>
 <p>`%` operator, or `op_rem` method, performs integral division, and returns the remainder.</p>
 <p>See X // Y for details.</p>
-<p class="rubric">Precondition</p>
+<p class="rubric">Preconditions</p>
 <p>`Y` must be a `num` value.</p>
 <p>`Y` must not be equal to 0.</p>
 </section>
@@ -309,7 +308,7 @@
 <p class="rubric">Precondition</p>
 <p>`Y` must be a `num` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">42</span> == <span class="m">42.000</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">42</span> == <span class="m">42.000</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; true</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">42</span> != <span class="m">42.000</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
 
 <span class="n">stdout</span>.<span class="n">print_line</span>((<span class="m">42</span> == <span class="m">24</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; false</span>
@@ -323,7 +322,7 @@
 <p class="rubric">Precondition</p>
 <p>`Y` must be a `num` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:compare</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:compare</span> &lt;- {(<span class="nv">:X</span> <span class="nv">:Y</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;Lt?={} Le?={} Gt?={} Ge?={}&#39;</span>.<span class="n">format</span>(
       (<span class="nv">X</span> &lt; <span class="nv">Y</span>).<span class="n">repr</span>
       (<span class="nv">X</span> &lt;= <span class="nv">Y</span>).<span class="n">repr</span>
@@ -342,7 +341,7 @@
 <p>`round` returns a `num_div` value of (Dividend=Num, Divisor=1).</p>
 <p>See kink/NUM_DIV for how to get a number from the `num_div` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">1.2345</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 1.23</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">1.2345</span>.<span class="n">round</span>.<span class="n">floor</span>(<span class="m">2</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 1.23</span>
 </pre></div>
 </div>
 </section>
@@ -351,7 +350,7 @@
 <p>`abs` returns the absolute value of `Num`</p>
 <p>If `Num` is nonnegative, `abs` returns `Num`. If `Num` is negative, `abs` returns (-Num).</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">42</span>.<span class="n">abs</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 42</span>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">42</span>.<span class="n">abs</span>.<span class="n">repr</span>)    <span class="c1"># =&gt; 42</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">42</span>).<span class="n">abs</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 42</span>
 </pre></div>
 </div>
@@ -361,9 +360,9 @@
 <p>`times` returns an `iter` from 0 (inclusive), to `Num` (exclusive), incrementing 1 for each element.</p>
 <p class="rubric">Preconditions</p>
 <p>`Num` must be an int `num`.</p>
-<p>`Num` must be greater than or equal to 0.</p>
+<p>`Num` ≧ 0</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">5</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">5</span>.<span class="n">times</span>.<span class="n">each</span>{(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
 }
 <span class="c1"># Output:</span>
@@ -377,9 +376,9 @@
 </section>
 <section id="num-up">
 <span id="api-d02a57ed87d1e967f734982bfc2fd36d"></span><h3><span class="section-number">6.16.1.22. </span>Num.up<a class="headerlink" href="#num-up" title="Link to this heading">¶</a></h3>
-<p>`up` returns an infinite `iter` from `Num`, incrementing 1 for each element.</p>
+<p>`up` returns an `iter` from `Num`, incrementing 1 for each element, while the number is in the range of `num` type.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">0.5</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">0.5</span>.<span class="n">up</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
 }
 <span class="c1"># Output:</span>
@@ -393,9 +392,9 @@
 </section>
 <section id="num-down">
 <span id="api-f1ce33216444c929e3f46b7d905c3b2c"></span><h3><span class="section-number">6.16.1.23. </span>Num.down<a class="headerlink" href="#num-down" title="Link to this heading">¶</a></h3>
-<p>`down` returns an infinite `iter` from `Num`, decrementing 1 for each element.</p>
+<p>`down` returns an `iter` from `Num`, decrementing 1 for each element, while the number is in the range of `num` type.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">9.5</span>.<span class="n">down</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="m">9.5</span>.<span class="n">down</span>.<span class="n">take_front</span>(<span class="m">5</span>).<span class="n">each</span>{(<span class="nv">:N</span>)
   <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>)
 }
 <span class="c1"># Output:</span>
@@ -407,57 +406,78 @@
 </pre></div>
 </div>
 </section>
-<section id="num-show-show-config">
-<span id="api-74d910bad99c4bb9a039176ac1da3627"></span><h3><span class="section-number">6.16.1.24. </span>Num.show(...[$show_config={}])<a class="headerlink" href="#num-show-show-config" title="Link to this heading">¶</a></h3>
+<section id="num-show-config">
+<span id="api-f1499b3dfd1f151961881132a11f1828"></span><h3><span class="section-number">6.16.1.24. </span>Num.show(...[$config={}])<a class="headerlink" href="#num-show-config" title="Link to this heading">¶</a></h3>
 <p>`show` returns a `str` representation of `Num`, which is intended to be used in UI messages.</p>
-<p>The optional parameter $show_config takes a function which takes a `num_show_config` value as an arg. `show` passes a `num_show_config` value to $show_config to configure the output.</p>
-<p>Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">32767</span>.<span class="n">show</span>)  <span class="c1"># =&gt; 32767</span>
+<p>`show` passes a `num_show_config` value to $config. For details of the output and the configuration, see type `num_show_config`.</p>
+<p class="rubric">Precondition</p>
+<p>$config must be a function which takes a `num_show_config` value.</p>
+<p class="rubric">Examples</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">32767</span>.<span class="n">show</span>)  <span class="c1"># =&gt; 32767</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">32767</span>.<span class="n">show</span>{(<span class="nv">:S</span>) <span class="nv">S</span>.<span class="n">spec</span>(<span class="s1">&#39;x&#39;</span>) })    <span class="c1"># =&gt; 7fff</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">32767</span>.<span class="n">show</span>{(<span class="nv">:S</span>) <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">16</span>) })    <span class="c1"># =&gt; 7fff</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">32767</span>.<span class="n">show</span>{(<span class="nv">:S</span>) <span class="nv">S</span>.<span class="n">group_sep</span>(<span class="m">3</span>) }) <span class="c1"># =&gt; 32,767</span>
 </pre></div>
 </div>
-<p>`show` is usually called from Str.format.</p>
-<p>Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{} {%04x}&#39;</span>.<span class="n">format</span>(<span class="m">42</span> <span class="m">255</span>))
+<p>`show` is usually called from Str.format:</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{} {%04x}&#39;</span>.<span class="n">format</span>(<span class="m">42</span> <span class="m">255</span>))
 <span class="c1"># =&gt; 42 00ff</span>
 </pre></div>
 </div>
-<p>For details of the output and the configuration, see type num_show_config.</p>
 </section>
 <section id="num-repr">
 <span id="api-afe9aba263647d33f4e34b1111148d61"></span><h3><span class="section-number">6.16.1.25. </span>Num.repr<a class="headerlink" href="#num-repr" title="Link to this heading">¶</a></h3>
-<p>`repr` returns a `str` such as &quot;1.2500&quot;, &quot;(-42)&quot; or &quot;(num mantissa=1 scale=-10)&quot;.</p>
+<p>`repr` returns a `str` such as &quot;1.2500&quot; or &quot;(-42)&quot;.</p>
 </section>
-</section>
-<section id="num-is-val">
-<span id="api-1f0e555dd60542529475491a9ff4491c"></span><h2><span class="section-number">6.16.2. </span>NUM.is?(Val)<a class="headerlink" href="#num-is-val" title="Link to this heading">¶</a></h2>
-<p>`is?` returns whether `Val` is a `num` value.</p>
 </section>
 <section id="num-new-mantissa-scale">
-<span id="api-982aee2d0e02427c1cd4f47fd5b5acc9"></span><h2><span class="section-number">6.16.3. </span>NUM.new(Mantissa Scale)<a class="headerlink" href="#num-new-mantissa-scale" title="Link to this heading">¶</a></h2>
+<span id="api-982aee2d0e02427c1cd4f47fd5b5acc9"></span><h2><span class="section-number">6.16.2. </span>NUM.new(Mantissa Scale)<a class="headerlink" href="#num-new-mantissa-scale" title="Link to this heading">¶</a></h2>
 <p>`new` makes a `num` value with given `Mantissa` and `Scale`.</p>
 <p class="rubric">Preconditions</p>
 <p>`Mantissa` must be an int `num`.</p>
 <p>`Scale` must be an int `num`.</p>
-<p>`Mantissa` and `Scale` must not exceed the limits of the runtime.</p>
+<p>min_mantissa ≦ Mantissa ≦ max_mantissa</p>
+<p>0 ≦ Scale ≦ max_scale</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">new</span>(<span class="m">12345</span> <span class="m">2</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 123.45</span>
 </pre></div>
 </div>
 </section>
+<section id="num-is-val">
+<span id="api-1f0e555dd60542529475491a9ff4491c"></span><h2><span class="section-number">6.16.3. </span>NUM.is?(Val)<a class="headerlink" href="#num-is-val" title="Link to this heading">¶</a></h2>
+<p>`is?` returns whether `Val` is a `num` value.</p>
+</section>
+<section id="num-mantissa-bits">
+<span id="api-7190144d73fddb9a378ea50885bec9f5"></span><h2><span class="section-number">6.16.4. </span>NUM.mantissa_bits<a class="headerlink" href="#num-mantissa-bits" title="Link to this heading">¶</a></h2>
+<p>`mantissa_bits` is a constant of an integer `num` value 8192, which is the minimum number of bits which can represent `max_mantissa`.</p>
+<p>See the kinkdoc of type `num` for details.</p>
+</section>
+<section id="num-max-mantissa">
+<span id="api-daa2f41a4c6f965828fc53ac129f5bea"></span><h2><span class="section-number">6.16.5. </span>NUM.max_mantissa<a class="headerlink" href="#num-max-mantissa" title="Link to this heading">¶</a></h2>
+<p>`max_mantissa` is a constant of an integer `num` value 2**8192 - 1, which is the maximum value of `Mantissa` attribute.</p>
+<p>See the kinkdoc of type `num` for details.</p>
+</section>
+<section id="num-min-mantissa">
+<span id="api-5a53640d2fd42de5c39f3163313d4a46"></span><h2><span class="section-number">6.16.6. </span>NUM.min_mantissa<a class="headerlink" href="#num-min-mantissa" title="Link to this heading">¶</a></h2>
+<p>`min_mantissa` is a constant of an integer `num` value -(2**8192 - 1), which is the minimum value of `Mantissa` attribute.</p>
+<p>See the kinkdoc of type `num` for details.</p>
+</section>
+<section id="num-max-scale">
+<span id="api-c7f0626f1b057e95b694f861bf0278e8"></span><h2><span class="section-number">6.16.7. </span>NUM.max_scale<a class="headerlink" href="#num-max-scale" title="Link to this heading">¶</a></h2>
+<p>`max_scale` is a constant of an integer `num` value 32767, which is the maximum value of `Scale` attribute.</p>
+<p>See the kinkdoc of type `num` for details.</p>
+</section>
 <section id="num-parse-int-str-config">
-<span id="api-8cd45d8a05be4d520333c05a5c5ad0df"></span><h2><span class="section-number">6.16.4. </span>NUM.parse_int(Str ...[$config={}])<a class="headerlink" href="#num-parse-int-str-config" title="Link to this heading">¶</a></h2>
+<span id="api-8cd45d8a05be4d520333c05a5c5ad0df"></span><h2><span class="section-number">6.16.8. </span>NUM.parse_int(Str ...[$config={}])<a class="headerlink" href="#num-parse-int-str-config" title="Link to this heading">¶</a></h2>
 <p>`parse_int` parses an int num from `Str`.</p>
 <p>Config methods:</p>
 <p>• C.radix(Radix): default = 10</p>
 <p>• C.on_success($success): default = VAL.identity</p>
-<p>• C.on_error($error): default = a fun which raises an exception</p>
-<p>If `Str` is accepted by the syntax, `parse_int` tail-calls $success with the `num` value of the parsed integer.</p>
-<p>If `Str` is not accepted by the syntax, `parse_int` tail-calls $error with no arg.</p>
+<p>• C.on_error($error): default = a thunk which raises an exception</p>
+<p>If `Str` is accepted by the syntax, and the value is in the range [min_mantissa, max_mantissa], `parse_int` tail-calls $success with the `num` value of the parsed integer.</p>
+<p>If `Str` is not accepted by the syntax, or the value is outside the range [min_mantissa, max_mantissa], `parse_int` tail-calls $error with no arg.</p>
 <p class="rubric">Syntax</p>
 <p>The string representation is comprised of the two parts:</p>
 <p>• Sign: '-', '+', or empty</p>
@@ -466,11 +486,11 @@
 <p>Digits from 10 to 35 are represented by characters either 'A' to 'Z', or 'a' to 'z'.</p>
 <p class="rubric">Preconditions</p>
 <p>`Str` must be a `str` value.</p>
-<p>`Radix` must be an int `num` within [2, 36].</p>
-<p>$success must take an int `num`.</p>
-<p>$error must take no arg.</p>
+<p>`Radix` must be an integer `num` within [2, 36].</p>
+<p>$success must take an integer `num`.</p>
+<p>$error must be a thunk.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;42&#39;</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 42</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;+42&#39;</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 42</span>
@@ -481,7 +501,7 @@
 </pre></div>
 </div>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">NUM</span>.<span class="n">parse_int</span>(<span class="s1">&#39;42&#39;</span>){(<span class="nv">:C</span>)
   <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
@@ -498,29 +518,32 @@
 </div>
 </section>
 <section id="num-parse-decimal-str-config">
-<span id="api-5f79a184c60f413c3f03d9064c1a8bbd"></span><h2><span class="section-number">6.16.5. </span>NUM.parse_decimal(Str ...[$config={}])<a class="headerlink" href="#num-parse-decimal-str-config" title="Link to this heading">¶</a></h2>
+<span id="api-5f79a184c60f413c3f03d9064c1a8bbd"></span><h2><span class="section-number">6.16.9. </span>NUM.parse_decimal(Str ...[$config={}])<a class="headerlink" href="#num-parse-decimal-str-config" title="Link to this heading">¶</a></h2>
 <p>`parse_decimal` parses a decimal number from `Str`.</p>
 <p>Config methods:</p>
 <p>• C.on_success($success): default = VAL.identity</p>
-<p>• C.on_error($error): default = a fun which raises an exception</p>
-<p>If `Str` is accepted by the syntax, `parse_decimal` tail-calls $success with the parsed `num` value. `Scale` of the result `num` will be the count of digits after `.`.</p>
-<p>If `Str` is not accepted by the syntax, `parse_decimal` tail-calls $error with no arg.</p>
+<p>• C.on_error($error): default = a thunk which raises an exception</p>
+<p>`Mantissa` of the parsed number is the integer read from the sign and the digits.</p>
+<p>`Scale` of the parsed number is the count of the digits after the decimal point `.`. If `Str` does not have the decimal point, `Scale` is 0.</p>
+<p>If `Str` is accepted by the syntax, `Mantissa` is in the range [min_mantissa, max_mantissa], and `Scale` is in the range [0, max_scale], `parse_decimal` tail-calls $success with the parsed `num` value.</p>
+<p>If `Str` is not accepted by the syntax, or `Mantissa` or `Scale` are not in the ranges, `parse_decimal` tail-calls $error with no arg.</p>
 <p class="rubric">Syntax</p>
 <p>Regex: [+-]?([0-9]+(\.[0-9]*)?|\.[0-9]+)</p>
 <p class="rubric">Preconditions</p>
 <p>`Str` must be a `str` value.</p>
 <p>$success must take a `num` value.</p>
-<p>$error must take no arg.</p>
+<p>$error must be a thunk.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;1.2300&#39;</span>).<span class="n">repr</span>) <span class="c1"># =&gt; 1.2300</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;.387&#39;</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; 0.387</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;-42.&#39;</span>).<span class="n">repr</span>)   <span class="c1"># =&gt; (-42)</span>
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;24&#39;</span>).<span class="n">repr</span>)     <span class="c1"># =&gt; 24</span>
 </pre></div>
 </div>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:NUM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">NUM</span>.<span class="n">parse_decimal</span>(<span class="s1">&#39;3.14&#39;</span>){(<span class="nv">:C</span>)
   <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:N</span>) <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">N</span>.<span class="n">repr</span>) }
@@ -537,7 +560,7 @@
 </div>
 </section>
 <section id="type-num-show-config">
-<span id="api-ea2ba48d5d3cf06399551e3861d4a445"></span><h2><span class="section-number">6.16.6. </span>type num_show_config<a class="headerlink" href="#type-num-show-config" title="Link to this heading">¶</a></h2>
+<span id="api-ea2ba48d5d3cf06399551e3861d4a445"></span><h2><span class="section-number">6.16.10. </span>type num_show_config<a class="headerlink" href="#type-num-show-config" title="Link to this heading">¶</a></h2>
 <p>`num_show_config` is a subtype of `show_config` (see kink/STR), which is used to configure the output of Num.show.</p>
 <p>Results of Num.show are categorized into two cases.</p>
 <p>1) When `Scale` of the `num` is less than or equal to 0</p>
@@ -557,14 +580,14 @@
 <p>The decimal digits of the fractional part of the `num`.</p>
 <p>The trailing zeros are not omitted, thus the length of the part is always equal to `Scale` of the `num`.</p>
 <section id="c-locale-locale">
-<span id="api-b48654ac34c7a1c44b9c57debf51365c"></span><h3><span class="section-number">6.16.6.1. </span>C.locale(Locale)<a class="headerlink" href="#c-locale-locale" title="Link to this heading">¶</a></h3>
+<span id="api-b48654ac34c7a1c44b9c57debf51365c"></span><h3><span class="section-number">6.16.10.1. </span>C.locale(Locale)<a class="headerlink" href="#c-locale-locale" title="Link to this heading">¶</a></h3>
 <p>`locale` imports configuration of the specified locale.</p>
 <p>`locale` configures `decimal_sep` and `group_sep`.</p>
 <p>If `locale` method is not called, Num.show does not use any locale information. So, even if you want to use the runtime default locale, you must call `locale` method explicitly.</p>
 <p class="rubric">Precondition</p>
 <p>`Locale` must be a `locale`.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:LOCALE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
 
 <span class="nv">:Shown</span> &lt;- <span class="m">3776.24</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
   <span class="nv">S</span>.<span class="n">locale</span>(<span class="nv">LOCALE</span>.<span class="n">default</span>)
@@ -575,7 +598,7 @@
 </div>
 </section>
 <section id="c-spec-spec">
-<span id="api-887529ef3342bcecb6214e991126c49b"></span><h3><span class="section-number">6.16.6.2. </span>C.spec(Spec)<a class="headerlink" href="#c-spec-spec" title="Link to this heading">¶</a></h3>
+<span id="api-887529ef3342bcecb6214e991126c49b"></span><h3><span class="section-number">6.16.10.2. </span>C.spec(Spec)<a class="headerlink" href="#c-spec-spec" title="Link to this heading">¶</a></h3>
 <p>`spec` configures the output of Num.show method using `Spec` string.</p>
 <p class="rubric">Preconditions</p>
 <p>`Spec` must be a `str` value.</p>
@@ -586,17 +609,17 @@
 <p>Uses 3 as the grouping length.</p>
 <p class="rubric">Padding field: &quot;0{Min_int_digits}&quot;</p>
 <p>Uses Min_int_digits as the minimum number of digits in the integral part.</p>
-<p>{Min_int_digits} must be 1 or more decimal digits which represents a positive int `num`.</p>
+<p>{Min_int_digits} must be 1 or more decimal digits which represents a positive integer.</p>
 <p class="rubric">Binary field: &quot;b&quot;</p>
 <p>Uses 2 as the radix.</p>
 <p class="rubric">Octal field: &quot;o&quot;</p>
 <p>Uses 8 as the radix.</p>
 <p class="rubric">Decimal field: &quot;d&quot;</p>
 <p>Uses 10 as the radix.</p>
-<p class="rubric">Headecimal field: &quot;x&quot;</p>
+<p class="rubric">Hexadecimal field: &quot;x&quot;</p>
 <p>Uses 16 as the radix.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%+04f}&#39;</span>.<span class="n">format</span>(<span class="m">255</span>))
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%+04f}&#39;</span>.<span class="n">format</span>(<span class="m">255</span>))
 <span class="c1"># =&gt; +00ff</span>
 
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;{%,}&#39;</span>.<span class="n">format</span>(<span class="m">12345.6789</span>))
@@ -617,13 +640,13 @@
 </div>
 </section>
 <section id="c-plus-sign-plus-sign">
-<span id="api-e4566256ec0799e6e86fac60251f424d"></span><h3><span class="section-number">6.16.6.3. </span>C.plus_sign(Plus_sign)<a class="headerlink" href="#c-plus-sign-plus-sign" title="Link to this heading">¶</a></h3>
+<span id="api-e4566256ec0799e6e86fac60251f424d"></span><h3><span class="section-number">6.16.10.3. </span>C.plus_sign(Plus_sign)<a class="headerlink" href="#c-plus-sign-plus-sign" title="Link to this heading">¶</a></h3>
 <p>`plus_sign` sets `Plus_sign` as the sign of non-negative numbers.</p>
 <p>The default value is an empty `str` &quot;&quot;.</p>
 <p class="rubric">Precondition</p>
 <p>`Plus_sign` must be a `str` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">42</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">42</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
   <span class="nv">S</span>.<span class="n">plus_sign</span>(<span class="s1">&#39;+&#39;</span>)
 })
 <span class="c1"># =&gt; +42</span>
@@ -641,13 +664,13 @@
 </div>
 </section>
 <section id="c-minus-sign-minus-sign">
-<span id="api-8839fb8f30ceb5353fa0ea2fc7d9e552"></span><h3><span class="section-number">6.16.6.4. </span>C.minus_sign(Minus_sign)<a class="headerlink" href="#c-minus-sign-minus-sign" title="Link to this heading">¶</a></h3>
+<span id="api-8839fb8f30ceb5353fa0ea2fc7d9e552"></span><h3><span class="section-number">6.16.10.4. </span>C.minus_sign(Minus_sign)<a class="headerlink" href="#c-minus-sign-minus-sign" title="Link to this heading">¶</a></h3>
 <p>`minus_sign` sets `Minus_sign` as the sign of negative numbers.</p>
 <p>The default value is &quot;-&quot;.</p>
 <p class="rubric">Precondition</p>
 <p>`Minus_sign` must be a `str` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">10</span>).<span class="n">show</span>{(<span class="nv">:S</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((-<span class="m">10</span>).<span class="n">show</span>{(<span class="nv">:S</span>)
   <span class="nv">S</span>.<span class="n">minus_sign</span>(<span class="s1">&#39;minus &#39;</span>)
 })
 <span class="c1"># =&gt; minus 10</span>
@@ -665,13 +688,13 @@
 </div>
 </section>
 <section id="c-group-sep-group-sep">
-<span id="api-330d0c519190d04f0c222ba72b3ac4e5"></span><h3><span class="section-number">6.16.6.5. </span>C.group_sep(Group_sep)<a class="headerlink" href="#c-group-sep-group-sep" title="Link to this heading">¶</a></h3>
+<span id="api-330d0c519190d04f0c222ba72b3ac4e5"></span><h3><span class="section-number">6.16.10.5. </span>C.group_sep(Group_sep)<a class="headerlink" href="#c-group-sep-group-sep" title="Link to this heading">¶</a></h3>
 <p>`group_sep` sets `Group_sep` as the digit grouping separator.</p>
 <p>The default value is &quot;,&quot;.</p>
 <p class="rubric">Precondition</p>
 <p>`Group_sep` must be a `str` value.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
   <span class="nv">S</span>.<span class="n">group_sep</span>(<span class="s1">&#39;_&#39;</span>)
   <span class="nv">S</span>.<span class="n">group_len</span>(<span class="m">3</span>)
 })
@@ -687,13 +710,13 @@
 </div>
 </section>
 <section id="c-group-len-group-len">
-<span id="api-74f4dd3f0914acb30dbe497c144c34a2"></span><h3><span class="section-number">6.16.6.6. </span>C.group_len(Group_len)<a class="headerlink" href="#c-group-len-group-len" title="Link to this heading">¶</a></h3>
+<span id="api-74f4dd3f0914acb30dbe497c144c34a2"></span><h3><span class="section-number">6.16.10.6. </span>C.group_len(Group_len)<a class="headerlink" href="#c-group-len-group-len" title="Link to this heading">¶</a></h3>
 <p>`group_len` sets `Group_len` as the length of digits groups.</p>
 <p>The default value is the plus infinity. Thus, by default, the grouping separator is not displayed.</p>
 <p class="rubric">Precondition</p>
 <p>Group_len must be an int num bigger than or equal to 1</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
   <span class="nv">S</span>.<span class="n">group_len</span>(<span class="m">3</span>)
 })
 <span class="c1"># =&gt; 12,345.6789</span>
@@ -701,12 +724,12 @@
 </div>
 </section>
 <section id="c-decimal-sep-decimal-sep">
-<span id="api-f89e62145eb2d1a954d6a985a90ea35d"></span><h3><span class="section-number">6.16.6.7. </span>C.decimal_sep(Decimal_sep)<a class="headerlink" href="#c-decimal-sep-decimal-sep" title="Link to this heading">¶</a></h3>
+<span id="api-f89e62145eb2d1a954d6a985a90ea35d"></span><h3><span class="section-number">6.16.10.7. </span>C.decimal_sep(Decimal_sep)<a class="headerlink" href="#c-decimal-sep-decimal-sep" title="Link to this heading">¶</a></h3>
 <p>`decimal_sep` sets `Decimal_sep` as the separator between the integral part and the fractional part.</p>
 <p class="rubric">Precondition</p>
 <p>Decimal_sep must be a str</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
   <span class="nv">S</span>.<span class="n">decimal_sep</span>(<span class="s1">&#39; . &#39;</span>)
 })
 <span class="c1"># =&gt; 12345 . 6789</span>
@@ -714,13 +737,13 @@
 </div>
 </section>
 <section id="c-pad-zero-min-int-digits">
-<span id="api-02a41977ccf6554facd720574b092b70"></span><h3><span class="section-number">6.16.6.8. </span>C.pad_zero(Min_int_digits)<a class="headerlink" href="#c-pad-zero-min-int-digits" title="Link to this heading">¶</a></h3>
+<span id="api-02a41977ccf6554facd720574b092b70"></span><h3><span class="section-number">6.16.10.8. </span>C.pad_zero(Min_int_digits)<a class="headerlink" href="#c-pad-zero-min-int-digits" title="Link to this heading">¶</a></h3>
 <p>`pad_zero` sets `Min_int_digits` as the minimum number of the integral part to be output.</p>
 <p>The default value is 1.</p>
 <p class="rubric">Precondition</p>
 <p>`Min_int_digits` must be an int `num` greater than or equal to 1</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">12345.6789</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
   <span class="nv">S</span>.<span class="n">pad_zero</span>(<span class="m">8</span>)
 })
 <span class="c1"># =&gt; 00012345.6789</span>
@@ -739,14 +762,14 @@
 </div>
 </section>
 <section id="c-radix-radix">
-<span id="api-bd0bf4cc8ffc34e9cecd2000f9d874dd"></span><h3><span class="section-number">6.16.6.9. </span>C.radix(Radix)<a class="headerlink" href="#c-radix-radix" title="Link to this heading">¶</a></h3>
+<span id="api-bd0bf4cc8ffc34e9cecd2000f9d874dd"></span><h3><span class="section-number">6.16.10.9. </span>C.radix(Radix)<a class="headerlink" href="#c-radix-radix" title="Link to this heading">¶</a></h3>
 <p>`radix` sets `Radix` as the radix of the result of `show` method.</p>
 <p>The default value is 10.</p>
 <p class="rubric">Preconditions</p>
 <p>`Radix` must be an int `num` in the range [2, 36].</p>
 <p>If the `num` value which is shown is not an integer, `Radix` must be 10.</p>
 <p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">255</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="m">255</span>.<span class="n">show</span>{(<span class="nv">:S</span>)
   <span class="nv">S</span>.<span class="n">radix</span>(<span class="m">2</span>)
 })
 <span class="c1"># =&gt; 11111111</span>
@@ -767,18 +790,8 @@
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-MOD.html"><span class="section-number">6.15. </span>kink/MOD</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-NUM_DIV.html"><span class="section-number">6.17. </span>kink/NUM_DIV</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

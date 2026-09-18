@@ -5,137 +5,141 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.11. kink/EXCEPTION &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=f5f32bdb"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.11. kink/EXCEPTION &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=6ab1bf41"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/translations.js?v=4755f45a"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
     <link rel="next" title="6.12. kink/FUN" href="kink-FUN.html" />
     <link rel="prev" title="6.10. kink/ENUM_GROUP" href="kink-ENUM_GROUP.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.11. kink/EXCEPTION</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-ENUM_GROUP.html"><span class="section-number">6.10. </span>kink/ENUM_GROUP</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-FUN.html"><span class="section-number">6.12. </span>kink/FUN</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. 組み込みライブラリAPI</a></li><li><a class="current" href="#" aria-current="page">6.11. kink/EXCEPTION</a></li></ol></nav>
+    <nav class="header-nav" aria-label="検索"><a href="../search.html">検索</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-exception">
 <h1><span class="section-number">6.11. </span>kink/EXCEPTION<a class="headerlink" href="#kink-exception" title="Link to this heading">¶</a></h1>
-<p>Mod of exceptions.</p>
 <nav class="contents local" id="id1">
 <ul class="simple">
-<li><p><a class="reference internal" href="#type-exception" id="id2">type exception</a></p>
+<li><p><a class="reference internal" href="#type-exception" id="id2">exception型</a></p>
 <ul>
 <li><p><a class="reference internal" href="#exception-message" id="id3">Exception.message</a></p></li>
 <li><p><a class="reference internal" href="#exception-traces" id="id4">Exception.traces</a></p></li>
 <li><p><a class="reference internal" href="#exception-have-next" id="id5">Exception.have_next?</a></p></li>
 <li><p><a class="reference internal" href="#exception-next" id="id6">Exception.next</a></p></li>
-<li><p><a class="reference internal" href="#exception-raise" id="id7">Exception.raise</a></p></li>
-<li><p><a class="reference internal" href="#exception-op-add-tail" id="id8">Exception.op_add(Tail)</a></p></li>
+<li><p><a class="reference internal" href="#exception-tail" id="id7">Exception + Tail</a></p></li>
+<li><p><a class="reference internal" href="#exception-raise" id="id8">Exception.raise</a></p></li>
 <li><p><a class="reference internal" href="#exception-desc-iter" id="id9">Exception.desc_iter</a></p></li>
-<li><p><a class="reference internal" href="#exception-op-eq-arg-exception" id="id10">Exception.op_eq(Arg_exception)</a></p></li>
+<li><p><a class="reference internal" href="#e1-e2" id="id10">E1 == E2</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#exception-new-message-traces" id="id11">EXCEPTION.new(Message ...[Traces])</a></p></li>
+<li><p><a class="reference internal" href="#exception-new-message-traces-trace-current-traces" id="id11">EXCEPTION.new(Message ...[Traces=TRACE.current_traces])</a></p></li>
 <li><p><a class="reference internal" href="#exception-is-val" id="id12">EXCEPTION.is?(Val)</a></p></li>
 </ul>
 </nav>
 <section id="type-exception">
-<span id="api-08fee0648a753752ac74e092d8e9cbfd"></span><h2><span class="section-number">6.11.1. </span>type exception<a class="headerlink" href="#type-exception" title="Link to this heading">¶</a></h2>
-<p>An exception is a pair of a message str and a vec of traces.</p>
-<p>An exception can also have the `next` exception in the chain. Exception chain is used for “suppressed” exceptions by CONTROL.with_finally. It is not for exception wrapping.</p>
+<span id="api-08fee0648a753752ac74e092d8e9cbfd"></span><h2><span class="section-number">6.11.1. </span>exception型<a class="headerlink" href="#type-exception" title="Link to this heading">¶</a></h2>
+<p>exceptionは、プログラムの実行時エラーを表現する、 (Message, Traces, 省略可能なNext) の不変なタプルである。</p>
+<p class="rubric">Message</p>
+<p>Messageは、エラーメッセージのstr値である。</p>
+<p class="rubric">Traces</p>
+<p>Tracesは、trace値の有限長の列である。traceはスタックの根からトップに向けて並ぶ。</p>
+<p class="rubric">省略可能なNext</p>
+<p>exceptionは、Next属性として、他のexception値を持つか持たないかのどちらかである。</p>
+<p>exception Eからはじまり、Nextをたどって得られるexception値の列は、例外のチェーンと呼ばれる。ここでEは、チェーンのメインの例外であると呼ばれる。例外のチェーンは常に有限長である。</p>
+<p>例外のチェーンは、報告するべき例外が複数あるときに構築される。たとえば、CONTROL.with_finallyは、$bodyが例外を投げて、cleanupサンクも例外を投げたときに、チェーンされた例外を投げる。</p>
+<p class="rubric">例外はデバッグのためのもの</p>
+<p>例外は実行時エラーのデバッグのための情報だけを含む。プログラム的なエラー処理のための、階層的なカテゴリーやエラーコードを含むことはない。</p>
+<p>呼び出し元に、プログラム的な情報を渡す必要がある場合は、継続渡しスタイルの採用を検討しよう。呼び出しスタックの深いところから、処理を中断する必要がある場合は、継続渡しスタイルとCONTROL.with_returnを混ぜることを検討しよう。</p>
 <section id="exception-message">
 <span id="api-dba93da3df1180b6d7cc7bbc49f3abba"></span><h3><span class="section-number">6.11.1.1. </span>Exception.message<a class="headerlink" href="#exception-message" title="Link to this heading">¶</a></h3>
-<p>`message` returns the exception message str.</p>
+<p>messageは、Message属性と等しいstr値を戻す。</p>
 </section>
 <section id="exception-traces">
 <span id="api-34e11ffce569c0202e4d218d26949c3c"></span><h3><span class="section-number">6.11.1.2. </span>Exception.traces<a class="headerlink" href="#exception-traces" title="Link to this heading">¶</a></h3>
-<p>`traces` returns a the exception traces. The result is a vec of traces, The traces are indexed from the root to the top.</p>
+<p>tracesは、Traces属性のtrace値を持つvecを戻す。</p>
 </section>
 <section id="exception-have-next">
 <span id="api-7f00e64e6227198358370c7b0bcce33a"></span><h3><span class="section-number">6.11.1.3. </span>Exception.have_next?<a class="headerlink" href="#exception-have-next" title="Link to this heading">¶</a></h3>
-<p>`have_next?` returns whether `Exception` has the next exception in the chain.</p>
+<p>have_next?は、ExceptionがNext属性を持つかどうかを戻す。</p>
 </section>
 <section id="exception-next">
 <span id="api-4e6be031a6eeac356ac71e7044139ab7"></span><h3><span class="section-number">6.11.1.4. </span>Exception.next<a class="headerlink" href="#exception-next" title="Link to this heading">¶</a></h3>
-<p>`next` returns the next exception in the chain.</p>
-<p>Precondition:</p>
-<p>• `Exception` must have the next exception in the chain.</p>
+<p>nextは、Next属性のexceptionを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Exception.have_next? == true</p>
+</section>
+<section id="exception-tail">
+<span id="api-73c132bfb1c7add1df5ef15c75be4a94"></span><h3><span class="section-number">6.11.1.5. </span>Exception + Tail<a class="headerlink" href="#exception-tail" title="Link to this heading">¶</a></h3>
+<p>+ 演算子、つまりop_addメソッドは、Exceptionの例外チェーンとTailの例外チェーンを連結した、新しいチェーンのexceptionを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Tailはexceptionでなければならない。</p>
 </section>
 <section id="exception-raise">
-<span id="api-949358f64b2639e7f0ddc2f95a53aa1b"></span><h3><span class="section-number">6.11.1.5. </span>Exception.raise<a class="headerlink" href="#exception-raise" title="Link to this heading">¶</a></h3>
-<p>`raise` raises an exception.</p>
-<p>At the tail of `raise`, the following sequence of abstract instructions is evaluated:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Exception</span>)
+<span id="api-949358f64b2639e7f0ddc2f95a53aa1b"></span><h3><span class="section-number">6.11.1.6. </span>Exception.raise<a class="headerlink" href="#exception-raise" title="Link to this heading">¶</a></h3>
+<p>raiseはExceptionを投げる。</p>
+<p>raiseの末尾では、次の抽象命令列が評価される:</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span>(<span class="n">val</span> <span class="nv">Exception</span>)
 (<span class="n">raise</span>)
 </pre></div>
 </div>
 </section>
-<section id="exception-op-add-tail">
-<span id="api-d2d1fd878c0ae35447d9cc1bb82a089b"></span><h3><span class="section-number">6.11.1.6. </span>Exception.op_add(Tail)<a class="headerlink" href="#exception-op-add-tail" title="Link to this heading">¶</a></h3>
-<p>`op_add` concatenates the chain of `Exception` and the chain of `Tail`, and returns an exception of the new chain.</p>
-<p>Precondition:</p>
-<p>• `Tail` must be an exception.</p>
-<p>Postcondition:</p>
-<p>• The resutl is an exception.</p>
-</section>
 <section id="exception-desc-iter">
 <span id="api-168d06121a158b398f4e6f7abbf96c6b"></span><h3><span class="section-number">6.11.1.7. </span>Exception.desc_iter<a class="headerlink" href="#exception-desc-iter" title="Link to this heading">¶</a></h3>
-<p>`desc_iter` returns an iter of lines describing the exception.</p>
-<p>Each element of the iter is a str, which does NOT end with newline.</p>
+<p>desc_iterは、Exceptionを説明するstr値のiterを戻す。</p>
+<p>iterの要素は、Printer.print_lineメソッドで印字されることが期待される。</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:CONTROL</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
+<span class="nv">CONTROL</span>.<span class="n">try</span>(
+  { <span class="m">10</span> // <span class="m">0</span> }
+  { <span class="n">_not_reach_here_</span> }
+  {(<span class="nv">:Exc</span>)
+    <span class="nv">Exc</span>.<span class="n">desc_iter</span>.<span class="n">each</span>{(<span class="nv">:Str</span>)
+      <span class="n">stderr</span>.<span class="n">print_line</span>(<span class="s1">&#39;  &#39;</span> + <span class="nv">Str</span>)
+    }
+  }
+)
+<span class="c1"># Output:</span>
+<span class="c1">#   -- main exception</span>
+<span class="c1">#   [..root..]</span>
+<span class="c1">#   ,,,</span>
+<span class="c1">#   [builtin:kink-mods/kink/CONTROL.kn L101 C10 body] :R = --&gt;body</span>
+<span class="c1">#   {(stdin) L4 C8 op_intdiv} { 10 --&gt;// 0 }</span>
+<span class="c1">#   Num.op_intdiv(Divisor): zero division: 10 is divided by 0</span>
+</pre></div>
+</div>
 </section>
-<section id="exception-op-eq-arg-exception">
-<span id="api-3829b1b9dfc1cf2ac755316307edf339"></span><h3><span class="section-number">6.11.1.8. </span>Exception.op_eq(Arg_exception)<a class="headerlink" href="#exception-op-eq-arg-exception" title="Link to this heading">¶</a></h3>
-<p>`op_eq` returns whether the two exceptions are equal.</p>
-<p>They are equal in either of the following conditions:</p>
-<p>• Both exceptions don't have the next exception in the chain, the message strs are equal, and the vecs of traces are equal.</p>
-<p>• Both exceptions have the next exception in the chain, the next exceptions are equal, the message strs are equal, and the vecs of traces are equal.</p>
+<section id="e1-e2">
+<span id="api-6949f569199be3761a9855ff35a6422a"></span><h3><span class="section-number">6.11.1.8. </span>E1 == E2<a class="headerlink" href="#e1-e2" title="Link to this heading">¶</a></h3>
+<p>== 演算子、つまりop_eqメソッドは、ふたつの例外が等しい属性を持つかどうかを戻す。</p>
+<p class="rubric">事前条件</p>
+<p>E2はexceptionでなければならない。</p>
 </section>
 </section>
-<section id="exception-new-message-traces">
-<span id="api-e8325567ca9201ecedd3460476b31fa1"></span><h2><span class="section-number">6.11.2. </span>EXCEPTION.new(Message ...[Traces])<a class="headerlink" href="#exception-new-message-traces" title="Link to this heading">¶</a></h2>
-<p>`new` makes an exception val.</p>
-<p>If `Traces` is omitted, the current traces is used.</p>
-<p>Preconditions:</p>
-<p>• `Message` must be a str</p>
-<p>• `Traces` must be a vec of traces</p>
+<section id="exception-new-message-traces-trace-current-traces">
+<span id="api-569b1f3a1ce06aa21e0502f1a51d429a"></span><h2><span class="section-number">6.11.2. </span>EXCEPTION.new(Message ...[Traces=TRACE.current_traces])<a class="headerlink" href="#exception-new-message-traces-trace-current-traces" title="Link to this heading">¶</a></h2>
+<p>newは、MessageをMessage属性として、TracesをTraces属性として、Next属性なしで、新しいexceptionを作って戻す。</p>
+<p class="rubric">事前条件</p>
+<p>Messageはstrでなければならない。</p>
+<p>Tracesはtrace値のvecでなければならない。</p>
 </section>
 <section id="exception-is-val">
 <span id="api-1b3e885ef622377d1ef6fddb9705bfbe"></span><h2><span class="section-number">6.11.3. </span>EXCEPTION.is?(Val)<a class="headerlink" href="#exception-is-val" title="Link to this heading">¶</a></h2>
-<p>Whether `Val` is an exception.</p>
+<p>is?は、Valがexceptionであるかどうかを戻す。</p>
 </section>
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-ENUM_GROUP.html"><span class="section-number">6.10. </span>kink/ENUM_GROUP</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">コンテンツ</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-FUN.html"><span class="section-number">6.12. </span>kink/FUN</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>

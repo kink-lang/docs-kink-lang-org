@@ -11,50 +11,50 @@ kink\/program\/PROGRAM
 type program
 ============
 
-\`program\` is a pair of a program name and a program text\.
+\`program\` is a pair of a program name and a program text.
 
 .. _api-8f848dfaf90c2e797c71fd666c14cbf4:
 
-P\.name
--------
+P.name
+------
 
 \`name\` returns the program name as a \`str\`\.
 
 .. _api-45f6d2c611eccd488db0e507ebe36cc3:
 
-P\.text
--------
+P.text
+------
 
 \`text\` returns the program text as a \`str\`\.
 
 .. _api-eb38c6c06f06250d57f7c828992a2147:
 
-P\.compile\(\.\.\.\[\$config\=\{\}\]\)
---------------------------------------
+P.compile\(\.\.\.\[$config\=\{\}\]\)
+------------------------------------
 
-\`compile\` compiles \`P\` into a fun\.
+\`compile\` compiles \`P\` into a fun.
 
 Config methods\:
 
-\• C\.binding\(Binding\)\: default \= BINDING\.new
+\• C.binding\(Binding\)\: default \= BINDING.new
 
-\• C\.locale\(Locale\)\: default \= LOCALE\.root
+\• C.locale\(Locale\)\: default \= LOCALE.root
 
-\• C\.on\_success\(\$success\)\: default \= VAL\$identity
+\• C.on_success\($success\)\: default \= VAL$identity
 
-\• C\.on\_error\(\$error\)\: default \= a fun which raises an exception
+\• C.on_error\($error\)\: default \= a fun which raises an exception
 
-If the program is compiled to a fun\, \`compile\` tail\-calls \$success with the fun\.
+If the program is compiled to a fun, \`compile\` tail\-calls $success with the fun.
 
-If a compile error occurs\, \`compile\` tail\-calls \$error with a \`compile\_error\`\. \`Program\` attribute of the \`location\` values of the \`compile\_error\` will be equal to \`P\`\.
+If a compile error occurs, \`compile\` tail\-calls $error with a \`compile_error\`\. \`Program\` attribute of the \`location\` values of the \`compile_error\` will be equal to \`P\`\.
 
 .. rubric:: Compile
 
-The program text is transformed to a sequence of abstract instructions\, as specified in ”Language specification” chapter of the manual\.
+The program text is transformed to a sequence of abstract instructions, as specified in ”Language specification” chapter of the manual.
 
-Then\, every occurrence of \`\(binding\)\` instruction in the sequence is replaced with \`\(val Binding\)\`\. The replacement is done only on the outermost sequence\, and not on nested sequences\.
+Then, every occurrence of \`\(binding\)\` instruction in the sequence is replaced with \`\(val Binding\)\`\. The replacement is done only on the outermost sequence, and not on nested sequences.
 
-The result fun will contain the sequence of abstract instructions after the replacement\.
+The result fun will contain the sequence of abstract instructions after the replacement.
 
 .. rubric:: Preconditions
 
@@ -62,13 +62,14 @@ The result fun will contain the sequence of abstract instructions after the repl
 
 \`Locale\` must be a \`locale\`\.
 
-\$success must be a fun which takes a fun\.
+$success must be a fun which takes a fun.
 
-\$error must be a fun which takes a \`compile\_error\`\.
+$error must be a fun which takes a \`compile_error\`\.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :BINDING.require_from('kink/')
     :LOCALE.require_from('kink/')
@@ -89,7 +90,7 @@ The result fun will contain the sequence of abstract instructions after the repl
 P1 \=\= P2
 ----------
 
-\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`P1\` and \`P2\` have the equal program name and the program text\.
+\`\=\=\` operator, or \`op_eq\` method, returns whether \`P1\` and \`P2\` have the equal program name and the program text.
 
 .. rubric:: Precondition
 
@@ -97,10 +98,10 @@ P1 \=\= P2
 
 .. _api-a0d6b247e440f89ec6c1aacd191ae3b7:
 
-PROGRAM\.new\(Name Text\)
-=========================
+PROGRAM.new\(Name Text\)
+========================
 
-\`new\` returns a new \`program\`\, with \`Name\` as the program name\, and \`Text\` as the program text\.
+\`new\` returns a new \`program\`\, with \`Name\` as the program name, and \`Text\` as the program text.
 
 .. rubric:: Preconditions
 
@@ -110,8 +111,8 @@ PROGRAM\.new\(Name Text\)
 
 .. _api-1537de127b01900a9c05c4e38a95b69e:
 
-PROGRAM\.is\?\(Val\)
-====================
+PROGRAM.is?\(Val\)
+==================
 
-\`is\?\` returns whether \`Val\` is a \`program\`\.
+\`is?\` returns whether \`Val\` is a \`program\`\.
 

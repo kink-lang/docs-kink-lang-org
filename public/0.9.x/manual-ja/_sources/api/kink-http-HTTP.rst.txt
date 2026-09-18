@@ -11,85 +11,86 @@ kink\/http\/HTTP
 type http
 =========
 
-\`http\` is an HTTP client\.
+\`http\` is an HTTP client.
 
 .. _api-1d421ebec8b708c958a7b771f3aa2f57:
 
-Http\.send\(Req \.\.\.\[\$config\=\{\}\]\)
-------------------------------------------
+Http.send\(Req \.\.\.\[$config\=\{\}\]\)
+----------------------------------------
 
-\`send\` method sends a request and receives a response\.
+\`send\` method sends a request and receives a response.
 
 Config methods\:
 
-\• C\.stream\_resp
+\• C.stream_resp
 
-\• C\.timeout\(Timeout\_seconds\)
+\• C.timeout\(Timeout_seconds\)
 
-\• C\.follow\_redirect
+\• C.follow_redirect
 
-\• C\.on\_success\(\$success\)\: default \= VAL\.identity
+\• C.on_success\($success\)\: default \= VAL.identity
 
-\• C\.on\_error\(\$error\)\: default \= \{\(\:Exc\) Exc\.raise \}
+\• C.on_error\($error\)\: default \= \{\(\:Exc\) Exc.raise \}
 
 .. rubric:: Timeout
 
-If C\.timeout is called\, the invocation of \`send\` times out after \`Timeout\_seconds\` seconds\. If \`send\` times out\, it causes an IO error\.
+If C.timeout is called, the invocation of \`send\` times out after \`Timeout_seconds\` seconds. If \`send\` times out, it causes an IO error.
 
 .. rubric:: Result
 
-If the client receives a response with no IO error\, \`send\` tail\-calls \$success with a \`resp\` value \`Resp\`\. If C\.stream\_resp is called\, the \`Resp\.content\.have\_bin\?\` will be false\, and \`Resp\` needs to be closed\. If C\.stream\_resp is not called\, the \`Resp\.content\.have\_bin\?\` will be true\, and \`Resp\` does not need to be closed\.
+If the client receives a response with no IO error, \`send\` tail\-calls $success with a \`resp\` value \`Resp\`\. If C.stream_resp is called, the \`Resp.content.have_bin?\` will be false, and \`Resp\` needs to be closed. If C.stream_resp is not called, the \`Resp.content.have_bin?\` will be true, and \`Resp\` does not need to be closed.
 
-If an IO error occurs\, \`send\` tail\-calls \$error with an \`exception\`\.
+If an IO error occurs, \`send\` tail\-calls $error with an \`exception\`\.
 
 .. rubric:: Redirects
 
-If C\.follow\_redirect is called\, \`send\` performs redirects\, in a similar way as \`HTTP\-redirect fetch\` of Fetch API\:
+If C.follow_redirect is called, \`send\` performs redirects, in a similar way as \`HTTP\-redirect fetch\` of Fetch API\:
 
-https\:\/\/fetch\.spec\.whatwg\.org\/\#http\-redirect\-fetch
+https\:\/\/fetch.spec.whatwg.org\/\#http\-redirect\-fetch
 
 .. rubric:: Preconditions
 
 \`Req\` must be a \`req\`\.
 
-\`Req\.headers\` must not include headers which control routing and messaging\, like Content\-Length and Expect\.
+\`Req.headers\` must not include headers which control routing and messaging, like Content\-Length and Expect.
 
-\`Timeout\_seconds\` must be a positive \`num\` value\.
+\`Timeout_seconds\` must be a positive \`num\` value.
 
-\$success must be a function which takes a \`resp\`\.
+$success must be a function which takes a \`resp\`\.
 
-\$error must be a function which takes an \`exception\`\.
+$error must be a function which takes an \`exception\`\.
 
 .. _api-73e9f0bd95d7d3bbc81111759639f10c:
 
-HTTP\.new\(\.\.\.\[\$config\=\{\}\]\)
-=====================================
+HTTP.new\(\.\.\.\[$config\=\{\}\]\)
+===================================
 
-\`new\` returns a new \`http\` value\.
+\`new\` returns a new \`http\` value.
 
 Config method\:
 
-\• C\.tls\_client\(Tls\_client\)\: default \= TLS\_CLIENT\.new\(TRUST\_ANCHOR\.default\)
+\• C.tls_client\(Tls_client\)\: default \= TLS_CLIENT.new\(TRUST_ANCHOR.default\)
 
-\• C\.http\_proxy\(Http\_proxy\_uri\)
+\• C.http_proxy\(Http_proxy_uri\)
 
-\• C\.https\_proxy\(Https\_proxy\_uri\)
+\• C.https_proxy\(Https_proxy_uri\)
 
-\• C\.no\_proxy\(No\_proxy\_host\)\: can be called multiple times
+\• C.no_proxy\(No_proxy_host\)\: can be called multiple times
 
 .. rubric:: TLS
 
-The result \`http\` will use \`Tls\_client\` for HTTPS requests\.
+The result \`http\` will use \`Tls_client\` for HTTPS requests.
 
 .. rubric:: Proxies
 
-If C\.http\_proxy is called\, HTTP requests are sent to the proxy server with URI \`Http\_proxy\_uri\`\.
+If C.http_proxy is called, HTTP requests are sent to the proxy server with URI \`Http_proxy_uri\`\.
 
-If C\.https\_proxy is called\, HTTPS requests are sent to the proxy server with URI \`Https\_proxy\_uri\`\.
+If C.https_proxy is called, HTTPS requests are sent to the proxy server with URI \`Https_proxy_uri\`\.
 
-Proxies are not used when the host name of the request is specified by an invocation of C\.no\_proxy\. The host name is compared simply by \`str\` equality\. No normalization or name resolution is performed\.
+Proxies are not used when the host name of the request is specified by an invocation of C.no_proxy. The host name is compared simply by \`str\` equality. No normalization or name resolution is performed.
 
 .. code:: kink
+    :class: no-search
 
     :HTTP.require_from('kink/http/')
     :REQ.require_from('kink/http/')
@@ -111,18 +112,18 @@ Proxies are not used when the host name of the request is specified by an invoca
 
 .. rubric:: Precondition
 
-\`Tls\_client\` must be a \`tls\_client\` value\.
+\`Tls_client\` must be a \`tls_client\` value.
 
-\`Http\_proxy\_uri\` must be a \`str\` of an http or https URI defined in \[RFC 9110 \- 4\.2\.1\, 4\.2\.2\]\, in the format of \`http\:\/\/\{Host\}\:\{Port\}\` or \`https\:\/\/\{Host\}\:\{Port\}\`\.
+\`Http_proxy_uri\` must be a \`str\` of an http or https URI defined in \[RFC 9110 \- 4.2.1, 4.2.2\]\, in the format of \`http\:\/\/\{Host\}\:\{Port\}\` or \`https\:\/\/\{Host\}\:\{Port\}\`\.
 
-\`Https\_proxy\_uri\` must be a \`str\` of an http or https URI defined in \[RFC 9110 \- 4\.2\.1\, 4\.2\.2\]\, in the format of \`http\:\/\/\{Host\}\:\{Port\}\` or \`https\:\/\/\{Host\}\:\{Port\}\`\.
+\`Https_proxy_uri\` must be a \`str\` of an http or https URI defined in \[RFC 9110 \- 4.2.1, 4.2.2\]\, in the format of \`http\:\/\/\{Host\}\:\{Port\}\` or \`https\:\/\/\{Host\}\:\{Port\}\`\.
 
-\`No\_proxy\_host\` must be a \`str\`\.
+\`No_proxy_host\` must be a \`str\`\.
 
 .. _api-d50ca115fddd6b0ab0365186ced9ad87:
 
-HTTP\.is\?\(Val\)
-=================
+HTTP.is?\(Val\)
+===============
 
-\`is\?\` returns whether \`Val\` is an \`http\` value\.
+\`is?\` returns whether \`Val\` is an \`http\` value.
 

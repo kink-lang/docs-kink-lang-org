@@ -11,24 +11,25 @@ kink\/regex\/MATCH
 type match
 ==========
 
-The result of a successful regex match or search\.
+The result of a successful regex match or search.
 
-\`match\` is a subtype of \`group\`\. \`match\` represents the entire slice of the matched area\.
+\`match\` is a subtype of \`group\`\. \`match\` represents the entire slice of the matched area.
 
-See kink\/regex\/REGEX for regexes\.
+See kink\/regex\/REGEX for regexes.
 
-See kink\/regex\/GROUP for \`group\` type\.
+See kink\/regex\/GROUP for \`group\` type.
 
 .. _api-0c4856a35ed7d58209a65389f9a7f83d:
 
-M\.slice
---------
+M.slice
+-------
 
-\`slice\` returns the sliced str of the text where the regex matches\.
+\`slice\` returns the sliced str of the text where the regex matches.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Regex <- REGEX.compile('0x[0-9a-f]+')
@@ -37,14 +38,15 @@ Example\:
 
 .. _api-2d7e3038f9cef5b3b78489324984e759:
 
-M\.from
--------
+M.from
+------
 
-\`from\` returns the pos from which the regex matches in the text\.
+\`from\` returns the pos from which the regex matches in the text.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Regex <- REGEX.compile('0x[0-9a-f]+')
@@ -53,14 +55,15 @@ Example\:
 
 .. _api-6acb51cdcdfec3c43e5555c34d94ab96:
 
-M\.to
------
+M.to
+----
 
-\`to\` returns the pos to which the regex matches in the text\.
+\`to\` returns the pos to which the regex matches in the text.
 
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Regex <- REGEX.compile('0x[0-9a-f]+')
@@ -69,10 +72,10 @@ Example\:
 
 .. _api-10e1a147056d6dbdb2162e03a896c5af:
 
-M\.have\_group\?\(Name\)
-------------------------
+M.have_group?\(Name\)
+---------------------
 
-M\.have\_group\? returns whether the match has the group named as \`Name\`\.
+M.have_group? returns whether the match has the group named as \`Name\`\.
 
 Precondition\:
 
@@ -81,6 +84,7 @@ Precondition\:
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Regex <- REGEX.compile('(?<Hex>0x[0-9a-f]+)|(?<Binary>0b[01]+)')
@@ -89,14 +93,14 @@ Example\:
     stdout.print_line(M.have_group?('Binary').repr)   # => false
     stdout.print_line(M.have_group?('Decimal').repr)  # => false
 
-See kink\/regex\/GROUP for groups\.
+See kink\/regex\/GROUP for groups.
 
 .. _api-bd913765e6385e3a9f397d87e4f86708:
 
-M\.group\(Name\)
-----------------
+M.group\(Name\)
+---------------
 
-\`group\` returns a \`group\` val of the named group\.
+\`group\` returns a \`group\` val of the named group.
 
 Precondition\:
 
@@ -107,6 +111,7 @@ Precondition\:
 Example\:
 
 .. code:: kink
+    :class: no-search
 
     :REGEX.require_from('kink/regex/')
     :Regex <- REGEX.compile('(?<Var>[a-z]+) *= *(?<Num>[0-9]+)')
@@ -114,12 +119,12 @@ Example\:
     stdout.print_line(M.group('Var').slice.repr)  # => "foo"
     stdout.print_line(M.group('Num').slice.repr)  # => "42"
 
-See kink\/regex\/GROUP for groups\.
+See kink\/regex\/GROUP for groups.
 
 .. _api-cb1c9e30ad2f2ed23e682fffd8baed7d:
 
-MATCH\.is\?\(Val\)
-==================
+MATCH.is?\(Val\)
+================
 
-\`is\?\` returns whether \`Val\` is a match val\.
+\`is?\` returns whether \`Val\` is a match val.
 

@@ -1,78 +1,82 @@
-===============================================
-kink\/doc\/render\/sphinx\/SPHINX\_RENDER\_TOOL
-===============================================
+=============================================
+kink\/doc\/render\/sphinx\/SPHINX_RENDER_TOOL
+=============================================
 
-Launcheable module to render a kinkdoc document into a set of reStructuredText files for Sphinx document generator\.
+Launcheable module to render a kinkdoc document into a set of reStructuredText files for Sphinx document generator.
 
 .. rubric:: Usage
 
 .. code:: kink
+    :class: no-search
 
     kink [Kink_options]... mod:kink/doc/render/sphinx/SPHINX_RENDER_TOOL [Mod_options] Dir <Json
 
-The command reads the kinkdoc JSON data from the standard input\, converts it to a set of reStructuredText files for Sphinx\, and writes them under the directory \`Dir\`\.
+The command reads the kinkdoc JSON data from the standard input, converts it to a set of reStructuredText files for Sphinx, and writes them under the directory \`Dir\`\.
 
-.. rubric:: Mod\_options
+.. rubric:: Mod_options
 
-\• \-\-anchor\-prefix \{Prefix\} \: Uses \`Prefix\` as the prefix of anchors in generated reST files\. By default \`kinkdoc\-\` is used\.
+\• \-\-anchor\-prefix \{Prefix\} \: Uses \`Prefix\` as the prefix of anchors in generated reST files. By default \`kinkdoc\-\` is used.
 
-\• \-\-help \: Prints out the help and exits\.
+\• \-\-help \: Prints out the help and exits.
 
 .. rubric:: Generated files
 
-The command outputs following files in the destination directory\.
+The command outputs following files in the destination directory.
 
-\• index\.rst\: Blocks of the document level section\, and a \`toctree\` directive\.
+\• index.rst\: Blocks of the document level section, and a \`toctree\` directive.
 
-\• Other \.rst files\: Contents of second level sections and their descendants\. Usually\, a single \.rst file corresponds to a single module\.
+\• Other \.rst files\: Contents of second level sections and their descendants. Usually, a single \.rst file corresponds to a single module.
 
 Example\:
 
-\• index\.rst
+\• index.rst
 
-\• kink\-STR\.rst \: for kink\/STR module
+\• kink\-STR.rst \: for kink\/STR module
 
-\• kink\-NUM\.rst \: for kink\/NUM module
+\• kink\-NUM.rst \: for kink\/NUM module
 
-\• kink\-container\-FLAT\_SET\.rst \: for kink\/container\/FLAT\_SET module
+\• kink\-container\-FLAT_SET.rst \: for kink\/container\/FLAT_SET module
 
 \• \.\.\.
 
 .. rubric:: Anchors
 
-The tiles of sections of the third and deeper levels will have anchors for cross reference\. Example\:
+The tiles of sections of the third and deeper levels will have anchors for cross reference. Example\:
 
 .. code:: kink
+    :class: no-search
 
     .. _kinkdoc-0123456789abcdef0123456789abcdef:
         
-    type finger\_tree
-    =================
+    type finger_tree
+    ================
         
     A finger tree is an immutable data structure for O\(log N\)
-    concatenation and splitting\.
+    concatenation and splitting.
         
     .. _kinkdoc-fedcba9876543210fedcba9876543210:
         
-    Ft\.size
-    --------
+    Ft.size
+    -------
         
-    \`size\` returns the size of the finger tree\.
+    \`size\` returns the size of the finger tree.
 
 reST files in the Sphinx document can refer to a section using \:ref\: role like\:
 
 .. code:: kink
+    :class: no-search
 
     .. someotherpage.rst
         
     You can call :ref:`Ft.size <kinkdoc-fedcba9876543210fedcba9876543210>`
     to get the size of the finger tree.
 
-Anchors are generated from the text of the title of the section\, and the titles of the anscestors\.
+Anchors are generated from the text of the title of the section, and the titles of the anscestors.
 
 .. rubric:: Usage example
 
 .. code:: kink
+    :class: no-search
 
     $ kink mod:kink/doc/DOC_PARSE_TOOL --title 'API reference' src >doc.json
     ...
@@ -84,8 +88,8 @@ Anchors are generated from the text of the title of the section\, and the titles
 
 .. _api-92424ef52cb5b87e6bdb360254309b6c:
 
-SPHINX\_RENDER\_TOOL\.main\(Argv\)
-==================================
+SPHINX_RENDER_TOOL.main\(Argv\)
+===============================
 
-\`main\` is the launcher of the module\.
+\`main\` is the launcher of the module.
 

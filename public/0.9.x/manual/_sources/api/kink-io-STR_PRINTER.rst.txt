@@ -1,6 +1,6 @@
-======================
-kink\/io\/STR\_PRINTER
-======================
+=====================
+kink\/io\/STR_PRINTER
+=====================
 
 .. contents::
     :local:
@@ -8,12 +8,12 @@ kink\/io\/STR\_PRINTER
 
 .. _api-0f524b0be7461637ad73889a195615b1:
 
-STR\_PRINTER\.new\(Newline\)
-============================
+STR_PRINTER.new\(Newline\)
+==========================
 
-\`new\` makes a \`printer\` which builds a string\, with \`Newline\` used as Printer\.newline\.
+\`new\` makes a \`printer\` which builds a string, with \`Newline\` used as Printer.newline.
 
-The result \`printer\` also has \`str\` method\. It returns a \`str\` val which joins strings passed to \`print\` method\, and strings passed to \`print\_line\` plus \`newline\`\.
+The result \`printer\` also has \`str\` method. It returns a \`str\` val which joins strings passed to \`print\` method, and strings passed to \`print_line\` plus \`newline\`\.
 
 .. rubric:: Precondition
 
@@ -22,6 +22,7 @@ The result \`printer\` also has \`str\` method\. It returns a \`str\` val which 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :STR_PRINTER.require_from('kink/io/')
         

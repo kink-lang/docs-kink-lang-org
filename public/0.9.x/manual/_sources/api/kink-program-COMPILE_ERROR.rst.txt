@@ -1,6 +1,6 @@
-=============================
-kink\/program\/COMPILE\_ERROR
-=============================
+============================
+kink\/program\/COMPILE_ERROR
+============================
 
 .. contents::
     :local:
@@ -8,56 +8,57 @@ kink\/program\/COMPILE\_ERROR
 
 .. _api-90981ed8c8e11e27e7d317361c204f62:
 
-type compile\_error
-===================
+type compile_error
+==================
 
-\`compile\_error\` is an error of compilation of a program\.
+\`compile_error\` is an error of compilation of a program.
 
-\`compile\_error\` consists of the following attributes\:
+\`compile_error\` consists of the following attributes\:
 
 \• Message\: the error message as a \`str\`\.
 
-\• From\: the \`location\` of the start of the error\.
+\• From\: the \`location\` of the start of the error.
 
-\• To\: the \`location\` of the end of the error\.
+\• To\: the \`location\` of the end of the error.
 
 .. rubric:: Invariant
 
-From\.program \=\= To\.program
+From.program \=\= To.program
 
-From\.pos \<\= To\.pos
+From.pos \<\= To.pos
 
 .. _api-5ec1c2142158027330771345131c2cdc:
 
-Err\.message
-------------
+Err.message
+-----------
 
 \`message\` returns \`Message\` attribute of \`Err\`\.
 
 .. _api-d492808cdf7595ed9af63b62faddaa45:
 
-Err\.from
----------
+Err.from
+--------
 
 \`from\` returns \`From\` attribute of \`Err\`\.
 
 .. _api-15ce4579ade453484a2debf95b9335f6:
 
-Err\.to
--------
+Err.to
+------
 
 \`to\` returns \`To\` attribute of \`Err\`\.
 
 .. _api-35f3dd531004ca43754d376f0f94e5a3:
 
-Err\.desc
----------
+Err.desc
+--------
 
-\`desc\` returns a \`str\` which describes the compile error for the programmer\.
+\`desc\` returns a \`str\` which describes the compile error for the programmer.
 
 .. rubric:: Example
 
 .. code:: kink
+    :class: no-search
 
     :PROGRAM.require_from('kink/program/')
     :LOCATION.require_from('kink/program/')
@@ -74,33 +75,33 @@ Err\.desc
 Err1 \=\= Err2
 --------------
 
-\`\=\=\` operator\, or \`op\_eq\` method\, returns whether \`Err1\` and \`Err2\` have the equal \`Message\`\, \`From\`\, and \`To\` attributes\.
+\`\=\=\` operator, or \`op_eq\` method, returns whether \`Err1\` and \`Err2\` have the equal \`Message\`\, \`From\`\, and \`To\` attributes.
 
 .. rubric:: Precondition
 
-\`Err2\` must be a \`compile\_error\`\.
+\`Err2\` must be a \`compile_error\`\.
 
 .. _api-0c121d4685999e25b549bd3b7780ed33:
 
-COMPILE\_ERROR\.new\(Message From To\)
-======================================
+COMPILE_ERROR.new\(Message From To\)
+====================================
 
-\`new\` returns a new \`compile\_error\` with the passed attributes\.
+\`new\` returns a new \`compile_error\` with the passed attributes.
 
 .. rubric:: Preconditions
 
 \`Message\` must be a \`str\`\.
 
-\`From\` and \`To\` must be \`location\` values\.
+\`From\` and \`To\` must be \`location\` values.
 
-From\.program \=\= To\.program
+From.program \=\= To.program
 
-From\.pos \<\= To\.pos
+From.pos \<\= To.pos
 
 .. _api-8de54eaac2ef61e148eb7cd4169f436f:
 
-COMPILE\_ERROR\.is\?\(Val\)
-===========================
+COMPILE_ERROR.is?\(Val\)
+========================
 
-\`is\?\` returns whether \`Val\` is a \`compile\_error\`\.
+\`is?\` returns whether \`Val\` is a \`compile_error\`\.
 

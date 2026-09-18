@@ -5,52 +5,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6.3. kink/BINDING &#8212; Kink 0.9.6-beta</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3258c64" />
-    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=18af41fe" />
-    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
-    <script src="../_static/documentation_options.js?v=6ce99075"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <title>6.3. kink/BINDING &#8212; Kink 0.9.7-beta</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=83348fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/override.css?v=381cff4c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=f3ab04ef"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="6.4. kink/BIN_HASHER" href="kink-BIN_HASHER.html" />
     <link rel="prev" title="6.2. kink/BIN" href="kink-BIN.html" /> 
   </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Kink 0.9.6-beta</span></a></h1>
-        <h2 class="heading"><span>6.3. kink/BINDING</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-BIN.html"><span class="section-number">6.2. </span>kink/BIN</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-BIN_HASHER.html"><span class="section-number">6.4. </span>kink/BIN_HASHER</a>&#160;&#160;»
-        </p>
+<div class="header" role="banner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><ol role="list"><li><a href="../index.html">Kink 0.9.7-beta</a></li><li><a href="index.html">6. Builtin library API</a></li><li><a class="current" href="#" aria-current="page">6.3. kink/BINDING</a></li></ol></nav>
+    <nav class="header-nav" aria-label="Search"><a href="../search.html">Search</a></nav>
 
-      </div>
-      <div class="content" role="main">
-        
-        
+</div>
+
+  <div class="content" role="main">
   <section id="kink-binding">
 <h1><span class="section-number">6.3. </span>kink/BINDING<a class="headerlink" href="#kink-binding" title="Link to this heading">¶</a></h1>
-<p>Operates `binding` values.</p>
-<p class="rubric">Example</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BINDING</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
-<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
-
-<span class="nv">:Binding</span> &lt;- <span class="nv">BINDING</span>.<span class="n">new</span>
-<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;program&#39;</span> <span class="s1">&#39;Num * 2&#39;</span>)
-<span class="nv">:prog</span> &lt;- <span class="nv">Program</span>.<span class="n">compile</span>{(<span class="nv">:C</span>)
-  <span class="nv">C</span>.<span class="n">binding</span>(<span class="nv">Binding</span>)
-}
-<span class="nv">Binding:Num</span> &lt;- <span class="m">42</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">prog</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 84</span>
-</pre></div>
-</div>
 <nav class="contents local" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#type-binding" id="id1">type binding</a></p>
@@ -58,57 +33,74 @@
 <li><p><a class="reference internal" href="#nada" id="id2">nada</a></p></li>
 <li><p><a class="reference internal" href="#true" id="id3">true</a></p></li>
 <li><p><a class="reference internal" href="#false" id="id4">false</a></p></li>
-<li><p><a class="reference internal" href="#new-val-sym1-val1-sym2-val2" id="id5">new_val(...[Sym1 Val1 Sym2 Val2 ,,,])</a></p></li>
+<li><p><a class="reference internal" href="#new-val-sym0-val0-sym1-val1" id="id5">new_val(...[Sym0 Val0 Sym1 Val1 ,,,])</a></p></li>
 <li><p><a class="reference internal" href="#raise-msg" id="id6">raise(Msg)</a></p></li>
-<li><p><a class="reference internal" href="#op-lognot-bool" id="id7">op_lognot(Bool)</a></p></li>
-<li><p><a class="reference internal" href="#op-logor-bool-thunk" id="id8">op_logor(Bool $thunk)</a></p></li>
-<li><p><a class="reference internal" href="#op-logand-bool-thunk" id="id9">op_logand(Bool $thunk)</a></p></li>
+<li><p><a class="reference internal" href="#bool-op-lognot-bool" id="id7">! Bool / op_lognot(Bool)</a></p></li>
+<li><p><a class="reference internal" href="#bool1-bool2-op-logor-bool1-thunk-bool2" id="id8">Bool1 || Bool2 / op_logor(Bool1 $thunk={ Bool2 })</a></p></li>
+<li><p><a class="reference internal" href="#bool1-bool2-op-logand-bool1-thunk-bool2" id="id9">Bool1 &amp;&amp; Bool2 / op_logand(Bool1 $thunk={ Bool2 })</a></p></li>
 <li><p><a class="reference internal" href="#if-bool-true-cont-false-cont" id="id10">if(Bool $true_cont ...[$false_cont={}])</a></p></li>
-<li><p><a class="reference internal" href="#branch-cond1-then1-cond2-then2" id="id11">branch(...[$cond1 $then1 $cond2 $then2 ,,,])</a></p></li>
+<li><p><a class="reference internal" href="#branch-cond0-then0-cond1-then1" id="id11">branch(...[$cond0 $then0 $cond1 $then1 ,,,])</a></p></li>
 <li><p><a class="reference internal" href="#stdin" id="id12">stdin</a></p></li>
 <li><p><a class="reference internal" href="#stdout" id="id13">stdout</a></p></li>
 <li><p><a class="reference internal" href="#stderr" id="id14">stderr</a></p></li>
-<li><p><a class="reference internal" href="#binding-repr" id="id15">Binding.repr</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#binding-new" id="id16">BINDING.new</a></p></li>
-<li><p><a class="reference internal" href="#binding-is-val" id="id17">BINDING.is?(Val)</a></p></li>
+<li><p><a class="reference internal" href="#binding-new" id="id15">BINDING.new</a></p></li>
+<li><p><a class="reference internal" href="#binding-is-val" id="id16">BINDING.is?(Val)</a></p></li>
 </ul>
 </nav>
 <section id="type-binding">
 <span id="api-3a046d0b373eaacef45ecba66825bf5b"></span><h2><span class="section-number">6.3.1. </span>type binding<a class="headerlink" href="#type-binding" title="Link to this heading">¶</a></h2>
-<p>A binding val is a holder of local variables.</p>
-<p>See Language specification → Evaluation chapter about manipulation of bindings.</p>
-<p>Every binding has preloaded funs such as `nada` and `new_val`.</p>
+<p>A `binding` value, or simply a binding, is an owner of local variables.</p>
+<p>You can get the binding of the current function call by `\binding` in the program.</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:foo</span> &lt;- {
+  <span class="nv">:Num</span> = <span class="m">42</span>
+  <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="k">\binding</span>.<span class="nv">Num</span>.<span class="n">repr</span>)
+}
+<span class="n">foo</span> <span class="c1"># =&gt; 42</span>
+</pre></div>
+</div>
+<p>You can make a binding, and evaluate a program using it.</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BINDING</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+<span class="nv">:PROGRAM</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/program/&#39;</span>)
+
+<span class="nv">:Binding</span> &lt;- <span class="nv">BINDING</span>.<span class="n">new</span>
+<span class="nv">Binding:Num</span> &lt;- <span class="m">42</span>
+<span class="nv">:Program</span> &lt;- <span class="nv">PROGRAM</span>.<span class="n">new</span>(<span class="s1">&#39;program&#39;</span> <span class="s1">&#39;Num * 2&#39;</span>)
+<span class="nv">:eval_program</span> &lt;- <span class="nv">Program</span>.<span class="n">compile</span>{(<span class="nv">:C</span>)
+  <span class="nv">C</span>.<span class="n">binding</span>(<span class="nv">Binding</span>)
+}
+<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">eval_program</span>.<span class="n">repr</span>) <span class="c1"># =&gt; 84</span>
+</pre></div>
+</div>
+<p>Every binding has functions listed below, like `new_val` or `stdout`, as local variables. Those functions are called “preloaded functions”.</p>
 <section id="nada">
 <span id="api-5e050a798b5cefd652b23e1f244598e8"></span><h3><span class="section-number">6.3.1.1. </span>nada<a class="headerlink" href="#nada" title="Link to this heading">¶</a></h3>
 <p>“Just this creaking metal sign that said nada, nada, against the blue sky. I used to wake up hollering” ―― The Crying of Lot 49 (1966, Thomas Pynchon).</p>
-<p>`nada` returns nada val, which is identical to the result of the expression “()”.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">nada</span>.<span class="n">repr</span>)  <span class="c1"># =&gt; nada</span>
-</pre></div>
-</div>
-<p>nada is used when no meaningful val is needed. For example, Varref.op_store returns nada val.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">:X</span> &lt;- <span class="m">49</span>).<span class="n">repr</span>) <span class="c1"># =&gt; nada</span>
+<p>`nada` is a constant of a meaningless value. `nada` value is used when there is no other meaningful value to use. For example, `&lt;-` operator of variable referenecs does not have any meaningful value to return, so it returns `nada`.</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="nv">:X</span> &lt;- <span class="m">49</span>).<span class="n">repr</span>) <span class="c1"># =&gt; nada</span>
 </pre></div>
 </div>
 </section>
 <section id="true">
 <span id="api-cad6f8e450bbe63736bc0643397a5f4c"></span><h3><span class="section-number">6.3.1.2. </span>true<a class="headerlink" href="#true" title="Link to this heading">¶</a></h3>
-<p>`true` returns the true bool val.</p>
+<p>`true` is a constant of the true value of type `bool`.</p>
 </section>
 <section id="false">
 <span id="api-778dd33edaef2635e679ce12ef09930b"></span><h3><span class="section-number">6.3.1.3. </span>false<a class="headerlink" href="#false" title="Link to this heading">¶</a></h3>
-<p>`false` returns the false bool val.</p>
+<p>`false` is a constant of the false value of type `bool`.</p>
 </section>
-<section id="new-val-sym1-val1-sym2-val2">
-<span id="api-fbc90c7785322a766a80191e6e1ea8de"></span><h3><span class="section-number">6.3.1.4. </span>new_val(...[Sym1 Val1 Sym2 Val2 ,,,])<a class="headerlink" href="#new-val-sym1-val1-sym2-val2" title="Link to this heading">¶</a></h3>
-<p>`new_val` makes a new val, assigning vals to corresponding vars specified by the syms.</p>
-<p>Preconditions:</p>
-<p>• The number of args can be 0, 2, 4, or an arbitrary even number.</p>
-<p>• `Sym1`, `Sym2` ,,, must be strs.</p>
-<p>If the same sym is specified multiple times, the last val is assigned to the var.</p>
-<p>Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span> &lt;- <span class="n">new_val</span>(
+<section id="new-val-sym0-val0-sym1-val1">
+<span id="api-57f5294cce02f93d87d637f6417c656f"></span><h3><span class="section-number">6.3.1.4. </span>new_val(...[Sym0 Val0 Sym1 Val1 ,,,])<a class="headerlink" href="#new-val-sym0-val0-sym1-val1" title="Link to this heading">¶</a></h3>
+<p>`new_val` returns a new value. If arguments are passed, `new_val` also assigns values to variables of the created value.</p>
+<p class="rubric">Variable assignment</p>
+<p>Let `O` be the created value, `N` be a non-negative integer, and Sym(0), Val(0), Sym(1), Val(1) ,,, Sym(N - 1), Val(N - 1) are the passed args.</p>
+<p>For each integer `i` from 0 to `N - 1`, in ascending order, `new_val` performs variable-store operation for the variable (owner=O, symbol=Sym(i)), and Val(i) as the content.</p>
+<p class="rubric">Preconditions</p>
+<p>The number of args must be even.</p>
+<p>`Sym0`, `Sym1` ,,, must be `str` values.</p>
+<p class="rubric">Example</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span> &lt;- <span class="n">new_val</span>(
   <span class="s1">&#39;bark&#39;</span> { <span class="s1">&#39;Bow&#39;</span> }
   <span class="s1">&#39;howl&#39;</span> { <span class="s1">&#39;Wow&#39;</span> }
 )
@@ -116,137 +108,56 @@
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="n">howl</span>) <span class="c1"># =&gt; Wow</span>
 </pre></div>
 </div>
-<p>The program above is equivalent to the following one.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span> &lt;- <span class="n">new_val</span>
+<p>The program above is equivalent to the following.</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:V</span> &lt;- <span class="n">new_val</span>
 <span class="nv">V:bark</span> &lt;- { <span class="s1">&#39;Bow&#39;</span> }
 <span class="nv">V:howl</span> &lt;- { <span class="s1">&#39;Wow&#39;</span> }
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="n">bark</span>) <span class="c1"># =&gt; Bow</span>
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="nv">V</span>.<span class="n">howl</span>) <span class="c1"># =&gt; Wow</span>
 </pre></div>
 </div>
-<p>It is a idiom to store sym-val pairs as a vec, then spread it when calling new_val fun. Such an array is called a trait. Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="c1"># make a rational val</span>
-<span class="nv">:new_rational</span> &lt;- {(<span class="nv">:Numer</span> <span class="nv">:Denom</span>)
-  <span class="n">new_val</span>(
-    <span class="c1"># reuse Rational_trait, which is common to all rational vals</span>
-    ... <span class="nv">Rational_trait</span>
-
-    <span class="c1"># Data vars</span>
-    <span class="s1">&#39;Numer&#39;</span> <span class="nv">Numer</span>
-    <span class="s1">&#39;Denom&#39;</span> <span class="nv">Denom</span>
-  )
-}
-
-<span class="c1"># trait for rational vals</span>
-<span class="nv">:Rational_trait</span> &lt;- [
-  <span class="s1">&#39;numer&#39;</span> {[<span class="nv">:R</span>]() <span class="nv">R</span>.<span class="nv">Numer</span> }
-  <span class="s1">&#39;denom&#39;</span> {[<span class="nv">:R</span>]() <span class="nv">R</span>.<span class="nv">Denom</span> }
-  <span class="s1">&#39;repr&#39;</span> {[<span class="nv">:R</span>]()
-    <span class="s1">&#39;{}/{}&#39;</span>.<span class="n">format</span>(<span class="nv">R</span>.<span class="n">numer</span> <span class="nv">R</span>.<span class="n">denom</span>)
-  }
-]
-
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">new_rational</span>(<span class="m">2</span> <span class="m">3</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 2/3</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">new_rational</span>(<span class="m">4</span> <span class="m">5</span>).<span class="n">repr</span>)  <span class="c1"># =&gt; 4/5</span>
-</pre></div>
-</div>
 </section>
 <section id="raise-msg">
 <span id="api-aaa5e30a2b43a3520dd33febd014bf81"></span><h3><span class="section-number">6.3.1.5. </span>raise(Msg)<a class="headerlink" href="#raise-msg" title="Link to this heading">¶</a></h3>
-<p>`raise` raises an exception with `Msg` as the message, and the current traces as the traces.</p>
-<p>Precondition:</p>
-<p>• `Msg` must be a str.</p>
-<p>`raise` can be defined as follows.</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:EXCEPTION</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
-<span class="nv">:TRACE</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
-
-<span class="nv">:raise</span> &lt;- {(<span class="nv">:Msg</span>)
-  <span class="nv">EXCEPTION</span>.<span class="n">new</span>(<span class="nv">Msg</span>).<span class="n">raise</span>
-}
-</pre></div>
-</div>
+<p>`raise` raises an exception with `Msg` as the exception message, and the current traces as the traces of the exception.</p>
+<p class="rubric">Precondition</p>
+<p>`Msg` must be a `str`.</p>
 </section>
-<section id="op-lognot-bool">
-<span id="api-41364bccd0b873223fdb4df4cdb01efd"></span><h3><span class="section-number">6.3.1.6. </span>op_lognot(Bool)<a class="headerlink" href="#op-lognot-bool" title="Link to this heading">¶</a></h3>
-<p>`op_lognot` returns logical negation of `Bool`.</p>
-<p>Precondition:</p>
-<p>• `Bool` must be a bool.</p>
+<section id="bool-op-lognot-bool">
+<span id="api-16c4abb6b4476e5e2cefdc256beaaaff"></span><h3><span class="section-number">6.3.1.6. </span>! Bool / op_lognot(Bool)<a class="headerlink" href="#bool-op-lognot-bool" title="Link to this heading">¶</a></h3>
+<p>`!` operator, or `op_lognot` function, returns logical negation of `Bool`.</p>
 <p>If `Bool` is true, `op_lognot` returns false.</p>
 <p>If `Bool` is false, `op_lognot` returns true.</p>
-<p>Note that expression “! X” is translated to “op_lognot(X)”. See Semantics section of the manual.</p>
-<p>Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((! <span class="n">true</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>((! <span class="n">false</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
-</pre></div>
-</div>
-<p>The code above is translated to the following:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_lognot</span>(<span class="n">true</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_lognot</span>(<span class="n">false</span>).<span class="n">repr</span>) <span class="c1"># =&gt; true</span>
-</pre></div>
-</div>
+<p class="rubric">Precondition</p>
+<p>`Bool` must be a `bool`.</p>
 </section>
-<section id="op-logor-bool-thunk">
-<span id="api-55b6764094a9afa86ed313fc615d6655"></span><h3><span class="section-number">6.3.1.7. </span>op_logor(Bool $thunk)<a class="headerlink" href="#op-logor-bool-thunk" title="Link to this heading">¶</a></h3>
-<p>`op_logor` returns logical OR of two bools.</p>
-<p>Preconditions:</p>
-<p>• `Bool` must be a bool</p>
-<p>• $thunk must be a fun</p>
-<p>If `Bool` is true, `op_logor` returns true.</p>
-<p>If `Bool` is false, `op_logor` tail-calls $thunk.</p>
-<p>Hence, $thunk is called only when `Bool` is false.</p>
-<p>Note that expression “X || Y” is translated to “op_logor(X { Y })”. See Semantics section of the manual.</p>
-<p>Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">true</span> || <span class="n">true</span>))   =&gt; <span class="n">true</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">true</span> || <span class="n">false</span>))  =&gt; <span class="n">true</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">false</span> || <span class="n">true</span>))  =&gt; <span class="n">true</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">false</span> || <span class="n">false</span>)) =&gt; <span class="n">false</span>
-</pre></div>
-</div>
-<p>The code above is translated to the following:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_logor</span>(<span class="n">true</span> { <span class="n">true</span> }))   =&gt; <span class="n">true</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_logor</span>(<span class="n">true</span> { <span class="n">false</span> }))  =&gt; <span class="n">true</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_logor</span>(<span class="n">false</span> { <span class="n">true</span> }))  =&gt; <span class="n">true</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_logor</span>(<span class="n">false</span> { <span class="n">false</span> })) =&gt; <span class="n">false</span>
-</pre></div>
-</div>
+<section id="bool1-bool2-op-logor-bool1-thunk-bool2">
+<span id="api-14e85fc583a6db2248f44a70416269a2"></span><h3><span class="section-number">6.3.1.7. </span>Bool1 || Bool2 / op_logor(Bool1 $thunk={ Bool2 })<a class="headerlink" href="#bool1-bool2-op-logor-bool1-thunk-bool2" title="Link to this heading">¶</a></h3>
+<p>`||` operator, or `op_logor` function, performs logical OR operation by short-circuit evaluation.</p>
+<p>If `Bool1` is true, `op_logor` returns true.</p>
+<p>If `Bool1` is false, `op_logor` tail-calls $thunk.</p>
+<p class="rubric">Precondition</p>
+<p>`Bool1` must be a `bool`.</p>
 </section>
-<section id="op-logand-bool-thunk">
-<span id="api-e9c15ddedded8a95e98e166baa9febfe"></span><h3><span class="section-number">6.3.1.8. </span>op_logand(Bool $thunk)<a class="headerlink" href="#op-logand-bool-thunk" title="Link to this heading">¶</a></h3>
-<p>`op_logand` returns logical AND of two bools.</p>
-<p>Preconditions:</p>
-<p>• `Bool` must be a bool</p>
-<p>• $thunk must be a fun</p>
-<p>If `Bool` is true, `op_logor` tail-calls $thunk.</p>
-<p>If `Bool` is false, `op_logor` returns false.</p>
-<p>Hence, $thunk is called only when `Bool` is true.</p>
-<p>Note that expression “X &amp;&amp; Y” is translated to “op_logand(X { Y })”. See Semantics section of the manual.</p>
-<p>Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">true</span> &amp;&amp; <span class="n">true</span>))   =&gt; <span class="n">true</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">true</span> &amp;&amp; <span class="n">false</span>))  =&gt; <span class="n">false</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">false</span> &amp;&amp; <span class="n">true</span>))  =&gt; <span class="n">false</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>((<span class="n">false</span> &amp;&amp; <span class="n">false</span>)) =&gt; <span class="n">false</span>
-</pre></div>
-</div>
-<p>The code above is translated to the following:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_logand</span>(<span class="n">true</span> { <span class="n">true</span> }))   =&gt; <span class="n">true</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_logand</span>(<span class="n">true</span> { <span class="n">false</span> }))  =&gt; <span class="n">false</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_logand</span>(<span class="n">false</span> { <span class="n">true</span> }))  =&gt; <span class="n">false</span>
-<span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">op_logand</span>(<span class="n">false</span> { <span class="n">false</span> })) =&gt; <span class="n">false</span>
-</pre></div>
-</div>
+<section id="bool1-bool2-op-logand-bool1-thunk-bool2">
+<span id="api-2ac78f22cff3e24723b9333e49d66f13"></span><h3><span class="section-number">6.3.1.8. </span>Bool1 &amp;&amp; Bool2 / op_logand(Bool1 $thunk={ Bool2 })<a class="headerlink" href="#bool1-bool2-op-logand-bool1-thunk-bool2" title="Link to this heading">¶</a></h3>
+<p>`&amp;&amp;` operator, or `op_logand` function, performs logical AND operation by short-circuit evaluation.</p>
+<p>If `Bool1` is true, `op_logand` tail-calls $thunk.</p>
+<p>If `Bool1` is false, `op_logand` returns false.</p>
+<p class="rubric">Precondition</p>
+<p>`Bool1` must be a `bool`.</p>
 </section>
 <section id="if-bool-true-cont-false-cont">
 <span id="api-b98148331ab9b2bb0ff826ae2a7d0c6d"></span><h3><span class="section-number">6.3.1.9. </span>if(Bool $true_cont ...[$false_cont={}])<a class="headerlink" href="#if-bool-true-cont-false-cont" title="Link to this heading">¶</a></h3>
 <p>`if` does 1-way or 2-way branch.</p>
-<p>Preconditions:</p>
-<p>• `Bool` must be a bool</p>
-<p>• $true_cont must be a fun</p>
-<p>• $false_cont, if given, must be a fun</p>
 <p>If `Bool` is true, `if` tail-calls $true_cont.</p>
-<p>If `Bool` is false, and $false_cont is given, `if` tail-calls $false_cont.</p>
-<p>If `Bool` is false, and $false_cont is not given, `if` returns nada.</p>
-<p>Example: 1 way branch</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:print_if_even</span> &lt;- {(<span class="nv">:N</span>)
+<p>If `Bool` is false, `if` tail-calls $false_cont.</p>
+<p class="rubric">Preconditions</p>
+<p>`Bool` must be a `bool`.</p>
+<p>$true_cont must be a thunk.</p>
+<p>$false_cont must be a thunk.</p>
+<p class="rubric">Example: 1 way branch</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:print_if_even</span> &lt;- {(<span class="nv">:N</span>)
   <span class="n">if</span>(<span class="nv">N</span> % <span class="m">2</span> == <span class="m">0</span>){
     <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;even number {}&#39;</span>.<span class="n">format</span>(<span class="nv">N</span>.<span class="n">repr</span>))
   }
@@ -255,8 +166,8 @@
 <span class="n">print_if_even</span>(<span class="m">11</span>) <span class="c1"># =&gt; (no output)</span>
 </pre></div>
 </div>
-<p>Example: 2 way branch</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:compare</span> &lt;- {(<span class="nv">Num</span>)
+<p class="rubric">Example: 2 way branch</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:compare</span> &lt;- {(<span class="nv">:Num</span>)
   <span class="n">if</span>(<span class="nv">Num</span> &lt; <span class="m">100</span>
     { <span class="s1">&#39;less than 100&#39;</span> }
     { <span class="s1">&#39;greater than or equal to 100&#39;</span> }
@@ -267,34 +178,29 @@
 </pre></div>
 </div>
 </section>
-<section id="branch-cond1-then1-cond2-then2">
-<span id="api-7469fb370542d8e1c27b199ca0bf27ea"></span><h3><span class="section-number">6.3.1.10. </span>branch(...[$cond1 $then1 $cond2 $then2 ,,,])<a class="headerlink" href="#branch-cond1-then1-cond2-then2" title="Link to this heading">¶</a></h3>
-<p>`branch` does a multiway branch.</p>
-<p>First, `branch` calls $cond1, $cond2, ,,, in the order of occurrence with no args, till one of the cond thunks returns true. If no cond thunk returns true, `branch` raises an exception.</p>
-<p>Second, `branch` tail-calls the `then` thunk corresponding to the `cond` thunk which returned true.</p>
-<p>The number of args can be 0, 2, 4, or an arbitrary even number.</p>
-<p>$cond1, $cond2, ,,, must take no args, and return true or false.</p>
-<p>$then1, $then2, ,,, must take no args.</p>
-<p>Example:</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Sorted_nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">11</span> <span class="m">19</span> <span class="m">30</span> <span class="m">49</span> <span class="m">89</span>]
+<section id="branch-cond0-then0-cond1-then1">
+<span id="api-cadd927bee2c3d428ba6088d59cc7a5c"></span><h3><span class="section-number">6.3.1.10. </span>branch(...[$cond0 $then0 $cond1 $then1 ,,,])<a class="headerlink" href="#branch-cond0-then0-cond1-then1" title="Link to this heading">¶</a></h3>
+<p>`branch` performs a multiway branch.</p>
+<p>First, `branch` calls $cond0, $cond1 ,,, with no args, in ascending order, until one of them returns true. If none of them returns true, `branch` raises an exception.</p>
+<p>Second, `branch` tail-calls the `then` thunk corresponding to the `cond` thunk which returned true, with no args.</p>
+<p class="rubric">Preconditions</p>
+<p>The number of args must be even.</p>
+<p>$cond0, $cond1, ,,, must be thunks which return `bool`.</p>
+<p>$then0, $then1, ,,, must be thunks.</p>
+<p class="rubric">Example</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Sorted_nums</span> &lt;- [<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">5</span> <span class="m">8</span> <span class="m">11</span> <span class="m">19</span> <span class="m">30</span> <span class="m">49</span> <span class="m">89</span>]
 
 <span class="c1"># returns whether Sorted_nums contains N, by binary search algorithm</span>
 <span class="nv">:contain?</span> &lt;- {(<span class="nv">:N</span>)
-
-  <span class="c1"># `if` and `branch` tail-calls a body thunk.</span>
-  <span class="c1"># Thus the loop does not cause a stack overflow</span>
-  <span class="c1"># even when Sorted_nums contains a large number of elements.</span>
   <span class="nv">:in_range?</span> &lt;- {(<span class="nv">:From</span> <span class="nv">:To</span>)
-    <span class="n">if</span>(<span class="nv">From</span> &lt; <span class="nv">To</span>
-      { <span class="nv">:Ind</span> = (<span class="nv">From</span> + <span class="nv">To</span>) // <span class="m">2</span>
-        <span class="nv">:T</span> = <span class="nv">Sorted_nums</span>.<span class="n">get</span>(<span class="nv">Ind</span>)
-        <span class="n">branch</span>(
-          { <span class="nv">T</span> &lt; <span class="nv">N</span> } { <span class="n">in_range?</span>(<span class="nv">Ind</span> + <span class="m">1</span> <span class="nv">To</span>) }
-          { <span class="nv">T</span> &gt; <span class="nv">N</span> } { <span class="n">in_range?</span>(<span class="nv">From</span> <span class="nv">Ind</span>) }
-          <span class="nv">$true</span> { <span class="n">true</span> }
-        )
-      }
-      { <span class="n">false</span> }
+    <span class="nv">From</span> &lt; <span class="nv">To</span> &amp;&amp; (
+      <span class="nv">:Ind</span> = (<span class="nv">From</span> + <span class="nv">To</span>) // <span class="m">2</span>
+      <span class="nv">:T</span> = <span class="nv">Sorted_nums</span>.<span class="n">get</span>(<span class="nv">Ind</span>)
+      <span class="n">branch</span>(
+        { <span class="nv">T</span> &lt; <span class="nv">N</span> } { <span class="n">in_range?</span>(<span class="nv">Ind</span> + <span class="m">1</span> <span class="nv">To</span>) }
+        { <span class="nv">T</span> &gt; <span class="nv">N</span> } { <span class="n">in_range?</span>(<span class="nv">From</span> <span class="nv">Ind</span>) }
+        { <span class="n">true</span> } { <span class="n">true</span> }
+      )
     )
   }
   <span class="n">in_range?</span>(<span class="m">0</span> <span class="nv">Sorted_nums</span>.<span class="n">size</span>)
@@ -304,19 +210,18 @@
 <span class="n">stdout</span>.<span class="n">print_line</span>(<span class="n">contain?</span>(<span class="m">42</span>).<span class="n">repr</span>) <span class="c1"># =&gt; false</span>
 </pre></div>
 </div>
-<p>If you do a one-way or two-way branch, `if` might be a better choice.</p>
 </section>
 <section id="stdin">
 <span id="api-80aae17bfe9cd10d64b7efe432c26191"></span><h3><span class="section-number">6.3.1.11. </span>stdin<a class="headerlink" href="#stdin" title="Link to this heading">¶</a></h3>
-<p>`stdin` returns a scanner+input for the standard input of the runtime system.</p>
-<p>When the stdin scanner+input is used as a scanner, it decodes the byte stream using the runtime default charset (CHARSET.default).</p>
-<p>Example: read all from the stdin then dump it to the stdout</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Bin</span> &lt;- <span class="n">stdin</span>.<span class="n">read_all</span>
+<p>`stdin` is a constant of the scanner+input of the standard input of the runtime.</p>
+<p>`stdin` as a `scanner` decodes byte streams using CHARSET.default.</p>
+<p class="rubric">Example: read all from stdin then write it to stdout</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:Bin</span> &lt;- <span class="n">stdin</span>.<span class="n">read_all</span>
 <span class="n">stdout</span>.<span class="n">write</span>(<span class="nv">Bin</span>)
 </pre></div>
 </div>
-<p>Example: emulates &quot;cat -n&quot;</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:loop</span> &lt;- {(<span class="nv">:N</span>)
+<p class="rubric">Example: cat -n with the default charset</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:loop</span> &lt;- {(<span class="nv">:N</span>)
   <span class="n">stdin</span>.<span class="n">scan_line</span>{(<span class="nv">:C</span>)
     <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Line</span>)
       <span class="n">stdout</span>.<span class="n">print</span>(<span class="s2">&quot;{}</span><span class="se">\t</span><span class="s2">{}&quot;</span>.<span class="n">format</span>(<span class="nv">N</span> <span class="nv">Line</span>))
@@ -328,14 +233,18 @@
 <span class="n">loop</span>(<span class="m">1</span>)
 </pre></div>
 </div>
-<p>Example: scan lines from the stdin decoding the byte stream as UTF-8</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:INPUT_SCANNER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<p class="rubric">Example: cat -n with UTF-8 input/output</p>
+<div class="no-search highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:INPUT_SCANNER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
+<span class="nv">:OUTPUT_PRINTER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
 <span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
+
 <span class="nv">:Scanner</span> &lt;- <span class="nv">INPUT_SCANNER</span>.<span class="n">new</span>(<span class="n">stdin</span> <span class="nv">CHARSET</span>.<span class="n">utf8</span>)
+<span class="nv">:Printer</span> &lt;- <span class="nv">OUTPUT_PRINTER</span>.<span class="n">new</span>(<span class="n">stdout</span> <span class="nv">CHARSET</span>.<span class="n">utf8</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>)
+
 <span class="nv">:loop</span> &lt;- {(<span class="nv">:N</span>)
   <span class="nv">Scanner</span>.<span class="n">scan_line</span>{(<span class="nv">:C</span>)
     <span class="nv">C</span>.<span class="n">on_success</span>{(<span class="nv">:Line</span>)
-      <span class="n">stdout</span>.<span class="n">print</span>(<span class="s2">&quot;{}</span><span class="se">\t</span><span class="s2">{}&quot;</span>.<span class="n">format</span>(<span class="nv">N</span> <span class="nv">Line</span>))
+      <span class="nv">Printer</span>.<span class="n">print</span>(<span class="s2">&quot;{}</span><span class="se">\t</span><span class="s2">{}&quot;</span>.<span class="n">format</span>(<span class="nv">N</span> <span class="nv">Line</span>))
       <span class="n">loop</span>(<span class="nv">N</span> + <span class="m">1</span>)
     }
     <span class="nv">C</span>.<span class="n">on_eof</span>{}
@@ -347,60 +256,30 @@
 </section>
 <section id="stdout">
 <span id="api-349441e1f68b69b4e716f5d05354b7ac"></span><h3><span class="section-number">6.3.1.12. </span>stdout<a class="headerlink" href="#stdout" title="Link to this heading">¶</a></h3>
-<p>`stdout` returns a printer+output for the standard output of the runtime system.</p>
-<p>When the stdout printer+output is used as a printer, it terminates lines using the runtime default newline str (STR.default_newline), and encodes the str using the runtime default charset (CHARSET.default).</p>
-<p>Example: writes bin to the stdout</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:BIN</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
-<span class="n">stdout</span>.<span class="n">write</span>(<span class="nv">BIN</span>.<span class="n">of</span>(<span class="m">0x66</span> <span class="m">0x6f</span> <span class="m">0x6f</span> <span class="m">0x62</span> <span class="m">0x61</span> <span class="m">0x72</span> <span class="m">0x0a</span>)) <span class="c1"># =&gt; foobar</span>
-</pre></div>
-</div>
-<p>Example: prints a line to the stdout</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="n">stdout</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>) <span class="c1"># =&gt; foobar</span>
-</pre></div>
-</div>
-<p>Example: prints a line using UTF-8 and LF</p>
-<div class="highlight-kink notranslate"><div class="highlight"><pre><span></span><span class="nv">:OUTPUT_PRINTER</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/io/&#39;</span>)
-<span class="nv">:CHARSET</span>.<span class="n">require_from</span>(<span class="s1">&#39;kink/&#39;</span>)
-<span class="nv">:Printer</span> &lt;- <span class="nv">OUTPUT_PRINTER</span>.<span class="n">new</span>(<span class="n">stdout</span> <span class="nv">CHARSET</span>.<span class="n">utf8</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>)
-<span class="nv">Printer</span>.<span class="n">print_line</span>(<span class="s1">&#39;foobar&#39;</span>) <span class="c1"># =&gt; foobar</span>
-</pre></div>
-</div>
+<p>`stdout` is a constant of the printer+output for the standard output of the runtime.</p>
+<p>`stdout` as a `printer` uses STR.default_newline as the newline `str`, and encodes strings using CHARSET.default.</p>
 </section>
 <section id="stderr">
 <span id="api-1d3113732916cec85c49ef707586cb23"></span><h3><span class="section-number">6.3.1.13. </span>stderr<a class="headerlink" href="#stderr" title="Link to this heading">¶</a></h3>
-<p>`stderr` returns a printer+output for the standard error output of the runtime system.</p>
-<p>When the stderr printer+output is used as a printer, it terminates lines using the runtime default newline str (STR.default_newline), and encodes the str using the runtime default charset (CHARSET.default).</p>
-<p>When encoding error happens on print_xxx methods, `stderr` writes replacement byte sequence instead, rather than resulting in an IO error. This is because, when printing an error message, it is better you can read the original message even incomplete, rather than reading a message describing the conversion error.</p>
-<p>write, print, flush, close operations of stderr are synchronized, in order that multiple threads can output error messages to stderr.</p>
-</section>
-<section id="binding-repr">
-<span id="api-48d31ff08342f84e07b462beed6a045e"></span><h3><span class="section-number">6.3.1.14. </span>Binding.repr<a class="headerlink" href="#binding-repr" title="Link to this heading">¶</a></h3>
-<p>`repr` returns a str such as &quot;(binding id_hash=42)&quot;.</p>
+<p>`stderr` is a constant of the printer+output of the standard error output of the runtime.</p>
+<p>`stderr` as a `printer` uses STR.default_newline as the newline `str`, and encodes strings using CHARSET.default.</p>
+<p>`write`, `print`, `print_line`, `flush`, and `close` methods of `stderr` are synchronized, in order that multiple threads can output error messages to `stderr`.</p>
+<p>If an encoding error happens on print_xxx methods, `stderr` writes a replacement byte sequence, rather than resulting in an IO error. The reason is that the string written to `stderr` is more useful even incomplete, rather than an error message of the conversion error.</p>
 </section>
 </section>
 <section id="binding-new">
 <span id="api-3af92f167f7b73e1e2282e555f52a7c6"></span><h2><span class="section-number">6.3.2. </span>BINDING.new<a class="headerlink" href="#binding-new" title="Link to this heading">¶</a></h2>
-<p>`new` makes a new binding.</p>
+<p>`new` makes a new `binding`.</p>
 </section>
 <section id="binding-is-val">
 <span id="api-48f74b0378fc7db0fcdeb007cfda68eb"></span><h2><span class="section-number">6.3.3. </span>BINDING.is?(Val)<a class="headerlink" href="#binding-is-val" title="Link to this heading">¶</a></h2>
-<p>`is?` returns whether the `Val` is a binding val.</p>
+<p>`is?` returns whether `Val` is a `binding` value.</p>
 </section>
 </section>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="kink-BIN.html"><span class="section-number">6.2. </span>kink/BIN</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="../index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="kink-BIN_HASHER.html"><span class="section-number">6.4. </span>kink/BIN_HASHER</a>&#160;&#160;»
-        </p>
+  </div>
 
-      </div>
 
     <div class="footer" role="contentinfo">
     </div>
